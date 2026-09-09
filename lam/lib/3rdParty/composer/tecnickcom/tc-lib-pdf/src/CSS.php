@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf;
 
+use Com\Tecnick\Color\Exception as ColorException;
 use Com\Tecnick\Pdf\CSS\CascadeContext;
 use Com\Tecnick\Pdf\CSS\ImportanceNormalizer;
 use Com\Tecnick\Pdf\CSS\Specificity;
@@ -129,45 +130,6 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      * base (lowest-priority) author stylesheet.
      */
     protected string $globalCSS = '';
-
-    /**
-     * Maximum value that can be represented in Roman notation.
-     *
-     * @var int
-     */
-    protected const ROMAN_LIMIT = 3_999_999_999;
-
-    /**
-     * Maps Roman Vinculum symbols to number multipliers.
-     *
-     * @var array<string, int>
-     */
-    protected const ROMAN_VINCULUM = [
-        '\u{033F}' => 1_000_000,
-        '\u{0305}' => 1_000,
-        '' => 1,
-    ];
-
-    /**
-     * Maps Roman symbols to numbers.
-     *
-     * @var array<string, int>
-     */
-    protected const ROMAN_SYMBOL = [
-        // standard notation
-        'M' => 1_000,
-        'CM' => 900,
-        'D' => 500,
-        'CD' => 400,
-        'C' => 100,
-        'XC' => 90,
-        'L' => 50,
-        'XL' => 40,
-        'X' => 10,
-        'IX' => 9,
-        'V' => 5,
-        'IV' => 4,
-    ];
 
     /**
      * Non-print CSS media types.
@@ -390,7 +352,6 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      *
      * @return BorderStyle border properties.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Exception
      */
     protected function getCSSBorderStyle(string $cssborder): array
@@ -433,7 +394,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
         }
 
         if ($style === '') {
-            // Keep legacy behavior: a missing border-style renders as solid.
+            // A missing border-style renders as solid.
             $style = 'solid';
         }
 
@@ -456,13 +417,14 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      *
      * @param string $csspadding padding properties.
      * @param float $width width of the containing element.
+     * @param ?TRefUnitValues $ref Reference values in internal points.
      *
      * @return TCellBound cell paddings.
      *
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
-    protected function getCSSPadding(string $csspadding, float $width = 0.0): array
+    protected function getCSSPadding(string $csspadding, float $width = 0.0, ?array $ref = null): array
     {
         $cellpad = $this->defCSSCellPadding;
         $padSplit = \preg_split('/[\s]+/', \trim($csspadding));
@@ -500,7 +462,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
             $region = $this->page->getRegion();
             $width = $region['RW'];
         }
-        $ref = self::REFUNITVAL;
+        $ref ??= self::REFUNITVAL;
         $ref['parent'] = $width;
         $cellpad['T'] = $this->toUnit($this->getUnitValuePoints($cellpad['T'], $ref));
         $cellpad['R'] = $this->toUnit($this->getUnitValuePoints($cellpad['R'], $ref));
@@ -514,13 +476,14 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      *
      * @param string $cssmargin margin properties.
      * @param float $width width of the containing element.
+     * @param ?TRefUnitValues $ref Reference values in internal points.
      *
      * @return TCellBound cell margins.
      *
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
-    protected function getCSSMargin(string $cssmargin, float $width = 0.0): array
+    protected function getCSSMargin(string $cssmargin, float $width = 0.0, ?array $ref = null): array
     {
         $cellmrg = $this->defCSSCellMargin;
         $mrgSplit = \preg_split('/[\s]+/', \trim($cssmargin));
@@ -562,7 +525,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
         $cellmrg['R'] = \str_replace('auto', '0', $cellmrg['R']);
         $cellmrg['B'] = \str_replace('auto', '0', $cellmrg['B']);
         $cellmrg['L'] = \str_replace('auto', '0', $cellmrg['L']);
-        $ref = self::REFUNITVAL;
+        $ref ??= self::REFUNITVAL;
         $ref['parent'] = $width;
         $cellmrg['T'] = $this->toUnit($this->getUnitValuePoints($cellmrg['T'], $ref));
         $cellmrg['R'] = $this->toUnit($this->getUnitValuePoints($cellmrg['R'], $ref));
@@ -576,13 +539,14 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      *
      * @param string $cssbspace border-spacing CSS properties.
      * @param float $width width of the containing element.
+     * @param ?TRefUnitValues $ref Reference values in internal points.
      *
      * @return TCSSBorderSpacing of border spacings.
      *
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
-    protected function getCSSBorderMargin(string $cssbspace, float $width = 0.0): array
+    protected function getCSSBorderMargin(string $cssbspace, float $width = 0.0, ?array $ref = null): array
     {
         $bsp = $this->defCSSBorderSpacing;
         $spaceSplit = \preg_split('/[\s]+/', \trim($cssbspace));
@@ -604,7 +568,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
             $region = $this->page->getRegion();
             $width = $region['RW'];
         }
-        $ref = self::REFUNITVAL;
+        $ref ??= self::REFUNITVAL;
         $ref['parent'] = $width;
         $bsp['H'] = $this->toUnit($this->getUnitValuePoints($bsp['H'], $ref));
         $bsp['V'] = $this->toUnit($this->getUnitValuePoints($bsp['V'], $ref));
@@ -673,7 +637,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
                     continue;
                 }
 
-                $decl = $decls[$key] ?? ['name' => '', 'value' => '', 'important' => false];
+                $decl = $decls[$key];
                 if ($decl['important'] && !$important) {
                     // Existing !important declaration wins over later non-important declaration.
                     continue;
@@ -966,7 +930,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
             // Extract media type: everything before the first 'and' keyword or feature '('
             $parts = \preg_split('/\band\b/', $condition, 2);
             $mediaType = \trim($parts[0] ?? '');
-            // Feature-only query (starts with '(') — no media type means 'all'
+            // Feature-only query (starts with '('): no media type means 'all'
             if ($mediaType === '' || $mediaType[0] === '(') {
                 if (!$negated) {
                     return true;
@@ -1118,38 +1082,6 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
     }
 
     /**
-     * Returns the Roman representation of an integer number.
-     * Roman standard notation can represent numbers up to 3,999.
-     * For bigger numbers, up to two layers of the "vinculum" notation
-     * are used for a max value of 3,999,999,999.
-     *
-     * @param int $num number to convert.
-     *
-     * @return string roman representation of the specified number.
-     */
-    protected function intToRoman(int $num): string
-    {
-        if ($num > self::ROMAN_LIMIT) {
-            return \strval($num);
-        }
-        $rmn = '';
-        foreach (self::ROMAN_VINCULUM as $sfx => $mul) {
-            foreach (self::ROMAN_SYMBOL as $sym => $val) {
-                $limit = (int) ($mul * $val);
-                while ($num >= $limit) {
-                    $rmn .= $sym[0] . $sfx . (\strlen($sym) > 1 ? $sym[1] . $sfx : '');
-                    $num -= $limit;
-                }
-            }
-        }
-        while ($num >= 1) {
-            $rmn .= 'I';
-            $num--;
-        }
-        return $rmn;
-    }
-
-    /**
      * Reverse function for htmlentities.
      *
      * @param string $text_to_convert Text to convert.
@@ -1199,7 +1131,6 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
      * @return array<string, string> CSS styles (selector => properties).
      *
      * @throws \Com\Tecnick\File\Exception
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function getCSSArrayFromHTML(string &$html): array
     {
@@ -1296,11 +1227,12 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
     /**
      * Parse and normalize CSS color.
      *
+     * An unparseable value yields an empty string, so the declaration is
+     * dropped instead of aborting the rendering of the document.
+     *
      * @param string $color CSS color string to parse.
      *
      * @return string CSS color representation.
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function getCSSColor(string $color): string
     {
@@ -1309,7 +1241,7 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
             return $spot;
         }
 
-        $colobj = $this->color->getColorObj($color);
+        $colobj = $this->color->tryGetColorObj($color);
         if ($colobj === null) {
             return '';
         }
@@ -1337,7 +1269,12 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
                     continue;
                 }
 
-                $this->registerCSSSpotRule($name, $ruleBody);
+                try {
+                    $this->registerCSSSpotRule($name, $ruleBody);
+                } catch (ColorException $colorException) {
+                    // Skip a rule the color engine rejects, as for a malformed body.
+                    unset($colorException);
+                }
             }
         }
 
@@ -1346,6 +1283,8 @@ abstract class CSS extends \Com\Tecnick\Pdf\SVG
 
     /**
      * Register a single @spot rule body against the color engine.
+     *
+     * @throws ColorException if the color engine rejects the name
      */
     protected function registerCSSSpotRule(string $name, string $ruleBody): void
     {

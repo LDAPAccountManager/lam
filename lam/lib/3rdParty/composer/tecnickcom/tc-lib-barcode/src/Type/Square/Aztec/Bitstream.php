@@ -65,6 +65,15 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
     }
 
     /**
+     * Maximum number of characters of a single Binary Shift field.
+     * The extended length field holds 11 bits, so the largest representable
+     * value is 2047, that is 2078 characters.
+     *
+     * @var int
+     */
+    protected const MAX_BINARY_RUN = 2048;
+
+    /**
      * Forced binary encoding for the given characters.
      *
      * @param list<int> $chars  Integer ASCII values of the characters to encode.
@@ -72,13 +81,27 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
      */
     protected function binaryEncode(array $chars, int $chrlen): void
     {
+        for ($start = 0; $start < $chrlen; $start += self::MAX_BINARY_RUN) {
+            $this->binaryEncodeField($chars, $start, \min($chrlen - $start, self::MAX_BINARY_RUN));
+        }
+    }
+
+    /**
+     * Encode one Binary Shift field.
+     *
+     * @param list<int> $chars Integer ASCII values of the characters to encode.
+     * @param int   $start  Index of the first character of the field.
+     * @param int   $chrlen Number of characters of the field.
+     */
+    protected function binaryEncodeField(array $chars, int $start, int $chrlen): void
+    {
         $bits = Data::MODE_BITS[Data::MODE_BINARY] ?? 8;
         $this->addShift(Data::MODE_BINARY);
         if ($chrlen > 62) {
             $this->addRawCwd(5, 0);
             $this->addRawCwd(11, $chrlen - 31);
             for ($idx = 0; $idx < $chrlen; ++$idx) {
-                $this->addRawCwd($bits, $chars[$idx] ?? 0);
+                $this->addRawCwd($bits, $chars[$start + $idx] ?? 0);
             }
 
             return;
@@ -87,13 +110,13 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
         if ($chrlen > 31) {
             $this->addRawCwd(5, 31);
             for ($idx = 0; $idx < 31; ++$idx) {
-                $this->addRawCwd($bits, $chars[$idx] ?? 0);
+                $this->addRawCwd($bits, $chars[$start + $idx] ?? 0);
             }
 
             $this->addShift(Data::MODE_BINARY);
             $this->addRawCwd(5, $chrlen - 31);
             for ($idx = 31; $idx < $chrlen; ++$idx) {
-                $this->addRawCwd($bits, $chars[$idx] ?? 0);
+                $this->addRawCwd($bits, $chars[$start + $idx] ?? 0);
             }
 
             return;
@@ -101,7 +124,7 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
 
         $this->addRawCwd(5, $chrlen);
         for ($idx = 0; $idx < $chrlen; ++$idx) {
-            $this->addRawCwd($bits, $chars[$idx] ?? 0);
+            $this->addRawCwd($bits, $chars[$start + $idx] ?? 0);
         }
     }
 
@@ -203,7 +226,12 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
             return false;
         }
 
-        $encmode = $this->encmode;
+        // Digit and Punct have no Binary Shift: their shift map latches to Upper first,
+        // so the mode after the binary field is Upper and not the one in use before it
+        $encmode =
+            $this->encmode === Data::MODE_DIGIT || $this->encmode === Data::MODE_PUNCT
+                ? Data::MODE_UPPER
+                : $this->encmode;
         $this->addShift(Data::MODE_BINARY);
         if ($binchrs > 62) {
             $this->addRawCwd(5, 0);
@@ -255,7 +283,7 @@ abstract class Bitstream extends \Com\Tecnick\Barcode\Type\Square\Aztec\Layers
         $this->tmpCdws = [];
         $count = 0;
         $nbits = Data::MODE_BITS[Data::MODE_BINARY] ?? 8;
-        while ($idx < $chrlen && $count < 2048) {
+        while ($idx < $chrlen && $count < self::MAX_BINARY_RUN) {
             $ord = $chars[$idx] ?? 0;
             if ($this->charMode($ord) !== Data::MODE_BINARY) {
                 return $count;

@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf;
 
+use Com\Tecnick\Pdf\CSS\ListStyle;
 use Com\Tecnick\Pdf\Exception as PdfException;
 use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
 
@@ -43,6 +44,7 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  * @phpstan-import-type TCellBound from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TTextDims from \Com\Tecnick\Pdf\Font\Stack
  * @phpstan-import-type TAnnotOpts from \Com\Tecnick\Pdf\Base
+ * @phpstan-import-type TRefUnitValues from \Com\Tecnick\Pdf\Base
  * @phpstan-type THTMLTableCell array{
  *     cellx: float,
  *     cellw: float,
@@ -71,6 +73,7 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  * @phpstan-type THTMLTableState array{
  *     originx: float,
  *     originy: float,
+ *     captiontopy: float,
  *     width: float,
  *     dir: string,
  *     cols: int,
@@ -107,6 +110,8 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  *     cellw: float,
  *     colindex: int,
  *     colspan: int,
+ *     padding: array{'T': float, 'R': float, 'B': float, 'L': float},
+ *     margin: array{'T': float, 'R': float, 'B': float, 'L': float},
  *     bstyles: array<int|string, BorderStyle>,
  *     fillstyle: ?BorderStyle,
  *     rowspan: int,
@@ -151,6 +156,7 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  *     'line-height-font-size-basis'?: bool,
  *     'list-style-position': string,
  *     'listtype': string,
+ *     'listtypeset': bool,
  *     'float': string,
  *     'margin': array<string, float>,
  *     'opening': bool,
@@ -223,6 +229,7 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  *         linewordspacing: float,
  *         linewrapped: bool,
  *         textindentapplied: bool,
+ *         firstlineinset: float,
  *         pendingblockmarginb: float,
  *         activepage?: string,
  *         regionoffset?: float,
@@ -231,7 +238,6 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  *     'currentkey'?: int,
  *     'fontcache': array<string, array<string, mixed>>,
  *     'liststack': array<int, array{
- *         ordered: bool,
  *         type: string,
  *         count: int,
  *         indent: float
@@ -308,19 +314,41 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         'I',
         'a',
         'circle',
+        'cjk-ideographic',
         'decimal',
         'decimal-leading-zero',
         'disc',
+        'georgian',
+        'hebrew',
+        'hiragana',
+        'hiragana-iroha',
         'i',
+        'katakana',
+        'katakana-iroha',
         'lower-alpha',
+        'lower-armenian',
         'lower-greek',
         'lower-latin',
         'lower-roman',
+        'none',
         'square',
         'upper-alpha',
+        'upper-armenian',
         'upper-latin',
         'upper-roman',
     ];
+
+    /**
+     * Highest list counter value: one below the integer limit,
+     * so that the next counter cannot overflow.
+     */
+    protected const LIST_COUNTER_MAX = PHP_INT_MAX - 1;
+
+    /**
+     * Lowest list counter value: two above the integer limit,
+     * so that the list start value cannot underflow.
+     */
+    protected const LIST_COUNTER_MIN = PHP_INT_MIN + 2;
 
     /**
      * Default list types for unordered lists.
@@ -331,6 +359,17 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         'disc',
         'circle',
         'square',
+    ];
+
+    /**
+     * Unicode glyphs for the unordered list markers.
+     *
+     * @var array<string, string>
+     */
+    protected const LIST_BULLET_GLYPH = [
+        'disc' => "\u{2022}",
+        'circle' => "\u{25E6}",
+        'square' => "\u{25AA}",
     ];
 
     /**
@@ -409,6 +448,18 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     ];
 
     /**
+     * Internal marker for a collapsible space that must survive whitespace collapsing.
+     * It is turned back into a space by processHTMLDOMText() and is never rendered.
+     */
+    protected const HTML_KEPT_SPACE = "\u{E01F}";
+
+    /**
+     * PCRE character class matching every collapsible whitespace character,
+     * that is any "\s" character except the non-breaking ones.
+     */
+    protected const HTML_COLLAPSIBLE_SPACE = '[^\S' . self::NO_BREAK_SPACE_CLASS . ']';
+
+    /**
      * HTML character replacements.
      *
      * @var array<string, string>
@@ -476,7 +527,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     protected const HTML_VALID_TAGS =
         '<marker/><a><b><blockquote><body><br><br/><code><dd><del><div><dl><dt><em>'
             . '<button><caption><col><colgroup><figure><figcaption><font><form>'
-            . '<h1><h2><h3><h4><h5><h6><hr><hr/><i><img><input><label>'
+            . '<h1><h2><h3><h4><h5><h6><hr><hr/><html><i><img><input><label>'
             . '<li><ol><optgroup><option>'
             . '<p><pre><s><select><small><span><strike><strong><sub><sup><table><tablehead>'
             . '<tcpdf><td><textarea><tfoot><th><thead><tr><tt><u><ul>';
@@ -704,7 +755,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      */
     public function strTrimLeft(string $str, string $replace = ''): string
     {
-        return \preg_replace('/^[^\S\xa0]+/u', $replace, $str) ?? '';
+        return \preg_replace('/^' . self::HTML_COLLAPSIBLE_SPACE . '+/u', $replace, $str) ?? '';
     }
 
     /**
@@ -717,7 +768,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      */
     public function strTrimRight(string $str, string $replace = ''): string
     {
-        return \preg_replace('/[^\S\xa0]+$/u', $replace, $str) ?? '';
+        return \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+$/u', $replace, $str) ?? '';
     }
 
     /**
@@ -732,6 +783,29 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     {
         $str = $this->strTrimLeft($str, $replace);
         return $this->strTrimRight($str, $replace);
+    }
+
+    /**
+     * Add the implicit html and body elements to an HTML fragment.
+     *
+     * Selectors targeting the document root elements match the whole
+     * fragment, as they do when the markup is a complete document.
+     *
+     * @param string $html Sanitized HTML code.
+     *
+     * @return string HTML code containing the html and body elements.
+     */
+    protected function addHTMLImplicitBody(string $html): string
+    {
+        if (\preg_match('/<body[\s>\/]/i', $html) !== 1) {
+            $html = '<body>' . $html . '</body>';
+        }
+
+        if (\preg_match('/<html[\s>\/]/i', $html) !== 1) {
+            $html = '<html>' . $html . '</html>';
+        }
+
+        return $html;
     }
 
     /**
@@ -768,14 +842,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 $html_b =
                     \preg_replace("'<xre([^\>]*)>(.*?)\n(.*?)</pre>'si", "<xre\\1>\\2<br />\\3</pre>", $html_b) ?? '';
             }
-            while (\preg_match("'<xre([^\\>]*)>(.*?)[^\\S\\xa0](.*?)</pre>'ui", $html_b) === 1) {
+            $prespace = "'<xre([^\\>]*)>(.*?)" . self::HTML_COLLAPSIBLE_SPACE . "(.*?)</pre>'ui";
+            while (\preg_match($prespace, $html_b) === 1) {
                 // preserve spaces on <pre> tag
-                $html_b =
-                    \preg_replace(
-                        "'<xre([^\\>]*)>(.*?)[^\\S\\xa0](.*?)</pre>'ui",
-                        "<xre\\1>\\2&nbsp;\\3</pre>",
-                        $html_b,
-                    ) ?? '';
+                $html_b = \preg_replace($prespace, "<xre\\1>\\2" . self::HTML_KEPT_SPACE . "\\3</pre>", $html_b) ?? '';
             }
             $html = $html_a . $html_b . \substr($html, $pos + 6);
             $offset = \strlen($html_a . $html_b);
@@ -929,9 +999,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         // remove extra spaces
         $html = \preg_replace('/[\s]+<\/(table|tr|ul|ol|dl)>/', '</\\1>', $html) ?? '';
-        $html = \preg_replace('/[^\\S\\xa0]+<\/(td|th|li|dt|dd)>/u', '</\\1>', $html) ?? '';
+        $html = \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+<\/(td|th|li|dt|dd)>/u', '</\\1>', $html) ?? '';
         $html = \preg_replace('/[\s]+<(tr|td|th|li|dt|dd)/', '<\\1', $html) ?? '';
-        $html = \preg_replace('/[^\\S\\xa0]+<(ul|ol|dl|br)/u', '<\\1', $html) ?? '';
+        $html = \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+<(ul|ol|dl|br)/u', '<\\1', $html) ?? '';
         $html =
             \preg_replace(
                 '/<\/(table|tr|td|th|blockquote|dd|dt|dl|div|h1|h2|h3|h4|h5|h6|hr|li|ol|ul|p)>[\s]+</',
@@ -940,23 +1010,27 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             ) ?? '';
         $html = \preg_replace('/<\/(td|th)>/', '<marker style="font-size:0"/></\\1>', $html) ?? '';
         $html = \preg_replace('/<\/table>([\s]*)<marker style="font-size:0"\/>/', '</table>', $html) ?? '';
-        $html = \preg_replace('/[^\\S\\xa0]+<img/u', chr(32) . '<img', $html) ?? '';
-        $html = \preg_replace('/<img([^\>]*)>[\s]+([^\<])/xi', '<img\\1>&nbsp;\\2', $html) ?? '';
+        $html = \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+<img/u', chr(32) . '<img', $html) ?? '';
+        $html = \preg_replace('/<img([^\>]*)>[\s]+([^\<])/xi', '<img\\1>' . self::HTML_KEPT_SPACE . '\\2', $html) ?? '';
         $html = \preg_replace('/<img([^\>]*)>/xi', '<img\\1><span><marker style="font-size:0"/></span>', $html) ?? '';
         // restore pre tag
         $html = \preg_replace('/<xre/', '<pre', $html) ?? '';
         $html = \preg_replace('/<textarea([^\>]*)>([^\<]*)<\/textarea>/xi', '<textarea\\1 value="\\2" />', $html) ?? '';
-        $html = \preg_replace('/<li([^\>]*)><\/li>/', '<li\\1>&nbsp;</li>', $html) ?? '';
+        $html = \preg_replace('/<li([^\>]*)><\/li>/', '<li\\1>' . self::HTML_KEPT_SPACE . '</li>', $html) ?? '';
         $html =
-            \preg_replace('/<li([^\>]*)>[^\\S\\xa0]*<img/u', '<li\\1><font size="1">&nbsp;</font><img', $html) ?? '';
+            \preg_replace(
+                '/<li([^\>]*)>' . self::HTML_COLLAPSIBLE_SPACE . '*<img/u',
+                '<li\\1><font size="1">' . self::HTML_KEPT_SPACE . '</font><img',
+                $html,
+            ) ?? '';
         // preserve some spaces
-        $html = \preg_replace('/<([^\>\/]*)>[\s]/', '<\\1>&nbsp;', $html) ?? '';
-        $html = \preg_replace('/[\s]<\/([^\>]*)>/', '&nbsp;</\\1>', $html) ?? '';
+        $html = \preg_replace('/<([^\>\/]*)>[\s]/', '<\\1>' . self::HTML_KEPT_SPACE, $html) ?? '';
+        $html = \preg_replace('/[\s]<\/([^\>]*)>/', self::HTML_KEPT_SPACE . '</\\1>', $html) ?? '';
         // fix sub/sup alignment
         $html = \preg_replace('/<su([bp])/', '<zws/><su\\1', $html) ?? '';
         $html = \preg_replace('/<\/su([bp])>/', '</su\\1><zws/>', $html) ?? '';
         // replace multiple spaces with a single space
-        $html = \preg_replace('/[^\\S\\xa0]+/u', chr(32), $html) ?? '';
+        $html = \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+/u', chr(32), $html) ?? '';
 
         // trim string
         $html = $this->strTrim($html);
@@ -1012,12 +1086,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         // CSS declarations are parsed into canonical engine fields
         // (for example: color -> fgcolor, direction -> dir, text-align -> align).
-        //
-        // NOTE:
-        //   Because PDFs are visual document files,
-        //   properties built for real-time Text-to-Speech (TTS) rendering systems,
-        //   audio cues, or sound spatialisation are completely ignored by PDF layout engines:
-        //   azimuth, speak, speak-header, volume.
+        // Aural properties (azimuth, speak, speak-header, volume) are ignored.
 
         return [
             'align' => '',
@@ -1064,6 +1133,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'list-style-position' => 'outside',
             //'list-style-type' => '', // mapped to listtype
             'listtype' => '',
+            'listtypeset' => false,
             'float' => 'none',
             'margin' => ['T' => 0.0, 'R' => 0.0, 'B' => 0.0, 'L' => 0.0],
             'opening' => false,
@@ -1107,7 +1177,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return array<int, THTMLAttrib> HTML DOM Array
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws PdfException
@@ -1115,6 +1184,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     protected function getHTMLDOM(string $html): array
     {
         $css = [];
+        // Table cells, captions and repeated headers are re-parsed as standalone
+        // fragments carrying the resolved CSS map: they are already inside the
+        // document body, so the implicit body element must not be added again.
+        $nested = \str_contains($html, '<cssarray>');
         $rawCss = $this->getCSSArrayFromHTML($html);
         foreach ($rawCss as $selector => $declaration) {
             $css[$selector] = $declaration;
@@ -1128,8 +1201,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $html = $this->sanitizeHTML($html);
+        if (!$nested) {
+            $html = $this->addHTMLImplicitBody($html);
+        }
 
-        /** @var array<int, THTMLAttrib> $dom */
         $dom = [0 => $this->getHTMLRootProperties()];
 
         /** @var array<int> $level */
@@ -1144,11 +1219,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $elkey = 0;
         $key = 1;
         $inthead = false;
-        $rootNode = $dom[0] ?? $this->getHTMLRootProperties();
-        $rootDir = $this->rtl ? 'rtl' : 'ltr';
-        if (isset($rootNode['dir'])) {
-            $rootDir = $rootNode['dir'];
-        }
+        $rootNode = $dom[0];
+        $rootDir = $rootNode['dir'];
 
         while ($elkey < $maxel) {
             $element = $elm[$elkey] ?? '';
@@ -1156,7 +1228,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             if (!isset($dom[$parent])) {
                 $parent = 0;
             }
-            $parentDir = isset($dom[$parent]['dir']) ? $dom[$parent]['dir'] : $rootDir;
+            $parentDir = ($dom[$parent] ?? $rootNode)['dir'];
 
             // init new DOM element
             $dom[$key] = $rootNode;
@@ -1213,7 +1285,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<int, THTMLAttrib> $dom
      * @param array<string, string> $css
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws PdfException
      */
@@ -1228,10 +1299,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $domLen = \count($dom);
 
         // The streaming DOM pass serializes table header rows into each table
-        // node's 'thead' slot so they can be replayed on continuation pages.
-        // The re-cascade below re-runs parseHTMLAttributes(), which clears that
-        // slot via the table defaults, but it never rebuilds the serialization.
-        // Snapshot the stored headers now and restore them after the cascade.
+        // node's 'thead' slot for replay on continuation pages. The re-cascade
+        // below clears that slot without rebuilding it, so snapshot the stored
+        // headers here and restore them afterwards.
         $savedThead = [];
         for ($key = 1; $key < $domLen; ++$key) {
             $node = $dom[$key] ?? null;
@@ -1267,10 +1337,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             // Structural pseudo-classes (e.g. :empty) can mis-match during
-            // streaming DOM construction before children are parsed, leaving
-            // stale style-derived values behind. Reset the non-inherited
-            // style-derived geometry so the final-tree cascade re-derives it
-            // from the recomputed declarations and tag attributes below.
+            // streaming DOM construction, before children are parsed. Reset the
+            // non-inherited style-derived geometry so the final-tree cascade
+            // re-derives it below.
             $node['style'] = $defaults['style'];
             $node['height'] = $defaults['height'];
             $node['width'] = $defaults['width'];
@@ -1341,25 +1410,19 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $node = $key;
         while ($node > 0 && isset($dom[$node])) {
-            // The <thead> wrapper is never materialized as a DOM node, so its
-            // rows are flagged with thead === 'true' during the streaming pass.
-            // Rely on that marker (on the row itself or an ancestor row) rather
-            // than searching for a <thead> ancestor that does not exist.
-            if (($dom[$node]['value'] ?? '') === 'tr' && ($dom[$node]['thead'] ?? '') === 'true') {
+            // The <thead> wrapper is never materialized as a DOM node: its rows
+            // carry thead === 'true' from the streaming pass. Match on that
+            // marker, on the row itself or on an ancestor row.
+            if ($dom[$node]['value'] === 'tr' && $dom[$node]['thead'] === 'true') {
                 return true;
             }
 
-            if (
-                ($dom[$node]['tag'] ?? false)
-                && ($dom[$node]['opening'] ?? false)
-                && isset($dom[$node]['value'])
-                && $dom[$node]['value'] === 'thead'
-            ) {
+            if ($dom[$node]['tag'] && $dom[$node]['opening'] && $dom[$node]['value'] === 'thead') {
                 return true;
             }
 
-            $next = $dom[$node]['parent'] ?? null;
-            if (!\is_int($next) || $next === $node) {
+            $next = $dom[$node]['parent'];
+            if ($next === $node) {
                 break;
             }
 
@@ -1400,6 +1463,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $decoded = \html_entity_decode($element, ENT_QUOTES, $encoding);
+        $decoded = \str_replace(self::HTML_KEPT_SPACE, ' ', $decoded);
         $dom[$key]['value'] = \stripslashes($decoded);
     }
 
@@ -1524,7 +1588,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     continue;
                 }
 
-                $content .= \stripslashes($elm[$elidx] ?? '');
+                $content .= \stripslashes($elm[$elidx]);
             }
             $key = $idx;
             // mark nested tables
@@ -1607,7 +1671,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return void
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws PdfException
      */
@@ -1970,10 +2033,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     }
                     break;
                 case '>': // child of an element
-                    $parent = $dom[$key]['parent'] ?? null;
-                    if (\is_int($parent)) {
-                        $ret = $this->isValidCSSSelectorForTag($dom, $parent, $selector);
-                    }
+                    $ret = $this->isValidCSSSelectorForTag($dom, $dom[$key]['parent'], $selector);
                     break;
                 case '+': // immediately preceded by an element
                     $sibling = $this->getHTMLPreviousOpeningSibling($dom, $key);
@@ -2268,19 +2328,17 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     {
         $current = $key;
         while (isset($dom[$current])) {
-            $attr = $dom[$current]['attribute'] ?? null;
-            if (\is_array($attr)) {
-                $lang = $attr['lang'] ?? $attr['xml:lang'] ?? '';
-                if (!\is_string($lang)) {
-                    $lang = '';
-                }
-                $lang = \strtolower(\trim($lang));
-                if ($lang !== '') {
-                    return $lang;
-                }
+            $attr = $dom[$current]['attribute'];
+            $lang = $attr['lang'] ?? $attr['xml:lang'] ?? '';
+            if (!\is_string($lang)) {
+                $lang = '';
             }
-            $parent = $dom[$current]['parent'] ?? null;
-            if (!\is_int($parent) || $parent === $current) {
+            $lang = \strtolower(\trim($lang));
+            if ($lang !== '') {
+                return $lang;
+            }
+            $parent = $dom[$current]['parent'];
+            if ($parent === $current) {
                 break;
             }
             $current = $parent;
@@ -2601,7 +2659,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param int $key key of the current HTML tag.
      * @param int $parentkey Key of the parent element.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws PdfException
      */
@@ -2637,12 +2694,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $this->parseHTMLStyleListStyleImageProperty($dom, $key, $parentkey);
 
         // Text flow and font metrics.
-        $this->parseHTMLStyleTextIndentProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleTextTransformProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleWhiteSpaceProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleOverflowWrapProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleWordBreakProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleFontSizeProperty($dom, $key, $parentkey);
+        // Resolved after font-size: its font-relative units refer to the element font size.
+        $this->parseHTMLStyleTextIndentProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleFontSizeAdjustProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleFontStretchProperty($dom, $key, $parentkey);
         $this->parseHTMLStyleLetterSpacingProperty($dom, $key, $parentkey);
@@ -2920,21 +2978,19 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      */
     protected function parseHTMLStylePositionOffsetProperties(array &$dom, int $key, int $parentkey): void
     {
-        $position = isset($dom[$key]['position']) && $dom[$key]['position'] !== ''
-            ? \strtolower(\trim($dom[$key]['position']))
-            : 'static';
+        if (!isset($dom[$key])) {
+            return;
+        }
+
+        $position = $dom[$key]['position'] !== '' ? \strtolower(\trim($dom[$key]['position'])) : 'static';
         if (!\in_array($position, ['relative', 'absolute', 'fixed'], true)) {
             return;
         }
 
+        $keyMargin = $dom[$key]['margin'];
         $offsetL = $this->getHTMLStylePositionOffsetValue($dom, $key, $parentkey, 'left');
         $offsetT = $this->getHTMLStylePositionOffsetValue($dom, $key, $parentkey, 'top');
 
-        if (!isset($dom[$key]['margin'])) {
-            $dom[$key]['margin'] = [];
-        }
-
-        $keyMargin = $dom[$key]['margin'];
         if ($offsetL !== 0.0) {
             $keyMargin['L'] = ($keyMargin['L'] ?? 0.0) + $offsetL;
         }
@@ -2943,7 +2999,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $keyMargin['T'] = ($keyMargin['T'] ?? 0.0) + $offsetT;
         }
 
-        $dom[$key]['margin'] = $keyMargin;
+        if (isset($dom[$key])) {
+            $dom[$key]['margin'] = $keyMargin;
+        }
     }
 
     /**
@@ -2968,13 +3026,16 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         return 0.0;
                     }
 
-                    return $this->toUnit($this->getUnitValuePoints($parentRaw));
+                    return $this->toUnit($this->getUnitValuePoints($parentRaw, $this->getHTMLNodeUnitRef(
+                        $dom,
+                        $parentkey,
+                    )));
                 }
 
                 return 0.0;
             }
 
-            return $this->toUnit($this->getUnitValuePoints($raw));
+            return $this->toUnit($this->getUnitValuePoints($raw, $this->getHTMLNodeUnitRef($dom, $key)));
         }
 
         return 0.0;
@@ -3122,8 +3183,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
         } else {
             // Keep the raw CSS family list and defer font resolution to insert().
-            // Resolving here against the current buffer can incorrectly collapse
-            // unresolved families to the currently active font.
             $node['fontname'] = $fontFamily;
         }
     }
@@ -3155,6 +3214,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
             if ($parentListType !== '') {
                 $dom[$key]['listtype'] = $parentListType;
+                $dom[$key]['listtypeset'] = true;
             }
 
             $parentListPosition = '';
@@ -3202,6 +3262,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $dom[$key]['listtype'] = \trim(\strtolower($dom[$key]['style']['list-style-type']));
+        $dom[$key]['listtypeset'] = true;
         if ($dom[$key]['listtype'] === 'inherit') {
             if (isset($dom[$parentkey]['listtype']) && $dom[$parentkey]['listtype'] !== '') {
                 $dom[$key]['listtype'] = \trim(\strtolower($dom[$parentkey]['listtype']));
@@ -3304,11 +3365,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             ) {
                 $parentTextIndent = \strtolower(\trim($dom[$parentkey]['style']['text-indent']));
                 if ($parentTextIndent !== 'inherit') {
-                    $dom[$key]['text-indent'] = $this->toUnit($this->getUnitValuePoints($parentTextIndent));
+                    $ref = $this->getHTMLNodeUnitRef($dom, $parentkey);
+                    $dom[$key]['text-indent'] = $this->toUnit($this->getUnitValuePoints($parentTextIndent, $ref));
                 }
             }
         } else {
-            $dom[$key]['text-indent'] = $this->toUnit($this->getUnitValuePoints($textIndent));
+            $ref = $this->getHTMLNodeUnitRef($dom, $key);
+            $dom[$key]['text-indent'] = $this->toUnit($this->getUnitValuePoints($textIndent, $ref));
         }
     }
 
@@ -3421,6 +3484,50 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     }
 
     /**
+     * Reference values to resolve CSS units.
+     *
+     * The font-relative units em, ex and ch refer to $fontsize and rem to $rootsize.
+     *
+     * @param float $fontsize Font size in points the font-relative units refer to.
+     * @param float $rootsize Root element font size in points the rem unit refers to.
+     * @param float $parent Value the percentage unit refers to.
+     *
+     * @return TRefUnitValues
+     */
+    protected function getHTMLUnitRef(float $fontsize, float $rootsize = 0.0, float $parent = 0.0): array
+    {
+        $ref = self::REFUNITVAL;
+        $ref['parent'] = $parent;
+        if ($fontsize <= 0) {
+            return $ref;
+        }
+
+        $ref['font']['size'] = $fontsize;
+        $ref['font']['rootsize'] = $rootsize > 0 ? $rootsize : $fontsize;
+        $ref['font']['xheight'] = $fontsize / 2;
+        $ref['font']['zerowidth'] = $fontsize / 3;
+        return $ref;
+    }
+
+    /**
+     * Reference values to resolve CSS units of a DOM element from its own font size.
+     *
+     * @param array<int, THTMLAttrib> $dom
+     * @param int $key ID of the element providing the font-relative reference size.
+     * @param float $parent Value the percentage unit refers to.
+     *
+     * @return TRefUnitValues
+     */
+    protected function getHTMLNodeUnitRef(array $dom, int $key, float $parent = 0.0): array
+    {
+        return $this->getHTMLUnitRef(
+            isset($dom[$key]['fontsize']) ? \floatval($dom[$key]['fontsize']) : 0.0,
+            isset($dom[0]['fontsize']) ? \floatval($dom[0]['fontsize']) : 0.0,
+            $parent,
+        );
+    }
+
+    /**
      * Parse font-size style property.
      *
      * @param array<int, THTMLAttrib> $dom
@@ -3442,20 +3549,17 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 if (isset($parentNode['style']['font-size']) && $parentNode['style']['font-size'] !== '') {
                     $parentFontSize = \strtolower(\trim($parentNode['style']['font-size']));
                     if ($parentFontSize !== 'inherit') {
-                        $ref = self::REFUNITVAL;
                         $rootNode = $dom[0] ?? null;
-                        if (\is_array($rootNode)) {
-                            $ref['parent'] = \floatval($rootNode['fontsize']);
-                        }
+                        $rootsize = \is_array($rootNode) ? \floatval($rootNode['fontsize']) : 0.0;
+                        $ref = $this->getHTMLUnitRef($rootsize, $rootsize, $rootsize);
                         $dom[$key]['fontsize'] = $this->getFontValuePoints($parentFontSize, $ref, 'pt');
                     }
                 }
             }
         } else {
-            $ref = self::REFUNITVAL;
-            if (\is_array($parentNode)) {
-                $ref['parent'] = \floatval($parentNode['fontsize']);
-            }
+            $parentsize = \is_array($parentNode) ? \floatval($parentNode['fontsize']) : 0.0;
+            // The font-relative units of font-size refer to the parent font size.
+            $ref = $this->getHTMLNodeUnitRef($dom, $parentkey, $parentsize);
             $dom[$key]['fontsize'] = $this->getFontValuePoints($fsize, $ref, 'pt');
         }
     }
@@ -3586,9 +3690,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 if ($parentSpacingStyle === 'normal') {
                     $parentWordSpacing = 0.0;
                 } else {
-                    $parentWordSpacing = $this->toUnit($this->getUnitValuePoints($parentSpacingStyle, \array_merge(self::REFUNITVAL, [
-                        'parent' => 0.0,
-                    ])));
+                    $parentWordSpacing = $this->toUnit($this->getUnitValuePoints($parentSpacingStyle, $this->getHTMLNodeUnitRef(
+                        $dom,
+                        $parentkey,
+                    )));
                 }
             }
         }
@@ -3597,9 +3702,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         } elseif ($spacing === 'normal') {
             $dom[$key]['word-spacing'] = 0.0;
         } else {
-            $dom[$key]['word-spacing'] = $this->toUnit($this->getUnitValuePoints($spacing, \array_merge(self::REFUNITVAL, [
-                'parent' => $parentWordSpacing,
-            ])));
+            $dom[$key]['word-spacing'] = $this->toUnit($this->getUnitValuePoints($spacing, $this->getHTMLNodeUnitRef(
+                $dom,
+                $key,
+                $parentWordSpacing,
+            )));
         }
     }
 
@@ -3619,6 +3726,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $node = &$dom[$key];
         $lineheight = \strtolower(\trim($dom[$key]['style']['line-height']));
         $rootLineHeight = isset($dom[0]['line-height']) ? $dom[0]['line-height'] : 1.0;
+        $rootsize = \floatval($dom[0]['fontsize']);
         $parentLineHeight = isset($dom[$parentkey]['line-height']) ? $dom[$parentkey]['line-height'] : $rootLineHeight;
         $parentLineHeightAbsolute = isset($dom[$parentkey]['line-height-absolute'])
             ? $dom[$parentkey]['line-height-absolute']
@@ -3675,8 +3783,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     /** @var array<int, THTMLAttrib> $dom */
                 } else {
                     // Absolute unit (pt, mm, ...): keep explicit length in points.
-                    $lhpts = $this->getUnitValuePoints($lineheight);
-                    $fontsize = isset($dom[$key]['fontsize']) ? $dom[$key]['fontsize'] : 0.0;
+                    $fontsize = isset($node['fontsize']) ? \floatval($node['fontsize']) : 0.0;
+                    $lhpts = $this->getUnitValuePoints($lineheight, $this->getHTMLUnitRef($fontsize, $rootsize));
                     $node['line-height'] = $fontsize > 0 ? $lhpts / $fontsize : 1.0;
                     $node['line-height-absolute'] = $lhpts;
                     if (isset($node['line-height-font-size-basis'])) {
@@ -3798,8 +3906,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Parse color style property.
      *
      * @param array<int, THTMLAttrib> $dom
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLStyleColorProperty(array &$dom, int $key, int $parentkey): void
     {
@@ -3826,8 +3932,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Parse background and background-color style properties.
      *
      * @param array<int, THTMLAttrib> $dom
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLStyleBackgroundProperty(array &$dom, int $key, int $parentkey): void
     {
@@ -3874,7 +3978,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 $resolvedBg = $this->getCSSColor($backgroundColor);
             }
         } elseif ($hasBackground) {
-            $backgroundRaw = $keyStyle['background'] ?? '';
+            $backgroundRaw = $keyStyle['background'];
             $background = \trim($backgroundRaw);
             if (\strtolower($background) === 'inherit') {
                 if (
@@ -4040,11 +4144,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             } elseif (isset($dom[$parentkey]['style']['width']) && $dom[$parentkey]['style']['width'] !== '') {
                 $parentWidth = \trim($dom[$parentkey]['style']['width']);
                 if (\strtolower($parentWidth) !== 'inherit') {
-                    $dom[$key]['width'] = $this->toUnit($this->getUnitValuePoints($parentWidth));
+                    $ref = $this->getHTMLNodeUnitRef($dom, $parentkey);
+                    $dom[$key]['width'] = $this->toUnit($this->getUnitValuePoints($parentWidth, $ref));
                 }
             }
         } else {
-            $dom[$key]['width'] = $this->toUnit($this->getUnitValuePoints($width));
+            $ref = $this->getHTMLNodeUnitRef($dom, $key);
+            $dom[$key]['width'] = $this->toUnit($this->getUnitValuePoints($width, $ref));
         }
     }
 
@@ -4066,15 +4172,16 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $min = null;
         $max = null;
+        $ref = $this->getHTMLNodeUnitRef($dom, $key);
 
         if (isset($dom[$key]['style']['min-width']) && $dom[$key]['style']['min-width'] !== '') {
-            $min = $this->getHTMLStyleLengthValue($dom[$key]['style']['min-width']);
+            $min = $this->getHTMLStyleLengthValue($dom[$key]['style']['min-width'], $ref);
         }
 
         if (isset($dom[$key]['style']['max-width']) && $dom[$key]['style']['max-width'] !== '') {
             $maxRaw = \strtolower(\trim($dom[$key]['style']['max-width']));
             if ($maxRaw !== 'none') {
-                $max = $this->getHTMLStyleLengthValue($dom[$key]['style']['max-width']);
+                $max = $this->getHTMLStyleLengthValue($dom[$key]['style']['max-width'], $ref);
             }
         }
 
@@ -4117,11 +4224,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             } elseif (isset($dom[$parentkey]['style']['height']) && $dom[$parentkey]['style']['height'] !== '') {
                 $parentHeight = \trim($dom[$parentkey]['style']['height']);
                 if (\strtolower($parentHeight) !== 'inherit') {
-                    $dom[$key]['height'] = $this->toUnit($this->getUnitValuePoints($parentHeight));
+                    $ref = $this->getHTMLNodeUnitRef($dom, $parentkey);
+                    $dom[$key]['height'] = $this->toUnit($this->getUnitValuePoints($parentHeight, $ref));
                 }
             }
         } else {
-            $dom[$key]['height'] = $this->toUnit($this->getUnitValuePoints($height));
+            $ref = $this->getHTMLNodeUnitRef($dom, $key);
+            $dom[$key]['height'] = $this->toUnit($this->getUnitValuePoints($height, $ref));
         }
     }
 
@@ -4143,15 +4252,16 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $min = null;
         $max = null;
+        $ref = $this->getHTMLNodeUnitRef($dom, $key);
 
         if (isset($dom[$key]['style']['min-height']) && $dom[$key]['style']['min-height'] !== '') {
-            $min = $this->getHTMLStyleLengthValue($dom[$key]['style']['min-height']);
+            $min = $this->getHTMLStyleLengthValue($dom[$key]['style']['min-height'], $ref);
         }
 
         if (isset($dom[$key]['style']['max-height']) && $dom[$key]['style']['max-height'] !== '') {
             $maxRaw = \strtolower(\trim($dom[$key]['style']['max-height']));
             if ($maxRaw !== 'none') {
-                $max = $this->getHTMLStyleLengthValue($dom[$key]['style']['max-height']);
+                $max = $this->getHTMLStyleLengthValue($dom[$key]['style']['max-height'], $ref);
             }
         }
 
@@ -4235,9 +4345,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Convert a CSS length-like token to user units for box constraints.
      *
+     * @param ?TRefUnitValues $ref Reference values in internal points.
+     *
      * @throws PdfException
      */
-    protected function getHTMLStyleLengthValue(string $value): ?float
+    protected function getHTMLStyleLengthValue(string $value, ?array $ref = null): ?float
     {
         $value = \trim($value);
         $normalized = \strtolower($value);
@@ -4245,7 +4357,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return null;
         }
 
-        return $this->toUnit($this->getUnitValuePoints($value));
+        return $this->toUnit($this->getUnitValuePoints($value, $ref ?? self::REFUNITVAL));
     }
 
     /**
@@ -4342,7 +4454,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             } elseif (\preg_match('/^0(?:[a-z%]+)?$/i', $padding) === 1) {
                 $dom[$key]['padding'] = self::ZEROCELLBOUND;
             } else {
-                $dom[$key]['padding'] = $this->getCSSPadding($padding);
+                $dom[$key]['padding'] = $this->getCSSPadding($padding, 0.0, $this->getHTMLNodeUnitRef($dom, $key));
             }
         } else {
             $dom[$key]['padding'] = self::ZEROCELLBOUND;
@@ -4446,7 +4558,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return;
         }
 
-        $nodeBox[$side] = $this->toUnit($this->getUnitValuePoints($pvalue));
+        $nodeBox[$side] = $this->toUnit($this->getUnitValuePoints($pvalue, $this->getHTMLNodeUnitRef($dom, $key)));
         $node[$box] = $nodeBox;
     }
 
@@ -4468,7 +4580,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             } elseif (\preg_match('/^0(?:[a-z%]+)?$/i', $margin) === 1) {
                 $dom[$key]['margin'] = self::ZEROCELLBOUND;
             } else {
-                $dom[$key]['margin'] = $this->getCSSMargin($margin);
+                $dom[$key]['margin'] = $this->getCSSMargin($margin, 0.0, $this->getHTMLNodeUnitRef($dom, $key));
             }
         } else {
             $dom[$key]['margin'] = self::ZEROCELLBOUND;
@@ -4528,7 +4640,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param array<int, THTMLAttrib> $dom
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLStyleBorderProperties(array &$dom, int $key, int $parentkey): void
@@ -4564,8 +4675,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'T' => 'top',
             'B' => 'bottom',
         ];
-        $ref = self::REFUNITVAL;
-        $ref['parent'] = 0.0;
+        $ref = $this->getHTMLNodeUnitRef($dom, $key);
         $this->parseHTMLStyleBorderSideProperties(
             $dom,
             $key,
@@ -4593,8 +4703,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $lastProperty = $this->getLastHTMLStyleDeclarationProperty($dom, $key, ['border', $property]);
         if ($lastProperty === '') {
-            // Declaration order is unknown: keep the legacy behavior of
-            // applying the longhand on top of the border shorthand.
+            // Declaration order is unknown: apply the longhand on top of the
+            // border shorthand.
             return true;
         }
 
@@ -4637,7 +4747,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param array<int, THTMLAttrib> $dom
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLStyleBorderShorthandProperty(array &$dom, int $key, int $parentkey): void
@@ -4758,8 +4867,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<string, BorderStyleOpt> $brdr
      * @param array<string, BorderStyleOpt> $parentBorder
      * @param BorderStyleOpt $parentLTRB
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLStyleBorderColorProperty(
         array &$dom,
@@ -4904,7 +5011,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * } $ref
      * @param bool $globalOverrides Whether active border-width/style/color longhands already seeded the sides.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLStyleBorderSideProperties(
@@ -4928,10 +5034,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $hasSideDecl =
                 $borderSide !== '' || $borderSideColor !== '' || $borderSideWidth !== '' || $borderSideStyle !== '';
 
-            // Side-only overrides (e.g. border-right-color) must remain renderable
-            // when the base border shorthand supplies width/style. Skip when the
-            // sides were already seeded for global longhand overrides: re-seeding
-            // here would discard the applied border-width/style/color values.
+            // Side-only overrides (e.g. border-right-color) stay renderable when
+            // the border shorthand supplies width/style. Skip when the sides were
+            // already seeded for global longhand overrides.
             if ($hasSideDecl && !$globalOverrides) {
                 $keyBorderLTRB = isset($dom[$key]['border']['LTRB']) ? $dom[$key]['border']['LTRB'] : [];
                 if (isset($keyBorderLTRB['lineWidth'])) {
@@ -4942,9 +5047,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     if (!isset($brdr[$bsk])) {
                         $brdr[$bsk] = [];
                     }
-                    $sideBorder = $brdr[$bsk] ?? null;
-                    $sideStyle = \is_array($sideBorder) ? $sideBorder : [];
-                    $brdr[$bsk] = $this->applyCSSBorderStyleKeyword($sideStyle, $keyBorderLTRB['cssBorderStyle']);
+                    $brdr[$bsk] = $this->applyCSSBorderStyleKeyword($brdr[$bsk], $keyBorderLTRB['cssBorderStyle']);
                 }
 
                 if (isset($keyBorderLTRB['lineColor'])) {
@@ -4969,7 +5072,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<string, BorderStyleOpt> $parentBorder
      * @param BorderStyleOpt $parentLTRB
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLStyleBorderSideShorthandProperty(
@@ -5018,8 +5120,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<string, BorderStyleOpt> $brdr
      * @param array<string, BorderStyleOpt> $parentBorder
      * @param BorderStyleOpt $parentLTRB
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLStyleBorderSideColorProperty(
         array &$dom,
@@ -5166,8 +5266,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Commit a border side when renderable.
      *
      * A side explicitly declared non-renderable (e.g. border-width:0 or
-     * border-left:none) is also committed when a border shorthand exists,
-     * so it shadows the renderable LTRB fallback instead of being dropped.
+     * border-left:none) is also committed when a border shorthand exists, so it
+     * shadows the renderable LTRB fallback.
      *
      * @param array<int, THTMLAttrib> $dom
      * @param array<string, BorderStyleOpt> $brdr
@@ -5461,11 +5561,19 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             ) {
                 $parentSpacing = \trim($dom[$parentkey]['style']['border-spacing']);
                 if (\strtolower($parentSpacing) !== 'inherit') {
-                    $dom[$key]['border-spacing'] = $this->getCSSBorderMargin($parentSpacing);
+                    $dom[$key]['border-spacing'] = $this->getCSSBorderMargin(
+                        $parentSpacing,
+                        0.0,
+                        $this->getHTMLNodeUnitRef($dom, $parentkey),
+                    );
                 }
             }
         } else {
-            $dom[$key]['border-spacing'] = $this->getCSSBorderMargin($borderSpacing);
+            $dom[$key]['border-spacing'] = $this->getCSSBorderMargin(
+                $borderSpacing,
+                0.0,
+                $this->getHTMLNodeUnitRef($dom, $key),
+            );
         }
     }
 
@@ -5849,7 +5957,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param int $key key of the current HTML tag.
      * @param bool $thead
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     public function parseHTMLAttributes(array &$dom, int $key, bool $thead): void
@@ -5908,7 +6015,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<int, THTMLAttrib> $dom DOM array.
      * @param int $key Current element ID.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLAttributesBorderProperty(array &$dom, int $key): void
@@ -6156,9 +6262,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Set the monospaced font used for <pre>, <code> and <tt> elements.
      *
-     * PDF/UA requires every font to be embedded. The default Courier is a
-     * non-embedded standard-14 font, so set an embedded monospace font (after
-     * inserting it with the font stack) when producing tagged or accessible PDFs.
+     * PDF/UA requires every font to be embedded and the default Courier is a
+     * non-embedded standard-14 font, so an embedded monospace font must be set
+     * (after inserting it with the font stack) for tagged or accessible PDFs.
      */
     public function setHTMLMonospaceFont(string $fontname): void
     {
@@ -6376,7 +6482,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param array<int, THTMLAttrib> $dom DOM array.
      * @param int $key Current element ID.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws PdfException
      */
     protected function parseHTMLAttributesTableCellDefaults(array &$dom, int $key): void
@@ -6427,8 +6532,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 $parentNode['cols'] += \intval($colspan);
             }
 
-            // Keep legacy HTML table behavior: table border attribute propagates
-            // to cells when no explicit cell border is provided.
+            // The table border attribute propagates to cells when no explicit
+            // cell border is provided.
             if (
                 (!isset($attributes['border']) || $attributes['border'] === '')
                 && !isset($styles['border'])
@@ -6483,8 +6588,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param array<int, THTMLAttrib> $dom DOM array.
      * @param int $key Current element ID.
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLAttributesForegroundColor(array &$dom, int $key): void
     {
@@ -6508,8 +6611,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param array<int, THTMLAttrib> $dom DOM array.
      * @param int $key Current element ID.
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLAttributesBackgroundColor(array &$dom, int $key): void
     {
@@ -6528,8 +6629,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param array<int, THTMLAttrib> $dom DOM array.
      * @param int $key Current element ID.
-     *
-     * @throws \Com\Tecnick\Color\Exception
      */
     protected function parseHTMLAttributesStrokeColor(array &$dom, int $key): void
     {
@@ -6637,8 +6736,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             && $dom[$key]['attribute']['stroke'] !== ''
             && \is_numeric($dom[$key]['attribute']['stroke'])
         ) {
-            $ref = self::REFUNITVAL;
-            $ref['parent'] = \floatval($dom[$key]['fontsize']);
+            $ref = $this->getHTMLNodeUnitRef($dom, $key, \floatval($dom[$key]['fontsize']));
             // font stroke width
             $dom[$key]['stroke'] = $this->toUnit($this->getUnitValuePoints($dom[$key]['attribute']['stroke'], $ref));
         }
@@ -6686,16 +6784,115 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return;
         }
 
-        $sym = \strtolower($sym);
+        $sym = ListStyle::resolveType($sym);
         $this->ullidot = \in_array($sym, self::LIST_SYMBOL, true) ? $sym : '!';
     }
 
     /**
-     * Whether list bullets should be emitted as Unicode text glyphs.
+     * Whether every codepoint of the text has a glyph in the current font.
+     *
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     * @throws \Com\Tecnick\Unicode\Exception
      */
-    protected function canUseUnicodeListBulletGlyphs(): bool
+    protected function isTextInCurrentFont(string $txt): bool
     {
-        return $this->isunicode && !$this->font->isCurrentByteFont();
+        if (\preg_match('//u', $txt) !== 1) {
+            // not a valid UTF-8 string: no font can render it
+            return false;
+        }
+
+        foreach ($this->uniconv->strToOrdArr($txt) as $ord) {
+            if (!$this->font->isCharDefined($ord)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the Unicode glyph for an unordered list marker,
+     * or an empty string when the current font cannot render it.
+     *
+     * @param string $type Type of list.
+     *
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     * @throws \Com\Tecnick\Unicode\Exception
+     */
+    protected function getHTMLliBulletGlyph(string $type): string
+    {
+        $glyph = self::LIST_BULLET_GLYPH[$type] ?? '';
+        if ($glyph === '' || !$this->isunicode || $this->font->isCurrentByteFont()) {
+            return '';
+        }
+
+        return $this->isTextInCurrentFont($glyph) ? $glyph : '';
+    }
+
+    /**
+     * Returns the abscissa of the left edge of the list marker box.
+     * An outside marker hangs before the item text edge, an inside marker
+     * starts at the item content edge.
+     *
+     * @param float $posx   Abscissa of the list item text edge for an outside
+     *                      marker, of the item content edge for an inside one.
+     * @param float $gap    Space between the marker box and the item text.
+     * @param float $width  Marker box width.
+     * @param bool  $inside True for a list-style-position: inside marker.
+     */
+    protected function getHTMLliMarkerX(float $posx, float $gap, float $width, bool $inside = false): float
+    {
+        if ($inside) {
+            return $this->rtl ? $posx - $width : $posx;
+        }
+
+        return $this->rtl ? $posx + $gap : $posx - $gap - $width;
+    }
+
+    /**
+     * Returns the abscissa of the left edge of the list marker box, and sets the
+     * horizontal space the marker takes from the item content edge.
+     *
+     * @param float $posx    Abscissa of the list item text edge for an outside
+     *                       marker, of the item content edge for an inside one.
+     * @param float $gap     Space between the marker box and the item text.
+     * @param float $width   Marker box width.
+     * @param bool  $inside  True for a list-style-position: inside marker.
+     * @param float $advance Set to the space the marker takes before the item text.
+     */
+    protected function placeHTMLliMarker(float $posx, float $gap, float $width, bool $inside, float &$advance): float
+    {
+        $advance = $width + $gap;
+
+        return $this->getHTMLliMarkerX($posx, $gap, $width, $inside);
+    }
+
+    /**
+     * Closes the marker style block of a graphic list marker and marks it as an Artifact.
+     *
+     * A vector or image marker carries no text, so in a tagged document it is decoration:
+     * ISO 14289-1 clause 7.1 requires it to be marked as an Artifact instead of being left
+     * as untagged content. Outside tagged modes the wrapping is a no-op.
+     *
+     * @param string               $result       Marker drawing operators.
+     * @param string               $markerPrefix Marker style operators to prepend.
+     * @param array<string, mixed> $markerState  Graphic state saved before the marker styles.
+     * @param array<string, mixed> $markerStyles Marker style declarations from li::marker.
+     *
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     * @throws PdfException
+     */
+    protected function finishHTMLliGraphicMarker(
+        string $result,
+        string $markerPrefix,
+        array $markerState,
+        array $markerStyles,
+    ): string {
+        if ($markerStyles !== []) {
+            $result = $markerPrefix . $result . $this->getStopMarkerStyle($markerState);
+        }
+
+        return $this->tagPdfUaArtifactContent($result);
     }
 
     /**
@@ -6703,10 +6900,14 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param int    $depth  List nesting level.
      * @param int    $count  List entry position, starting form 1.
-     * @param float  $posx   Abscissa of upper-left corner.
+     * @param float  $posx   Abscissa of the list item text edge the marker is placed
+     *                       against, of the item content edge for an inside marker.
      * @param float  $posy   Ordinate of upper-left corner.
      * @param string $type   Type of list.
      * @param array<string, mixed> $markerStyles Marker style declarations from li::marker.
+     * @param bool   $inside True for a list-style-position: inside marker.
+     * @param float  $advance Set to the horizontal space the marker takes from the
+     *                        item content edge, including the gap before the text.
      *
      * @return string
      *
@@ -6724,7 +6925,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         float $posy = 0,
         string $type = '',
         array $markerStyles = [],
+        bool $inside = false,
+        float &$advance = 0.0,
     ): string {
+        $advance = 0.0;
         $markerState = [];
         $markerPrefix = '';
         $img = ['', '', '0', '0', ''];
@@ -6754,7 +6958,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     // custom image type ('img|type|width|height|image.ext')
                     $img = \explode('|', $type);
                     $type = 'img';
+                    break;
                 }
+
+                $type = ListStyle::resolveType($type);
         }
 
         $font = $this->font->getCurrentFont();
@@ -6770,13 +6977,12 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             case 'none':
                 break;
             case 'disc':
-                if ($this->canUseUnicodeListBulletGlyphs()) {
-                    $txti = "\u{2022}";
+                $txti = $this->getHTMLliBulletGlyph($type);
+                if ($txti !== '') {
                     break;
                 }
                 $rad = $size / 4;
-                $lspace += 2 * $rad;
-                $posx += $this->rtl ? $lspace : -$lspace;
+                $markerx = $this->placeHTMLliMarker($posx, $lspace, 2 * $rad, $inside, $advance);
                 $style = [
                     'lineWidth' => 0,
                     'lineCap' => 'butt',
@@ -6793,20 +6999,25 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 ];
                 $result =
                     $this->graph->getStartTransform()
-                    . $this->graph->getCircle($posx, $fontTop + ($fontheight / 2), $rad, 0, 360, 'F', $style, 8)
+                    . $this->graph->getCircle(
+                        $markerx + $rad,
+                        $fontTop + ($fontheight / 2),
+                        $rad,
+                        0,
+                        360,
+                        'F',
+                        $style,
+                        8,
+                    )
                     . $this->graph->getStopTransform();
-                if ($markerStyles !== []) {
-                    $result = $markerPrefix . $result . $this->getStopMarkerStyle($markerState);
-                }
-                return $result;
+                return $this->finishHTMLliGraphicMarker($result, $markerPrefix, $markerState, $markerStyles);
             case 'circle':
-                if ($this->canUseUnicodeListBulletGlyphs()) {
-                    $txti = "\u{25E6}";
+                $txti = $this->getHTMLliBulletGlyph($type);
+                if ($txti !== '') {
                     break;
                 }
                 $rad = $size / 4;
-                $lspace += 2 * $rad;
-                $posx += $this->rtl ? $lspace : -$lspace;
+                $markerx = $this->placeHTMLliMarker($posx, $lspace, 2 * $rad, $inside, $advance);
                 $style = [
                     'lineWidth' => $rad / 3,
                     'lineCap' => 'butt',
@@ -6823,20 +7034,25 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 ];
                 $result =
                     $this->graph->getStartTransform()
-                    . $this->graph->getCircle($posx, $fontTop + ($fontheight / 2), $rad, 0, 360, 'D', $style, 8)
+                    . $this->graph->getCircle(
+                        $markerx + $rad,
+                        $fontTop + ($fontheight / 2),
+                        $rad,
+                        0,
+                        360,
+                        'D',
+                        $style,
+                        8,
+                    )
                     . $this->graph->getStopTransform();
-                if ($markerStyles !== []) {
-                    $result = $markerPrefix . $result . $this->getStopMarkerStyle($markerState);
-                }
-                return $result;
+                return $this->finishHTMLliGraphicMarker($result, $markerPrefix, $markerState, $markerStyles);
             case 'square':
-                if ($this->canUseUnicodeListBulletGlyphs()) {
-                    $txti = "\u{25AA}";
+                $txti = $this->getHTMLliBulletGlyph($type);
+                if ($txti !== '') {
                     break;
                 }
                 $len = $size / 2;
-                $lspace += $len;
-                $posx += $this->rtl ? $lspace : -$lspace;
+                $markerx = $this->placeHTMLliMarker($posx, $lspace, $len, $inside, $advance);
                 $style = [
                     'lineWidth' => 0,
                     'lineCap' => 'butt',
@@ -6853,18 +7069,21 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 ];
                 $result =
                     $this->graph->getStartTransform()
-                    . $this->graph->getBasicRect($posx, $fontTop + (($fontheight - $len) / 2), $len, $len, 'F', $style)
+                    . $this->graph->getBasicRect(
+                        $markerx,
+                        $fontTop + (($fontheight - $len) / 2),
+                        $len,
+                        $len,
+                        'F',
+                        $style,
+                    )
                     . $this->graph->getStopTransform();
-                if ($markerStyles !== []) {
-                    $result = $markerPrefix . $result . $this->getStopMarkerStyle($markerState);
-                }
-                return $result;
+                return $this->finishHTMLliGraphicMarker($result, $markerPrefix, $markerState, $markerStyles);
             case 'img':
                 // 1=>type, 2=>width, 3=>height, 4=>image.ext
                 $imgWidthRaw = $img[2] ?? null;
                 $imgw = \is_numeric($imgWidthRaw) ? \floatval($imgWidthRaw) : 0.0;
-                $lspace += $imgw;
-                $posx += $this->rtl ? $lspace : -$lspace;
+                $markerx = $this->placeHTMLliMarker($posx, $lspace, $imgw, $inside, $advance);
                 $imgtype = strtolower($img[1] ?? '');
                 $imgsrc = $img[4] ?? '';
                 if (
@@ -6900,14 +7119,14 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 $result = '';
                 switch ($imgtype) {
                     case 'svg':
-                        $svgid = $this->addSVG($imgsrc, $posx, $imgposy, $imgwidth, $imgheight, $pageheight, true);
+                        $svgid = $this->addSVG($imgsrc, $markerx, $imgposy, $imgwidth, $imgheight, $pageheight, true);
                         $result = $this->getSetSVG($svgid);
                         break;
                     default:
                         $imgid = $this->addMarkupRasterImage($imgsrc, $imgwidth, $imgheight);
                         $result = $this->image->getSetImage(
                             $imgid,
-                            $posx,
+                            $markerx,
                             $imgposy,
                             $imgwidth,
                             $imgheight,
@@ -6915,63 +7134,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         );
                         break;
                 }
-                if ($markerStyles !== []) {
-                    $result = $markerPrefix . $result . $this->getStopMarkerStyle($markerState);
-                }
-                return $result;
-            case 'a':
-            case 'lower-alpha':
-            case 'lower-latin':
-                $txti = \chr((97 + $count - 1) & 0xFF);
-                break;
-            case 'A':
-            case 'upper-alpha':
-            case 'upper-latin':
-                $txti = \chr((65 + $count - 1) & 0xFF);
-                break;
-            case 'i':
-            case 'lower-roman':
-                $txti = \strtolower($this->intToRoman($count));
-                break;
-            case 'I':
-            case 'upper-roman':
-                $txti = $this->intToRoman($count);
-                break;
-            case 'decimal-leading-zero':
-                $txti = \number_format($count, 0, '.', '');
-                if ($count >= 0 && $count < 10) {
-                    $txti = '0' . $txti;
-                }
-                break;
-            case 'lower-greek':
-                $txti = $this->uniconv->chr(945 + $count - 1);
-                break;
-            case 'hebrew':
-                $txti = $this->uniconv->chr(1488 + $count - 1);
-                break;
-            case 'armenian':
-                $txti = $this->uniconv->chr(1377 + $count - 1);
-                break;
-            case 'georgian':
-                $txti = $this->uniconv->chr(4304 + $count - 1);
-                break;
-            case 'cjk-ideographic':
-                $txti = $this->uniconv->chr(19_968 + $count - 1);
-                break;
-            case 'hiragana':
-                $txti = $this->uniconv->chr(12_354 + $count - 1);
-                break;
-            case 'hiragana-iroha':
-                $txti = $this->uniconv->chr(12_356 + $count - 1);
-                break;
-            case 'katakana':
-                $txti = $this->uniconv->chr(12_450 + $count - 1);
-                break;
-            case 'katakana-iroha':
-                $txti = $this->uniconv->chr(12_452 + $count - 1);
-                break;
+                return $this->finishHTMLliGraphicMarker($result, $markerPrefix, $markerState, $markerStyles);
             default:
-                $txti = \strval($count);
+                $txti = ListStyle::counterText($type, $count);
                 break;
         }
 
@@ -6982,17 +7147,20 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return '';
         }
 
+        if (!$this->isTextInCurrentFont($txti)) {
+            // the current font has no glyph for this counter style: use the decimal counter
+            $txti = \strval($count);
+        }
+
         // append dot separator for ordered list types only
-        $unorderedTypes = ['disc', 'circle', 'square'];
-        if (!\in_array($type, $unorderedTypes, true)) {
+        if (!ListStyle::isUnordered($type)) {
             $txti = $this->rtl ? '.' . $txti : $txti . '.';
         }
 
         $itemWidth = $this->getStringWidth($txti);
-        $lspace += $itemWidth;
-        $posx += $this->rtl ? $lspace : -$lspace;
+        $markerx = $this->placeHTMLliMarker($posx, $lspace, $itemWidth, $inside, $advance);
 
-        $out = $this->getTextLine($txti, $posx, $posy);
+        $out = $this->getTextLine($txti, $markerx, $posy);
 
         if ($markerPrefix !== '') {
             $out = $markerPrefix . $out;
@@ -7051,6 +7219,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'linewordspacing' => 0.0,
             'linewrapped' => false,
             'textindentapplied' => false,
+            'firstlineinset' => 0.0,
             'pendingblockmarginb' => 0.0,
             'activepage' => 'auto',
             'regionoffset' => 0.0,
@@ -7091,6 +7260,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'linewordspacing' => 0.0,
             'linewrapped' => false,
             'textindentapplied' => false,
+            'firstlineinset' => 0.0,
             'pendingblockmarginb' => 0.0,
             'activepage' => 'auto',
             'regionoffset' => 0.0,
@@ -7112,7 +7282,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws PdfException
@@ -7130,12 +7299,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $inrow = false;
         $rowcount = 0;
 
-        // Resolve the table-level cellpadding/cellspacing defaults the renderer
-        // would apply at runtime (parseHTMLTagOPENtable / parseHTMLTagOPENtd).
-        // The standalone thead DOM does not run those handlers, so the cell
-        // padding default from the <table cellpadding="..."> attribute would
-        // otherwise be lost, causing the estimated header height to be smaller
-        // than the actually rendered one.
+        // Resolve the table-level cellpadding/cellspacing defaults applied at
+        // render time by parseHTMLTagOPENtable / parseHTMLTagOPENtd: the
+        // standalone thead DOM does not run those handlers.
         $tablecellpadding = 0.0;
         $tablecellspacingv = 0.0;
         foreach ($dom as $elm) {
@@ -7223,7 +7389,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -7245,10 +7410,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $theadh = $this->measureHTMLCellRenderedHeight($thead, $tpx, $tpy, $tpw, $tph);
 
-        // The header is replayed visually at the top of each continuation page, but it
-        // is already represented once in the structure tree (on its first page). Suspend
-        // tagging during the replay so it does not open a second, nested Table subtree
-        // inside the still-open table, then emit the whole replayed header as an Artifact.
+        // The header is replayed at the top of each continuation page and is already
+        // present once in the structure tree. Tagging is suspended during the replay
+        // and the replayed header is emitted as an Artifact.
         $savedPdfuaMode = $this->suspendPdfUaTagging();
         try {
             $rendered = $this->getHTMLCell($thead, $tpx, $tpy, $tpw, $tph);
@@ -7294,9 +7458,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'quotelevel' => 0,
             'dom' => [],
         ];
-        // Attached after the literal: inlining the assignment into the return
-        // statement would drop the THTMLRenderContext coercion above, which is
-        // needed because the seed omits the keys initHTMLCellContext() fills in.
+        // Assigned after the literal to keep the THTMLRenderContext coercion
+        // above: the seed omits the keys initHTMLCellContext() fills in.
         $hrc['dom'] = $dom;
 
         return $hrc;
@@ -7362,11 +7525,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Measure the actual rendered height consumed by an HTML cell fragment.
      *
-     * This mirrors getHTMLCell() rendering flow but discards the output so
-     * callers can advance cursors using the real rendered height rather than
-     * a separate estimate.
+     * Follows the getHTMLCell() rendering flow and discards the output, so
+     * callers can advance cursors by the real rendered height.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -7409,9 +7570,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $tph = $contenth;
 
         $this->initHTMLCellContext($hrc, $contentx, $contenty, $contentw, $contenth);
-        // Measurement renders into a discarded buffer, so suspend PDF/UA tagging:
-        // otherwise this pass appends phantom structure elements and advances the
-        // per-page MCID counter for content that is never written to a page stream.
+        // Measurement renders into a discarded buffer: PDF/UA tagging is suspended
+        // so this pass adds no structure elements and does not advance the MCID
+        // counter.
         $savedPdfuaMode = $this->suspendPdfUaTagging();
         try {
             $this->renderHTMLCellFragments($hrc, $tpx, $tpy, $tpw, $tph, static function (string $fragment): void {
@@ -7454,10 +7615,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return $thead;
         }
 
-        // Serialize widths in points: CSS unit ratios (e.g. 1px = 0.75pt) can
-        // differ from the document unit ratio (e.g. 1px user unit = 1pt), so
-        // echoing the document unit name would re-parse user-unit values with
-        // the CSS ratio and shrink the replayed header columns.
+        // Serialize widths in points: the values are re-parsed with the CSS unit
+        // ratios (e.g. 1px = 0.75pt), which can differ from the document unit ratio.
         $colgroup = '<colgroup data-tcpdf-colwidths="1">';
         foreach ($colwidths as $width) {
             if ($width <= 0.0) {
@@ -7477,7 +7636,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Throwable
      */
@@ -7573,22 +7731,20 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         try {
             $dom = &$hrc['dom'];
 
-            if (!isset($dom[$trkey]) || !($dom[$trkey]['tag'] ?? false) || !($dom[$trkey]['opening'] ?? false)) {
+            if (!isset($dom[$trkey]) || !$dom[$trkey]['tag'] || !$dom[$trkey]['opening']) {
                 return 0.0;
             }
 
-            // Fetch parent-table per-column widths and cellpadding fallback so we can
-            // measure the wrapped text height inside each cell, mirroring what the
-            // renderer will actually produce. Without this the estimate uses a single
-            // line advance and misses multi-line cell content, leading to late page
-            // breaks where the last row spills below the page bottom (see example 018).
+            // Fetch the parent-table per-column widths and cellpadding fallback to
+            // measure the wrapped text height inside each cell, so the estimate
+            // accounts for multi-line cell content.
             $tableColWidths = [];
             $tableCellPad = 0.0;
-            $parentTableKey = isset($dom[$trkey]['parent']) ? $dom[$trkey]['parent'] : 0;
+            $parentTableKey = $dom[$trkey]['parent'];
             if (
                 $parentTableKey > 0
                 && isset($dom[$parentTableKey])
-                && ($dom[$parentTableKey]['tag'] ?? false)
+                && $dom[$parentTableKey]['tag']
                 && \in_array($dom[$parentTableKey]['value'], ['table', 'tablehead'], true)
             ) {
                 if (isset($dom[$parentTableKey]['pendingcolwidths'])) {
@@ -7688,7 +7844,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         try {
             $dom = &$hrc['dom'];
 
-            if (!isset($dom[$cellkey]) || !($dom[$cellkey]['tag'] ?? false) || !($dom[$cellkey]['opening'] ?? false)) {
+            if (!isset($dom[$cellkey]) || !$dom[$cellkey]['tag'] || !$dom[$cellkey]['opening']) {
                 return 0.0;
             }
 
@@ -7999,15 +8155,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         try {
             $dom = &$hrc['dom'];
 
-            if (
-                !isset($dom[$startkey])
-                || !($dom[$startkey]['tag'] ?? false)
-                || !($dom[$startkey]['opening'] ?? false)
-            ) {
+            if (!isset($dom[$startkey]) || !$dom[$startkey]['tag'] || !$dom[$startkey]['opening']) {
                 return 0.0;
             }
 
-            $starttag = $dom[$startkey]['value'] ?? '';
+            $starttag = $dom[$startkey]['value'];
             if ($starttag === 'tr') {
                 return $this->estimateHTMLTableRowHeight($hrc, $startkey);
             }
@@ -8135,17 +8287,14 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
     /**
      * Whether a region break would advance somewhere new: another writable
-     * region on the current page, or (on the last region) a fresh page added by
-     * the automatic page break. A paragraph that starts at a region top and is
-     * taller than that region cannot be shortened by flushing earlier lines, so
-     * it is split only when there is somewhere for the remainder to go: the
-     * lines that fit are rendered here and the rest continues in the next region
-     * or page. This is what makes HTML hug a banded obstacle (stacked no-write
-     * bands or columns) rather than overprint it, and lets the overflow of the
-     * last region paginate instead of running off the page bottom. When the
-     * last region is reached with automatic page break disabled there is nowhere
-     * to advance, so the paragraph is left to flow in place (no forced split,
-     * and no risk of looping on a break that cannot move).
+     * region on the current page, or, on the last region, a fresh page added by
+     * the automatic page break.
+     *
+     * A paragraph taller than its region is split only when there is somewhere
+     * for the remainder to go: the lines that fit render in place and the rest
+     * continues in the next region or page. On the last region with automatic
+     * page break disabled there is nowhere to advance and the paragraph flows
+     * in place.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
@@ -8200,13 +8349,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $newRY = $region['RY'];
 
         // pageBreak() is a no-op when automatic page break is disabled and there
-        // is no further region or page to move to: getNextPage() returns the
-        // same page and region. In that case there is nowhere to break to, so
-        // leave the cursor where it is rather than resetting it to the region
-        // top, which would make the overflowing content overlap whatever is
-        // already on the page. A genuine break always changes the page id or the
-        // region origin (e.g. between multi-column regions, which advance even
-        // with autobreak disabled).
+        // is no further region or page: getNextPage() returns the same page and
+        // region, and the cursor is left where it is. A real break always changes
+        // the page id or the region origin.
         if (
             $newpid === $oldpid
             && \abs($region['RX'] - $oldRX) <= self::WIDTH_TOLERANCE
@@ -8222,10 +8367,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $cellCtx['originy'] = $newRY;
         $cellCtx['originx'] += $rxDelta;
         $cellCtx['regionoffset'] = ($cellCtx['regionoffset'] ?? 0.0) + $rxDelta;
-        // Adapt the writable width to the new region. No-write page regions (and
-        // any layout whose regions differ in width) hand each band a different
-        // RW; without propagating it the line width would stay at the first
-        // region's width and overprint the obstacle. Equal-width layouts
+        // Adapt the writable width to the new region: regions of differing width
+        // (no-write page regions) each carry their own RW. Equal-width layouts
         // (multi-column, plain page breaks) have rwDelta == 0 and are untouched.
         if ($cellCtx['maxwidth'] > 0.0 && \abs($rwDelta) > self::WIDTH_TOLERANCE) {
             $cellCtx['maxwidth'] = \max(0.0, $cellCtx['maxwidth'] + $rwDelta);
@@ -8242,13 +8385,12 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Render the partial styled rectangles for all currently-open block-level
      * buffers up to the given vertical position, reset their accumulated
-     * content, and return the concatenated PDF code so the caller can emit it
-     * onto the current (about-to-end) page before triggering a page break.
+     * content, and return the concatenated PDF code for the caller to emit onto
+     * the current page before the page break.
      *
-     * Buffers are rendered innermost-first so that nested blocks remain wrapped
-     * inside their outer block's rectangle, mirroring the behavior of
-     * closeHTMLBlock(). The caller is expected to update each remaining
-     * buffer's `by` to the new region top after the page break.
+     * Buffers are rendered innermost-first, so nested blocks stay wrapped inside
+     * their outer block's rectangle. The caller updates each remaining buffer's
+     * `by` to the new region top after the page break.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
@@ -8261,11 +8403,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         // Extend the partial rectangle bottom to the page region bottom so the
-        // styled block (background/border) appears visually continuous across
-        // the page break. After the break, each buffer's `by` is reset to the
-        // new region top, so the next page's rectangle abuts this one with no
-        // visible gap. Without this extension the rectangle would end at the
-        // last rendered line and leave an empty strip down to the page margin.
+        // styled block (background/border) is continuous across the page break.
+        // Each buffer's `by` is reset to the new region top after the break, so
+        // the next page's rectangle abuts this one.
         $pageBottom = $tpy + $this->getHTMLRemainingHeight($hrc, $tpy);
 
         $rendered = '';
@@ -8276,12 +8416,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             $openkey = (int) $blk['openkey'];
-            // For <table> blocks the outer border must end at the last
-            // rendered row's bottom, not the page region bottom: row borders
-            // already draw horizontals and the next page replays the head
-            // with its own top border, so extending the outer frame to the
-            // page bottom would leave a tall empty bordered rectangle below
-            // the last row on this page.
+            // For <table> blocks the outer border ends at the last rendered
+            // row's bottom rather than the page region bottom: row borders draw
+            // their own horizontals and the next page replays the head with its
+            // own top border.
             $isTable = $openkey >= 0 && ($hrc['dom'][$openkey]['value'] ?? '') === 'table';
             $blockBottom = $isTable ? $tpy : $pageBottom;
             $partialHeight = $blockBottom - $blk['by'];
@@ -8320,14 +8458,12 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     }
 
     /**
-     * After a page break occurs while one or more HTML tables are open,
-     * reset each open table's per-page top references (`originy`, `rowtop`)
-     * to the new region top. Without this, the closing `</table>` would draw
-     * the outer frame using the previous page's top, leaving a stale narrow
-     * rectangle on the new page.
+     * After a page break with one or more HTML tables open, reset each open
+     * table's per-page top references (`originy`, `rowtop`) to the new region
+     * top.
      *
-     * Any in-progress rowspan cells reference the previous page's `rowtop`
-     * and would render incorrectly across the break, so they are dropped.
+     * In-progress rowspan cells reference the previous page's `rowtop` and are
+     * dropped.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      */
@@ -8344,6 +8480,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         foreach ($tableStack as $tidx => $table) {
             $cellspacing = $table['cellspacingv'];
             $table['originy'] = $tpy;
+            $table['captiontopy'] = $tpy;
             $table['rowtop'] = $tpy + $cellspacing;
             $table['rowheight'] = 0.0;
             $table['cells'] = [];
@@ -8367,17 +8504,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Stroke the outer frame of every currently-open HTML table around the
      * section that was rendered on the page about to be left.
      *
-     * The closing </table> handler (parseHTMLTagCLOSEtable()) only frames the
-     * final section because resetHTMLTableStackOnPageBreak() rebases each open
-     * table's originy/rowtop to the new region top on every page break, erasing
-     * the previous page's section geometry. This method must therefore be called
-     * before that rebasing (and before the page break itself) so each
-     * continuation page keeps its own outer border instead of leaving only the
-     * last page framed.
+     * The closing </table> handler frames only the final section, because
+     * resetHTMLTableStackOnPageBreak() rebases each open table's originy/rowtop
+     * to the new region top. This method must be called before that rebasing and
+     * before the page break, so each continuation page keeps its own outer
+     * border.
      *
-     * The returned PDF code is meant to be dispatched onto the current
-     * (about-to-end) page, after the section's cells, so the frame overlays the
-     * cell content exactly as parseHTMLTagCLOSEtable() does.
+     * The returned PDF code is dispatched onto the current page after the
+     * section's cells, so the frame overlays the cell content as
+     * parseHTMLTagCLOSEtable() does.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param float $tpy Vertical cursor at the bottom of the last rendered row.
@@ -8462,7 +8597,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $hrefkey = \array_key_last($hrc['linkstack']);
-        return $hrc['linkstack'][$hrefkey];
+        return $hrc['linkstack'][$hrefkey] ?? '';
     }
 
     /**
@@ -8715,17 +8850,26 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
         }
 
-        if (
-            isset($elm['attribute']['type'])
-            && \is_string($elm['attribute']['type'])
-            && $elm['attribute']['type'] !== ''
-        ) {
-            $type = \trim(\strtolower($elm['attribute']['type']));
-            return $type === '' ? $default : $type;
+        // A list-style-type declared on this element wins over the presentational
+        // type attribute, an inherited one does not. Unsupported values are ignored,
+        // as an unknown type would otherwise render as a decimal counter.
+        if ($elm['listtypeset']) {
+            $declared = ListStyle::resolveKnownType($elm['listtype']);
+            if ($declared !== '') {
+                return $declared;
+            }
         }
 
-        if ($elm['listtype'] !== '') {
-            return $elm['listtype'];
+        if (isset($elm['attribute']['type']) && \is_string($elm['attribute']['type'])) {
+            $attrtype = ListStyle::resolveKnownType($elm['attribute']['type']);
+            if ($attrtype !== '') {
+                return $attrtype;
+            }
+        }
+
+        $csstype = ListStyle::resolveKnownType($elm['listtype']);
+        if ($csstype !== '') {
+            return $csstype;
         }
 
         return $default;
@@ -8744,27 +8888,22 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $elm = $hrc['dom'][$key] ?? null;
         if ($key < 0 || !\is_array($elm)) {
             $hrc['liststack'][] = [
-                'ordered' => $ordered,
                 'type' => $ordered ? '#' : $this->ullidot,
                 'count' => 0,
                 'indent' => 0.0,
             ];
             return;
         }
+        // The start attribute sets the first counter, including zero and negative
+        // values: those fall back to the decimal counter when rendered.
         $start = 0;
-        if (
-            $ordered
-            && isset($elm['attribute']['start'])
-            && \is_numeric($elm['attribute']['start'])
-            && $elm['attribute']['start'] > 0
-        ) {
-            $start = (int) $elm['attribute']['start'] - 1;
+        if ($ordered && isset($elm['attribute']['start']) && \is_numeric($elm['attribute']['start'])) {
+            $start = $this->clampHTMLListCounter((int) $elm['attribute']['start']) - 1;
         }
 
         $indent = $this->getHTMLListIndentOverrideByKey($hrc, $key);
 
         $hrc['liststack'][] = [
-            'ordered' => $ordered,
             'type' => $this->getHTMLListMarkerType($hrc, $key, $ordered),
             'count' => $start,
             'indent' => $indent,
@@ -8795,6 +8934,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
     /**
      * Returns the next list marker counter for the current list level.
+     * The counter belongs to the list, so every item advances it whatever the
+     * list element is: the marker type selects how the counter is rendered, and
+     * a bullet or image marker ignores its value. The value attribute of the
+     * item sets the counter for that item and for the ones that follow it.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param int $key DOM array key.
@@ -8807,36 +8950,46 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $idx = $depth - 1;
-        $listEntry = $hrc['liststack'][$idx] ?? [];
-        if (!($listEntry['ordered'] ?? false)) {
-            return 1;
+        $current = \is_int($hrc['liststack'][$idx]['count'] ?? null) ? $hrc['liststack'][$idx]['count'] : 0;
+        $count = $current >= self::LIST_COUNTER_MAX ? self::LIST_COUNTER_MAX : $current + 1;
+
+        $value = $hrc['dom'][$key]['attribute']['value'] ?? null;
+        if ($key >= 0 && \is_numeric($value)) {
+            $count = $this->clampHTMLListCounter((int) $value);
         }
 
-        $newCount = ($listEntry['count'] ?? 0) + 1;
-        $hrc['liststack'][$idx]['count'] = $newCount;
-        $elm = $hrc['dom'][$key] ?? null;
-        if ($key < 0 || !\is_array($elm)) {
-            return $newCount;
-        }
+        $hrc['liststack'][$idx]['count'] = $count;
 
-        if (
-            isset($elm['attribute']['value'])
-            && $elm['attribute']['value'] !== ''
-            && \is_numeric($elm['attribute']['value'])
-        ) {
-            $hrc['liststack'][$idx]['count'] = (int) $elm['attribute']['value'];
-        }
+        return $count;
+    }
 
-        return $hrc['liststack'][$idx]['count'];
+    /**
+     * Clamps a list counter to the range the counter arithmetic can represent.
+     *
+     * @param int $count List counter value.
+     */
+    protected function clampHTMLListCounter(int $count): int
+    {
+        return \max(self::LIST_COUNTER_MIN, \min(self::LIST_COUNTER_MAX, $count));
     }
 
     /**
      * Returns the marker type for the current list level.
+     * The type attribute of the list item overrides the list type for that item only.
      *
      * @param THTMLRenderContext $hrc HTML render context.
+     * @param int $key DOM array key of the list item, or -1 to ignore it.
      */
-    protected function getCurrentHTMLListMarkerType(array &$hrc): string
+    protected function getCurrentHTMLListMarkerType(array &$hrc, int $key = -1): string
     {
+        $elm = $hrc['dom'][$key] ?? null;
+        if ($key >= 0 && \is_array($elm) && \is_string($elm['attribute']['type'] ?? null)) {
+            $itemtype = ListStyle::resolveKnownType($elm['attribute']['type']);
+            if ($itemtype !== '') {
+                return $itemtype;
+            }
+        }
+
         $depth = $this->getHTMLListDepth($hrc);
         if ($depth < 1) {
             return '#';
@@ -8926,8 +9079,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         if (isset($markerStyles['font-size']) && \is_string($markerStyles['font-size'])) {
             $fsize = \trim($markerStyles['font-size']);
             if ($fsize !== '') {
-                $ref = self::REFUNITVAL;
-                $ref['parent'] = $fontsize;
+                $ref = $this->getHTMLUnitRef($fontsize, $fontsize, $fontsize);
                 $csssize = $this->getUnitValuePoints($fsize, $ref);
                 if ($csssize > 0.0) {
                     $fontsize = $csssize;
@@ -9006,12 +9158,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Strip the font-key style suffix from the given font name.
      *
-     * Font keys are the lowercase family name plus an optional uppercase
-     * 'B' (bold) and/or 'I' (italic) suffix. Underline (U), strikeout (D)
-     * and overline (O) styles are never part of the key, so only trailing
-     * uppercase 'B'/'I' characters are stripped (case-sensitive) to preserve
-     * family names ending in 'b', 'i', 'u', 'd' or 'o'
-     * (e.g. "dejavusanscondensed").
+     * Font keys are the lowercase family name plus an optional uppercase 'B'
+     * (bold) and/or 'I' (italic) suffix. Only trailing uppercase 'B'/'I'
+     * characters are stripped, case-sensitively, so family names ending in 'b',
+     * 'i', 'u', 'd' or 'o' (e.g. "dejavusanscondensed") are preserved.
      *
      * @param string $fontkey Font key or family name.
      *
@@ -9056,10 +9206,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $fontkey = $curfont['key'];
         $family = $this->font->getFontFamilyName($fontkey);
         // getFontFamilyName may return the full font key (e.g. "helveticaB")
-        // rather than the plain base family name ("helvetica"), because the
-        // bold variant is itself a valid key in the buffer. Strip the style
-        // suffix so restoreHTMLCallerFontState re-inserts (family, style)
-        // correctly without accumulating extra 'B'/'I' characters in the key.
+        // instead of the base family name, because the bold variant is itself a
+        // valid key in the buffer. Strip the style suffix so
+        // restoreHTMLCallerFontState re-inserts (family, style) correctly.
         $family = $this->stripHTMLFontKeyStyleSuffix($family);
         if ($family === '') {
             $family = 'helvetica';
@@ -9313,7 +9462,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return 0.0;
         }
 
-        $wordSpacing = $hrc['dom'][$key]['word-spacing'] ?? 0.0;
+        $wordSpacing = $hrc['dom'][$key]['word-spacing'];
 
         return \max(0.0, $wordSpacing);
     }
@@ -9410,10 +9559,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Apply conservative named-page semantics for block-level HTML elements.
      *
-     * The current engine does not implement full @page templates, but a named
-     * page token can still express a section boundary. We honor that by forcing
-     * a break-before when the requested page name changes and the cursor is not
-     * already at the top of a fresh page/region.
+     * Full @page templates are not implemented. A named page token is treated
+     * as a section boundary: a break-before is forced when the requested page
+     * name changes and the cursor is not already at the top of a fresh
+     * page/region.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param THTMLAttrib $elm Current DOM element.
@@ -9540,17 +9689,16 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $mode = $this->getHTMLWhiteSpaceMode($hrc, $key);
         if ($mode === 'pre' || $mode === 'pre-wrap') {
-            return \str_replace("\u{00A0}", ' ', $text);
+            return $text;
         }
 
         if ($mode === 'pre-line') {
-            $text = \str_replace("\u{00A0}", ' ', $text);
             $text = \str_replace(["\r\n", "\r", "\f"], "\n", $text);
             $lines = \explode("\n", $text);
             $count = \count($lines);
             for ($idx = 0; $idx < $count; ++$idx) {
                 $lineText = $lines[$idx] ?? '';
-                $normalizedLine = \preg_replace('/[^\S\n]+/u', ' ', $lineText);
+                $normalizedLine = \preg_replace('/[^\S\n' . self::NO_BREAK_SPACE_CLASS . ']+/u', ' ', $lineText);
                 $line = \is_string($normalizedLine) ? $normalizedLine : '';
                 $lines[$idx] = \trim($line, ' ');
             }
@@ -9558,7 +9706,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return \implode("\n", $lines);
         }
 
-        $text = \preg_replace('/\s+/u', ' ', $text) ?? '';
+        $text = \preg_replace('/' . self::HTML_COLLAPSIBLE_SPACE . '+/u', ' ', $text) ?? '';
         if ($text === '') {
             return '';
         }
@@ -9634,7 +9782,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             // If not found on this element, check ancestor elements (inheritance)
-            if (!$allowWordBreak && isset($elm['parent'])) {
+            if (!$allowWordBreak) {
                 $parentKey = (int) $elm['parent'];
 
                 while ($parentKey >= 0 && isset($hrc['dom'][$parentKey])) {
@@ -9661,7 +9809,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         break;
                     }
 
-                    $parentKey = isset($parent['parent']) ? (int) $parent['parent'] : -1;
+                    $parentKey = (int) $parent['parent'];
                 }
             }
         }
@@ -9758,40 +9906,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     protected function cleanupText(string $txt): string
     {
         $txt = \str_replace("\r", ' ', $txt);
-        $txt = \str_replace($this->uniconv->chr(UnicodeConstant::NO_BREAK_SPACE), ' ', $txt);
+        $txt = \str_replace(self::HTML_KEPT_SPACE, ' ', $txt);
 
         if (!$this->htmlRenderSoftHyphen) {
             return \str_replace($this->uniconv->chr(UnicodeConstant::SOFT_HYPHEN), '', $txt);
         }
 
         return $txt;
-    }
-
-    /**
-     * Convert trailing SHY to visible hyphen only when HTML line wrapping breaks on SHY.
-     *
-     * @param array<int, int> $ordarr The array of Unicode code points.
-     *
-     * @return array<int, int> The filtered array.
-     */
-    protected function removeOrdArrSoftHyphens(array $ordarr): array
-    {
-        $keeplast = false;
-        $lastidx = \array_key_last($ordarr);
-        if ($lastidx !== null && isset($ordarr[$lastidx])) {
-            $keeplast = $ordarr[$lastidx] === UnicodeConstant::SOFT_HYPHEN;
-        }
-
-        $retarr = \array_values(\array_filter(
-            $ordarr,
-            static fn($ord) => $ord !== UnicodeConstant::SOFT_HYPHEN && $ord !== UnicodeConstant::ZERO_WIDTH_SPACE,
-        ));
-
-        if ($keeplast) {
-            $retarr[] = $this->htmlRenderSoftHyphen ? UnicodeConstant::HYPHEN : UnicodeConstant::SOFT_HYPHEN;
-        }
-
-        return $retarr;
     }
 
     /**
@@ -9866,11 +9987,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Measure the width of the remaining inline run on the current HTML line.
      *
      * @param THTMLRenderContext $hrc HTML render context.
+     * @param int $startkey First DOM array key of the run.
+     * @param float $lineOffset Fragment offset on the current line.
      *
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Unicode\Exception
      */
-    protected function measureHTMLInlineRunWidth(array &$hrc, int $startkey): float
+    protected function measureHTMLInlineRunWidth(array &$hrc, int $startkey, float $lineOffset = 0.0): float
     {
         $dom = &$hrc['dom'];
         $numel = \count($dom);
@@ -9907,6 +10030,20 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 continue;
             }
 
+            // The renderer drops collapsible spaces at line start, so the measured
+            // run must drop them too: otherwise the run looks wider than the first
+            // fragment and the caller assumes a following inline sibling.
+            if (
+                $key === $startkey
+                && $lineOffset <= self::WIDTH_TOLERANCE
+                && !$this->isHTMLPreLikeWhiteSpaceMode($hrc, $key)
+            ) {
+                $text = \ltrim($text);
+                if ($text === '') {
+                    continue;
+                }
+            }
+
             $this->getHTMLFontMetric($hrc, $key);
             $runwidth += $this->getStringWidth($text);
         }
@@ -9919,12 +10056,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * at $startKey, for the RTL inter-fragment layout engine.
      *
      * Returns the ordered logical pieces (each text piece carries the DOM key whose
-     * baked-in font/color it renders with; each image piece carries its resolved
-     * source and box) and the last consumed DOM key, or null when the run is not a
-     * plain uniform-RTL inline run this engine can lay out — mixed direction, links,
-     * inline-block, or decorated spans keep the existing forward-cursor path (and are
-     * addressed by later increments or by full UBA for mixed bidi). Inline images are
-     * accepted as atomic boxes (Stage 2c). See PLAN_RTL_HTML_FRAGMENTS.md.
+     * baked-in font and color it renders with; each image piece carries its
+     * resolved source and box) and the last consumed DOM key. Inline images are
+     * accepted as atomic boxes. Returns null for runs this engine does not lay
+     * out: mixed direction, links, inline-block and decorated spans, which stay
+     * on the forward-cursor path.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
@@ -10015,7 +10151,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         if (\count($pieces) < 2) {
-            // A single fragment already lays out correctly through getTextCell (Stage 2a).
+            // A single fragment lays out through getTextCell.
             return null;
         }
 
@@ -10070,21 +10206,18 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * wrapping across fragment boundaries and stacking lines top-down: on each line
      * the first logical fragment hugs the right edge and each subsequent fragment is
      * placed to its left. Text fragments render in a box of their own width through
-     * getTextCell() with forcedir 'R', so their internal glyphs (including neutral
-     * numerals) keep their correct visual order and their baked-in font/color are
-     * preserved; inline images are placed as atomic boxes on the line (Stage 2c).
+     * getTextCell() with forcedir 'R', keeping their internal glyph order and their
+     * baked-in font and color. Inline images are placed as atomic boxes on the line.
      *
      * Returns ['out' => PDF code, 'endkey' => last consumed DOM key], or null to fall
-     * back to the existing forward-cursor renderer (LTR, single fragment, mid-line
-     * start, tables/links/PDF-UA, a single word/image wider than the line, or a run
-     * taller than the remaining region with no way to continue — see $appendFragment).
-     * The forward-cursor path is therefore byte-identical for every case this engine
-     * declines.
+     * back to the forward-cursor renderer: LTR, single fragment, mid-line start,
+     * tables/links/PDF-UA, a single word or image wider than the line, or a run
+     * taller than the remaining region with no way to continue (see $appendFragment).
      *
      * When the run overflows the current region and a per-page fragment sink is
-     * available (addHTMLCell), the engine flows the remaining right-to-left lines into
-     * the next region/page (Stage 2e): the lines that fit are emitted to the current
-     * page through $appendFragment and the final region's lines are returned in 'out'.
+     * available (addHTMLCell), the remaining right-to-left lines flow into the next
+     * region/page: the lines that fit are emitted to the current page through
+     * $appendFragment and the final region's lines are returned in 'out'.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param ?callable(string):void $appendFragment Per-page sink for the lines that
@@ -10106,7 +10239,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         // Engine guards: only a plain inline flow at a fresh line start, no tables,
         // nested block cells, links, or PDF/UA tagging (handled by later increments).
         if (
-            $this->pdfuaMode !== ''
+            $this->isTaggedMode()
             || $hrc['tablestack'] !== []
             || $hrc['bcellctx'] !== []
             || $this->getCurrentHTMLLink($hrc) !== ''
@@ -10129,24 +10262,26 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return null;
         }
 
-        $built = $this->buildHTMLRtlRunLines($hrc, $run['pieces'], $availableWidth);
+        // Inline space already taken at the start of the first line (an inside list
+        // marker), which shortens that line only.
+        $firstLineInset = $hrc['cellctx']['firstlineinset'];
+
+        $built = $this->buildHTMLRtlRunLines($hrc, $run['pieces'], $availableWidth, $firstLineInset);
         if ($built === null) {
             return null;
         }
+
+        $hrc['cellctx']['firstlineinset'] = 0.0;
 
         $lines = $built['lines'];
         $lineascent = $built['ascent'];
         $lineAdvance = $built['advance'];
         $numLines = \count($lines);
 
-        // A run taller than the space left in the current region flows into the next
-        // region/page (Stage 2e) when there is somewhere and some sink to flow into:
-        // a per-page fragment sink (addHTMLCell), no fixed cell height, no open
-        // styled block buffer (whose cross-page background the forward path handles),
-        // and a region/page to advance to. Otherwise it falls back to the
-        // forward-cursor path rather than overprint the next region (no new
-        // regression — that path is also imperfect for RTL overflow, but does not
-        // crash).
+        // A run taller than the space left in the current region flows into the
+        // next region/page when there is a per-page fragment sink (addHTMLCell),
+        // no fixed cell height, no open styled block buffer and a region or page
+        // to advance to. Otherwise it falls back to the forward-cursor path.
         $runHeight = $numLines * $lineAdvance;
         $fitsInRegion = $runHeight <= ($this->getHTMLRemainingHeight($hrc, $tpy) + self::WIDTH_TOLERANCE);
         $canContinue =
@@ -10190,7 +10325,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     }
 
                     $lastLineTop = $y + (($j - $idx) * $lineAdvance);
-                    $out .= $this->renderHTMLRtlLine($hrc, $line, $lineRight, $lastLineTop, $lineascent, $lineAdvance);
+                    // The first line starts left of the run's right edge by the inset.
+                    $rowRight = $j === 0 ? $lineRight - $firstLineInset : $lineRight;
+                    $out .= $this->renderHTMLRtlLine($hrc, $line, $rowRight, $lastLineTop, $lineascent, $lineAdvance);
                 }
 
                 $idx = $regionEnd;
@@ -10245,7 +10382,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * context), and placed right-to-left: the first logical fragment hugs the line's
      * right edge ($lineRight) and the cursor advances leftward. Inline images are
      * placed as atomic boxes; whitespace-only groups advance the cursor without
-     * drawing. See renderHTMLRtlInlineRun() and PLAN_RTL_HTML_FRAGMENTS.md.
+     * drawing. See renderHTMLRtlInlineRun().
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param array<int, THTMLRtlSegment> $segments Logical-order line segments.
@@ -10264,17 +10401,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $cursor = $lineRight;
 
         // Regroup consecutive segments from the same fragment so each fragment
-        // renders through a single getTextCell. Splitting at the word level would
-        // Bidi each word in isolation and separate a bracket pair like "(...)" across
-        // calls, reversing it; one call per fragment keeps the fragment's internal
-        // Bidi context (bracket pairing, neutral resolution) intact while still
-        // allowing wraps between fragments.
+        // renders through a single getTextCell, keeping its internal Bidi context
+        // (bracket pairing, neutral resolution) while still allowing wraps between
+        // fragments.
         foreach ($this->groupHTMLRtlLineSegments($segments) as $group) {
             if ($group['image']) {
                 // Image box on the RTL line: its right edge sits at the cursor and the
-                // cursor then advances leftward by the box width. Vertical placement
-                // matches the forward renderer — bottom-aligned to the line baseline
-                // (lineTop + lineascent) by default, or top/middle.
+                // cursor then advances leftward by the box width. Vertically it is
+                // bottom-aligned to the line baseline (lineTop + lineascent) by
+                // default, or top/middle.
                 $imgWidth = $group['width'];
                 if ($imgWidth <= 0.0) {
                     continue;
@@ -10292,10 +10427,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         $out .= $this->buildHTMLImageXObject($group['src'], $imagex, $imagey, $imgWidth, $imgHeight);
                         $cursor = $imagex;
                     } catch (\Throwable) {
-                        // Broken image source: degrade like the forward renderer by
-                        // drawing the image's alt text in the reserved slot, and advance
-                        // the cursor by the alt's actual extent (falling back to the box
-                        // width when there is no alt text to draw).
+                        // Broken image source: draw the image alt text in the reserved
+                        // slot and advance the cursor by the alt's extent, or by the
+                        // box width when there is no alt text.
                         $fallback = $this->renderHTMLRtlImageAlt($hrc, $group['key'], $cursor, $lineTop, $imagex);
                         $out .= $fallback['out'];
                         $cursor = $fallback['cursor'];
@@ -10322,11 +10456,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
             $this->getHTMLFontMetric($hrc, $key);
 
-            // getTextCell drops a fragment's leading collapsible space (but keeps its
-            // trailing one). Reserve the leading space as an explicit cursor gap so the
-            // inter-fragment spacing is preserved — e.g. the space before the word
-            // following an embedded span. The fragment itself is still rendered whole,
-            // keeping its internal Bidi context (brackets).
+            // getTextCell drops a fragment's leading collapsible space and keeps its
+            // trailing one. Reserve the leading space as an explicit cursor gap to
+            // preserve the inter-fragment spacing. The fragment is still rendered
+            // whole, keeping its internal Bidi context.
             $leadm = [];
             $lead = \preg_match('/^ +/u', $groupText, $leadm) === 1 ? $leadm[0] ?? '' : '';
             if ($lead !== '') {
@@ -10337,14 +10470,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 continue;
             }
 
-            // Render the fragment right-aligned in a box spanning from the page left
-            // edge (x = 0) to the cursor. The box is always wider than a fragment that
-            // fits on the line, so getTextCell never wraps; this avoids the
-            // getStringWidth-vs-getTextCell measurement drift (Arabic shaping /
-            // presentation forms) that otherwise spilled a word onto the next line.
-            // renderX = 0 keeps the box on the page (a tighter box could push it
-            // negative and misrender). The cursor then advances by the ACTUAL rendered
-            // left edge (bbox), so spacing stays exact.
+            // Render the fragment right-aligned in a box spanning from the page
+            // left edge (x = 0) to the cursor. The box is wider than any fragment
+            // that fits on the line, so getTextCell never wraps. The cursor then
+            // advances by the rendered left edge taken from the bbox.
             $renderY = $lineTop + ($lineascent - $group['ascent']);
             $style = $node['fontstyle'];
             $strokeWidth = $node['stroke'];
@@ -10384,9 +10513,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
     /**
      * Render the alt text of an inline image as a right-to-left fallback fragment,
-     * used when the image source cannot be drawn — mirroring renderHTMLImage()'s
-     * graceful degradation. The text is right-aligned so it ends at the image box's
-     * right edge ($boxRight) and grows leftward, like the image it replaces.
+     * used when the image source cannot be drawn. The text is right-aligned so it
+     * ends at the image box's right edge ($boxRight) and grows leftward.
      *
      * Returns the emitted PDF code and the resulting (leftward) cursor: the alt
      * text's actual left edge when something was drawn, otherwise $fallbackCursor
@@ -10507,14 +10635,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * may span fragment boundaries (for example an Arabic run immediately followed
      * by a Latin span, "الـ" + "PDF"); whitespace tokens are the break
      * opportunities. An image piece is an atomic, unbreakable word token whose width
-     * is its rendered box width (Stage 2c). The greedy fill returns the lines
-     * top-to-bottom in logical (reading) order, each a list of placement segments in
-     * logical order. Returns null when there are fewer than two pieces, a single
-     * word (or image) is wider than the line (needs word-/char-breaking, deferred to
-     * the forward-cursor path), or the run has no measurable content.
+     * is its rendered box width. The greedy fill returns the lines top-to-bottom in
+     * logical (reading) order, each a list of placement segments in logical order.
+     * Returns null when there are fewer than two pieces, when a single word or
+     * image is wider than the line, or when the run has no measurable content.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param array<int, THTMLRtlPiece> $pieces Logical run pieces.
+     * @param float $availableWidth Line width.
+     * @param float $firstLineInset Inline space reserved at the start of the first line.
      *
      * @return array{
      *     lines: array<int, array<int, THTMLRtlSegment>>,
@@ -10525,8 +10654,12 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Unicode\Exception
      */
-    protected function buildHTMLRtlRunLines(array &$hrc, array $pieces, float $availableWidth): ?array
-    {
+    protected function buildHTMLRtlRunLines(
+        array &$hrc,
+        array $pieces,
+        float $availableWidth,
+        float $firstLineInset = 0.0,
+    ): ?array {
         if ($availableWidth <= 0.0) {
             return null;
         }
@@ -10656,6 +10789,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $units[] = ['space' => $curSpace, 'width' => $curWidth, 'parts' => $curParts];
 
         $tolerance = $availableWidth + self::WIDTH_TOLERANCE;
+        // The inset is inline space already taken on the first line, so only that
+        // line is measured against the shortened width.
+        $firstTolerance = \max(0.0, $availableWidth - $firstLineInset) + self::WIDTH_TOLERANCE;
 
         // Greedy fill: a deferred space joins the next word or is dropped at a break.
         /** @var array<int, array<int, THTMLRtlSegment>> $lines */
@@ -10681,7 +10817,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             $projected = $lineWidth + ($line === [] ? 0.0 : $pendingSpaceWidth) + $wordWidth;
-            if ($line !== [] && $projected > $tolerance) {
+            $linetolerance = $lines === [] ? $firstTolerance : $tolerance;
+            if ($line !== [] && $projected > $linetolerance) {
                 // Break: the deferred space sits at the line end and is dropped.
                 $lines[] = $line;
                 $line = $unit['parts'];
@@ -10971,10 +11108,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * Returns [head, tail] where head is the portion that fits on the current
      * line (within $maxwidth) and tail is the remainder, or null when the text
-     * fits on a single line or cannot be split safely. Used so that each
-     * wrapped visual line of a justified paragraph computes its own word
-     * spacing, instead of a single run baking the first line's spacing into
-     * the lines it overflows onto.
+     * fits on a single line or cannot be split safely. Each wrapped visual line
+     * of a justified paragraph then computes its own word spacing.
      *
      * @return array{0: string, 1: string}|null
      *
@@ -11042,12 +11177,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Measure the maximum ascent among inline text fragments in the current run.
      *
      * The run stops at block boundaries and explicit BR tags. When $maxRunWidth is
-     * non-negative it also stops once the accumulated inline advance fills the line:
-     * a line box's height is set only by the content that lands on it, so a taller
-     * inline fragment (a larger font run or an inline image) that wraps onto a later
-     * line must not inflate the ascent — and therefore the spacing — of earlier
-     * lines. The fragment at $startkey always counts (every line carries at least
-     * one fragment); a negative $maxRunWidth keeps the legacy unbounded scan.
+     * non-negative it also stops once the accumulated inline advance fills the line,
+     * so a taller fragment wrapping onto a later line does not inflate the ascent
+     * and spacing of earlier lines. The fragment at $startkey always counts; a
+     * negative $maxRunWidth scans the whole inline run.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param int   $startkey    DOM key of the first fragment on the current line.
@@ -11291,7 +11424,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return;
         }
 
-        $parentkey = isset($hrc['dom'][$openkey]['parent']) ? $hrc['dom'][$openkey]['parent'] : -1;
+        $parentkey = $hrc['dom'][$openkey]['parent'];
         if ($parentkey < 0 || !isset($hrc['dom'][$parentkey])) {
             return;
         }
@@ -11365,9 +11498,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Return true when a breakable fragment can keep a visible leading chunk on the current line.
      *
-     * This is intentionally narrower than hasHTMLTextBreakOpportunity(): a fragment such as
-     * " underline ..." may keep flowing after the previous text, while a fragment starting with
-     * visible content should wrap from the line origin when it cannot fully fit in the remaining width.
+     * Narrower than hasHTMLTextBreakOpportunity(): a fragment such as " underline ..."
+     * may keep flowing after the previous text, while a fragment starting with visible
+     * content wraps from the line origin when it does not fit in the remaining width.
      */
     protected function canHTMLTextKeepVisibleChunkOnCurrentLine(
         string $text,
@@ -11379,12 +11512,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         if (!(bool) \preg_match('/^\s/u', $text)) {
-            // The text begins with non-whitespace content (typically punctuation
-            // such as ")" or "." that is glued to the previous inline fragment
-            // on the same line). Allow it to remain on the current line if its
-            // leading non-space chunk fits within the remaining width, so that
-            // a closing parenthesis after an inline element does not get force-
-            // wrapped to a fresh line.
+            // The text begins with non-whitespace content, typically punctuation
+            // glued to the previous inline fragment on the same line. It stays on
+            // the current line when its leading non-space chunk fits within the
+            // remaining width.
             $leadMatches = [];
             if (\preg_match('/^\S+/u', $text, $leadMatches) === 1) {
                 $lead = $leadMatches[0] ?? '';
@@ -11421,8 +11552,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return false;
         }
 
-        $firstKey = \array_key_first($lines);
-        $firstline = $lines[$firstKey];
+        $firstline = $lines[\array_key_first($lines)] ?? null;
+        if ($firstline === null) {
+            return false;
+        }
+
         $chars = (int) $firstline['chars'];
         if ($chars <= 0) {
             return false;
@@ -11463,7 +11597,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $scanParentKey = $elm['parent'];
         $scanGuard = 0;
         while ($scanParentKey >= 0 && isset($hrc['dom'][$scanParentKey]) && $scanGuard < 256) {
-            $parentFloat = isset($hrc['dom'][$scanParentKey]['float']) && $hrc['dom'][$scanParentKey]['float'] !== ''
+            $parentFloat = $hrc['dom'][$scanParentKey]['float'] !== ''
                 ? \strtolower(\trim($hrc['dom'][$scanParentKey]['float']))
                 : 'none';
             if (\in_array($parentFloat, ['left', 'right'], true)) {
@@ -11471,7 +11605,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 break;
             }
 
-            $nextParentKey = isset($hrc['dom'][$scanParentKey]['parent']) ? $hrc['dom'][$scanParentKey]['parent'] : -1;
+            $nextParentKey = $hrc['dom'][$scanParentKey]['parent'];
             if ($nextParentKey === $scanParentKey) {
                 break;
             }
@@ -11623,10 +11757,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $parentkey = $elm['parent'];
         if ($parentkey >= 0 && isset($hrc['dom'][$parentkey])) {
             $pelm = $hrc['dom'][$parentkey];
-            if ($hasBorder && isset($pelm['border']) && $pelm['border'] === $elm['border']) {
+            if ($hasBorder && $pelm['border'] === $elm['border']) {
                 $hasBorder = false;
             }
-            if ($hasBgcolor && isset($pelm['bgcolor']) && $pelm['bgcolor'] === $elm['bgcolor']) {
+            if ($hasBgcolor && $pelm['bgcolor'] === $elm['bgcolor']) {
                 $hasBgcolor = false;
             }
         }
@@ -11671,6 +11805,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $hrc['cellctx']['lineoriginx'] = $tpx;
         $tpw = $hrc['cellctx']['maxwidth'];
         $hrc['cellctx']['textindentapplied'] = false;
+        $hrc['cellctx']['firstlineinset'] = 0.0;
         if ($tpw > 0) {
             $tpw = \max(0.0, $tpw - $marginLeft - $marginRight - $paddingLeft - $paddingRight);
         }
@@ -11715,7 +11850,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $role = $this->getHTMLStructRole($elm);
         if ($role !== '') {
-            if ($this->pdfuaMode !== '') {
+            if ($this->isTaggedMode()) {
                 $role = $this->pdfuaClampHeadingRole($role);
             }
             $attr = [];
@@ -11735,10 +11870,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Clamp a heading structure role (H1-H6) to prevent skipped levels in PDF/UA mode.
      * Going back to a higher level (e.g. H3 then H1) is always allowed.
-     * if ($table['collapse'] && $table['hascellborders']) {
-     * $bstyles = [];
-     * }
-     * if (($bstyles !== []) || ($fillstyle !== null)) {
      * Non-heading roles are returned unchanged.
      */
     protected function pdfuaClampHeadingRole(string $role): string
@@ -11825,39 +11956,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      */
     protected function getPdfUaListNumbering(array $elm): string
     {
-        $tag = isset($elm['value']) && \is_string($elm['value']) ? \strtolower($elm['value']) : '';
-        $listtype = isset($elm['listtype']) && \is_string($elm['listtype']) ? \strtolower(\trim($elm['listtype'])) : '';
+        $tag = isset($elm['value']) && \is_string($elm['value']) ? $elm['value'] : '';
 
-        $map = [
-            'disc' => 'Disc',
-            'circle' => 'Circle',
-            'square' => 'Square',
-            'decimal' => 'Decimal',
-            'decimal-leading-zero' => 'Decimal',
-            '1' => 'Decimal',
-            'upper-roman' => 'UpperRoman',
-            'i' => 'LowerRoman',
-            'lower-roman' => 'LowerRoman',
-            'upper-alpha' => 'UpperAlpha',
-            'upper-latin' => 'UpperAlpha',
-            'a' => 'LowerAlpha',
-            'lower-alpha' => 'LowerAlpha',
-            'lower-latin' => 'LowerAlpha',
-        ];
-
-        if ($listtype !== '' && isset($map[$listtype])) {
-            return $map[$listtype];
+        // the presentational type attribute takes precedence, as in getHTMLListMarkerType()
+        $listtype = ListStyle::resolveType($this->getHTMLNodeStringAttr($elm, 'type'));
+        if ($listtype === '' && isset($elm['listtype']) && \is_string($elm['listtype'])) {
+            $listtype = ListStyle::resolveType($elm['listtype']);
         }
 
-        if ($tag === 'ul') {
-            return 'Disc';
-        }
-
-        if ($tag === 'ol') {
-            return 'Decimal';
-        }
-
-        return '';
+        return ListStyle::pdfUaNumbering($listtype, $tag);
     }
 
     /**
@@ -11930,10 +12037,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             if (isset($hrc['blockbuf'][$idx]) && $hrc['blockbuf'][$idx]['openkey'] === $openkey) {
                 $blk = $hrc['blockbuf'][$idx];
                 \array_pop($hrc['blockbuf']);
-                $blkBy = $blk['by'] ?? $tpy;
-                $blkBw = $blk['bw'] ?? 0.0;
-                $blkBx = $blk['bx'] ?? $tpx;
-                $blkBuffer = $blk['buffer'] ?? '';
+                $blkBy = $blk['by'];
+                $blkBw = $blk['bw'];
+                $blkBx = $blk['bx'];
+                $blkBuffer = $blk['buffer'];
                 $blockHeight = $tpy + $lineadvance + $paddingB - $blkBy;
                 if ($minBlockHeight > 0.0 && $blockHeight < $minBlockHeight) {
                     $blockHeightExtra = $minBlockHeight - $blockHeight;
@@ -12013,9 +12120,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $hrc['cellctx']['maxwidth'] = $restoreMaxWidth;
             $tpx = \max($tpx + $marginR, $inlineNextX);
             if (isset($openelm['inlineblockrowy'])) {
-                // Only restore tpy to opening position if we're still on the same page.
-                // If a page break occurred during content rendering (e.g., due to orphans/widows),
-                // the stored inlineblockrowy is from a different page and should not be used.
+                // Restore tpy to the opening position only on the same page: after a
+                // page break the stored inlineblockrowy belongs to a different page.
                 $storedPageId = $openelm['inlineblockpageid'] ?? -1;
                 $currentPageId = (int) $this->page->getPageId();
                 if ($storedPageId === $currentPageId) {
@@ -12299,12 +12405,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     continue;
                 }
 
-                $label = $labels[$val] ?? '';
-                if ($label === '') {
-                    continue;
-                }
-
-                $out[] = $label;
+                $out[] = $labels[$val];
             }
 
             if ($out !== []) {
@@ -12517,9 +12618,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Resolve raster import dimensions in pixels for HTML images.
      *
-     * Downscale only when rendered size is smaller than intrinsic size.
-     * This enables tc-lib-pdf-image pixel resampling for HTML images while
-     * avoiding unnecessary re-encoding on equal/larger render sizes.
+     * Downscaling is applied only when the rendered size is smaller than the
+     * intrinsic size, so tc-lib-pdf-image resamples pixels without re-encoding
+     * at equal or larger render sizes.
      *
      * @return array{width: int, height: int}|null
      */
@@ -12640,9 +12741,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Emit the PDF code that draws an image (raster or SVG) at the given box.
      *
      * Shared by the forward-cursor renderer (renderHTMLImage) and the RTL
-     * inter-fragment engine (renderHTMLRtlInlineRun) so both place images through
-     * the exact same XObject registration. The caller is responsible for the
-     * cursor advance, vertical alignment and any alt-text fallback on failure.
+     * inter-fragment engine (renderHTMLRtlInlineRun), so both place images
+     * through the same XObject registration. The caller handles the cursor
+     * advance, vertical alignment and any alt-text fallback on failure.
      *
      * @param string $src    Resolved image source.
      * @param float  $imagex Image left edge (user units).
@@ -12791,8 +12892,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $tpw = \max(0.0, $hrc['cellctx']['maxwidth'] - ($tpx - $hrc['cellctx']['originx']));
         }
 
-        if ($this->pdfuaMode !== '') {
-            $out = $this->tagPdfUaFigureContent($out, $this->page->getPageId(), $alt);
+        if ($this->isTaggedMode()) {
+            // Flip the top-left image origin to the bottom-left PDF user space origin.
+            $pageheight = $this->page->getPage()['height'];
+            $out = $this->tagPdfUaFigureContent($out, $this->page->getPageId(), $alt, [
+                $this->toPoints($imagex),
+                $this->toPoints($pageheight - $imagey - $height),
+                $this->toPoints($imagex + $width),
+                $this->toPoints($pageheight - $imagey),
+            ]);
         }
 
         return $out;
@@ -13136,9 +13244,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Return a PDF alpha (ExtGState) command derived from a CSS color value.
      *
-     * When $resetOpaque is true, this method always emits an alpha command in
-     * transparent-capable modes so that previously active transparency states do
-     * not leak into subsequent opaque operations.
+     * When $resetOpaque is true, an alpha command is always emitted in
+     * transparency-capable modes.
      */
     protected function getHTMLColorAlphaCmd(string $color, bool $resetOpaque = false): string
     {
@@ -13197,12 +13304,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Return a PDF alpha (ExtGState) command for a border stroke derived from
      * its line color.
      *
-     * Border strokes are emitted after the cell content, where a previously
-     * active translucent state (e.g. an RGBA text or fill color) may still be
-     * the current graphics state. This always emits an alpha command in
-     * transparency-capable modes so an opaque border (e.g. "1px solid red") is
-     * painted at full opacity, while still honoring a border color that carries
-     * its own alpha channel.
+     * Border strokes are emitted after the cell content, where a translucent
+     * state (e.g. an RGBA text or fill color) may still be current. An alpha
+     * command is always emitted in transparency-capable modes, so an opaque
+     * border is painted at full opacity and a border color carrying its own
+     * alpha channel is honored.
      *
      * @param array<array-key, mixed> $strokestyle Stroke style array with optional 'lineColor' key.
      */
@@ -13250,9 +13356,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         while ($parent >= 0 && isset($dom[$parent])) {
             $ancestor = $dom[$parent];
-            $parent = isset($ancestor['parent']) ? $ancestor['parent'] : -1;
+            $parent = $ancestor['parent'];
 
-            if (!($ancestor['tag'] ?? false) || !($ancestor['opening'] ?? false)) {
+            if (!$ancestor['tag'] || !$ancestor['opening']) {
                 continue;
             }
 
@@ -13264,7 +13370,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 return false;
             }
 
-            return $ancestor['block'] ?? false;
+            return $ancestor['block'];
         }
 
         return false;
@@ -13284,7 +13390,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return -1;
         }
 
-        $parent = isset($hrc['dom'][$key]['parent']) ? $hrc['dom'][$key]['parent'] : -1;
+        $parent = $hrc['dom'][$key]['parent'];
         $visited = [];
 
         while ($parent >= 0 && isset($hrc['dom'][$parent])) {
@@ -13294,16 +13400,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $visited[$parent] = true;
 
             $ancestor = $hrc['dom'][$parent];
-            if (
-                ($ancestor['tag'] ?? false)
-                && ($ancestor['opening'] ?? false)
-                && isset($ancestor['value'])
-                && $ancestor['value'] === $tagname
-            ) {
+            if ($ancestor['tag'] && $ancestor['opening'] && $ancestor['value'] === $tagname) {
                 return $parent;
             }
 
-            $parent = isset($ancestor['parent']) ? $ancestor['parent'] : -1;
+            $parent = $ancestor['parent'];
         }
 
         return -1;
@@ -13749,8 +13850,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $blockidx = \array_key_last($hrc['blockbuf']);
-
-        $blockbuf = $hrc['blockbuf'][$blockidx];
+        $blockbuf = $hrc['blockbuf'][$blockidx] ?? null;
+        if ($blockbuf === null) {
+            return false;
+        }
 
         $blockbuf['buffer'] .= $fragment;
         $hrc['blockbuf'][$blockidx] = $blockbuf;
@@ -13762,11 +13865,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Route a rendered fragment to the innermost open capture context
      * (table-cell buffer or block-level buffer).
      *
-     * Capture contexts nest while the DOM is walked, so a fragment always
-     * belongs to the most recently opened one. When the top block buffer was
-     * opened inside the currently open table cell (e.g. a styled <div> inside
-     * a <td>), it must capture the fragment so the block background is painted
-     * behind its own content; otherwise the cell buffer captures first.
+     * Capture contexts nest while the DOM is walked, so a fragment belongs to
+     * the most recently opened one. A block buffer opened inside the current
+     * table cell (e.g. a styled <div> inside a <td>) captures the fragment;
+     * otherwise the cell buffer captures it.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      *
@@ -13851,9 +13953,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * specifies the given dimension as a percentage, or null otherwise.
      *
      * The CSS style declaration is checked first, then the HTML attribute.
-     * Percentages refer to the containing block, which is unknown during early
-     * DOM parsing (they are pre-parsed against the default unit reference),
-     * so they must be re-resolved at layout time against the actual container.
+     * Percentages refer to the containing block and are pre-parsed against the
+     * default unit reference, so they are re-resolved at layout time.
      *
      * @param THTMLAttrib $elm
      * @param string      $dimension Dimension name ('width' or 'height').
@@ -13885,10 +13986,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Resolve the explicit width of an element in user units.
      *
-     * Percentage widths from HTML/CSS are resolved against the given available
-     * width (the actual container), not the generic default unit reference used
-     * during early DOM parsing. Absolute lengths use the pre-parsed numeric
-     * width value. Returns 0.0 when no usable explicit width is declared.
+     * Percentage widths are resolved against the given available width, not the
+     * default unit reference used during early DOM parsing. Absolute lengths use
+     * the pre-parsed numeric width value. Returns 0.0 when no usable explicit
+     * width is declared.
      *
      * @param THTMLAttrib $elm
      */
@@ -14039,7 +14140,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             if (!$inFirstRow && !($elm['opening'] ?? false) && $val === 'colgroup' && $colgroupactive) {
-                if (!$colgrouphascols && $colgroupspan > 0) {
+                if (!$colgrouphascols) {
                     if ($colgroupwidth > 0.0) {
                         $percol = $colgroupwidth / $colgroupspan;
                         for ($i = 0; $i < $colgroupspan; ++$i) {
@@ -14074,7 +14175,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     : 1;
                 $colspan = \max(1, \min($colspan, $cols - $hintcol));
                 $colw = $this->getHTMLElementExplicitWidth($elm, $availableWidth);
-                if ($colw > 0.0 && $colspan > 0) {
+                if ($colw > 0.0) {
                     $percol = $colw / $colspan;
                     for ($i = 0; $i < $colspan; ++$i) {
                         $idx = $hintcol + $i;
@@ -14148,15 +14249,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     && isset($elm['content'])
                     && $elm['content'] !== ''
                 ) {
-                    // The cell content carries an embedded <cssarray> payload
-                    // (the serialized CSS map used when the cell is re-parsed as
-                    // standalone HTML for nested tables / header replay). Its
-                    // serialized text would otherwise dominate and flatten the
-                    // auto-layout weights when embedded CSS rules are present.
-                    // Collapse it to the empty-map form so the weighting depends
-                    // only on the visible cell text and matches the historical
-                    // baseline (an empty CSS map serializes to "[]") regardless
-                    // of any author CSS.
+                    // The cell content carries an embedded <cssarray> payload: the
+                    // serialized CSS map used when the cell is re-parsed as
+                    // standalone HTML for nested tables and header replay. Collapse
+                    // it to the empty-map form ("[]") so the auto-layout weighting
+                    // depends only on the visible cell text.
                     $rawContent =
                         \preg_replace('/<cssarray>.*?<\/cssarray>/is', '[]', $elm['content']) ?? $elm['content'];
                     $plain = \trim(\strip_tags($rawContent));
@@ -14345,7 +14442,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             );
         }
 
-        if ($decor !== '' && $this->pdfuaMode !== '') {
+        if ($decor !== '' && $this->isTaggedMode()) {
             $out .= $this->tagPdfUaArtifactContent($decor);
         } else {
             $out .= $decor;
@@ -14363,8 +14460,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $graphBorderStyles = $this->normalizeHTMLGraphStyleMap($styles);
         $decor = $this->graph->getStartTransform();
-        if (isset($graphBorderStyles['all']) && $graphBorderStyles['all'] !== []) {
-            $graphStyleAll = $graphBorderStyles['all'];
+        $graphStyleAll = $graphBorderStyles['all'] ?? [];
+        if ($graphStyleAll !== []) {
             $decor .= $this->getHTMLStrokeAlphaCmd($graphStyleAll);
             $decor .= $this->graph->getBasicRect($cellx, $rowtop, $cellw, $cellh, 's', $graphStyleAll);
         } else {
@@ -14372,7 +14469,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $decor .= $this->graph->getStopTransform();
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $out .= $this->tagPdfUaArtifactContent($decor);
             return $out;
         }
@@ -14684,7 +14781,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Image\Exception
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws \Com\Tecnick\Unicode\Exception
      * @throws PdfException
@@ -14704,7 +14800,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return '';
         }
 
-        $styleValue = $hrc['dom'][$key]['attribute'][$stylekey] ?? '';
+        $styleValue = $hrc['dom'][$key]['attribute'][$stylekey];
         $style = \is_string($styleValue) ? \trim($styleValue) : '';
         if ($style === '') {
             return '';
@@ -14757,7 +14853,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Image\Exception
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws \Com\Tecnick\Unicode\Exception
      * @throws PdfException
@@ -14800,12 +14895,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             // RTL inter-fragment engine: a uniform-RTL multi-fragment inline run is
-            // laid out right-to-left as a unit. Dispatched here — before the per-node
-            // tag/text handlers — so a run that begins with an inline <img> is captured
-            // whole instead of having its leading image placed by the forward cursor
-            // first (which would then trip the engine's mid-line guard and fall back).
-            // It returns null for every case it does not handle, so LTR, single
-            // fragment and mid-line starts keep the existing forward-cursor path.
+            // laid out right-to-left as a unit. It is dispatched before the per-node
+            // tag/text handlers so a run that begins with an inline <img> is captured
+            // whole. It returns null for every case it does not handle, leaving LTR,
+            // single-fragment and mid-line starts on the forward-cursor path.
             if (!$elm['tag'] || $elm['value'] === 'img' && $elm['opening']) {
                 $hrc['currentkey'] = $key;
                 $rtlRun = $this->renderHTMLRtlInlineRun($hrc, $key, $tpx, $tpy, $tpw, $tph, $appendFragment);
@@ -14857,8 +14950,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         }
                     }
 
-                    $hasExplicitBreakBefore =
-                        isset($elm['attribute']['pagebreak']) && $elm['attribute']['pagebreak'] !== '';
+                    $hasExplicitBreakBefore = ($elm['attribute']['pagebreak'] ?? '') !== '';
                     if ($this->applyHTMLNamedPageSemantics($hrc, $elm, $hasExplicitBreakBefore, $tpx, $tpy)) {
                         if ($hrc['blockbuf'] !== []) {
                             $flush = $this->flushOpenBlockBuffers($hrc, $tpy);
@@ -14926,11 +15018,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     }
 
                     // Skip automatic table-row pagination when the cell has an
-                    // explicit max height: the caller bounded the HTML box (e.g.
-                    // an absolutely-positioned cell placed in a page margin) and
-                    // the table must stay within it rather than being treated as
-                    // overflow and reset to the top of the content region. This
-                    // mirrors the guard applied to plain inline text and <li>.
+                    // explicit max height: the caller bounded the HTML box and the
+                    // table stays within it. The same guard applies to plain inline
+                    // text and <li>.
                     if ($elm['value'] === 'tr' && $hrc['cellctx']['maxheight'] <= 0.0) {
                         $parent = $elm['parent'];
                         $theadhtml = '';
@@ -14942,11 +15032,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
                         $requiredh = $this->estimateHTMLTableRowHeight($hrc, $key);
 
-                        // If a page break is about to happen for this row, flush
-                        // any open block-level buffers (e.g. <table border>) onto
-                        // the current page before the break, so previously
-                        // rendered rows are committed to the right page rather
-                        // than carried over via the buffer to the next page.
+                        // Flush any open block-level buffers (e.g. <table border>)
+                        // onto the current page before this row's page break, so the
+                        // already rendered rows are committed to this page.
                         $region = $this->page->getRegion();
                         $regiontop = $region['RY'];
                         $remaining = $this->getHTMLRemainingHeight($hrc, $tpy);
@@ -15030,18 +15118,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         }
                     }
 
-                    if (
-                        isset($elm['attribute']['id'])
-                        && $elm['attribute']['id'] !== ''
-                        && \is_string($elm['attribute']['id'])
-                    ) {
-                        $name = \trim($elm['attribute']['id']);
+                    $idAttr = $elm['attribute']['id'] ?? '';
+                    if (\is_string($idAttr) && $idAttr !== '') {
+                        $name = \trim($idAttr);
                         if ($name !== '') {
                             $this->setNamedDestination($name, -1, $tpx, $tpy);
                         }
                     }
 
-                    if (isset($elm['attribute']['nobr']) && $elm['attribute']['nobr'] === 'true') {
+                    if (($elm['attribute']['nobr'] ?? '') === 'true') {
                         if ($nobrstack !== []) {
                             $elm['attribute']['nobr'] = '';
                         } elseif (!$elm['self']) {
@@ -15060,6 +15145,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     // Pre-compute per-column widths and spacing for table tags
                     // and store them directly on the DOM node for parseHTMLTagOPENtable.
                     if ($elm['value'] === 'table' || $elm['value'] === 'tablehead') {
+                        $widthAttr = $elm['attribute']['width'] ?? '';
+                        $cellspacingAttr = $elm['attribute']['cellspacing'] ?? '';
+                        $cellpaddingAttr = $elm['attribute']['cellpadding'] ?? '';
                         $tableCols = \max(1, (int) $elm['cols']);
                         $tableWidth = $tpw > 0 ? $tpw : $hrc['cellctx']['maxwidth'];
                         // Constrain $tableWidth to the table's own CSS width so that percentage-based
@@ -15068,12 +15156,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         $rawTblWidth = '';
                         if (isset($elm['style']['width']) && $elm['style']['width'] !== '') {
                             $rawTblWidth = \trim($elm['style']['width']);
-                        } elseif (
-                            isset($elm['attribute']['width'])
-                            && $elm['attribute']['width'] !== ''
-                            && \is_string($elm['attribute']['width'])
-                        ) {
-                            $rawTblWidth = \trim($elm['attribute']['width']);
+                        } elseif (\is_string($widthAttr) && $widthAttr !== '') {
+                            $rawTblWidth = \trim($widthAttr);
                         }
                         if ($rawTblWidth !== '') {
                             $pctM = [];
@@ -15087,41 +15171,25 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                             }
                         }
 
-                        if (
-                            isset($elm['attribute']['cellspacing'])
-                            && $elm['attribute']['cellspacing'] !== ''
-                            && \is_numeric($elm['attribute']['cellspacing'])
-                        ) {
-                            $elm['pendingcellspacingh'] = $this->toUnit($this->getUnitValuePoints(
-                                $elm['attribute']['cellspacing'],
-                            ));
+                        if ($cellspacingAttr !== '' && \is_numeric($cellspacingAttr)) {
+                            $elm['pendingcellspacingh'] = $this->toUnit($this->getUnitValuePoints($cellspacingAttr));
                         } elseif (isset($elm['border-spacing']) && $elm['border-spacing'] !== []) {
                             $elm['pendingcellspacingh'] = $elm['border-spacing']['H'];
                         } else {
                             $elm['pendingcellspacingh'] = 0.0;
                         }
 
-                        if (
-                            isset($elm['attribute']['cellspacing'])
-                            && $elm['attribute']['cellspacing'] !== ''
-                            && \is_numeric($elm['attribute']['cellspacing'])
-                        ) {
-                            $elm['pendingcellspacingv'] = $this->toUnit($this->getUnitValuePoints(
-                                $elm['attribute']['cellspacing'],
-                            ));
+                        if ($cellspacingAttr !== '' && \is_numeric($cellspacingAttr)) {
+                            $elm['pendingcellspacingv'] = $this->toUnit($this->getUnitValuePoints($cellspacingAttr));
                         } elseif (isset($elm['border-spacing']) && $elm['border-spacing'] !== []) {
                             $elm['pendingcellspacingv'] = $elm['border-spacing']['V'];
                         } else {
                             $elm['pendingcellspacingv'] = 0.0;
                         }
 
-                        $elm['pendingcellpadding'] =
-                            isset($elm['attribute']['cellpadding'])
-                            && \is_numeric($elm['attribute']['cellpadding'])
-                            && $elm['attribute']['cellpadding'] > 0
-                                ? $this->toUnit($this->getUnitValuePoints($elm['attribute']['cellpadding']))
-                                : 0.0;
-                        $elm['cols'] = $elm['cols'];
+                        $elm['pendingcellpadding'] = \is_numeric($cellpaddingAttr) && (float) $cellpaddingAttr > 0
+                            ? $this->toUnit($this->getUnitValuePoints($cellpaddingAttr))
+                            : 0.0;
                         $effectiveCellSpacing = $this->getHTMLTableCellSpacingH($elm);
                         $availableForCols = \max(0.0, $tableWidth - ($effectiveCellSpacing * \max(0, $tableCols + 1)));
 
@@ -15151,7 +15219,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         'b' => $this->parseHTMLTagOPENb($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'button' => $this->parseHTMLTagOPENbutton($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'blockquote' => $this->parseHTMLTagOPENblockquote($hrc, $key, $tpx, $tpy, $tpw, $tph),
-                        'body' => $this->parseHTMLTagOPENbody($hrc, $key, $tpx, $tpy, $tpw, $tph),
+                        'body', 'html' => $this->parseHTMLTagOPENbody($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'br' => $this->parseHTMLTagOPENbr($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'caption' => $this->parseHTMLTagOPENcaption($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'col' => $this->parseHTMLTagOPENcol($hrc, $key, $tpx, $tpy, $tpw, $tph),
@@ -15271,7 +15339,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         'b' => $this->parseHTMLTagCLOSEb($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'button' => $this->parseHTMLTagCLOSEbutton($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'blockquote' => $this->parseHTMLTagCLOSEblockquote($hrc, $key, $tpx, $tpy, $tpw, $tph),
-                        'body' => $this->parseHTMLTagCLOSEbody($hrc, $key, $tpx, $tpy, $tpw, $tph),
+                        'body', 'html' => $this->parseHTMLTagCLOSEbody($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'br' => $this->parseHTMLTagCLOSEbr($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'caption' => $this->parseHTMLTagCLOSEcaption($hrc, $key, $tpx, $tpy, $tpw, $tph),
                         'col' => $this->parseHTMLTagCLOSEcol($hrc, $key, $tpx, $tpy, $tpw, $tph),
@@ -15368,9 +15436,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     /**
      * Returns the PDF code for the border and background box of an HTML cell.
      *
-     * Shared by getHTMLCell() and addHTMLCell(): both derive an identical box
-     * height fallback when no explicit height is given and draw the cell
-     * border/background through the same point conversions.
+     * Shared by getHTMLCell() and addHTMLCell(): both derive the same box height
+     * fallback when no explicit height is given and use the same point
+     * conversions.
      *
      * @param float     $posx        Abscissa of upper-left corner.
      * @param float     $posy        Ordinate of upper-left corner.
@@ -15425,11 +15493,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param float       $width       Width.
      * @param float       $height      Height.
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
+     *                                 The margin and padding values are in points.
      * @param array<int|string, BorderStyle> $styles Cell border styles (see: getCurrentStyleArray).
      *
      * @return string
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -15520,9 +15588,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param float       $width       Width.
      * @param float       $height      Height.
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
+     *                                 The margin and padding values are in points.
      * @param array<int|string, BorderStyle> $styles Cell border styles (see: getCurrentStyleArray).
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -15553,8 +15621,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
 
             $pid = (int) $this->page->getPageId();
-            $outbypage += [$pid => ''];
-            $outbypage[$pid] .= $fragment;
+            // The closure appends to the same page bucket on every call, so the
+            // accumulated value must be preserved.
+            // @mago-expect analysis:redundant-null-coalesce
+            $outbypage[$pid] = ($outbypage[$pid] ?? '') . $fragment;
         };
 
         $drawcell = $styles !== [];
@@ -15709,11 +15779,11 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     }
 
     /**
-     * Multi-line vertical fit guard: when a wrappable fragment would produce
-     * more wrapped lines than fit in the remaining region height, render only
-     * the lines that fit, page-break, then process the remainder recursively on
-     * the new page region. Returns the produced PDF code, or null when the
-     * fragment fits and normal text flow should continue.
+     * Multi-line vertical fit guard: when a wrappable fragment produces more
+     * wrapped lines than fit in the remaining region height, only the lines that
+     * fit are rendered, the page breaks, and the remainder is processed
+     * recursively on the new page region. Returns the produced PDF code, or null
+     * when the fragment fits and normal text flow continues.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param-out THTMLRenderContext $hrc HTML render context.
@@ -15795,8 +15865,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $probeRtl = false;
         $this->prepareHTMLText($probeText, $probeOrd, $probeDim, $forcedir, $probeRtl);
         // Count only: the RTL flag keeps the line count consistent with the
-        // top-down render. (The pos-based continuation slicing for RTL overflow
-        // is Stage 2e and still deferred.)
+        // top-down render.
         $probeLines = $this->splitLines(
             $probeOrd,
             $probeDim,
@@ -15806,12 +15875,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         );
         $probeCount = \count($probeLines);
 
-        // A paragraph taller than the remaining region height is split
-        // when there is room above it on this region (a mid-region break)
-        // or when the page offers a further region to flow into. The
-        // latter lets a paragraph that starts exactly at a region/band top
-        // still hug a banded obstacle: render the lines that fit in this
-        // band, then break into the next band instead of overprinting it.
+        // A paragraph taller than the remaining region height is split when
+        // there is room above it in this region (a mid-region break) or when the
+        // page offers a further region to flow into: the lines that fit render
+        // in this band and the rest break into the next one.
         $atRegionTopMV = $tpy <= ($regiontopMV + self::WIDTH_TOLERANCE);
         $canSplitAtTopMV = $atRegionTopMV && $this->htmlCanAdvanceRegion();
         if ($probeCount <= $maxFitLines || $atRegionTopMV && !$canSplitAtTopMV) {
@@ -15820,12 +15887,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $fitLines = $maxFitLines;
 
-        // Orphan/widow control only applies to a mid-region break,
-        // where lines above the paragraph give room to trade. At a
-        // region top the band may be a single line tall, so honoring
-        // orphans/widows would either starve the band (no line ever
-        // fits, looping) or hold back lines that have nowhere to go;
-        // render as many lines as fit and let the rest flow on.
+        // Orphan/widow control applies only to a mid-region break, where the
+        // lines above the paragraph give room to trade. At a region top, as many
+        // lines as fit are rendered and the rest flow on.
         if (!$atRegionTopMV) {
             $orphans = \max(1, (int) $elm['orphans']);
             $widows = \max(1, (int) $elm['widows']);
@@ -15900,37 +15964,27 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $prevJustifyContinuation = $this->htmlJustifyContinuationLine;
         $this->htmlJustifyContinuationLine = $halign === 'J';
         // The head's value is a pre-cut slice of this single node, so the forward
-        // run scan no longer sees where the node really ends and would mistake a
-        // following sibling (e.g. an inline image lower in the paragraph) for
-        // content on these lines. Measure each head line's ascent from its own
-        // font only; a taller sibling that truly lands on a line still raises that
-        // line through its own render. (Mirrors splitHTMLTextJustifyOverflow.)
+        // run scan cannot see where the node ends. Measure each head line's ascent
+        // from its own font only; a taller sibling that lands on a line raises
+        // that line through its own render.
         $prevNoLookahead = $hrc['cellctx']['lineascentnolookahead'];
         $hrc['cellctx']['lineascentnolookahead'] = true;
         $headOut = $this->parseHTMLText($hrc, $key, $tpx, $tpy, $tpw, $tph, $appendFragment);
         $hrc['cellctx']['lineascentnolookahead'] = $prevNoLookahead;
         $this->htmlJustifyContinuationLine = $prevJustifyContinuation;
 
-        // The head's final line is left "open" (the cursor stays on
-        // it so a following inline fragment could continue it), so tpy
-        // is not advanced past it. When the head exactly fills a
-        // single-line band, tpy is therefore still at the region top
-        // and breakHTMLIfNeeded() would treat the band as untouched and
-        // refuse to advance, leaving the tail to overprint the head.
-        // Drop tpy to the rendered line bottom so the break sees the
+        // The head's final line stays open (the cursor remains on it so a
+        // following inline fragment can continue it), so tpy is not advanced past
+        // it. Drop tpy to the rendered line bottom so breakHTMLIfNeeded() sees the
         // band as consumed and moves the tail to the next region.
         $headBottom = $hrc['cellctx']['linebottom'];
         if ($headBottom > ($tpy + self::WIDTH_TOLERANCE)) {
             $tpy = $headBottom;
         }
 
-        // The HEAD portion belongs to the current (about-to-end)
-        // page and must be dispatched before the page break, using
-        // the same routing the caller applies to fragments
-        // (table-cell capture, block-level buffer, or direct page
-        // append). Mirroring this dispatch here ensures the head
-        // bytes are emitted on the correct page and not carried
-        // over to the new page along with the tail.
+        // The head belongs to the current page and is dispatched before the page
+        // break through the same routing the caller applies to fragments:
+        // table-cell capture, block-level buffer, or direct page append.
         $headDispatch = $breakoutPrefix . $headOut;
         if ($headDispatch !== '' && !$this->captureHTMLFragment($hrc, $headDispatch) && $appendFragment !== null) {
             $appendFragment($headDispatch);
@@ -15995,7 +16049,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $isInlineBlockParent = false;
         if (!$elm['tag'] && isset($hrc['dom'][$elm['parent']])) {
             $parentElm = $hrc['dom'][$elm['parent']];
-            if (($parentElm['tag'] ?? false) && ($parentElm['opening'] ?? false)) {
+            if ($parentElm['tag'] && $parentElm['opening']) {
                 $parentDisplay = \strtolower(\trim($parentElm['display']));
                 $isInlineBlockParent = $parentDisplay === 'inline-block';
 
@@ -16005,10 +16059,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 }
 
                 $hasInlineDecoration = false;
-                if (isset($parentElm['bgcolor']) && $parentElm['bgcolor'] !== '' && \is_string($parentElm['bgcolor'])) {
+                if ($parentElm['bgcolor'] !== '' && \is_string($parentElm['bgcolor'])) {
                     $hasInlineDecoration = true;
                 }
-                if (isset($parentElm['padding']) && $parentElm['padding'] !== []) {
+                if ($parentElm['padding'] !== []) {
                     foreach (['T', 'R', 'B', 'L'] as $side) {
                         if (!(isset($parentElm['padding'][$side]) && $parentElm['padding'][$side] > 0.0)) {
                             continue;
@@ -16018,24 +16072,20 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                         break;
                     }
                 }
-                if (isset($parentElm['border']) && $parentElm['border'] !== []) {
+                if ($parentElm['border'] !== []) {
                     $hasInlineDecoration = true;
                 }
 
-                $hasOwnBg = false;
-                if (isset($parentElm['bgcolor'])) {
-                    $hasOwnBg =
-                        $grandParentElm === null
-                        || $grandParentElm['bgcolor'] === ''
-                        || $grandParentElm['bgcolor'] !== $parentElm['bgcolor'];
-                }
+                $hasOwnBg =
+                    $grandParentElm === null
+                    || $grandParentElm['bgcolor'] === ''
+                    || $grandParentElm['bgcolor'] !== $parentElm['bgcolor'];
 
                 $hasOwnPadding = false;
-                if (isset($parentElm['padding']) && $parentElm['padding'] !== []) {
+                if ($parentElm['padding'] !== []) {
                     foreach (['T', 'R', 'B', 'L'] as $side) {
                         $parentPad = isset($parentElm['padding'][$side]) ? $parentElm['padding'][$side] : 0.0;
                         $grandPad = $grandParentElm !== null
-                        && isset($grandParentElm['padding'])
                         && $grandParentElm['padding'] !== []
                         && isset($grandParentElm['padding'][$side])
                             ? $grandParentElm['padding'][$side]
@@ -16049,7 +16099,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 }
 
                 $hasOwnBorder = false;
-                if (isset($parentElm['border']) && $parentElm['border'] !== []) {
+                if ($parentElm['border'] !== []) {
                     $hasOwnBorder =
                         $grandParentElm === null
                         || $grandParentElm['border'] === []
@@ -16062,10 +16112,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                     && $hasInlineDecoration
                     && ($hasOwnBg || $hasOwnPadding || $hasOwnBorder)
                 ) {
-                    if (isset($parentElm['bgcolor'])) {
+                    if (\is_string($parentElm['bgcolor'])) {
                         $decorBgcolor = $parentElm['bgcolor'];
                     }
-                    if (isset($parentElm['padding']) && $parentElm['padding'] !== []) {
+                    if ($parentElm['padding'] !== []) {
                         foreach ($parentElm['padding'] as $paddingSide => $paddingValue) {
                             if (!\in_array($paddingSide, ['T', 'R', 'B', 'L'], true)) {
                                 continue;
@@ -16074,7 +16124,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                             $decorPadding[$paddingSide] = $paddingValue;
                         }
                     }
-                    if ($hasOwnBorder && isset($parentElm['border']) && $parentElm['border'] !== []) {
+                    if ($hasOwnBorder && $parentElm['border'] !== []) {
                         $decorBorder = $parentElm['border'];
                     }
                 }
@@ -16083,10 +16133,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 // keep parseHTMLText decoration only for inline inline-block containers.
                 $isInlineSpanParent = $parentElm['value'] !== '' && $parentElm['value'] === 'span';
                 if ($isInlineBlockParent && $hasInlineDecoration && $isInlineSpanParent) {
-                    if (isset($parentElm['bgcolor'])) {
+                    if (\is_string($parentElm['bgcolor'])) {
                         $decorBgcolor = $parentElm['bgcolor'];
                     }
-                    if (isset($parentElm['padding']) && $parentElm['padding'] !== []) {
+                    if ($parentElm['padding'] !== []) {
                         foreach ($parentElm['padding'] as $paddingSide => $paddingValue) {
                             if (!\in_array($paddingSide, ['T', 'R', 'B', 'L'], true)) {
                                 continue;
@@ -16095,21 +16145,17 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                             $decorPadding[$paddingSide] = $paddingValue;
                         }
                     }
-                    if (
-                        isset($parentElm['border'])
-                        && $parentElm['border'] !== []
-                        && isset($parentElm['border']['LTRB'])
-                    ) {
+                    if ($parentElm['border'] !== [] && isset($parentElm['border']['LTRB'])) {
                         $decorBorder = $parentElm['border'];
                     }
                 }
 
-                if ($isInlineBlockParent && isset($parentElm['width']) && $parentElm['width'] > 0) {
+                if ($isInlineBlockParent && $parentElm['width'] > 0) {
                     $inlineWidth = $parentElm['width'];
                     if ($inlineWidth > 0.0) {
                         $borderLeft = 0.0;
                         $borderRight = 0.0;
-                        if (isset($parentElm['border']) && $parentElm['border'] !== []) {
+                        if ($parentElm['border'] !== []) {
                             $bLTRB = $parentElm['border']['LTRB'] ?? null;
                             $bL = $parentElm['border']['L'] ?? null;
                             if ($bL !== null && $bL !== []) {
@@ -16360,10 +16406,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
     /**
      * Split a justified inline run that overflows the current line at its first
-     * visual line break, rendering head and tail on separate lines so each
-     * line's word spacing is computed for its own content. Returns the produced
-     * PDF code, or null when no justified split applies and normal flow should
-     * continue.
+     * visual line break, rendering head and tail on separate lines so each line's
+     * word spacing is computed for its own content. Returns the produced PDF
+     * code, or null when no justified split applies.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param-out THTMLRenderContext $hrc HTML render context.
@@ -16455,13 +16500,13 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     }
 
     /**
-     * Generic page/region overflow guard for plain inline text flow: when the
-     * next line would not fit in the remaining region height, break to the next
-     * region and re-anchor the line-local geometry. Skipped while a table cell
-     * is active (table pagination has its own path) or when the cell has an
-     * explicit max height (the caller bounded the box). Open block-level buffers
-     * are flushed onto the current page before the break and re-based to the new
-     * region top. Returns the page-break PDF code (empty when no break occurred).
+     * Page/region overflow guard for plain inline text flow: when the next line
+     * does not fit in the remaining region height, break to the next region and
+     * re-anchor the line-local geometry. Skipped while a table cell is active
+     * (table pagination has its own path) or when the cell has an explicit max
+     * height. Open block-level buffers are flushed onto the current page before
+     * the break and re-based to the new region top. Returns the page-break PDF
+     * code, empty when no break occurred.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param-out THTMLRenderContext $hrc HTML render context.
@@ -16551,11 +16596,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     }
 
     /**
-     * When a continuation fragment's trailing collapsible whitespace is the
-     * sole cause of overflow, strip it before the wrap check and rendering so
-     * the visible text still fits the current line. The fragment text and its
-     * width are updated in place; the returned advance lets the caller move the
-     * cursor by the stripped width to preserve inter-word spacing.
+     * When a continuation fragment's trailing collapsible whitespace is the sole
+     * cause of overflow, it is stripped before the wrap check and rendering. The
+     * fragment text and width are updated in place; the returned advance is the
+     * stripped width, for the caller to move the cursor by.
      *
      * @param THTMLRenderContext $hrc HTML render context.
      * @param int $key DOM array key.
@@ -16637,7 +16681,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $lineWordSpacing = 0.0;
         $customJustify = false;
         if ($halign === 'J') {
-            $runWidth = $this->measureHTMLInlineRunWidth($hrc, $currentkey);
+            $runWidth = $this->measureHTMLInlineRunWidth($hrc, $currentkey, $lineOffset);
             $hasFollowingInline = $runWidth > ($fragmentWidth + self::WIDTH_TOLERANCE);
             $hasLineWordSpacing = $hrc['cellctx']['linewordspacing'] > 0.0;
             $customJustify = $hasFollowingInline || $lineOffset > self::WIDTH_TOLERANCE && $hasLineWordSpacing;
@@ -16689,6 +16733,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * @param float $remainingWidth Remaining width on the current line.
      * @param float $curAscent Current font ascent.
      * @param float $lineascent Line ascent.
+     * @param string $forcedir Forced text direction ('R' or '').
      *
      * @return array{posx: float, width: float, offset: float, align: string, defer: bool}
      *
@@ -16708,6 +16753,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         float $remainingWidth,
         float $curAscent,
         float $lineascent,
+        string $forcedir = '',
     ): array {
         $renderPosX = $lineOriginX;
         $renderWidth = $availableWidth;
@@ -16727,26 +16773,36 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 $renderAlign = $halign === 'R' ? 'r' : 'c';
             } elseif ($fragmentWidth <= ($remainingWidth + self::WIDTH_TOLERANCE)) {
                 $lineWidth = $this->measureHTMLInlineLineWidth($hrc, $currentkey, $availableWidth);
-                $runWidth = $this->measureHTMLInlineRunWidth($hrc, $currentkey);
+                $runWidth = $this->measureHTMLInlineRunWidth($hrc, $currentkey, $lineOffset);
                 $hasFollowingInline = $runWidth > ($fragmentWidth + self::WIDTH_TOLERANCE);
                 $isLeadingSmall = ($curAscent + self::WIDTH_TOLERANCE) < $lineascent;
                 $lineWidthCollapsed = $hasFollowingInline && $lineWidth <= ($fragmentWidth + self::WIDTH_TOLERANCE);
                 $deferWrapDetection = $hasFollowingInline && $isLeadingSmall;
-                if (
-                    $lineWidth > 0.0
-                    && $lineWidth <= ($availableWidth + self::WIDTH_TOLERANCE)
-                    && !$lineWidthCollapsed
-                ) {
+                // The first line is indented from the start side of the block, which is
+                // the right one for an RTL direction. The line is placed by hand here,
+                // so the indent is taken out of the box it is placed in.
+                $indentWidth = \max(0.0, $availableWidth - $textIndentOffset);
+                $indentStart = $forcedir === 'R' ? 0.0 : $textIndentOffset;
+                if ($lineWidth > 0.0 && $lineWidth <= ($indentWidth + self::WIDTH_TOLERANCE) && !$lineWidthCollapsed) {
                     $renderPosX = $lineOriginX
+                    + $indentStart
                     + match ($halign) {
-                        'R' => \max(0.0, $availableWidth - $lineWidth),
-                        default => \max(0.0, ($availableWidth - $lineWidth) / 2),
+                        'R' => \max(0.0, $indentWidth - $lineWidth),
+                        default => \max(0.0, ($indentWidth - $lineWidth) / 2),
                     };
                     // Use the measured lineWidth for rendering to avoid rounding-induced wraps.
-                    // The lineWidth has been verified to fit within availableWidth + self::WIDTH_TOLERANCE tolerance.
-                    $renderWidth = \min($lineWidth, $availableWidth);
+                    // The lineWidth has been verified to fit within indentWidth + self::WIDTH_TOLERANCE tolerance.
+                    $renderWidth = \min($lineWidth, $indentWidth);
                     $renderOffset = 0.0;
                     $renderAlign = 'L';
+                } elseif ($textIndentOffset > 0.0) {
+                    // The indented first line does not fit: hand the run to the text
+                    // layer, which shortens the first line at its start side and aligns
+                    // the wrapped ones on the full width.
+                    $renderPosX = $lineOriginX;
+                    $renderWidth = $availableWidth;
+                    $renderOffset = $textIndentOffset;
+                    $renderAlign = $halign;
                 } else {
                     // If the full run does not fit, avoid centering only the first fragment.
                     $renderPosX = $lineOriginX;
@@ -16881,7 +16937,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $style = $elm['fontstyle'] === '' ? '' : $elm['fontstyle'];
         $forcedir = $elm['dir'] === 'rtl' ? 'R' : '';
         if ($elm['align'] === '') {
-            $halign = $this->rtl ? 'R' : 'L';
+            // The initial text-align is 'start', which is the right edge of an RTL element.
+            $halign = $forcedir === 'R' ? 'R' : 'L';
         } else {
             $halign = (string) $elm['align'];
         }
@@ -16903,7 +16960,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         if (!$elm['tag'] && isset($hrc['dom'][$elm['parent']])) {
             $parentElm = $hrc['dom'][$elm['parent']];
-            $parentDisplayRaw = isset($parentElm['display']) ? $parentElm['display'] : '';
+            $parentDisplayRaw = $parentElm['display'];
             $parentDisplay = \strtolower(\trim($parentDisplayRaw));
             if ($parentDisplay === 'inline-block' && $parentElm['width'] > 0.0) {
                 $inlineOriginX = $parentElm['x'];
@@ -16921,14 +16978,15 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         // Extract CSS text-indent for first-line offset (will be passed to getTextCell).
         // Positive values create a first-line indent; negative values create a hanging indent.
         // The text-indent is applied only to the first line by splitLines when used as offset parameter.
+        // The block's first-line inset, if any, reserves inline space ahead of the text on
+        // the same line and adds to the indent.
         $textIndentOffset = 0.0;
         if ($lineOffset <= self::WIDTH_TOLERANCE && !$hrc['cellctx']['textindentapplied'] && $availableWidth > 0.0) {
-            $textIndentOffset = $elm['text-indent'];
-            if ($forcedir === 'R') {
-                $textIndentOffset *= -1;
-            }
-
+            // The indent shortens the first line from the start side of the block, which
+            // the text layer resolves from the alignment, so the value stays positive.
+            $textIndentOffset = $elm['text-indent'] + $hrc['cellctx']['firstlineinset'];
             $hrc['cellctx']['textindentapplied'] = true;
+            $hrc['cellctx']['firstlineinset'] = 0.0;
         }
 
         // In normal HTML flow, collapsible spaces at line start are ignored.
@@ -16954,11 +17012,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $curAscent = $this->toUnit($curfont['ascent']);
         $curHeight = $this->toUnit($curfont['height']);
         // A justified line emitted by splitHTMLTextJustifyOverflow is a complete
-        // single-node line: its value is one wrapped line, so the forward run scan
-        // would mistake the following sibling (e.g. an inline image further down the
-        // paragraph) for content on this line. Skip the look-ahead for such lines —
-        // their ascent is the node's own; any taller sibling that truly lands here
-        // raises the line height through its own render.
+        // single-node line, so the forward run scan cannot see where the node ends.
+        // Skip the look-ahead for such lines: their ascent is the node's own, and a
+        // taller sibling that lands here raises the line height through its own
+        // render.
         $skipAscent =
             ($lineOffset <= self::WIDTH_TOLERANCE || $hrc['cellctx']['lineascent'] <= 0)
             && !$hrc['cellctx']['lineascentnolookahead'];
@@ -17090,15 +17147,12 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $customJustify = $justification['custom'];
         $lineWordSpacing = $justification['spacing'];
 
-        // Justified inline runs that overflow the current line must not bake the
-        // first line's word spacing into the lines they wrap onto: a single
-        // getTextCell render shares one spacing across all of its visual lines,
-        // so a continuation line (and any inline siblings sharing it) is left
-        // under-justified. Split the run at the first visual line break and
-        // render each part on its own line, where the word spacing is recomputed
-        // for that line's full content (this fragment's tail plus following
-        // inline). Only plain, wrappable text is split; the recursion terminates
-        // because head and tail are both strictly shorter than the input.
+        // A single getTextCell render shares one word spacing across all of its
+        // visual lines. Split a justified run that overflows the current line at
+        // the first visual line break and render each part on its own line, where
+        // the word spacing is recomputed for that line's full content. Only plain,
+        // wrappable text is split; head and tail are both strictly shorter than
+        // the input, so the recursion terminates.
         $justifyOut = $this->splitHTMLTextJustifyOverflow(
             $hrc,
             $key,
@@ -17147,6 +17201,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $remainingWidth,
             $curAscent,
             $lineascent,
+            $forcedir,
         );
         $renderPosX = $geometry['posx'];
         $renderWidth = $geometry['width'];
@@ -17216,7 +17271,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $elmStroke = $elm['stroke'];
         $elmFill = $elm['fill'];
         $elmClip = $elm['clip'];
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $ordarr = [];
             $dim = self::DIM_DEFAULT;
             $this->prepareText($text, $ordarr, $dim, $forcedir);
@@ -17260,7 +17315,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $this->htmlRenderSoftHyphen = $prevSoftHyphen;
         }
 
-        if ($textout !== '' && $this->pdfuaMode !== '') {
+        if ($textout !== '' && $this->isTaggedMode()) {
             $textout = $this->tagPdfUaTextContent($textout, $this->page->getPageId(), $actualText);
         }
 
@@ -17331,7 +17386,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         if ($link !== '' && $bbox['w'] > 0.0 && $bbox['h'] > 0.0) {
             $lnkid = $this->setLink($bbox['x'], $bbox['y'], $bbox['w'], $bbox['h'], $link);
             $this->page->addAnnotRef($lnkid, $this->page->getPageID());
-            if ($this->pdfuaMode !== '' && $lnkid > 0) {
+            if ($this->isTaggedMode() && $lnkid > 0) {
                 $this->registerPdfUaAnnotation($lnkid, $this->page->getPageID());
             }
         }
@@ -17430,7 +17485,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
                 ? $elm['attribute']['href']
                 : '';
 
-        if ($this->pdfuaMode !== '' && $href !== '') {
+        if ($this->isTaggedMode() && $href !== '') {
             $this->beginStructElem('Link', $this->page->getPageId());
         }
 
@@ -18122,9 +18177,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'lineColor' => $elm['fgcolor'] === '' ? 'black' : $elm['fgcolor'],
         ];
         $outLine = $this->graph->getLine($tpx, $lineY, $tpx + $width, $lineY, $lineStyle);
-        // A horizontal rule carries no semantics, so in PDF/UA mode its stroke is wrapped
-        // as an Artifact (tagPdfUaArtifactContent is a no-op outside PDF/UA mode). Without
-        // this the rule would be untagged real content, violating PDF/UA-1 7.1.
+        // A horizontal rule carries no semantics: in PDF/UA mode its stroke is
+        // wrapped as an Artifact (PDF/UA-1 7.1). tagPdfUaArtifactContent is a
+        // no-op outside PDF/UA mode.
         $out .= $this->tagPdfUaArtifactContent($outLine);
         $this->moveHTMLToNextLine($hrc, $key, $tpx, $tpy, $tpw);
 
@@ -18193,7 +18248,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return string PDF code.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
@@ -18410,7 +18464,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $out = $this->openHTMLBlock($hrc, $key, $tpx, $tpy, $tpw);
         $depth = $this->getHTMLListDepth($hrc);
         if ($depth < 1) {
-            if ($this->pdfuaMode !== '') {
+            if ($this->isTaggedMode()) {
                 $this->beginStructElem('LBody', $this->page->getPageId());
             }
 
@@ -18420,29 +18474,24 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $font = $this->getHTMLFontMetric($hrc, $key);
 
         // When the parent <ul>/<ol> carries an explicit CSS padding/margin override,
-        // openHTMLBlock() already consumed those values by shifting hrc['cellctx']['originx']
-        // (and therefore tpx) into the element's content box.  Adding the same amount here
-        // again would double-count the shift and push bullet+text too far right.
-        // Use the default gutter width only when no CSS override was applied.
+        // openHTMLBlock() has already shifted hrc['cellctx']['originx'] (and therefore
+        // tpx) into the element's content box. The default gutter width applies only
+        // when no CSS override was used.
         $depthidx = $depth - 1;
         $hasCSSIndentOverride =
             isset($hrc['liststack'][$depthidx]['indent']) && $hrc['liststack'][$depthidx]['indent'] > 0.0;
         $indent = $hasCSSIndentOverride ? 0.0 : $this->getHTMLListIndentWidth();
 
-        // IMPORTANT: Do NOT add liIndent here. When the <li> element carries CSS padding/margin,
-        // openHTMLBlock() already consumed those values by shifting tpx. For 'outside' markers
-        // the bullet must not be pushed into the li's content box by li padding-left; that
-        // correction is applied below when computing $bulletx.
+        // liIndent is not added here: openHTMLBlock() has already shifted tpx by the
+        // <li> CSS padding/margin. For 'outside' markers the correction is applied
+        // below when computing $bulletx.
 
         $counter = $this->getHTMLListItemCounter($hrc, $key);
-        $markerType = $this->getCurrentHTMLListMarkerType($hrc);
-        $markerPosition = 'outside';
+        $markerType = $this->getCurrentHTMLListMarkerType($hrc, $key);
+        // An inside marker is laid out inline at the item content edge: the space it
+        // takes before the item text is known once the marker has been rendered.
+        $insideMarker = ($hrc['dom'][$key]['list-style-position'] ?? '') === 'inside';
         $insideTextOffset = 0.0;
-        if (isset($hrc['dom'][$key]['list-style-position']) && $hrc['dom'][$key]['list-style-position'] === 'inside') {
-            $markerPosition = 'inside';
-            // Browser-like inside markers reserve inline marker space before item text.
-            $insideTextOffset = $this->getStringWidth('0 ');
-        }
 
         $fontAscent = isset($font['ascent']) && \is_numeric($font['ascent']) ? (float) $font['ascent'] : 0.0;
         // The marker shares the first line box with the item's leading inline
@@ -18451,15 +18500,19 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $runAscent = $this->measureHTMLInlineRunMaxAscent($hrc, $key);
         $this->getHTMLFontMetric($hrc, $key); // restore the li font selected above
         $baseline = $tpy + \max($this->toUnit($fontAscent), $runAscent);
-        // For 'outside' markers the bullet hangs in the li's padding area (between the
-        // list's content edge and the li's content edge). openHTMLBlock() already shifted
-        // tpx by li margin+padding into the li's content box, so subtract the li's own
-        // padding-left to re-anchor the marker at the li's border-box left edge instead
-        // of pushing it further right into the content area.
-        $liPaddingL = $markerPosition === 'outside' && isset($hrc['dom'][$key]['padding']['L'])
-            ? $hrc['dom'][$key]['padding']['L']
-            : 0.0;
-        $bulletx = $tpx - $liPaddingL + $indent + $insideTextOffset;
+        // For 'outside' markers the bullet hangs in the li's padding area, between
+        // the list's content edge and the li's content edge. openHTMLBlock() shifted
+        // tpx by the li margin+padding, so the li's own padding on the marker side is
+        // taken back to anchor the marker at the li's border-box edge. In RTL the
+        // marker hangs off the right edge of the item box.
+        $liPadding = 0.0;
+        if (!$insideMarker) {
+            $liPadding = $this->rtl
+                ? $hrc['dom'][$key]['padding']['R'] ?? 0.0
+                : $hrc['dom'][$key]['padding']['L'] ?? 0.0;
+        }
+
+        $bulletx = $this->rtl ? $tpx + $tpw + $liPadding - $indent : $tpx - $liPadding + $indent;
 
         // Get marker styles from li::marker selector
         $markerStyles = [];
@@ -18471,12 +18524,25 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
 
         $out .= $this->getHTMLTextPrefix($hrc, $key);
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $this->beginStructElem('Lbl', $this->page->getPageId());
         }
 
-        $bulletOut = $this->getHTMLliBullet($depth, $counter, $bulletx, $baseline, $markerType, $markerStyles);
-        if ($this->pdfuaMode !== '') {
+        $markerAdvance = 0.0;
+        $bulletOut = $this->getHTMLliBullet(
+            depth: $depth,
+            count: $counter,
+            posx: $bulletx,
+            posy: $baseline,
+            type: $markerType,
+            markerStyles: $markerStyles,
+            inside: $insideMarker,
+            advance: $markerAdvance,
+        );
+        if ($insideMarker) {
+            $insideTextOffset = $markerAdvance;
+        }
+        if ($this->isTaggedMode()) {
             $bulletOut = $this->tagPdfUaTextContent($bulletOut, $this->page->getPageId(), '');
             $this->endStructElem();
             $this->beginStructElem('LBody', $this->page->getPageId());
@@ -18494,16 +18560,31 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'maxwidth' => $listItemMaxWidth,
         ];
 
-        $tpx += $indent + $insideTextOffset;
-        if ($markerPosition === 'outside') {
+        // The list gutter and the inline marker space are taken from the edge the
+        // item text starts at: the left one in LTR, the right one in RTL.
+        if ($this->rtl) {
+            if ($tpw > 0) {
+                $tpw = \max(0.0, $tpw - $indent - $insideTextOffset);
+            }
+        } else {
+            $tpx += $indent + $insideTextOffset;
             if ($tpw > 0) {
                 $tpw = \max(0.0, $tpw - $indent);
             }
-
-            $hrc['cellctx']['originx'] = $tpx;
-            $hrc['cellctx']['maxwidth'] = $tpw;
-            $hrc['cellctx']['lineoriginx'] = $tpx;
         }
+
+        // The item content box is where the wrapped lines and the nested blocks go.
+        // An inside marker sits inline in that box and shifts the first line only, so
+        // it belongs to neither the content edge nor the content width.
+        $contentx = $this->rtl ? $tpx : $tpx - $insideTextOffset;
+        $contentw = $this->rtl ? $tpw + $insideTextOffset : $tpw;
+        $hrc['cellctx']['originx'] = $contentx;
+        $hrc['cellctx']['maxwidth'] = $contentw;
+        $hrc['cellctx']['lineoriginx'] = $contentx;
+        // In LTR the marker space is carried by tpx, which the line start is measured
+        // from. RTL lines start at the content box right edge, which tpx does not
+        // track, so the space is carried as an explicit first-line inset instead.
+        $hrc['cellctx']['firstlineinset'] = $this->rtl ? $insideTextOffset : 0.0;
 
         return $out;
     }
@@ -18577,7 +18658,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             && ($tpx > ($hrc['cellctx']['originx'] + self::WIDTH_TOLERANCE) || $lineAdvanceCtx > self::WIDTH_TOLERANCE)
         ) {
             $baseOriginX = $hrc['cellctx']['originx'];
-            $lineStartX = $tpx;
+            // The nested list starts at the list-item text column, not at the inline
+            // cursor: text already rendered on the current line must not shift it.
+            $lineStartX = $hrc['cellctx']['lineoriginx'];
             $this->moveHTMLToNextLine($hrc, $key, $tpx, $tpy, $tpw);
             // Nested lists inside <li> should continue from the current list-item
             // text column (browser-like), not from the parent list block origin.
@@ -18787,7 +18870,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return string PDF code.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Image\Exception
@@ -18986,7 +19068,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return string PDF code.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Throwable
      */
     protected function parseHTMLTagOPENspan(
@@ -19192,7 +19273,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
 
         $cols = \max(1, (int) $elm['cols']);
         $elm['cols'] = $cols;
-        $colwidth = $cols > 0 ? $width / $cols : $width;
 
         // Consume pre-computed column widths and spacing stored on the DOM node.
         $colwidths = isset($elm['pendingcolwidths']) ? $elm['pendingcolwidths'] : [];
@@ -19200,7 +19280,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $cellspacingv = $this->getHTMLTableCellSpacingV($elm);
         $cellpadding = isset($elm['pendingcellpadding']) ? $elm['pendingcellpadding'] : 0.0;
         $availableWidth = \max(0.0, $width - ($cellspacingh * \max(0, $cols + 1)));
-        $colwidth = $cols > 0 ? $availableWidth / $cols : $availableWidth;
+        $colwidth = $availableWidth / $cols;
 
         if ($colwidths === []) {
             $colwidths = \array_fill(0, $cols, $colwidth);
@@ -19227,6 +19307,8 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             }
         }
 
+        // Top of the Table structure element, which includes any caption above the frame.
+        $captiontopy = $tpy;
         if (isset($elm['caption-top-html']) && $elm['caption-top-html'] !== '') {
             // Use local copies for caption rendering to prevent corrupting table width.
             // resetHTMLLineCursor called during caption rendering would otherwise modify
@@ -19257,7 +19339,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $parentHeight = 0.0;
             if ($parentKey >= 0 && isset($hrc['dom'][$parentKey])) {
                 $parentNode = $hrc['dom'][$parentKey];
-                if (isset($parentNode['height']) && $parentNode['height'] > 0.0) {
+                if ($parentNode['height'] > 0.0) {
                     $parentHeight = $parentNode['height'];
                 }
             }
@@ -19276,6 +19358,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $hrc['tablestack'][] = [
             'originx' => $tpx,
             'originy' => $tpy,
+            'captiontopy' => $captiontopy,
             'width' => $width,
             'dir' => \strtolower(\trim($elm['dir'])),
             'cols' => $cols,
@@ -19500,10 +19583,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      * Resolve the effective padding of a table cell, applying the table
      * cellpadding attribute as a per-side default.
      *
-     * The HTML cellpadding attribute acts as a presentational hint: it
-     * provides the default padding for every side of the cell, while each
-     * side explicitly set via CSS (padding shorthand or padding-<side>)
-     * keeps its CSS value, mirroring browser behavior.
+     * The HTML cellpadding attribute provides the default padding for every
+     * side of the cell; each side explicitly set via CSS (padding shorthand or
+     * padding-<side>) keeps its CSS value.
      *
      * @param THTMLAttrib $elm         DOM element (td/th).
      * @param float       $cellpadding Table cellpadding value in user units.
@@ -19601,7 +19683,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $colspan = \max(1, \min($remaining, $colspan));
         $rowspan = \max(1, $rowspan);
 
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $role = $elm['value'] === 'th' ? 'TH' : 'TD';
             $attr = [];
             if ($role === 'TH') {
@@ -19789,6 +19871,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'linewordspacing' => 0.0,
             'linewrapped' => false,
             'textindentapplied' => false,
+            'firstlineinset' => 0.0,
             'pendingblockmarginb' => 0.0,
         ]);
 
@@ -19823,7 +19906,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @return string PDF code.
      *
-     * @throws \Com\Tecnick\Color\Exception
      * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Pdf\Image\Exception
@@ -20042,7 +20124,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return '';
         }
 
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $this->beginStructElem('TR', $this->page->getPageId());
         }
 
@@ -20181,7 +20263,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             && ($tpx > ($hrc['cellctx']['originx'] + self::WIDTH_TOLERANCE) || $lineAdvanceCtx > self::WIDTH_TOLERANCE)
         ) {
             $baseOriginX = $hrc['cellctx']['originx'];
-            $lineStartX = $tpx;
+            // The nested list starts at the list-item text column, not at the inline
+            // cursor: text already rendered on the current line must not shift it.
+            $lineStartX = $hrc['cellctx']['lineoriginx'];
             $this->moveHTMLToNextLine($hrc, $key, $tpx, $tpy, $tpw);
             // Nested lists inside <li> should continue from the current list-item
             // text column (browser-like), not from the parent list block origin.
@@ -20240,7 +20324,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         if ($value === 'a') {
             $hadlink = $this->getCurrentHTMLLink($hrc) !== '';
             $this->popHTMLLink($hrc);
-            if ($this->pdfuaMode !== '' && $hadlink) {
+            if ($this->isTaggedMode() && $hadlink) {
                 $this->endStructElem();
             }
         }
@@ -20992,7 +21076,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         unset($tph);
         // closeHTMLBlock calls endStructElem() once (pops LBody when pdfuaMode is active).
         $out = $this->closeHTMLBlock($hrc, $key, $tpx, $tpy, $tpw);
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             // Pop the LI that was opened by openHTMLBlock.
             $this->endStructElem();
         }
@@ -21004,6 +21088,9 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $tpx = $saved['originx'];
             $tpw = $saved['maxwidth'];
         }
+
+        // An item with no inline content leaves its marker inset unconsumed.
+        $hrc['cellctx']['firstlineinset'] = 0.0;
 
         return $out;
     }
@@ -21488,6 +21575,21 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             $tpw = $captpw;
         }
 
+        if ($this->isTaggedMode() && $tableheight > 0.0) {
+            // Record the box on the open Table element before closeHTMLBlock() ends it.
+            // The top and bottom are taken from the captions when present, as they are
+            // children of the Table element. Flip to the bottom-left user space origin.
+            $boxtop = \min($table['captiontopy'], $table['originy']);
+            $boxbottom = \max($tablebottom, $tpy);
+            $pageheight = $this->page->getPage()['height'];
+            $this->setPdfUaStructElemBBox([
+                $this->toPoints($table['originx']),
+                $this->toPoints($pageheight - $boxbottom),
+                $this->toPoints($table['originx'] + $table['width']),
+                $this->toPoints($pageheight - $boxtop),
+            ], 'Table');
+        }
+
         // Emit buffered table background/content first, then overlay the
         // table frame/caption so outer borders stay visible above fills.
         return $this->closeHTMLBlock($hrc, $key, $tpx, $tpy, $tpw) . $out;
@@ -21576,15 +21678,10 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             return '';
         }
 
-        $cellPaddingB = $elm['padding']['B'] ?? null;
-        if ($cellPaddingB === null) {
-            $cellPaddingB = 0.0;
-        }
-
-        $cellMarginB = $elm['margin']['B'] ?? null;
-        if ($cellMarginB === null) {
-            $cellMarginB = 0.0;
-        }
+        // Use the box metrics resolved when the cell was opened: they already
+        // include the table cellpadding attribute applied as a per-side default.
+        $cellPaddingB = $cellctx['padding']['B'];
+        $cellMarginB = $cellctx['margin']['B'];
         // Only add trailing line advance when inline content is still present
         // on the current line. Block-only content (e.g. nested tables) already
         // updates the vertical cursor and must not add an extra blank line here.
@@ -21654,7 +21751,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         $tpx = $this->getHTMLTableColX($table, $table['colindex']);
         $tpw = \max(0.0, $table['width'] - ($tpx - $table['originx']));
 
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $this->endStructElem();
         }
 
@@ -21809,7 +21906,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         if ($tableMinHeight > 0.0 && isset($hrc['dom'][$tableDomKey])) {
             $rowOpenKey = $hrc['dom'][$key]['parent'] ?? null;
             if (\is_int($rowOpenKey) && $rowOpenKey > 0) {
-                $trids = $hrc['dom'][$tableDomKey]['trids'] ?? [];
+                $trids = $hrc['dom'][$tableDomKey]['trids'];
                 if ($trids !== []) {
                     $lastTrKey = \array_pop($trids);
                     if ($lastTrKey === $rowOpenKey) {
@@ -21929,7 +22026,7 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
             'width' => $tableWidth,
         ]);
 
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $this->endStructElem();
         }
 

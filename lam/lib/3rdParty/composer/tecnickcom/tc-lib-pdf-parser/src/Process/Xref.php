@@ -23,7 +23,7 @@ use Com\Tecnick\Pdf\Parser\Exception as PPException;
 /**
  * Com\Tecnick\Pdf\Parser\Process\Xref
  *
- * Process XREF
+ * Process the cross-reference sections and the trailer
  *
  * @since     2011-05-23
  * @category  Library
@@ -76,6 +76,33 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     ];
 
     /**
+     * Maximum number of chained xref sections followed via /Prev.
+     */
+    protected const MAX_XREF_CHAIN = 1024;
+
+    /**
+     * Number of xref stream rows decoded per batch.
+     */
+    protected const XREF_ROW_BATCH = 4096;
+
+    /**
+     * Largest /Colors value the filter layer accepts.
+     */
+    protected const MAX_PREDICTOR_COLORS = 0xFFFF;
+
+    /**
+     * Largest /Columns value the filter layer accepts.
+     */
+    protected const MAX_PREDICTOR_COLUMNS = 0x7FFF_FFFF;
+
+    /**
+     * /BitsPerComponent values the filter layer accepts.
+     *
+     * @var array<int, int>
+     */
+    protected const PREDICTOR_BITS = [1, 2, 4, 8, 16];
+
+    /**
      * XREF data.
      *
      * @var XrefData
@@ -83,9 +110,9 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     protected array $xref = self::XREF_EMPTY;
 
     /**
-     * Store the processed offsets
+     * Store the processed offsets, used as a set keyed by offset.
      *
-     * @var array<int, int>
+     * @var array<int, bool>
      */
     protected array $mrkoff = [];
 
@@ -113,11 +140,19 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
      */
     protected function getXrefData(int $offset = 0, array $xref = []): array
     {
-        if (\in_array($offset, $this->mrkoff, true)) {
+        if (isset($this->mrkoff[$offset])) {
             throw new PPException('LOOP: this XRef offset has been already processed');
         }
 
-        $this->mrkoff[] = $offset;
+        if (\count($this->mrkoff) >= static::MAX_XREF_CHAIN) {
+            throw new PPException('Maximum number of chained XRef sections exceeded: ' . static::MAX_XREF_CHAIN);
+        }
+
+        if ($offset < 0 || $offset > \strlen($this->pdfdata)) {
+            throw new PPException('Invalid XRef offset: ' . $offset);
+        }
+
+        $this->mrkoff[$offset] = true;
         $matches = [];
         if ($offset === 0) {
             // find last startxref
@@ -153,6 +188,11 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             throw new PPException('Unable to find startxref (3)');
         }
 
+        // the startxref value is read from the document and may point outside of it
+        if ($startxref < 0 || $startxref > \strlen($this->pdfdata)) {
+            throw new PPException('Invalid startxref offset: ' . $startxref);
+        }
+
         $xref['xref'] ??= [];
 
         // check xref position (allow leading whitespace before the xref keyword)
@@ -183,10 +223,10 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     }
 
     /**
-     * Decode the Cross-Reference section
+     * Decode the Cross-Reference section.
      *
-     * @param int              $startxref Offset at which the xref section starts (position of the 'xref' keyword).
-     * @param XrefDataPartial  $xref      Previous xref array (if any).
+     * @param int             $startxref Offset of the 'xref' keyword.
+     * @param XrefDataPartial $xref      Previous xref array (if any).
      *
      * @return XrefData Xref and trailer data.
      *
@@ -194,7 +234,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
      */
     protected function decodeXref(int $startxref, array $xref): array
     {
-        $startxref += 4; // 4 is the length of the word 'xref'
+        $startxref = \min($startxref + 4, \strlen($this->pdfdata)); // 4 is the length of the word 'xref'
         // skip initial white space chars:
         // \x00 null (NUL)
         // \x09 horizontal tab (HT)
@@ -227,17 +267,15 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             if ($flag === 'n') {
                 // create unique object index: [object number]_[generation number]
                 $index = $obj_num . '_' . (int) ($matches[2][0] ?? 0);
-                // check if object already exist
-                if (!\array_key_exists($index, $xref['xref'])) {
-                    // store object offset position
-                    $xref['xref'][$index] = (int) ($matches[1][0] ?? 0);
-                }
-
+                // store object offset position
+                $this->storeXrefEntry($xref['xref'], $obj_num, $index, (int) ($matches[1][0] ?? 0));
                 ++$obj_num;
                 continue;
             }
 
             if ($flag === 'f') {
+                // a free object hides the entry an older section holds for the same number
+                $this->freeXrefEntry($obj_num);
                 ++$obj_num;
                 continue;
             }
@@ -246,7 +284,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             $obj_num = (int) ($matches[1][0] ?? 0);
         }
 
-        // get trailer data (using a depth-aware scan so nested dictionaries are not truncated)
+        // get trailer data
         $trailerData = $this->extractTrailerDict($offset);
         if ($trailerData === null) {
             throw new PPException('Unable to find trailer');
@@ -264,7 +302,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
      */
     protected function extractTrailerDict(int $offset): ?string
     {
-        $search = $offset;
+        $search = \max(0, \min($offset, \strlen($this->pdfdata)));
         while (($trpos = \strpos($this->pdfdata, 'trailer', $search)) !== false) {
             $search = $trpos + 7; // 7 is the length of the word 'trailer'
             // only whitespace is allowed between the 'trailer' keyword and the '<<' delimiter
@@ -285,6 +323,9 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     /**
      * Return the content between the outermost balanced "<<" and ">>" starting at $open.
      *
+     * Literal strings, hexadecimal strings and comments are skipped, so a ">>" inside
+     * them does not close the dictionary.
+     *
      * @param int $open Offset of the opening '<<'.
      *
      * @return string|null Inner content, or null if the dictionary is not balanced.
@@ -294,75 +335,204 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
         $len = \strlen($this->pdfdata);
         $depth = 0;
         $contentStart = $open + 2;
-        for ($pos = $open; $pos < ($len - 1); ++$pos) {
-            $pair = $this->pdfdata[$pos] . $this->pdfdata[$pos + 1];
-            if ($pair === '<<') {
+        for ($pos = $open; $pos < $len; ++$pos) {
+            $char = $this->pdfdata[$pos];
+            if ($char === '(') {
+                // literal string
+                $pos = $this->skipLiteralString($pos);
+                continue;
+            }
+
+            if ($char === '%') {
+                // comment up to the end of the line
+                $pos += \strcspn($this->pdfdata, "\r\n", $pos);
+                continue;
+            }
+
+            if ($char !== '<' && $char !== '>') {
+                continue;
+            }
+
+            $next = $this->pdfdata[$pos + 1] ?? '';
+            if ($char === '<' && $next !== '<') {
+                // hexadecimal string
+                $end = \strpos($this->pdfdata, '>', $pos + 1);
+                if ($end === false) {
+                    return null;
+                }
+
+                $pos = $end;
+                continue;
+            }
+
+            if ($next !== $char) {
+                continue;
+            }
+
+            if ($char === '<') {
                 ++$depth;
                 ++$pos;
                 continue;
             }
 
-            if ($pair === '>>') {
-                --$depth;
-                if ($depth === 0) {
-                    return \substr($this->pdfdata, $contentStart, $pos - $contentStart);
-                }
-
-                ++$pos;
+            --$depth;
+            if ($depth === 0) {
+                return \substr($this->pdfdata, $contentStart, $pos - $contentStart);
             }
+
+            ++$pos;
         }
 
         return null;
     }
 
     /**
-     * Decode the raw xref stream rows into xref entry values.
+     * Return the offset of the closing ')' of the literal string starting at $open.
      *
-     * @param string          $streamData     Raw stream payload.
-     * @param int             $entryWidth     Width of a decoded row without PNG predictor metadata.
-     * @param int             $pngColumns     Column count to use when a PNG predictor is active.
-     * @param bool            $usePngPredictor Whether to apply PNG unprediction.
-     * @param array<int, int> $wbt            WBT data.
+     * @param int $open Offset of the opening '('.
      *
-     * @return array<int, array<int, int>>
+     * @return int Offset of the closing delimiter, or the end of the data if unterminated.
+     */
+    protected function skipLiteralString(int $open): int
+    {
+        $len = \strlen($this->pdfdata);
+        $depth = 1;
+        for ($pos = $open + 1; $pos < $len; ++$pos) {
+            $char = $this->pdfdata[$pos];
+            if ($char === '\\') {
+                // the escaped character cannot close the string
+                ++$pos;
+                continue;
+            }
+
+            if ($char === '(') {
+                ++$depth;
+                continue;
+            }
+
+            if ($char === ')') {
+                --$depth;
+                if ($depth === 0) {
+                    return $pos;
+                }
+            }
+        }
+
+        return $len;
+    }
+
+    /**
+     * Check that the row count the Index declares matches what the stream can hold.
+     *
+     * @param string                          $streamData    Decoded stream payload.
+     * @param int                             $rowlen        Number of bytes per row.
+     * @param array<int, array{0:int, 1:int}> $indexSections Normalized Index sections.
+     * @param int                             $entryWidth    Number of bytes an entry needs.
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
-    protected function decodeXrefStreamRows(
+    protected function assertXrefStreamCoverage(
         string $streamData,
-        int $entryWidth,
-        int $pngColumns,
-        bool $usePngPredictor,
-        array $wbt,
-    ): array {
-        $rowlen = $usePngPredictor ? $pngColumns + 1 : $entryWidth;
-
-        // convert the stream into an array of integers
-        $sdata = \unpack('C*', $streamData);
-
-        // split the rows
-        $sdata = \array_chunk($sdata, \max(1, $rowlen), false);
-
-        if ($usePngPredictor) {
-            // initialize decoded array
-            $ddata = [];
-            // initialize first row with zeros
-            $filllen = \max(0, $pngColumns);
-            $prev_row = \array_fill(0, $filllen, 0);
-            $this->pngUnpredictor($sdata, $ddata, $pngColumns, $prev_row);
-        } else {
-            $ddata = $sdata;
+        int $rowlen,
+        array $indexSections,
+        int $entryWidth = 0,
+    ): void {
+        // a row that cannot hold a whole entry decodes to silently zero-filled fields
+        if ($entryWidth > \max(1, $rowlen)) {
+            throw new PPException(
+                'Invalid xref stream row size: ' . $rowlen . ' cannot hold the ' . $entryWidth . ' bytes of an entry',
+            );
         }
 
-        // complete decoding
+        $expected = 0;
+        foreach ($indexSections as $section) {
+            $expected += $section[1];
+        }
+
+        $rowlen = \max(1, $rowlen);
+        $datalen = \strlen($streamData);
+        // a partial trailing row would decode to a silently zero-padded entry
+        if (($datalen % $rowlen) !== 0) {
+            throw new PPException(
+                'Invalid xref stream length: ' . $datalen . ' is not a multiple of the row size ' . $rowlen,
+            );
+        }
+
+        $rowCount = \intdiv($datalen, $rowlen);
+        if ($rowCount !== $expected) {
+            throw new PPException(
+                'Invalid xref stream row count: expected ' . $expected . ' rows from Index, got ' . $rowCount,
+            );
+        }
+    }
+
+    /**
+     * Number of bytes of a row of a predicted stream, as the filter layer computes it.
+     *
+     * /Columns counts samples, so the byte width also depends on /Colors and
+     * /BitsPerComponent. /Colors and /Columns are clamped up to 1 and values above the
+     * bounds the filter accepts are rejected, matching the filter layer.
+     *
+     * @param int $colors  Colour components per sample.
+     * @param int $bits    Bits per component.
+     * @param int $columns Samples per row.
+     *
+     * @return int Bytes per row, or 0 when the filter rejects the declared geometry.
+     */
+    protected function predictedRowLength(int $colors, int $bits, int $columns): int
+    {
+        $colors = \max(1, $colors);
+        if ($colors > static::MAX_PREDICTOR_COLORS) {
+            return 0;
+        }
+
+        $columns = \max(1, $columns);
+        if ($columns > static::MAX_PREDICTOR_COLUMNS) {
+            return 0;
+        }
+
+        if (!\in_array($bits, static::PREDICTOR_BITS, true)) {
+            return 0;
+        }
+
+        return \max(1, \intdiv(($colors * $bits * $columns) + 7, 8));
+    }
+
+    /**
+     * Decode the un-predicted xref stream rows into xref entry values.
+     *
+     * @param string          $streamData Decoded stream payload.
+     * @param int             $rowlen     Number of bytes per row.
+     * @param array<int, int> $wbt        Field widths in bytes.
+     *
+     * @return array<int, array<int, int>> Decoded entry values, one row each.
+     */
+    protected function decodeXrefStreamRows(string $streamData, int $rowlen, array $wbt): array
+    {
+        $rowlen = \max(1, $rowlen);
+        $datalen = \strlen($streamData);
+        $batchlen = $rowlen * static::XREF_ROW_BATCH;
+
+        // decode in batches to bound the memory used by unpack()
         $sdata = [];
-        $this->processDdata($sdata, $ddata, $wbt);
+        for ($start = 0; $start < $datalen; $start += $batchlen) {
+            /** @var array<int, int> $bytes */
+            $bytes = (array) \unpack('C*', \substr($streamData, $start, $batchlen));
+            // split the rows
+            $ddata = \array_chunk($bytes, $rowlen, false);
+            // complete decoding
+            $batch = [];
+            $this->processDdata($batch, $ddata, $wbt);
+            foreach ($batch as $row) {
+                $sdata[] = $row;
+            }
+        }
 
         return $sdata;
     }
 
     /**
-     * Decode the PDF trailer dictionary data
+     * Decode the PDF trailer dictionary data.
      *
      * @param XrefDataPartial $xref         Previous xref array (if any).
      * @param string          $trailer_data Trailer content string.
@@ -418,7 +588,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     }
 
     /**
-     * Decode the Cross-Reference Stream section
+     * Decode the Cross-Reference Stream section.
      *
      * @param int             $startxref Offset at which the xref section starts.
      * @param XrefDataPartial $xref      Previous xref array (if any).
@@ -436,14 +606,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             throw new PPException('Unable to find xref stream');
         }
 
-        // the xref rows are un-predicted by this class itself, so suppress the generic
-        // predictor handling while decoding the cross-reference stream payload
-        $this->applyStreamPredictor = false;
-        try {
-            $xrefcrs = $this->getIndirectObject($xrefobj[1], $startxref, true);
-        } finally {
-            $this->applyStreamPredictor = true;
-        }
+        $xrefcrs = $this->getIndirectObject($xrefobj[1], $startxref, true);
 
         $filltrailer = ($xref['trailer'] ?? []) === [];
         if ($filltrailer) {
@@ -451,8 +614,6 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
         }
 
         $valid_crs = false;
-        $columns = 0;
-        $predictor = 0;
         $sarr = $xrefcrs[0][1] ?? [];
         /** @var array<int, array>|string $sarr */
         if (!\is_array($sarr)) {
@@ -466,25 +627,27 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
         $state = [
             'index_sections' => null,
             'prevxref' => null,
-            'predictor' => $predictor,
-            'columns' => $columns,
+            'predictor' => 0,
+            'columns' => 0,
+            'colors' => 1,
+            'bits' => 8,
             'size' => null,
             'valid_crs' => $valid_crs,
         ];
         $this->processXrefType($sarr, $xref, $wbt, $state, $filltrailer);
         $index_sections = $state['index_sections'];
         $size = $state['size'];
-        $columns = $state['columns'];
-        $predictor = (int) $state['predictor'];
         $valid_crs = $state['valid_crs'];
         // decode data
         $streamData = $xrefcrs[1][3][0] ?? null;
         if ($valid_crs && \is_string($streamData)) {
             $entryWidth = \max(1, (int) (($wbt[0] ?? 0) + ($wbt[1] ?? 0) + ($wbt[2] ?? 0)));
-            $usePngPredictor = $predictor >= 10;
-            $pngColumns = $columns > 0 ? $columns : $entryWidth;
-            $sdata = $this->decodeXrefStreamRows($streamData, $entryWidth, $pngColumns, $usePngPredictor, $wbt);
-            $ddata = [];
+            // the filter layer already reversed the predictor: a predicted stream
+            // decodes to rows of the geometry declared in DecodeParms
+            $predicted = (int) $state['predictor'] > 1
+                ? $this->predictedRowLength($state['colors'], $state['bits'], $state['columns'])
+                : 0;
+            $rowlen = \max(1, $predicted > 0 ? $predicted : $entryWidth);
             if ($index_sections === null) {
                 if ($size === null) {
                     throw new PPException('Unable to determine xref stream Index coverage: missing Index and Size');
@@ -493,6 +656,9 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
                 $index_sections = [[0, $size]];
             }
 
+            // reject a declared coverage the stream cannot hold before allocating for it
+            $this->assertXrefStreamCoverage($streamData, $rowlen, $index_sections, $entryWidth);
+            $sdata = $this->decodeXrefStreamRows($streamData, $rowlen, $wbt);
             $objNumbers = $this->buildXrefObjectNumbers($index_sections);
             $this->processObjIndexesMap($xref, $objNumbers, $sdata);
         }
@@ -508,11 +674,11 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     }
 
     /**
-     * Process ddata
+     * Decode the fields of each xref stream row into its entry values.
      *
-     * @param array<int, array<int, int>> $sdata
-     * @param array<int, array<int, int>> $ddata
-     * @param array<int, int>             $wbt
+     * @param array<int, array<int, int>> $sdata Decoded entry values.
+     * @param array<int, array<int, int>> $ddata Rows of the un-predicted stream.
+     * @param array<int, int>             $wbt   Field widths in bytes.
      */
     protected function processDdata(array &$sdata, array $ddata, array $wbt): void
     {
@@ -526,18 +692,23 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             }
 
             $idx = 0; // count bytes in the row
+            // rows come from array_chunk(), so their keys are contiguous from zero
+            $rowlen = \count($row);
             // for every column
             for ($col = 0; $col < 3; ++$col) {
                 // for every byte on the column
                 $colWidth = (int) ($wbt[$col] ?? 0);
                 for ($byte = 0; $byte < $colWidth; ++$byte) {
-                    if (\array_key_exists($idx, $row)) {
-                        $rowValue = (int) $row[$idx];
-                        $currentValue = (int) ($sdata[$key][$col] ?? 0);
-                        $shift = ($colWidth - 1 - $byte) * 8;
-                        $sdata[$key][$col] = $currentValue + ($rowValue << $shift);
+                    if ($idx >= $rowlen || !\array_key_exists($idx, $row)) {
+                        // the declared field width is wider than the row: no byte is left to
+                        // read, and neither is one for any later column
+                        break 2;
                     }
 
+                    $rowValue = (int) $row[$idx];
+                    $currentValue = (int) ($sdata[$key][$col] ?? 0);
+                    $shift = ($colWidth - 1 - $byte) * 8;
+                    $sdata[$key][$col] = $currentValue + ($rowValue << $shift);
                     ++$idx;
                 }
             }

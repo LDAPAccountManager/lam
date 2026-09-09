@@ -49,8 +49,8 @@ enum PageLayout: string
     /**
      * Resolve a loose page layout value to the matching enum case.
      *
-     * Accepts the canonical name, its legacy aliases and the empty-string
-     * default, case-insensitively, or an enum instance (returned unchanged).
+     * Accepts the canonical name, its aliases and the empty-string default,
+     * case-insensitively, or an enum instance (returned unchanged).
      * Unknown values fall back to SinglePage, matching Mode::getLayout().
      *
      * @param string|self $value Page layout name or enum case.

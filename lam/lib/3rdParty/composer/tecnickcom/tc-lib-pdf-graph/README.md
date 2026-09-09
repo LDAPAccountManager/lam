@@ -16,9 +16,7 @@
 
 ## Overview
 
-`tc-lib-pdf-graph` implements low-level drawing operations used to build PDF graphic content.
-
-It exposes the primitives needed to compose paths and painting operations while keeping the API close to PDF graphics operators. This makes it suitable as a foundation layer for charting, vector drawing, and custom layout engines.
+`tc-lib-pdf-graph` generates the content stream commands for the graphic and geometric primitives of a PDF document.
 
 | | |
 |---|---|
@@ -33,14 +31,24 @@ It exposes the primitives needed to compose paths and painting operations while 
 ## Features
 
 ### Drawing Primitives
-- Paths, lines, curves, and clipping operations
-- Style handling for stroke/fill combinations
-- Gradient and shading support
+- Points, lines, rectangles and Bezier curves
+- Ellipses, circles, elliptical arcs and pie sectors
+- Polygons, regular polygons, star polygons and rounded rectangles
+- Arrows, crop marks and registration marks
+
+### Styles and Painting
+- Style stack with line width, cap, join, miter limit, dash pattern and colors
+- Path-painting and clipping operators
+- Transparency, blend modes and overprint through ExtGState objects
+- PDF/A mode that suppresses the ExtGState and shading output
+
+### Gradients
+- Axial and radial shadings with multiple color stops and per-stop opacity
+- Coons patch meshes and color registration bars
 
 ### Transformations
-- Matrix-based geometric transforms
-- Coordinate conversion helpers
-- PDF/A-aware behavior controls
+- Scaling, rotation, mirroring, reflection, translation and skewing
+- Transformation matrix product and transformation stack
 
 ---
 

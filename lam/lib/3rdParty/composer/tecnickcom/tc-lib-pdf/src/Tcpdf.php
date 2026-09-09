@@ -74,7 +74,6 @@ use Com\Tecnick\Pdf\Signature\SignatureAppearanceMode;
  * @property bool $compress
  * @property string $pdffilename
  * @property string $encpdffilename
- * @property array{r: string, p: string, m: string} $spaceregexp
  * @property array{zoom: int|string, layout: string, mode: string} $display
  * @property array<string, string> $lang
  * @property TUserRights $userrights
@@ -107,7 +106,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param bool        $compress    Set to false to disable stream compression.
      * @param string|PdfConformance $mode PDF mode: "pdfa1", "pdfa2", "pdfa3", "pdfx", "pdfx1a", "pdfx3",
      *                                 "pdfx4", "pdfx5", "pdfua", "pdfua1", "pdfua2", empty, or a PdfConformance case.
-     * @param ?ObjEncrypt $objEncrypt  Encryption object.
+     * @param ?ObjEncrypt $objEncrypt  Encryption object. Ignored in PDF/A mode, which forbids encryption.
      * @param TFileOptions|null $fileOptions Optional configuration for the shared file helper used
      *                                       to load external resources (images, fonts, SVG, etc.).
      *                                       Supported keys:
@@ -140,8 +139,11 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *                            backend, its (de)serialization, expiration and size limits. Null
      *                            (default) disables external caching. No backend is shipped.
      *
+     * @throws \Com\Tecnick\File\Exception
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     * @throws \Com\Tecnick\Pdf\Graph\Exception
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws \Random\RandomException
      */
@@ -234,17 +236,32 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
                 }
                 $this->pdfaConformance = $conf;
             }
+
+            return;
+        }
+
+        if ($normalizedMode !== '') {
+            // Without this the caller silently gets a plain PDF carrying no
+            // conformance metadata at all (for example on a typo, or on 'pdfa4',
+            // which this library does not implement).
+            \trigger_error(
+                'Unsupported PDF conformance mode "' . $mode . '": no conformance metadata will be emitted.',
+                E_USER_WARNING,
+            );
         }
     }
 
     /**
      * Set the compression mode.
      *
+     * Compressed streams use the FlateDecode filter, which is permitted in every
+     * conformance mode.
+     *
      * @param bool $compress Set to false to disable stream compression.
      */
     protected function setCompressMode(bool $compress): void
     {
-        $this->compress = $compress && $this->pdfa !== 3;
+        $this->compress = $compress;
     }
 
     /**
@@ -267,14 +284,6 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     protected function setUnicodeMode(bool $isunicode): void
     {
         $this->isunicode = $isunicode;
-        // check if PCRE Unicode support is enabled
-        if ($this->isunicode && \preg_match('/\pL/u', 'a') === 1) {
-            $this->setSpaceRegexp('/(?!\xa0)[\s\p{Z}]/u');
-            return;
-        }
-
-        // PCRE unicode support is turned OFF
-        $this->setSpaceRegexp('/[^\S\xa0]/');
     }
 
     /**
@@ -333,56 +342,30 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Set regular expression to detect whitespaces or word separators.
-     * The pattern delimiter must be the forward-slash character "/".
-     * Some example patterns are:
-     * <pre>
-     * Non-Unicode or missing PCRE unicode support: "/[^\S\xa0]/"
-     * Unicode and PCRE unicode support: "/(?!\xa0)[\s\p{Z}]/u"
-     * Unicode and PCRE unicode support in Chinese mode: "/(?!\xa0)[\s\p{Z}\p{Lo}]/u"
-     * if PCRE unicode support is turned ON ("\P" is the negate class of "\p"):
-     *      \s     : any whitespace character
-     *      \p{Z}  : any separator
-     *      \p{Lo} : Unicode letter or ideograph that does not have lowercase and uppercase variants.
-     *      \xa0   : Unicode Character 'NO-BREAK SPACE' (U+00A0)
-     * </pre>
+     * No-op kept for API compatibility.
      *
-     * @param string $regexp regular expression (leave empty for default).
+     * Word separators are resolved from the Unicode Bidi class of each code
+     * point by the font layer, so no configurable pattern is involved.
+     *
+     * @param string $regexp Ignored.
      */
-    public function setSpaceRegexp(string $regexp = '/[^\S\xa0]/'): void
+    public function setSpaceRegexp(string $regexp = ''): void
     {
-        $parts = \explode('/', $regexp);
-        $this->spaceregexp = [
-            'r' => $regexp,
-            'p' => !isset($parts[1]) || $parts[1] === '' ? '[\s]' : $parts[1],
-            'm' => !isset($parts[2]) || $parts[2] === '' ? '' : $parts[2],
-        ];
+        unset($regexp);
     }
 
     /**
-     * Controls emission of the per-page transparency /Group entry on standard
+     * Controls emission of the per-page transparency /Group entry
+     * (/Group << /Type /Group /S /Transparency /CS /DeviceRGB >>) on standard
      * (non PDF/A) pages.
      *
-     * Every standard tc-lib-pdf page declares a transparency group
-     * (/Group << /Type /Group /S /Transparency /CS /DeviceRGB >>). This makes
-     * blending color-managed and portable, but a conforming interpreter must
-     * composite such a page through the transparency pipeline even when every
-     * mark is fully opaque. Conservative print firmware does this at device
-     * resolution, which can add a flat per-page cost. Omitting the group on
-     * pages that contain no actual transparency removes that cost without
-     * changing the appearance of opaque pages.
-     *
      * Modes:
-     * - 'auto'   : (default) emit the group only on pages that actually use
-     *              transparency (a fill/stroke alpha below 1, a non-Normal blend
-     *              mode, a soft mask, a soft-masked image, an imported page, or a
-     *              referenced transparency-group XObject). Fully-opaque pages are
-     *              flattened.
-     * - 'always' : always emit the group on every standard page (legacy
-     *              behaviour, maximally portable for blended content).
-     * - 'never'  : never emit the group. Use only for print targets known to be
-     *              free of transparency; blending becomes implementation-defined,
-     *              like classic TCPDF output.
+     * - 'auto'   : (default) emit the group only on pages that use transparency
+     *              (a fill/stroke alpha below 1, a non-Normal blend mode, a soft
+     *              mask, a soft-masked image, an imported page, or a referenced
+     *              transparency-group XObject).
+     * - 'always' : emit the group on every standard page.
+     * - 'never'  : never emit the group; blending becomes implementation-defined.
      *
      * Has no effect in PDF/A mode, where the group is already suppressed.
      *
@@ -473,7 +456,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param StyleDataOpt              $style   Array of style options.
      *
      * @throws BarcodeException in case of error
-     * @throws \Com\Tecnick\Color\Exception
+     * @throws \Com\Tecnick\Color\Exception in case of an invalid style color
      */
     public function getBarcode(
         string $type,
@@ -835,6 +818,10 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *        - nonce_enabled (bool) Add nonce to the timestamp request.
      *        - timeout (int) Request timeout in seconds.
      *        - verify_peer (bool) Validate TSA TLS certificate.
+     *        - allow_sha1 (bool) Accept a token that uses SHA-1 for its signature, its
+     *          message digest, or its ESS signing-certificate attribute. Off by default;
+     *          needed by a TSA that still emits the RFC 2634 signing-certificate (v1)
+     *          attribute, which is SHA-1 by definition.
      *
      * @throws PdfException
      *
@@ -850,6 +837,10 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
 
         if (\array_key_exists('verify_peer', $rawData) && !\is_bool($rawData['verify_peer'])) {
             throw new PdfException('Invalid TSA verify peer setting');
+        }
+
+        if (\array_key_exists('allow_sha1', $rawData) && !\is_bool($rawData['allow_sha1'])) {
+            throw new PdfException('Invalid TSA SHA-1 setting');
         }
 
         $this->sigtimestamp = \array_merge($this->sigtimestamp, $data);
@@ -940,7 +931,8 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         $sigapp['name'] = $name === '' ? 'Signature' : $name;
 
         $pntx = $this->toPoints($posx);
-        $pnty = $this->toYUnit($posy + $height, $this->page->getPage($sigapp['page'])['pheight']);
+        // The rectangle is emitted in points, so the ordinate is flipped in points as well.
+        $pnty = $this->page->getPage($sigapp['page'])['pheight'] - $this->toPoints($posy + $height);
         $pntw = $this->toPoints($width);
         $pnth = $this->toPoints($height);
 
@@ -1042,6 +1034,22 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
+     * Set the description of the signature field, written as the /TU and /Contents
+     * entries of the widget annotation in a tagged mode.
+     *
+     * Without it the field name is used, which is an identifier rather than the
+     * description a screen reader is expected to read.
+     *
+     * @param string $description Human readable description of the signature field.
+     *
+     * Also available through the fluent API: signature()->appearance()->description().
+     */
+    public function setSignatureAppearanceDescription(string $description): void
+    {
+        $this->signature['appearance']['tu'] = $description;
+    }
+
+    /**
      * Add an empty digital signature appearance (a clickable rectangle area to get signature properties).
      *
      * @param float $posx Abscissa of the upper-left corner.
@@ -1050,6 +1058,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param float $height Height of the signature area.
      * @param int $page optional page number (if < 0 the current page is used).
      * @param string $name Name of the signature.
+     * @param string $description Description of the field, written as /TU in a tagged mode.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
      *
@@ -1062,15 +1071,21 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         float $height = 0,
         int $page = -1,
         string $name = '',
+        string $description = '',
     ): void {
         ++$this->pon;
         $data = $this->getSignatureAppearanceArray($posx, $posy, $width, $height, $page, $name);
-        $this->signature['appearance']['empty'][] = [
+        $entry = [
             'objid' => $this->pon,
             'name' => $data['name'],
             'page' => $data['page'],
             'rect' => $data['rect'],
         ];
+        if ($description !== '') {
+            $entry['tu'] = $description;
+        }
+
+        $this->signature['appearance']['empty'][] = $entry;
         $this->setSignAnnotRefs();
     }
 
@@ -1116,6 +1131,8 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param bool $lock Set the lock state of the layer.
      *
      * @return string
+     *
+     * @throws PdfException if the active conformance mode forbids optional content.
      */
     public function newLayer(
         string $name = '',
@@ -1124,6 +1141,10 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         bool $view = true,
         bool $lock = true,
     ): string {
+        if ($this->forbidsOptionalContent()) {
+            throw new PdfException('Optional content (layers) is not allowed in PDF/A mode version 1');
+        }
+
         $layer = \sprintf('LYR%03d', \count($this->pdflayer) + 1);
         $name = (string) \preg_replace('/[^a-zA-Z0-9_\-]/', '', $name);
         if ($name === '') {
@@ -1242,6 +1263,11 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
 
         $pid = $page < 0 ? (int) $this->page->getPageID() : (int) $page;
 
+        // In a tagged mode the list is a TOC structure element holding one TOCI per
+        // entry (ISO 32000-1 table 333); the cell decorations and the dot filler are
+        // artifacts.
+        $this->beginStructElem('TOC', $pid);
+
         $outlines = $this->outlines;
         foreach ($outlines as $bmrk) {
             $bmrkStyle = $bmrk['s'];
@@ -1277,6 +1303,12 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
                 $region = $this->page->getRegion($pid);
                 $posy = 0; // $region['RY'];
             }
+
+            // The entry text and its page number are the reference to the target,
+            // which the TOCI names through its /Ref entry (ISO 14289-2 clause 8.2.5.8).
+            $this->beginStructElem('TOCI', $pid);
+            $this->setPdfUaStructElemRef($bmrkPage);
+            $this->beginStructElem('Reference', $pid);
 
             $this->page->addContent($this->graph->getStartTransform(), $pid);
             $this->page->addContent($fontOut, $pid);
@@ -1352,7 +1384,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
             $line_posy = $bboxY + $this->toUnit($fontAscent);
             $lineLength = $width - $wtxt - $wnum - (2 * $cellSpaceH) - $offset;
             $line = $this->graph->getLine($line_posx, $line_posy, $line_posx + $lineLength, $line_posy, $linestyle);
-            $this->page->addContent($line, $pid);
+            $this->page->addContent($this->tagPdfUaArtifactContent($line), $pid);
 
             $bboxH = (float) $bbox['h'];
             $lnkid = $this->setLink($posx, $bboxY, $width, $bboxH, $bmrkLink);
@@ -1360,9 +1392,14 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
 
             $this->page->addContent($this->graph->getStopTransform(), $pid);
 
+            $this->endStructElem(); // Reference
+            $this->endStructElem(); // TOCI
+
             // Move to the next line.
             $posy = $bboxY + $bboxH + $cellSpaceB;
         }
+
+        $this->endStructElem(); // TOC
     }
 
     // -------------------------------------------------------------------------
@@ -1373,9 +1410,8 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * Fluent entry point for the signature subsystem.
      *
      * Groups signature configuration, timestamp, user rights, appearance, empty
-     * fields, and external signing behind one discoverable object. It forwards to
-     * the underlying setSignature()/setSignTimeStamp()/... methods, which remain
-     * fully supported; the facade is a convenience wrapper, not a replacement.
+     * fields and external signing behind one object, forwarding to the
+     * underlying setSignature() / setSignTimeStamp() / ... methods.
      *
      * @return \Com\Tecnick\Pdf\Signature\Facade
      */
@@ -1388,6 +1424,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * Return the lazy-initialized importer instance.
      *
      * @return ImporterInterface
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     private function getImporter(): ImporterInterface
     {
@@ -1396,7 +1433,14 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
             $xobjects = &$this->xobjects;
             $importFile = clone $this->file;
             $importFile->setAllowedPaths(['*']);
-            $this->importer = new ObjImporter($xobjects, $this->pon, $importFile);
+            $this->importer = new ObjImporter(
+                $xobjects,
+                $this->pon,
+                $importFile,
+                $this->pdfa,
+                $this->encrypt,
+                $this->requiresEmbeddedFonts(),
+            );
         }
 
         return $this->importer;
@@ -1413,6 +1457,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @throws \Com\Tecnick\Pdf\Import\ImportSourceNotFoundException
      * @throws \Com\Tecnick\Pdf\Import\ImportCorruptedSourceException
      * @throws \Com\Tecnick\Pdf\Import\ImportUnsupportedFeatureException
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function setImportSourceFile(string $path, array $cfg = []): string
     {
@@ -1429,6 +1474,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *
      * @throws \Com\Tecnick\Pdf\Import\ImportCorruptedSourceException
      * @throws \Com\Tecnick\Pdf\Import\ImportUnsupportedFeatureException
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function setImportSourceData(string $data, array $cfg = []): string
     {
@@ -1447,6 +1493,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *
      * @throws \Com\Tecnick\Pdf\Import\ImportSourceNotFoundException
      * @throws \Com\Tecnick\Pdf\Import\ImportCorruptedSourceException
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function getSourcePageCount(string $sourceId): int
     {
@@ -1464,6 +1511,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Import\ImportException
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function importPage(string $sourceId, int $pageNum, array $options = []): PageTemplateInterface
     {
@@ -1593,6 +1641,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *
      * @throws \Com\Tecnick\Pdf\Exception
      * @throws \Com\Tecnick\Pdf\Import\ImportException
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function importPages(string $sourceId, ?array $range = null, array $options = []): array
     {
@@ -1614,6 +1663,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Unicode\Exception
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function addPageFromImport(string $sourceId, int $pageNum, array $options = []): PageTemplateInterface
     {
@@ -1647,6 +1697,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @throws \Com\Tecnick\Pdf\Page\Exception
      * @throws \Com\Tecnick\Pdf\Font\Exception
      * @throws \Com\Tecnick\Unicode\Exception
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function appendDocument(string $sourceId, ?array $range = null, array $options = []): array
     {

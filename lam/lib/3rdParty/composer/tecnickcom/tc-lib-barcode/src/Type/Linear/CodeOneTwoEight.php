@@ -37,6 +37,15 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
 class CodeOneTwoEight extends \Com\Tecnick\Barcode\Type\Linear\CodeOneTwoEight\Process
 {
     /**
+     * Get the character sequence to encode.
+     * Subclasses that build the payload from the input code override this.
+     */
+    protected function getEncodedPayload(): string
+    {
+        return $this->code;
+    }
+
+    /**
      * Get the code point array
      *
      * @return array<int, int>
@@ -45,7 +54,7 @@ class CodeOneTwoEight extends \Com\Tecnick\Barcode\Type\Linear\CodeOneTwoEight\P
      */
     protected function getCodeData(): array
     {
-        $code = $this->code;
+        $code = $this->getEncodedPayload();
         // array of symbols
         $code_data = [];
         // split code into sequences
@@ -140,8 +149,9 @@ class CodeOneTwoEight extends \Com\Tecnick\Barcode\Type\Linear\CodeOneTwoEight\P
     protected function processSequenceB(array &$sequence, array &$code_data, int &$startid, int $key, array $seq): void
     {
         $prev_mode = $this->getSequenceMode($sequence, $key - 1);
-        if ($key === 0) {
-            $this->processSequenceBA($sequence, $code_data, $startid, $key, $seq);
+        if ($key === 0 && $this->processSequenceBA($sequence, $code_data, $startid, $key, $seq)) {
+            // the leading function character is already encoded in the start code set
+            return;
         }
 
         if ($key !== 0 && $prev_mode !== 'B') {
@@ -160,11 +170,13 @@ class CodeOneTwoEight extends \Com\Tecnick\Barcode\Type\Linear\CodeOneTwoEight\P
      * @param int    $key        Sequence current key
      * @param array{string, string, int} $seq        Sequence current value
      *
+     * @return bool True when the sequence has been encoded in the start code set
+     *
      * @throws BarcodeException in case of error
      */
-    protected function processSequenceBA(array &$sequence, array &$code_data, int &$startid, int $key, array $seq): void
+    protected function processSequenceBA(array &$sequence, array &$code_data, int &$startid, int $key, array $seq): bool
     {
-        $tmpchr = \ord($seq[1][0]);
+        $tmpchr = \ord($seq[1][0] ?? "\x00");
         $next_mode = $this->getSequenceMode($sequence, $key + 1);
         $startid = 104;
         if ($seq[2] === 1 && $tmpchr >= 241 && $tmpchr <= 244 && $next_mode !== '' && $next_mode !== 'B') {
@@ -173,14 +185,23 @@ class CodeOneTwoEight extends \Com\Tecnick\Barcode\Type\Linear\CodeOneTwoEight\P
                     $startid = 103;
                     $sequence[$key][0] = 'A';
                     $code_data[] = $this->getFncAValue($tmpchr);
-                    break;
+                    return true;
                 case 'C':
-                    $startid = 105;
-                    $sequence[$key][0] = 'C';
-                    $code_data[] = $this->getFncAValue($tmpchr);
+                    // of the four function characters only FNC1 exists in code
+                    // set C, so the other three stay in the code set B that the
+                    // start character selects
+                    if ($tmpchr === 241) {
+                        $startid = 105;
+                        $sequence[$key][0] = 'C';
+                        $code_data[] = $this->getFncAValue($tmpchr);
+                        return true;
+                    }
+
                     break;
             }
         }
+
+        return false;
     }
 
     /**

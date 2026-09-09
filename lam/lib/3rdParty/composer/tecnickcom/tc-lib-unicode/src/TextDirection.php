@@ -21,9 +21,9 @@ namespace Com\Tecnick\Unicode;
 /**
  * Com\Tecnick\Unicode\TextDirection
  *
- * Backed enum for the forced paragraph direction accepted by Bidi. The backing
- * value matches the normalized value stored internally: '' (auto detection),
- * 'R' (force right-to-left) or 'L' (force left-to-right).
+ * Forced paragraph direction accepted by Bidi. The backing value is the normalized
+ * direction: '' (auto detection), 'R' (force right-to-left) or 'L' (force
+ * left-to-right).
  *
  * @since     2026-07-17
  * @category  Library
@@ -44,9 +44,8 @@ enum TextDirection: string
     /**
      * Resolve a loose forced-direction value to the matching enum case.
      *
-     * Accepts an enum instance (returned unchanged) or a string. The string is
-     * interpreted exactly as Bidi always has: the empty string means auto, and
-     * otherwise the first character (case-insensitive) selects the direction;
+     * Accepts an enum instance, returned unchanged, or a string: the empty string means
+     * auto, otherwise the first character (case-insensitive) selects the direction and
      * anything that is not R or L falls back to auto (never throws).
      *
      * @param string|self $value Forced direction identifier or enum case.

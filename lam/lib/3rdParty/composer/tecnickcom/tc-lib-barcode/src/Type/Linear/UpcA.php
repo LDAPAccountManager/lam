@@ -49,14 +49,25 @@ class UpcA extends \Com\Tecnick\Barcode\Type\Linear\EanOneThree
     protected int $code_length = 12;
 
     /**
+     * Separation in modules between the main symbol and the add-on symbol,
+     * equal to the right quiet zone of the main symbol.
+     */
+    protected int $addon_separation = 9;
+
+    /**
      * Format the code
      *
      * @throws BarcodeException in case of error
      */
     protected function formatCode(): void
     {
-        $code = \str_pad($this->code, $this->code_length - 1, '0', STR_PAD_LEFT);
-        $code .= $this->getChecksum($code);
+        $code = \str_pad($this->maincode, $this->code_length - 1, '0', STR_PAD_LEFT);
+        // getChecksum() returns the missing check digit, or 0 when the input already carries it
+        $check = $this->getChecksum($code);
+        if (\strlen($code) < $this->code_length) {
+            $code .= $check;
+        }
+
         ++$this->code_length;
         $this->extcode = '0' . $code;
     }

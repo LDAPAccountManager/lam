@@ -70,6 +70,13 @@ class CodeOneOne extends \Com\Tecnick\Barcode\Type\Linear
     ];
 
     /**
+     * Start/stop character, which the encoder adds and the payload may not contain.
+     *
+     * @var string
+     */
+    protected const START_STOP = 'S';
+
+    /**
      * Calculate the checksum.
      *
      * @param string $code Code to represent.
@@ -124,9 +131,15 @@ class CodeOneOne extends \Com\Tecnick\Barcode\Type\Linear
 
     /**
      * Format code
+     *
+     * @throws BarcodeException if the code contains the start/stop character
      */
     protected function formatCode(): void
     {
+        if (\strcspn($this->code, $this::START_STOP) !== \strlen($this->code)) {
+            throw new BarcodeException('The character S is reserved as the start/stop character');
+        }
+
         $this->extcode = 'S' . $this->code . $this->getChecksum($this->code) . 'S';
     }
 

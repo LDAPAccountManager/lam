@@ -69,7 +69,7 @@ class Codabar extends \Com\Tecnick\Barcode\Type\Linear
         ':' => '21112121',
         '/' => '21211121',
         '.' => '21212111',
-        '+' => '11222221',
+        '+' => '11212121',
         'A' => '11221211',
         'B' => '12121121',
         'C' => '11121221',
@@ -77,11 +77,25 @@ class Codabar extends \Com\Tecnick\Barcode\Type\Linear
     ];
 
     /**
+     * Start/stop characters, which the encoder adds and the payload may not contain.
+     *
+     * @var string
+     */
+    protected const START_STOP = 'ABCD';
+
+    /**
      * Format code
+     *
+     * @throws BarcodeException if the code contains a start/stop character
      */
     protected function formatCode(): void
     {
-        $this->extcode = 'A' . \strtoupper($this->code) . 'A';
+        $code = \strtoupper($this->code);
+        if (\strcspn($code, $this::START_STOP) !== \strlen($code)) {
+            throw new BarcodeException('The characters A, B, C and D are reserved as start/stop characters');
+        }
+
+        $this->extcode = 'A' . $code . 'A';
     }
 
     /**

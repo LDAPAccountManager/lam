@@ -21,24 +21,21 @@ namespace Com\Tecnick\Pdf\Image;
 /**
  * Com\Tecnick\Pdf\Image\ImageCacheInterface
  *
- * Optional external cache used to persist processed image data across
- * Import instances and PHP processes, avoiding recomputation of images that
- * have already been imported, resized and encoded.
+ * External cache used to persist processed image data across Import instances
+ * and PHP processes.
  *
- * Implementations are a thin bridge to any backend (filesystem, APCu, Redis,
- * a PSR-16 cache, ...). They only need to store and retrieve plain arrays;
- * (de)serialization and eviction are the backend's responsibility.
+ * Implementations bridge to any backend (filesystem, APCu, Redis, a PSR-16
+ * cache, ...). They store and retrieve plain arrays; (de)serialization and
+ * eviction are the backend's responsibility.
  *
- * The cached value is the import-time snapshot of an image: it never contains
- * PDF object numbers (those are assigned per document at output time). Both
- * methods MUST be best-effort and MUST NOT throw on a backend miss or
- * transient backend failure, so that a cache problem never breaks PDF
- * generation.
+ * The cached value is the import-time snapshot of an image and never contains
+ * PDF object numbers, which are assigned per document at output time. Both
+ * methods MUST be best-effort and MUST NOT throw on a miss or on a backend
+ * failure.
  *
  * Security: the cache store is a trust boundary. The stored arrays (image
- * data, palette and ICC bytes) are embedded verbatim into generated PDFs, so
- * anyone able to write to the backend can influence document output. Use a
- * store only your application can write to, and when an implementation
+ * data, palette and ICC bytes) are embedded verbatim into generated PDFs. Use
+ * a store only the application can write to, and when an implementation
  * deserializes data it MUST disable object restoration
  * (e.g. unserialize($s, ['allowed_classes' => false])).
  *

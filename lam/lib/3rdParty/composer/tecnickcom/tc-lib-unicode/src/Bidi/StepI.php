@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Bidi;
 /**
  * Com\Tecnick\Unicode\Bidi\StepI
  *
+ * I steps of the Bidirectional Algorithm: resolving implicit levels (I1 and I2).
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode

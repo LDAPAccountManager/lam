@@ -47,8 +47,8 @@ enum Unit: string
     /**
      * Resolve a loose unit value to the matching enum case.
      *
-     * Accepts the canonical value, its legacy aliases and the empty-string
-     * default, case-insensitively, or an enum instance (returned unchanged).
+     * Accepts the canonical value, its aliases and the empty-string default,
+     * case-insensitively, or an enum instance (returned unchanged).
      * Unknown values throw, matching Format::getUnitRatio().
      *
      * @param string|self $value Unit name or enum case.

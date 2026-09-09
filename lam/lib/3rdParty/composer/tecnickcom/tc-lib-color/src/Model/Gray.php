@@ -35,17 +35,27 @@ class Gray extends \Com\Tecnick\Color\Model
 {
     /**
      * Color Model type
-     *
-     * @var string
      */
-    protected $type = 'GRAY';
+    protected string $type = 'GRAY';
 
     /**
      * Value of the Gray color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_gray = 0.0;
+
+    /**
+     * Initialize a new Gray color object.
+     *
+     * @param array<string, int|float|string> $components Color components, each clamped to [0..1].
+     *
+     * @throws \Com\Tecnick\Color\UnknownComponentException if a component name is not defined by this model
+     */
+    public function __construct(array $components)
+    {
+        self::checkComponents($components, ['gray', 'alpha']);
+        $this->cmp_gray = self::component($components, 'gray');
+        $this->cmp_alpha = self::component($components, 'alpha', 1.0);
+    }
 
     /**
      * Get an array with all color components.
@@ -64,9 +74,8 @@ class Gray extends \Com\Tecnick\Color\Model
      * Get an array with all color components for
      * the PDF appearance characteristics dictionary.
      *
-     * The numbers that shall be in the range 0.0 to 1.0.
-     * The number of array elements determines the colour space
-     * in which the colour shall be defined:
+     * The values are in the range 0.0 to 1.0 and the number of array elements
+     * determines the color space:
      * 1 = DeviceGray
      *
      * @return array<float> DeviceGray color component ('G')
@@ -96,24 +105,17 @@ class Gray extends \Com\Tecnick\Color\Model
 
     /**
      * Get the CSS representation of the color: g(G) or rgba(R, G, B, A).
+     *
+     * The gray level is emitted as an integer in [0..255].
      */
     public function getCssColor(): string
     {
-        if ($this->cmp_alpha === 1.0) {
-            return 'g(' . $this->getNormalizedValue($this->cmp_gray, 100) . '%)';
+        $gray = $this->getNormalizedValue($this->cmp_gray, 255);
+        if ($this->cmp_alpha < 1.0) {
+            return 'rgba(' . $gray . ',' . $gray . ',' . $gray . ',' . $this->getCssValue($this->cmp_alpha, 1) . ')';
         }
 
-        return (
-            'rgba('
-            . $this->getNormalizedValue($this->cmp_gray, 100)
-            . '%,'
-            . $this->getNormalizedValue($this->cmp_gray, 100)
-            . '%,'
-            . $this->getNormalizedValue($this->cmp_gray, 100)
-            . '%,'
-            . $this->cmp_alpha
-            . ')'
-        );
+        return 'g(' . $gray . ')';
     }
 
     /**
@@ -203,8 +205,7 @@ class Gray extends \Com\Tecnick\Color\Model
      */
     public function toCmykArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toCmykArray();
+        return self::rgbToCmyk($this->toRgbArray());
     }
 
     /**
@@ -214,14 +215,13 @@ class Gray extends \Com\Tecnick\Color\Model
      */
     public function toLabArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toLabArray();
+        return self::rgbToLab($this->toRgbArray());
     }
 
     /**
      * Invert the color
      */
-    public function invertColor(): self
+    public function invertColor(): static
     {
         $this->cmp_gray = 1 - $this->cmp_gray;
         return $this;

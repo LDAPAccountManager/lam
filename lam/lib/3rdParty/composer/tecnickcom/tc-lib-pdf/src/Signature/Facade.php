@@ -25,10 +25,8 @@ use Com\Tecnick\Pdf\Tcpdf;
  *
  * Fluent entry point for the signature subsystem, returned by Tcpdf::signature().
  * It groups the signature methods (configuration, timestamp, user rights,
- * appearance, empty fields, external signing, and the widget object id) behind
- * one discoverable object, forwarding to the underlying Tcpdf methods so the
- * behaviour is identical. Those methods remain fully supported; this facade is
- * a convenience wrapper, not a replacement.
+ * appearance, empty fields, external signing and the widget object id) behind
+ * one object, forwarding to the underlying Tcpdf methods.
  *
  * @phpstan-import-type TSignature from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TSignTimeStamp from \Com\Tecnick\Pdf\Base
@@ -112,6 +110,7 @@ final class Facade
      * @param float  $height Height of the signature area.
      * @param int    $page   Page number (if < 0 the current page is used).
      * @param string $name   Name of the signature field.
+     * @param string $description Description of the field, written as /TU in a tagged mode.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
@@ -122,8 +121,9 @@ final class Facade
         float $height = 0,
         int $page = -1,
         string $name = '',
+        string $description = '',
     ): self {
-        $this->pdf->addEmptySignatureAppearance($posx, $posy, $width, $height, $page, $name);
+        $this->pdf->addEmptySignatureAppearance($posx, $posy, $width, $height, $page, $name, $description);
         return $this;
     }
 

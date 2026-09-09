@@ -5,13 +5,13 @@ declare(strict_types=1);
 /**
  * Datamatrix.php
  *
- * @since     2015-02-21
- * @category  Library
- * @package   Barcode
- * @author    Nicola Asuni <info@tecnick.com>
- * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
- * @link      https://github.com/tecnickcom/tc-lib-barcode
+ * @since       2015-02-21
+ * @category    Library
+ * @package     Barcode
+ * @author      Nicola Asuni <info@tecnick.com>
+ * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
  */
@@ -30,13 +30,13 @@ use Com\Tecnick\Barcode\Type\Square\Datamatrix\Encode;
  * Datamatrix Barcode type class
  * DATAMATRIX (ISO/IEC 16022)
  *
- * @since     2015-02-21
- * @category  Library
- * @package   Barcode
- * @author    Nicola Asuni <info@tecnick.com>
- * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
- * @link      https://github.com/tecnickcom/tc-lib-barcode
+ * @since       2015-02-21
+ * @category    Library
+ * @package     Barcode
+ * @author      Nicola Asuni <info@tecnick.com>
+ * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
 {
@@ -46,6 +46,13 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
      * @var string
      */
     protected const FORMAT = 'DATAMATRIX';
+
+    /**
+     * Number of data codewords of the largest symbol of the shape.
+     *
+     * @var int
+     */
+    protected const MAXCDW = 1558;
 
     /**
      * Array of codewords.
@@ -72,6 +79,11 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
     protected string $shape = 'S';
 
     /**
+     * Symbol size as rows by columns, empty for the smallest size that fits
+     */
+    protected string $size = '';
+
+    /**
      * Datamatrix variant (N=default, GS1=FNC1 codeword in first place)
      */
     protected bool $gsonemode = false;
@@ -95,14 +107,49 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
         // shape
         $this->shape = DatamatrixShape::fromLoose(\strval($this->params[0] ?? ''))->value;
 
+        $this->setModeAndEncoding(1);
+    }
+
+    /**
+     * Set the mode and the encoding from the parameters starting at the given index.
+     *
+     * @param int $idx Index of the mode parameter.
+     */
+    protected function setModeAndEncoding(int $idx): void
+    {
         // mode
-        $this->gsonemode = ($this->params[1] ?? null) === 'GS1';
+        $this->gsonemode = ($this->params[$idx] ?? null) === 'GS1';
 
         // encoding
-        if (($this->params[2] ?? null) !== null) {
-            $this->defenc =
-                Data::ENCOPTS[DatamatrixEncoding::fromLoose(\strval($this->params[2]))->value] ?? Data::ENC_ASCII;
+        $encoding = $this->params[$idx + 1] ?? null;
+        $this->defenc = $encoding === null
+            ? Data::ENC_ASCII
+            : Data::ENCOPTS[DatamatrixEncoding::fromLoose(\strval($encoding))->value] ?? Data::ENC_ASCII;
+    }
+
+    /**
+     * Return to ASCII encodation, writing the unlatch codeword the current encodation requires.
+     * A Base 256 field is self-terminating and needs no unlatch.
+     *
+     * @param array<int, int> $cdw          Codewords array
+     * @param int             $cdw_num      Number of codewords
+     * @param int             $enc          Current encodation
+     * @param int             $field_length Length of the current field
+     */
+    protected function unlatchToAscii(array &$cdw, int &$cdw_num, int &$enc, int &$field_length): void
+    {
+        if ($enc === Data::ENC_ASCII) {
+            return;
         }
+
+        if ($enc !== Data::ENC_BASE256) {
+            $cdw[] = $enc === Data::ENC_EDF ? 124 : 254;
+            ++$cdw_num;
+        }
+
+        $enc = Data::ENC_ASCII;
+        $this->dmx->last_enc = $enc;
+        $field_length = 0;
     }
 
     /**
@@ -131,11 +178,21 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
             // add first pad
             $this->cdw[] = 129;
             ++$ncw;
-            // add remaining pads
+            // add remaining pads, randomised by their position in the codeword
+            // stream, which is one more than their index in it
             for ($i = $ncw; $i < $size; ++$i) {
-                $this->cdw[] = $this->dmx->get253StateCodeword(129, $i);
+                $this->cdw[] = $this->dmx->get253StateCodeword(129, $i + 1);
             }
         }
+    }
+
+    /**
+     * Get the character sequence to encode.
+     * Subclasses that build the payload from the input code override this.
+     */
+    protected function getEncodedPayload(): string
+    {
+        return $this->code;
     }
 
     /**
@@ -147,23 +204,24 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
      */
     protected function getCodewords(): array
     {
-        if (\strlen($this->code) === 0) {
+        $code = $this->getEncodedPayload();
+        if (\strlen($code) === 0) {
             throw new BarcodeException('Empty input');
         }
 
         // get data codewords
-        $this->cdw = $this->getHighLevelEncoding($this->code);
+        $this->cdw = $this->getHighLevelEncoding($code);
 
         // number of data codewords
         $ncw = \count($this->cdw);
 
         // check size
-        if ($ncw > 1560) {
+        if ($ncw > static::MAXCDW) {
             throw new BarcodeException('the input is too large to fit the barcode');
         }
 
-        // get minimum required matrix size.
-        $params = Data::getPaddingSize($this->shape, $ncw);
+        // get the requested matrix size, or the minimum required one.
+        $params = Data::getPaddingSize($this->shape, $ncw, $this->size);
         $this->addPadding($params[11], $ncw);
 
         $errorCorrection = new \Com\Tecnick\Barcode\Type\Square\Datamatrix\ErrorCorrection();
@@ -250,20 +308,16 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
      */
     protected function getHighLevelEncoding(string $data): array
     {
-        // STEP A. Start in predefined encodation.
-        $enc = $this->defenc; // current encoding mode
+        // STEP A. Start in ASCII encodation and latch to the predefined one on the first data character.
+        $enc = Data::ENC_ASCII; // current encoding mode
         $this->dmx->last_enc = $enc; // last used encoding
         $pos = 0; // current position
         $cdw = []; // array of codewords to be returned
         $cdw_num = 0; // number of data codewords
         $data_length = \strlen($data); // number of chars
         $field_length = 0; // number of chars in current field
-
-        // Switch to predefined encoding (no action needed if ASCII because it's the default encoding)
-        if ($this->defenc !== Data::ENC_ASCII) {
-            $cdw[] = $this->dmx->getSwitchEncodingCodeword($this->defenc);
-            ++$cdw_num;
-        }
+        // the predefined encodation is latched once, after any leading FNC1 codeword
+        $latch = $this->defenc !== Data::ENC_ASCII;
 
         while ($pos < $data_length) {
             if ($this->gsonemode) {
@@ -273,11 +327,22 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
                     $cco === 232 // FNC1 (ASCII 232 - HEX \xE8)
                     || $cco === 29 // <GS> (ASCII  29 - HEX \x1D)
                 ) {
+                    // FNC1 is an ASCII encodation codeword: leave the current encodation first
+                    $this->unlatchToAscii($cdw, $cdw_num, $enc, $field_length);
                     $cdw[] = 232; // FNC1
                     ++$pos;
                     ++$cdw_num;
                     continue;
                 }
+            }
+
+            if ($latch) {
+                // Switch to the predefined encoding
+                $latch = false;
+                $enc = $this->defenc;
+                $this->dmx->last_enc = $enc;
+                $cdw[] = $this->dmx->getSwitchEncodingCodeword($enc);
+                ++$cdw_num;
             }
 
             switch ($enc) {
@@ -316,7 +381,7 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
      */
     protected function setBars(): void
     {
-        $this->dmx = new Encode($this->shape);
+        $this->dmx = new Encode($this->shape, $this->gsonemode, $this->size);
         $params = $this->getCodewords();
         // get placement map
         $places = $this->dmx->getPlacementMap($params[2], $params[3]);

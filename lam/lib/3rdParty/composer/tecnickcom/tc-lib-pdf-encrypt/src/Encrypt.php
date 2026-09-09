@@ -23,7 +23,7 @@ use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
 /**
  * Com\Tecnick\Pdf\Encrypt\Encrypt
  *
- * PHP class for encrypting data for PDF documents
+ * Encrypts data for PDF documents.
  *
  * @since     2008-01-02
  * @category  Library
@@ -38,54 +38,31 @@ use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
 class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
 {
     /**
-     * Set PDF document protection (permission settings)
+     * Set PDF document protection (permission settings).
      *
-     * NOTES: The protection against modification is for people who have the full Acrobat product.
-     *        If you don't set any password, the document will open as usual.
-     *        If you set a user password, the PDF viewer will ask for it before displaying the document.
-     *        The master password, if different from the user one, can be used to get full access.
-     *        Protecting a document requires to encrypt it, which requires long processing time and may cause timeouts.
-     *
-     * @param bool   $enabled     False if the encryption is disabled (i.e. the document is in PDF/A mode)
-     * @param string $file_id     File ID
+     * @param bool   $enabled     False if the encryption is disabled.
+     * @param string $file_id     File ID as an even-length hexadecimal string; a random one is
+     *                            generated when empty. It is the first element of the trailer /ID
+     *                            array, from which revisions 2 to 4 derive the key.
      * @param int    $mode        Encryption strength: 0 = RC4-40 (deprecated); 1 = RC4-128 (deprecated);
-     *                            2 = AES-128; 3 = AES-256 R5; 4 = AES-256 R6 (PDF 2.0 / ISO 32000-2)
-     * @param array<string>  $permissions The set of permissions (specify the ones you want to block):
-     *                'owner' // When set permits change of encryption and enables all other permissions.
-     *                // (inverted logic: cleared by default).
-     *                'print' // Print the document.
-     *                'modify' // Modify the contents of the document by operations other than those controlled
-     *                // by 'fill-forms', 'extract' and 'assemble'.
-     *                'copy' // Copy or otherwise extract text and graphics from the document.
-     *                'annot-forms' // Add or modify text annotations, fill in interactive form fields, and,
-     *                // if 'modify' is also set, create or modify interactive form fields
-     *                // (including signature fields).
-     *                'fill-forms' // Fill in existing interactive form fields (including signature fields),
-     *                // even if 'annot-forms' is not specified.
-     *                'extract' // Extract text and graphics (in support of accessibility to users with
-     *                // disabilities or for other purposes).
-     *                'assemble' // Assemble the document (insert, rotate, or delete pages and create bookmarks
-     *                // or thumbnail images), even if 'modify' is not set.
-     *                'print-high' // Print the document to a representation from which a faithful digital copy of the
-     *                // PDF content could be generated. When this is not set, printing is limited to a
-     *                // low-level representation of the appearance, possibly of degraded quality.
-     *
-     * @param string $user_pass         User password. Empty by default.
-     * @param string $owner_pass        Owner password. If not specified, a random value is used.
-     * @param ?array{array{'c':string, 'p':array<string>}}  $pubkeys
-     *               Array of recipients containing public-key certificates ('c') and permissions ('p').
-     *               For example:
-     *               array(array('c' => 'file://../examples/data/cert/test.crt', 'p' => array('print')))
-     *               To create self-signed certificate:
-     *               openssl req -x509 -nodes -days 365000 -newkey rsa:1024 -keyout cert.pem -out cert.pem
-     *               To export crt to p12: openssl pkcs12 -export -in cert.pem -out cert.p12
-     *               To convert pfx certificate to pem: openssl pkcs12 -in cert.pfx -out cert.pem -nodes
-     * @param bool   $encryptMetadata   When false, document metadata streams are not encrypted
-     *                                  (adds /EncryptMetadata false to the encryption dictionary).
-     *                                  Default is true (all streams, including metadata, are encrypted).
-     * @param bool   $encryptEmbeddedFiles  When true (default), embedded file streams are encrypted
-     *                                      using the same filter as other streams (/EFF entry is added
-     *                                      for V >= 4). Set to false to leave embedded files unencrypted.
+     *                            2 = AES-128; 3 = AES-256 R5; 4 = AES-256 R6 (PDF 2.0 / ISO 32000-2).
+     * @param array<string> $permissions The set of permissions to block: 'owner' (inverted logic:
+     *                            when set, permits change of encryption), 'print', 'modify', 'copy',
+     *                            'annot-forms', 'fill-forms', 'extract', 'assemble', 'print-high'.
+     * @param string $user_pass   User password.
+     * @param string $owner_pass  Owner password. A random value is used when empty.
+     * @param ?list<array{'c':string, 'p'?:array<string>}>  $pubkeys
+     *                            Recipients, each with a public-key certificate ('c') and the
+     *                            permissions to block for it ('p'), for example:
+     *                            [['c' => 'file://cert.pem', 'p' => ['print']]].
+     * @param bool   $encryptMetadata   When false, adds /EncryptMetadata false to the encryption
+     *                            dictionary and leaves metadata streams unencrypted. Requires mode
+     *                            2, 3 or 4: for modes 0 and 1 the value is forced back to true with
+     *                            an E_USER_WARNING.
+     * @param bool   $encryptEmbeddedFiles  Selects the /EFF crypt filter for V 4 and V 5. True points
+     *                            /EFF at the same filter as the other streams; false writes
+     *                            /EFF /Identity, and the caller must then write embedded file streams
+     *                            without calling encryptString() on them.
      *
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
@@ -93,17 +70,10 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
         bool $enabled = false,
         string $file_id = '',
         int $mode = 0,
-        array $permissions = [
-            'print',
-            'modify',
-            'copy',
-            'annot-forms',
-            'fill-forms',
-            'extract',
-            'assemble',
-            'print-high',
-        ],
+        array $permissions = self::DEFAULTPERMS,
+        #[\SensitiveParameter]
         string $user_pass = '',
+        #[\SensitiveParameter]
         string $owner_pass = '',
         ?array $pubkeys = null,
         bool $encryptMetadata = true,
@@ -113,43 +83,119 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
             return;
         }
 
-        $this->encryptdata['protection'] = $this->getUserPermissionCode($permissions, $mode);
+        // Set before any seed is drawn: encrypt() returns its input unchanged while this is false.
+        $this->encryptdata['encrypted'] = true;
+
         $this->setupEncryptionFilter($pubkeys, $mode);
+        $this->warnAboutIgnoredStandardArguments($permissions, $user_pass, $owner_pass);
+        $this->encryptdata['protection'] = $this->getUserPermissionCode($permissions, $mode);
 
         if ($owner_pass === '') {
-            $owner_pass = \md5($this->encrypt('seed'));
+            $owner_pass = \bin2hex(\substr($this->randomSeed(), 0, 16));
         }
 
         $this->encryptdata['user_password'] = $user_pass;
         $this->encryptdata['owner_password'] = $owner_pass;
+        // Set before validateAndApplyMode(), which copies the flag into CF.
+        $this->encryptdata['EncryptMetadata'] = $this->resolveEncryptMetadata($encryptMetadata, $mode);
         $this->validateAndApplyMode($mode);
-        $this->encryptdata['EncryptMetadata'] = $encryptMetadata;
 
-        // Set EFF (embedded file filter) for V >= 4 when embedded file encryption is requested
-        if ($encryptEmbeddedFiles && $this->encryptdata['V'] >= 4) {
-            $this->encryptdata['EFF'] = $this->encryptdata['StmF'];
+        // ISO 32000-1 Table 21 defines EFF for V 4 and V 5 only. A reader that
+        // finds no EFF entry falls back to StmF.
+        if ($this->encryptdata['V'] >= 4) {
+            $this->encryptdata['EFF'] = $encryptEmbeddedFiles ? $this->encryptdata['StmF'] : 'Identity';
         }
 
-        $this->encryptdata['encrypted'] = true;
+        if ($file_id === '') {
+            $file_id = \bin2hex(\substr($this->randomSeed(), 0, 16));
+        }
+
         $this->encryptdata['fileid'] = $this->convertHexStringToString($file_id);
         $this->generateEncryptionKey();
     }
 
     /**
-     * Configure Filter, StmF, StrF entries and handle mode promotion for public-key mode.
+     * Warn when password-mode arguments are supplied alongside recipient certificates.
      *
-     * When $pubkeys are provided and $mode is 0 (RC4-40), mode is silently promoted to 1 (RC4-128)
-     * with a deprecation notice, because public-key security requires at least 128-bit keys.
+     * In public-key mode the permission bits travel inside each recipient envelope
+     * and no /O, /U or /P entry is written, so these arguments have no effect.
      *
-     * @param ?array{array{'c':string, 'p':array<string>}} $pubkeys Recipient public-key certificates.
+     * @param array<string> $permissions Requested permission set.
+     * @param string        $user_pass   Requested user password.
+     * @param string        $owner_pass  Requested owner password.
+     */
+    protected function warnAboutIgnoredStandardArguments(
+        array $permissions,
+        #[\SensitiveParameter]
+        string $user_pass,
+        #[\SensitiveParameter]
+        string $owner_pass,
+    ): void {
+        if (!$this->encryptdata['pubkey']) {
+            return;
+        }
+
+        if ($user_pass !== '' || $owner_pass !== '') {
+            \trigger_error(
+                'Public-key encryption ignores the user and owner passwords: '
+                . 'access is granted by the recipient certificates',
+                E_USER_WARNING,
+            );
+        }
+
+        $requested = $permissions;
+        $default = self::DEFAULTPERMS;
+        \sort($requested);
+        \sort($default);
+        if ($requested !== $default) {
+            \trigger_error(
+                'Public-key encryption ignores the permissions argument: '
+                . "set the permissions of each recipient in its own 'p' entry",
+                E_USER_WARNING,
+            );
+        }
+    }
+
+    /**
+     * Resolve the metadata encryption flag against the resolved mode.
+     *
+     * ISO 32000-1 Table 21 defines EncryptMetadata for V 4 and V 5 only, which are
+     * modes 2 to 4 here. For modes 0 and 1 the flag is forced back to true.
+     *
+     * @param bool $encryptMetadata Requested value.
+     * @param int  $mode            Resolved encryption mode.
+     */
+    protected function resolveEncryptMetadata(bool $encryptMetadata, int $mode): bool
+    {
+        if ($encryptMetadata || $mode >= 2) {
+            return $encryptMetadata;
+        }
+
+        \trigger_error(
+            'Unencrypted metadata requires AES (mode 2, 3 or 4); the request is ignored for RC4 modes 0 and 1',
+            E_USER_WARNING,
+        );
+
+        return true;
+    }
+
+    /**
+     * Configure the Filter, StmF and StrF entries and handle mode promotion for public-key mode.
+     *
+     * When $pubkeys are provided and $mode is 0 (RC4-40), the mode is promoted to 1 (RC4-128)
+     * with a deprecation notice: public-key security requires at least 128-bit keys.
+     *
+     * @param ?list<array{'c':string, 'p'?:array<string>}> $pubkeys Recipient public-key certificates.
      * @param int                                          $mode    Encryption mode (modified by reference).
+     *
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception When a recipient entry is malformed.
      */
     protected function setupEncryptionFilter(?array $pubkeys, int &$mode): void
     {
         if ($pubkeys !== null && $pubkeys !== []) {
+            $this->validateRecipients($pubkeys);
             $this->encryptdata['pubkeys'] = $pubkeys;
             if ($mode === 0) {
-                // public-key Security requires at least 128 bit; upgrade silently but notify the caller
                 \trigger_error(
                     'Public-key encryption requires at least RC4-128; mode upgraded from 0 to 1',
                     E_USER_DEPRECATED,
@@ -157,7 +203,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
                 $mode = 1;
             }
 
-            // Set Public-Key filter (available are: Entrust.PPKEF, Adobe.PPKLite, Adobe.PubSec)
+            // Public-key filter (the handlers are Entrust.PPKEF, Adobe.PPKLite and Adobe.PubSec).
             $this->encryptdata['pubkey'] = true;
             $this->encryptdata['Filter'] = 'Adobe.PubSec';
             $this->encryptdata['StmF'] = 'DefaultCryptFilter';
@@ -166,7 +212,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
             return;
         }
 
-        // standard mode (password mode)
+        // Standard (password) mode.
         $this->encryptdata['pubkey'] = false;
         $this->encryptdata['Filter'] = 'Standard';
         $this->encryptdata['StmF'] = 'StdCF';
@@ -174,12 +220,60 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
     }
 
     /**
+     * Check the shape of every recipient entry before any of it is used.
+     *
+     * @param array<mixed> $pubkeys Recipient list as supplied by the caller.
+     *
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception When an entry is malformed.
+     */
+    protected function validateRecipients(array $pubkeys): void
+    {
+        $malformed = \array_filter($pubkeys, static fn(mixed $pubkey): bool => self::recipientFault($pubkey) !== '');
+        if ($malformed === []) {
+            return;
+        }
+
+        $idx = (string) \array_key_first($malformed);
+        throw new EncException('recipient ' . $idx . ': ' . self::recipientFault(\reset($malformed)));
+    }
+
+    /**
+     * Describe what is wrong with one recipient entry, or '' when it is valid.
+     *
+     * @param mixed $pubkey Entry as supplied by the caller.
+     */
+    protected static function recipientFault(mixed $pubkey): string
+    {
+        if (!\is_array($pubkey)) {
+            return 'each recipient must be an array';
+        }
+
+        if (!\array_key_exists('c', $pubkey) || !\is_string($pubkey['c']) || $pubkey['c'] === '') {
+            return "the 'c' entry must be a non-empty certificate path";
+        }
+
+        if (!\array_key_exists('p', $pubkey)) {
+            return '';
+        }
+
+        if (!\is_array($pubkey['p'])) {
+            return "the 'p' entry must be an array of permission names";
+        }
+
+        if (\array_filter($pubkey['p'], static fn(mixed $item): bool => !\is_string($item)) !== []) {
+            return "every 'p' entry must be a permission name";
+        }
+
+        return '';
+    }
+
+    /**
      * Emit deprecation notices for broken modes and throw for invalid ones,
      * then merge ENCRYPT_SETTINGS for the resolved mode.
      *
-     * @param int $mode Resolved encryption mode (0–4).
+     * @param int $mode Resolved encryption mode (0 to 4).
      *
-     * @throws EncException When mode is outside the 0–4 range.
+     * @throws EncException When mode is outside the 0 to 4 range.
      */
     protected function validateAndApplyMode(int $mode): void
     {
@@ -198,6 +292,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
 
         $settings = self::ENCRYPT_SETTINGS[$mode] ?? throw new EncException('unknown encryption mode: ' . $mode);
         $this->encryptdata['V'] = $settings['V'];
+        $this->encryptdata['R'] = $settings['R'];
         $this->encryptdata['Length'] = $settings['Length'];
         $this->encryptdata['CF'] = [
             'CFM' => $settings['CF']['CFM'],
@@ -205,13 +300,9 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
             'AuthEvent' => $settings['CF']['AuthEvent'],
             'EncryptMetadata' => $this->encryptdata['EncryptMetadata'],
         ];
-        // SubFilter values from ENCRYPT_SETTINGS are for public-key handlers.
-        // Standard password encryption must omit SubFilter.
+        // SubFilter applies to the public-key handlers only.
         $this->encryptdata['SubFilter'] = $this->encryptdata['pubkey'] ? $settings['SubFilter'] : '';
         $this->encryptdata['Recipients'] = $settings['Recipients'];
-
-        // Keep SubFilter and Recipients keys set from ENCRYPT_SETTINGS to preserve
-        // stable array shape and avoid undefined-key access in output generation.
     }
 
     /**
@@ -225,22 +316,36 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
     }
 
     /**
+     * Return the file ID as a hexadecimal string.
+     *
+     * The document must carry this value as the first element of the trailer /ID
+     * array: revisions 2 to 4 derive the encryption key from it.
+     */
+    public function getFileId(): string
+    {
+        return \bin2hex($this->encryptdata['fileid']);
+    }
+
+    /**
      * Convert hexadecimal string to string.
      *
      * @param string $bstr Byte-string to convert.
+     *
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception When the input is not an even-length hexadecimal string.
      */
     public function convertHexStringToString(string $bstr): string
     {
-        $str = ''; // string to be returned
-        $bslength = \strlen($bstr);
-        if (($bslength % 2) !== 0) {
-            // padding
-            $bstr .= '0';
-            ++$bslength;
+        if ($bstr !== '' && !\ctype_xdigit($bstr)) {
+            throw new EncException('not a hexadecimal string: ' . $bstr);
         }
 
-        for ($idx = 0; $idx < $bslength; $idx += 2) {
-            $str .= \chr((int) \hexdec($bstr[$idx] . $bstr[$idx + 1]) & 0xFF);
+        if ((\strlen($bstr) % 2) !== 0) {
+            throw new EncException('hexadecimal string with an odd number of digits: ' . $bstr);
+        }
+
+        $str = \hex2bin($bstr);
+        if ($str === false) {
+            throw new EncException('unable to decode the hexadecimal string: ' . $bstr);
         }
 
         return $str;
@@ -253,21 +358,14 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      */
     public function convertStringToHexString(string $str): string
     {
-        $chars = \preg_split('//', $str, -1, PREG_SPLIT_NO_EMPTY);
-        if ($chars === false) {
-            return '';
-        }
-
-        $bstr = '';
-        foreach ($chars as $char) {
-            $bstr .= \sprintf('%02s', \dechex(\ord($char)));
-        }
-
-        return $bstr;
+        return \bin2hex($str);
     }
 
     /**
      * Encode a name object.
+     *
+     * Every character outside [0-9a-zA-Z_=-], including the NUMBER SIGN itself,
+     * is written as a two-digit #XX escape (ISO 32000-1 section 7.3.5).
      *
      * @param string $name Name object to encode.
      */
@@ -277,7 +375,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
         $length = \strlen($name);
         for ($idx = 0; $idx < $length; ++$idx) {
             $chr = $name[$idx];
-            if (\preg_match('/[0-9a-zA-Z#_=-]/', $chr) === 1) {
+            if (\preg_match('/[0-9a-zA-Z_=-]/', $chr) === 1) {
                 $escname .= $chr;
                 continue;
             }
@@ -293,12 +391,13 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *
      * @param string $str    String to encrypt.
      * @param int    $objnum Object ID.
+     * @param int    $gennum Object generation number.
      *
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
-    public function encryptString(string $str, int $objnum = 0): string
+    public function encryptString(string $str, int $objnum = 0, int $gennum = 0): string
     {
-        return $this->encrypt($this->encryptdata['mode'], $str, '', $objnum);
+        return $this->encrypt($this->encryptdata['mode'], $str, '', $objnum, $gennum);
     }
 
     /**
@@ -306,30 +405,36 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *
      * @param string $str    Data string to escape.
      * @param int    $objnum Object ID.
+     * @param int    $gennum Object generation number.
      *
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
-    public function escapeDataString(string $str, int $objnum = 0): string
+    public function escapeDataString(string $str, int $objnum = 0, int $gennum = 0): string
     {
-        return '(' . $this->escapeString($this->encryptString($str, $objnum)) . ')';
+        return '(' . $this->escapeString($this->encryptString($str, $objnum, $gennum)) . ')';
     }
 
     /**
      * Returns a formatted date-time.
      *
+     * The instant is rendered in UTC, not in the ambient date.timezone.
+     *
      * @param int $time   UTC time measured in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
      * @param int $objnum Object ID.
+     * @param int $gennum Object generation number.
      *
      * @return string escaped date string.
      *
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
-    public function getFormattedDate(?int $time = null, int $objnum = 0): string
+    public function getFormattedDate(?int $time = null, int $objnum = 0, int $gennum = 0): string
     {
         if ($time === null) {
             $time = \time(); // get current UTC time
         }
 
-        return $this->escapeDataString('D:' . \substr_replace(\date('YmdHisO', $time), "'", -2, 0) . "'", $objnum);
+        $date = (new \DateTimeImmutable('@' . $time))->format('YmdHisO');
+
+        return $this->escapeDataString('D:' . \substr_replace($date, "'", -2, 0) . "'", $objnum, $gennum);
     }
 }

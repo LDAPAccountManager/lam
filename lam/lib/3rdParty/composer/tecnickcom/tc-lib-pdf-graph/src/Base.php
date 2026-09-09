@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Graph;
 
+use Com\Tecnick\Color\Model as ColorModel;
 use Com\Tecnick\Color\Pdf as PdfColor;
 use Com\Tecnick\Pdf\Encrypt\Encrypt;
 
@@ -86,8 +87,7 @@ use Com\Tecnick\Pdf\Encrypt\Encrypt;
 abstract class Base
 {
     /**
-     * Pi constant
-     * We use this instead of M_PI because HHVM has a different value.
+     * Pi constant.
      *
      * @var float
      */
@@ -165,13 +165,9 @@ abstract class Base
     protected array $gradients = [];
 
     /**
-     * Bookkeeping for the luminosity soft-mask patterns generated for
-     * transparent gradients, keyed by the transparency pattern index used as
-     * the resource name (/p{key}) inside the soft-mask form XObject.
-     *
-     * These are internal helper objects, referenced only from within the
-     * soft-mask XObject, and are deliberately kept out of $gradients so they
-     * are not advertised in the page-level gradient resource dictionary.
+     * Luminosity soft-mask patterns of the transparent gradients, keyed by the
+     * transparency pattern index used as the resource name (/p{key}) inside the
+     * soft-mask form XObject. They are not part of $gradients.
      *
      * @var array<int, array{'id': int, 'pattern': int}>
      */
@@ -185,8 +181,12 @@ abstract class Base
      * @param float    $pageh    Page height.
      * @param PdfColor $pdfColor Color object.
      * @param Encrypt  $encrypt  Encrypt object.
-     * @param bool     $pdfa     True if we are in PDF/A mode.
+     * @param bool     $notransparency True when the conformance mode forbids transparency
+     *                                 (PDF/A-1, PDF/X-1a, PDF/X-3): alpha, blend modes and
+     *                                 soft masks are suppressed. Shadings stay available.
      * @param bool     $compress Set to false to disable stream compression.
+     *
+     * @throws \Com\Tecnick\Pdf\Graph\Exception
      */
     public function __construct(
         float $kunit,
@@ -200,7 +200,7 @@ abstract class Base
          * Encrypt object
          */
         protected Encrypt $encrypt,
-        protected bool $pdfa = false,
+        protected bool $notransparency = false,
         protected bool $compress = true,
     ) {
         $this->setKUnit($kunit);
@@ -247,6 +247,22 @@ abstract class Base
     }
 
     /**
+     * Returns the PDF device color operator for the given color.
+     * Spot color names are resolved to their alternate device color without
+     * registering a Separation color space.
+     *
+     * @param string $color  HTML, CSS or Spot color to parse.
+     * @param bool   $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
+     *
+     * @return string PDF command, or an empty string if the color cannot be resolved.
+     */
+    protected function getDeviceColorCmd(string $color, bool $stroke = false): string
+    {
+        $model = $this->pdfColor->getColorObject($color);
+        return $model instanceof ColorModel ? $model->getPdfColor($stroke) : '';
+    }
+
+    /**
      * Returns current PDF object number
      */
     public function getObjectNumber(): int
@@ -285,10 +301,16 @@ abstract class Base
     /**
      * Set unit of measure conversion ratio.
      *
-     * @param float $kunit Unit of measure conversion ratio.
+     * @param float $kunit Unit of measure conversion ratio. Must be greater than zero.
+     *
+     * @throws \Com\Tecnick\Pdf\Graph\Exception
      */
     public function setKUnit(float $kunit): static
     {
+        if ($kunit <= 0) {
+            throw new Exception(\sprintf('Invalid unit of measure conversion ratio: %F', $kunit));
+        }
+
         $this->kunit = $kunit;
         return $this;
     }
@@ -309,6 +331,7 @@ abstract class Base
             $out .= $this->pon . ' 0 obj' . "\n" . '<< /Type /ExtGState';
             foreach ($ext['parms'] as $key => $val) {
                 $val = match (true) {
+                    \is_int($val) => (string) $val,
                     \is_numeric($val) => \sprintf('%F', $val),
                     $val === true => 'true',
                     $val === false => 'false',
@@ -336,13 +359,9 @@ abstract class Base
 
     /**
      * Returns the resource names of the registered ExtGState objects that carry
-     * actual (non-trivial) transparency: a fill or stroke alpha below 1, a blend
-     * mode other than Normal, or a soft mask.
-     *
-     * The returned names match the tokens used by the `gs` operator in content
-     * streams (for example "GS3"), so callers can detect whether a given content
-     * stream actually triggers transparency (as opposed to merely resetting the
-     * graphics state back to fully opaque).
+     * transparency: a fill or stroke alpha below 1, a blend mode other than
+     * Normal, or a soft mask.
+     * The names match the tokens used by the "gs" operator (for example "GS3").
      *
      * @return array<int, string> List of ExtGState resource names.
      */
@@ -361,7 +380,7 @@ abstract class Base
     }
 
     /**
-     * Whether the given ExtGState parameters describe actual transparency:
+     * Returns true if the given ExtGState parameters describe transparency:
      * a constant alpha below 1, a non-Normal blend mode, or a soft mask.
      *
      * @param array<string, int|float|bool|string> $parms ExtGState parameters.
@@ -389,13 +408,14 @@ abstract class Base
     /**
      * Get the PDF output string for ExtGState Resource Dictionary.
      *
-     * @param array<int, array{'name': string, 'n': int, 'parms'?: array<string, int|float|bool|string>}> $data extgstates data.
+     * @param array<int, array{'name': string, 'n': int, 'parms'?: array<string, int|float|bool|string>}> $data
+     *        extgstates data.
      *
      * @return string PDF command
      */
     private function getOutExtGStateResDict(array $data): string
     {
-        if ($this->pdfa || $this->extgstates === []) {
+        if ($this->notransparency || $data === []) {
             return '';
         }
 
@@ -451,13 +471,13 @@ abstract class Base
     /**
      * Get the PDF output string for Gradients Resource Dictionary.
      *
-     * @param array<int, array{'id': int, 'pattern': int, 'antialias'?: bool, 'background'?: ?\Com\Tecnick\Color\Model, 'colors'?: array<int, array{'color': string, 'exponent'?: float, 'opacity'?: float, 'offset'?: float}>, 'colspace'?: string, 'coords'?: array<float>, 'stream'?: string, 'transparency'?: bool, 'type'?: int}> $data gradients data.
+     * @param array<int, array{'id': int, 'pattern': int, ...}> $data gradients data.
      *
      * @return string PDF command
      */
     private function getOutGradientResDict(array $data): string
     {
-        if ($this->pdfa || $data === []) {
+        if ($data === []) {
             return '';
         }
 
@@ -562,22 +582,22 @@ abstract class Base
 
                     $model0 = $this->pdfColor->getColorObject($col0);
                     $model1 = $this->pdfColor->getColorObject($col1);
-                    if (!$model0 instanceof \Com\Tecnick\Color\Model) {
+                    if (!$model0 instanceof ColorModel) {
                         continue;
                     }
 
-                    if (!$model1 instanceof \Com\Tecnick\Color\Model) {
+                    if (!$model1 instanceof ColorModel) {
                         continue;
                     }
 
-                    $col0 = $model0->getComponentsString();
-                    $col1 = $model1->getComponentsString();
+                    $col0 = self::getColspaceComponents($model0, $grad['colspace']);
+                    $col1 = self::getColspaceComponents($model1, $grad['colspace']);
                 }
 
                 $encode[] = '0 1';
                 $offset = $nextcol['offset'] ?? null;
                 if ($idx < $lastcols && \is_float($offset)) {
-                    $bounds[] = \sprintf('%F ', $offset);
+                    $bounds[] = \sprintf('%F', $offset);
                 }
 
                 $out .=
@@ -595,7 +615,7 @@ abstract class Base
                     . ']';
                 $exponent = $nextcol['exponent'] ?? null;
                 if (\is_float($exponent)) {
-                    $out .= ' /N ' . $exponent;
+                    $out .= \sprintf(' /N %F', $exponent);
                 }
 
                 $out .= ' >>' . "\n" . 'endobj' . "\n";
@@ -624,31 +644,65 @@ abstract class Base
                 . "\n";
         }
 
-        return $out . $this->getOutPatternObj($grad, $this->pon);
+        return $out . $this->getOutPatternObj($grad, $this->pon, $type === 'opacity');
+    }
+
+    /**
+     * Returns the color components of the given model expressed in the given device color space.
+     *
+     * @param ColorModel $model    Color model.
+     * @param string     $colspace Target device color space name.
+     *
+     * @return string Space separated component values.
+     */
+    private static function getColspaceComponents(ColorModel $model, string $colspace): string
+    {
+        if ($colspace === 'DeviceGray') {
+            $gray = $model->toGrayArray();
+            return \sprintf('%F', $gray['gray'] ?? 0.0);
+        }
+
+        if ($colspace === 'DeviceCMYK') {
+            $cmyk = $model->toCmykArray();
+            return \sprintf(
+                '%F %F %F %F',
+                $cmyk['cyan'] ?? 0.0,
+                $cmyk['magenta'] ?? 0.0,
+                $cmyk['yellow'] ?? 0.0,
+                $cmyk['key'] ?? 0.0,
+            );
+        }
+
+        $rgb = $model->toRgbArray();
+        return \sprintf('%F %F %F', $rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0);
     }
 
     /**
      * Get the PDF output string for the pattern and shading object
      *
-     * @param GradientData $grad   Array of gradient colors
-     * @param int          $objref Reference object number
+     * @param GradientData $grad       Array of gradient colors
+     * @param int          $objref     Reference object number
+     * @param bool         $luminosity True for the luminosity (soft mask) shading,
+     *                                 which is always in the DeviceGray color space.
      *
      * @return string PDF command
      *
      * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
-    protected function getOutPatternObj(array $grad, int $objref): string
+    protected function getOutPatternObj(array $grad, int $objref, bool $luminosity = false): string
     {
         // set shading object
-        if ($grad['transparency']) {
+        if ($luminosity) {
+            // this shading carries opacity, not color
             $grad['colspace'] = 'DeviceGray';
+            $grad['background'] = null;
         }
 
         $oid = ++$this->pon;
         $coords = $grad['coords'];
         $out = $oid . ' 0 obj' . "\n" . '<< /ShadingType ' . $grad['type'] . ' /ColorSpace /' . $grad['colspace'];
         if ($grad['background'] !== null) {
-            $out .= ' /Background [' . $grad['background']->getComponentsString() . ']';
+            $out .= ' /Background [' . self::getColspaceComponents($grad['background'], $grad['colspace']) . ']';
         }
 
         if ($grad['antialias']) {
@@ -657,7 +711,7 @@ abstract class Base
 
         if ($grad['type'] === 2) {
             $out .= \sprintf(
-                ' /Coords [%F %F %F %F] /Domain [0 1] /Function %d 0 R /Extend [true true] >>' . "\n",
+                ' /Coords [%F %F %F %F] /Domain [0 1] /Function %d 0 R /Extend [true true]',
                 $coords[0] ?? 0.0,
                 $coords[1] ?? 0.0,
                 $coords[2] ?? 0.0,
@@ -668,7 +722,7 @@ abstract class Base
             // x0, y0, r0, x1, y1, r1
             // the  radius of the inner circle is 0
             $out .= \sprintf(
-                ' /Coords [%F %F 0 %F %F %F] /Domain [0 1] /Function %d 0 R /Extend [true true] >>' . "\n",
+                ' /Coords [%F %F 0 %F %F %F] /Domain [0 1] /Function %d 0 R /Extend [true true]',
                 $coords[0] ?? 0.0,
                 $coords[1] ?? 0.0,
                 $coords[2] ?? 0.0,
@@ -676,7 +730,9 @@ abstract class Base
                 $coords[4] ?? 0.0,
                 $objref,
             );
-        } elseif ($grad['type'] === 6) {
+        }
+
+        if ($grad['type'] === 6) {
             $stream = $this->encrypt->encryptString($grad['stream'], $this->pon);
             $out .=
                 ' /BitsPerCoordinate 16 /BitsPerComponent 8/Decode[0 1 0 1 0 1 0 1 0 1] /BitsPerFlag 8 /Length '
@@ -689,6 +745,8 @@ abstract class Base
                 . "\n"
                 . 'endstream'
                 . "\n";
+        } else {
+            $out .= ' >>' . "\n";
         }
 
         $out .= 'endobj' . "\n";
@@ -725,7 +783,7 @@ abstract class Base
     {
         $this->pon = $pon;
 
-        if ($this->pdfa || $this->gradients === []) {
+        if ($this->gradients === []) {
             return '';
         }
 
@@ -750,10 +808,10 @@ abstract class Base
                 ];
             }
 
-            if ($grad['transparency']) {
+            if ($grad['transparency'] && !$this->notransparency) {
                 $mask = $this->gradientMasks[$idgs] ?? null;
                 if ($mask === null) {
-                    // no transparency pattern was generated: skip without emitting a partial object
+                    // no transparency pattern was generated
                     continue;
                 }
 
@@ -763,7 +821,7 @@ abstract class Base
                 $rect = \sprintf('%F %F', $pwidth, $pheight);
 
                 $out .= $oid . ' 0 obj' . "\n" . '<< /Type /XObject /Subtype /Form /FormType 1';
-                $stream = 'q /a0 gs /Pattern cs /p' . $idgs . ' scn 0 0 ' . $pwidth . ' ' . $pheight . ' re f Q';
+                $stream = 'q /a0 gs /Pattern cs /p' . $idgs . ' scn 0 0 ' . $rect . ' re f Q';
                 if ($this->compress) {
                     $cmpstream = \gzcompress($stream);
                     if ($cmpstream !== false) {
@@ -835,10 +893,9 @@ abstract class Base
                 $this->extgstates[] = [
                     'n' => $objext,
                     'name' => 'TGS' . $idx,
-                    // Record the soft mask so this entry is recognised as carrying
-                    // actual transparency (see getTransparencyExtGStateNames()).
                     'parms' => [
                         'SMask' => $objsm . ' 0 R',
+                        'AIS' => false,
                     ],
                 ];
             }

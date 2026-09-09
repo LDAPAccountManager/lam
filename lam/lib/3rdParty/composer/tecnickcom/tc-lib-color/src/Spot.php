@@ -27,6 +27,9 @@ use Com\Tecnick\Color\Model\Lab;
  *
  * Spot Color class
  *
+ * Extension points: getSpotColor() and the protected resolveSpotColorData().
+ * The registry mutators and the PDF emitters are final.
+ *
  * @since     2015-02-21
  * @category  Library
  * @package   Color
@@ -52,7 +55,7 @@ use Com\Tecnick\Color\Model\Lab;
  *                 }|null,
  *               }
  */
-class Spot extends \Com\Tecnick\Color\Web
+class Spot extends \Com\Tecnick\Color\Web implements SpotRegistryInterface
 {
     /**
      * Array of default Spot colors
@@ -192,19 +195,47 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Returns the array of spot colors.
      *
+     * The color models are copies of the registered ones.
+     *
      * @return array<string, TSpotColor>
      */
-    public function getSpotColors(): array
+    final public function getSpotColors(): array
     {
-        return $this->spot_colors;
+        $out = [];
+        foreach ($this->spot_colors as $key => $spotColor) {
+            $out[$key] = $this->copySpotColorData($spotColor);
+        }
+
+        return $out;
+    }
+
+    /**
+     * Copy a spot color entry, including the mutable color models it holds.
+     *
+     * @param TSpotColor $spotColor Entry to copy.
+     *
+     * @return TSpotColor
+     */
+    private function copySpotColorData(array $spotColor): array
+    {
+        $spotColor['color'] = clone $spotColor['color'];
+        if (\is_array($spotColor['lab'])) {
+            $spotColor['lab']['model'] = clone $spotColor['lab']['model'];
+        }
+
+        return $spotColor;
     }
 
     /**
      * Return the normalized case-insensitive version of the spot color name to be used as key.
      *
+     * Every character outside [a-z0-9] is dropped, so names that differ only in
+     * punctuation, spacing or accents share a key: 'Bleu Ciel é' and
+     * 'Bleu-Ciel' both normalize to 'bleuciel'.
+     *
      * @param string $name Full name of the spot color.
      */
-    public function normalizeSpotColorName(string $name): string
+    final public function normalizeSpotColorName(string $name): string
     {
         $ret = \preg_replace('/[^a-z0-9]+/', '', \strtolower($name));
         return $ret ?? '';
@@ -214,15 +245,19 @@ class Spot extends \Com\Tecnick\Color\Web
      * Encode a spot color name as a PDF name object.
      *
      * The original name is preserved as-is, including spaces and uppercase
-     * letters. Any byte that is not a regular PDF name character is escaped
-     * using the "#" followed by a 2-digit uppercase hexadecimal code, as
-     * required by the PDF name object syntax (ISO 32000-1:2008, 7.3.5).
-     * For example "SPOTTYPE 279 C" becomes "SPOTTYPE#20279#20C".
+     * letters. Any byte that is not a regular PDF name character is escaped as
+     * "#" followed by a 2-digit uppercase hexadecimal code, as required by the
+     * PDF name object syntax (ISO 32000-1:2008, 7.3.5). For example
+     * "SPOTTYPE 279 C" becomes "SPOTTYPE#20279#20C".
+     *
+     * The result is not truncated to the 127-byte name object limit set by
+     * ISO 32000-1:2008, Annex C.2.
      *
      * @param string $name Full name of the spot color.
      */
-    public function encodeSpotColorName(string $name): string
+    final public function encodeSpotColorName(string $name): string
     {
+        $delimiters = ['(', ')', '<', '>', '[', ']', '{', '}', '/', '%'];
         $out = '';
         $len = \strlen($name);
         for ($i = 0; $i < $len; ++$i) {
@@ -230,7 +265,7 @@ class Spot extends \Com\Tecnick\Color\Web
             $ord = \ord($char);
             // Regular characters are printable ASCII (0x21-0x7E),
             // excluding the number sign and the PDF delimiters.
-            if ($ord < 0x21 || $ord > 0x7E || $char === '#' || \str_contains('()<>[]{}/%', $char)) {
+            if ($ord < 0x21 || $ord > 0x7E || $char === '#' || \in_array($char, $delimiters, true)) {
                 $out .= \sprintf('#%02X', $ord);
                 continue;
             }
@@ -244,10 +279,10 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Return the requested spot color data array, registering it on first use.
      *
-     * If the name matches a default spot color that is not yet registered, it is
-     * added to the internal registry so that it is emitted by
-     * getPdfSpotObjects()/getPdfSpotResources(). Use resolveSpotColorData() for a
-     * side-effect-free lookup.
+     * A default spot color that is not yet registered is added to the internal
+     * registry, so that it is emitted by getPdfSpotObjects() and
+     * getPdfSpotResources(). Use resolveSpotColorData() for a lookup with no
+     * side effect.
      *
      * @param string $name Full name of the spot color.
      *
@@ -270,10 +305,9 @@ class Spot extends \Com\Tecnick\Color\Web
      * Resolve the requested spot color data array WITHOUT registering it.
      *
      * Returns the already-registered spot color if present, otherwise builds a
-     * transient entry from the default spot colors. Unlike getSpotColor(), this
-     * has no side effect on the internal registry and therefore does not alter
-     * the output of getPdfSpotObjects()/getPdfSpotResources(). It backs the
-     * read-only color accessors.
+     * transient entry from the default spot colors. The internal registry is
+     * left unchanged, so the output of getPdfSpotObjects() and
+     * getPdfSpotResources() is not altered.
      *
      * @param string $name Full name of the spot color.
      *
@@ -284,6 +318,10 @@ class Spot extends \Com\Tecnick\Color\Web
     protected function resolveSpotColorData(string $name): array
     {
         $key = $this->normalizeSpotColorName($name);
+        if ($key === '') {
+            throw new ColorException('invalid spot color name: ' . $name);
+        }
+
         $spotColor = $this->spot_colors[$key] ?? null;
         if (\is_array($spotColor)) {
             return $spotColor;
@@ -305,32 +343,60 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the requested spot color CMYK object.
+     * Return a copy of the requested spot color CMYK object.
      *
      * @param string $name Full name of the spot color.
      *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColorObj(string $name): Cmyk
+    final public function getSpotColorObj(string $name): Cmyk
     {
-        return $this->getSpotColor($name)['color'];
+        return clone $this->getSpotColor($name)['color'];
     }
 
     /**
-     * Return the requested spot color Lab object.
+     * Return a copy of the requested spot color Lab object.
+     *
+     * A CMYK-defined spot color has no Lab metadata, so its Lab equivalent is
+     * derived on the fly.
      *
      * @param string $name Full name of the spot color.
      *
      * @throws ColorException if the color is not found
      */
-    public function getSpotLabColorObj(string $name): Lab
+    final public function getSpotLabColorObj(string $name): Lab
     {
         $spot = $this->getSpotColor($name);
         if (\is_array($spot['lab'])) {
-            return $spot['lab']['model'];
+            return clone $spot['lab']['model'];
         }
 
         return new Lab($spot['color']->toLabArray());
+    }
+
+    /**
+     * Reserve the registry slot for a spot color name.
+     *
+     * Returns the color index to use: the one already assigned to the name, or
+     * the next free one.
+     *
+     * @param string $name Full name of the spot color.
+     *
+     * @throws ColorException if the name has no usable characters or the color
+     *                        has already been emitted as a PDF object
+     */
+    private function reserveSpotColorIndex(string $name): int
+    {
+        $key = $this->normalizeSpotColorName($name);
+        if ($key === '') {
+            throw new ColorException('invalid spot color name: ' . $name);
+        }
+
+        if (($this->spot_colors[$key]['n'] ?? 0) !== 0) {
+            throw new ColorException('unable to redefine an emitted spot color: ' . $key);
+        }
+
+        return $this->spot_colors[$key]['i'] ?? (\count($this->spot_colors) + 1);
     }
 
     /**
@@ -340,11 +406,14 @@ class Spot extends \Com\Tecnick\Color\Web
      * @param Cmyk   $cmyk CMYK color object
      *
      * @return string Spot color key.
+     *
+     * @throws ColorException if the name is unusable or the color has already
+     *                        been emitted by getPdfSpotObjects()
      */
-    public function addSpotColor(string $name, Cmyk $cmyk): string
+    final public function addSpotColor(string $name, Cmyk $cmyk): string
     {
+        $num = $this->reserveSpotColorIndex($name);
         $key = $this->normalizeSpotColorName($name);
-        $num = $this->spot_colors[$key]['i'] ?? (\count($this->spot_colors) + 1);
 
         $this->spot_colors[$key] = [
             'i' => $num, // color index
@@ -365,8 +434,11 @@ class Spot extends \Com\Tecnick\Color\Web
      * @param array<string, int|float|string> $components CMYK components.
      *
      * @return string Spot color key.
+     *
+     * @throws ColorException                               if the name is unusable or the color has already been emitted
+     * @throws \Com\Tecnick\Color\UnknownComponentException if $components carries a name the CMYK model does not define
      */
-    public function addSpotColorFromArray(string $name, array $components): string
+    final public function addSpotColorFromArray(string $name, array $components): string
     {
         return $this->addSpotColor($name, new Cmyk($components));
     }
@@ -377,22 +449,30 @@ class Spot extends \Com\Tecnick\Color\Web
      * The optional Lab settings are passed as separate trailing array arguments,
      * in this order: whitepoint, blackpoint, range, col0. For example:
      *   addSpotLabColor('My Color', 50.0, 10.0, -20.0, $whitepoint, $blackpoint, $range, $col0);
-     * Any omitted option falls back to its default (D65 whitepoint [0.9505, 1.0, 1.089],
-     * zero blackpoint, [-128, 127, -128, 127] range, [100, 0, 0] col0).
+     * Each option array is read element by element, so a shorter array is
+     * allowed and any missing element falls back to its default: D65 whitepoint
+     * [0.9505, 1.0, 1.089], zero blackpoint, [-128, 127, -128, 127] range and
+     * [100, 0, 0] col0.
      *
      * NOTE: the stored CMYK equivalent is an approximation computed from the Lab
      * values using the D65 whitepoint; the whitepoint option only affects the PDF
      * Lab color space metadata emitted by getPdfSpotObjects(), not the CMYK fallback.
      *
-     * @param string                $name          Full name of the spot color.
-     * @param float                 $lstar         Lab L* component in [0..100].
-     * @param float                 $astar         Lab a* component.
-     * @param float                 $bstar         Lab b* component.
-     * @param TLabTriplet|TLabRange ...$labOptions Optional Lab settings: whitepoint, blackpoint, range, col0.
+     * The range option is clamped to [-128..127], the interval the Lab color
+     * model represents.
+     *
+     * @param string             $name          Full name of the spot color.
+     * @param float              $lstar         Lab L* component in [0..100].
+     * @param float              $astar         Lab a* component.
+     * @param float              $bstar         Lab b* component.
+     * @param array<int, float> ...$labOptions Optional Lab settings: whitepoint, blackpoint, range, col0.
      *
      * @return string Spot color key.
+     *
+     * @throws ColorException if the name is unusable or the color has already
+     *                        been emitted by getPdfSpotObjects()
      */
-    public function addSpotLabColor(
+    final public function addSpotLabColor(
         string $name,
         float $lstar,
         float $astar,
@@ -401,11 +481,11 @@ class Spot extends \Com\Tecnick\Color\Web
     ): string {
         $whitepoint = $this->resolveTripletOption($labOptions, 0, [0.9505, 1.0000, 1.0890]);
         $blackpoint = $this->resolveTripletOption($labOptions, 1, [0.0, 0.0, 0.0]);
-        $range = $this->resolveRangeOption($labOptions, 2, [-128.0, 127.0, -128.0, 127.0]);
+        $range = $this->clampLabRange($this->resolveRangeOption($labOptions, 2, [-128.0, 127.0, -128.0, 127.0]));
         $col0 = $this->resolveTripletOption($labOptions, 3, [100.0, 0.0, 0.0]);
 
+        $num = $this->reserveSpotColorIndex($name);
         $key = $this->normalizeSpotColorName($name);
-        $num = $this->spot_colors[$key]['i'] ?? (\count($this->spot_colors) + 1);
         $labModel = $this->buildLabModel($lstar, $astar, $bstar, $range);
 
         $this->spot_colors[$key] = [
@@ -421,8 +501,8 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * @param array<array-key, TLabTriplet|TLabRange> $labOptions
-     * @param TLabTriplet                       $default
+     * @param array<array-key, array<int, float>> $labOptions
+     * @param TLabTriplet                         $default
      *
      * @return TLabTriplet
      */
@@ -437,8 +517,8 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * @param array<array-key, TLabTriplet|TLabRange> $labOptions
-     * @param TLabRange                         $default
+     * @param array<array-key, array<int, float>> $labOptions
+     * @param TLabRange                           $default
      *
      * @return TLabRange
      */
@@ -450,6 +530,24 @@ class Spot extends \Com\Tecnick\Color\Web
             $option[1] ?? $default[1],
             $option[2] ?? $default[2],
             $option[3] ?? $default[3],
+        ];
+    }
+
+    /**
+     * Narrow a Lab a* and b* range to the [-128..127] interval the Lab color
+     * model represents.
+     *
+     * @param TLabRange $labRange
+     *
+     * @return TLabRange
+     */
+    private function clampLabRange(array $labRange): array
+    {
+        return [
+            \max(-128.0, \min(127.0, $labRange[0])),
+            \max(-128.0, \min(127.0, $labRange[1])),
+            \max(-128.0, \min(127.0, $labRange[2])),
+            \max(-128.0, \min(127.0, $labRange[3])),
         ];
     }
 
@@ -518,74 +616,109 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Returns the PDF command to output Spot color objects.
      *
+     * Only the entries emitted here can be listed as a resource by
+     * getPdfSpotResources().
+     *
      * @param int $pon Current PDF object number
      *
      * @return string PDF command
      */
-    public function getPdfSpotObjects(int &$pon): string
+    final public function getPdfSpotObjects(int &$pon): string
     {
         $out = '';
         foreach ($this->spot_colors as $key => $color) {
+            if ($color['n'] !== 0) {
+                // already emitted
+                continue;
+            }
+
             if ($color['space'] === 'Lab' && \is_array($color['lab'])) {
-                $out .= ++$pon . ' 0 obj' . "\n";
-                $this->spot_colors[$key]['n'] = $pon;
-                $lab = $color['lab']['model']->toLabArray();
-                $out .=
-                    '[/Separation /'
-                    . $this->encodeSpotColorName($color['name'])
-                    . ' [/Lab <<'
-                    . ' /WhitePoint '
-                    . $this->getPdfNumArray($color['lab']['whitepoint'])
-                    . ' /BlackPoint '
-                    . $this->getPdfNumArray($color['lab']['blackpoint'])
-                    . ' /Range '
-                    . $this->getPdfNumArray($color['lab']['range'])
-                    . '>>] <<'
-                    . ' /FunctionType 2'
-                    . ' /Domain [0 1]'
-                    . ' /C0 '
-                    . $this->getPdfNumArray($color['lab']['c0'])
-                    . ' /C1 '
-                    . $this->getPdfNumArray([
-                        $lab['lstar'] ?? 0.0,
-                        $lab['astar'] ?? 0.0,
-                        $lab['bstar'] ?? 0.0,
-                    ])
-                    . ' /N 1'
-                    . '>>]'
-                    . "\n"
-                    . 'endobj'
-                    . "\n";
+                $body = $this->getPdfLabSeparation($color['name'], $color['lab']);
+            } elseif ($this->isCmykSpotColor($color['color'])) {
+                $body = $this->getPdfCmykSeparation($color['name'], $color['color']);
+            } else {
+                // neither a Lab nor a CMYK spot color: no object number is consumed
                 continue;
             }
 
-            if (!$this->isCmykSpotColor($color['color'])) {
-                // Skip entries that are neither valid Lab nor CMYK spot colors
-                // without consuming a PDF object number or emitting a partial object.
-                continue;
-            }
-
-            $out .= ++$pon . ' 0 obj' . "\n";
-            $this->spot_colors[$key]['n'] = $pon;
-            $out .=
-                '[/Separation /'
-                . $this->encodeSpotColorName($color['name'])
-                . ' /DeviceCMYK <<'
-                . '/Range [0 1 0 1 0 1 0 1]'
-                . ' /C0 [0 0 0 0]'
-                . ' /C1 ['
-                . $color['color']->getComponentsString()
-                . ']'
-                . ' /FunctionType 2'
-                . ' /Domain [0 1]'
-                . ' /N 1'
-                . '>>]'
-                . "\n"
-                . 'endobj'
-                . "\n";
+            $this->spot_colors[$key]['n'] = ++$pon;
+            $out .= $pon . ' 0 obj' . "\n" . $body . "\n" . 'endobj' . "\n";
         }
 
         return $out;
+    }
+
+    /**
+     * Build the Separation array of a Lab-based spot color.
+     *
+     * The tint transform declares the same /Range as the Lab color space.
+     *
+     * @param string $name Full name of the spot color.
+     * @param array{
+     *     whitepoint: TLabTriplet,
+     *     blackpoint: TLabTriplet,
+     *     range: TLabRange,
+     *     c0: TLabTriplet,
+     *     model: Lab
+     * } $lab Lab metadata.
+     */
+    private function getPdfLabSeparation(string $name, array $lab): string
+    {
+        $col1 = $lab['model']->toLabArray();
+
+        return (
+            '[/Separation /'
+            . $this->encodeSpotColorName($name)
+            . ' [/Lab <<'
+            . ' /WhitePoint '
+            . $this->getPdfNumArray($lab['whitepoint'])
+            . ' /BlackPoint '
+            . $this->getPdfNumArray($lab['blackpoint'])
+            . ' /Range '
+            . $this->getPdfNumArray($lab['range'])
+            . '>>] <<'
+            . ' /FunctionType 2'
+            . ' /Domain [0 1]'
+            . ' /Range '
+            . $this->getPdfNumArray([
+                0.0,
+                100.0,
+                $lab['range'][0],
+                $lab['range'][1],
+                $lab['range'][2],
+                $lab['range'][3],
+            ])
+            . ' /C0 '
+            . $this->getPdfNumArray($lab['c0'])
+            . ' /C1 '
+            . $this->getPdfNumArray([$col1['lstar'] ?? 0.0, $col1['astar'] ?? 0.0, $col1['bstar'] ?? 0.0])
+            . ' /N 1'
+            . '>>]'
+        );
+    }
+
+    /**
+     * Build the Separation array of a CMYK-based spot color.
+     *
+     * @param string $name Full name of the spot color.
+     * @param Cmyk   $cmyk CMYK color object.
+     */
+    private function getPdfCmykSeparation(string $name, Cmyk $cmyk): string
+    {
+        return (
+            '[/Separation /'
+            . $this->encodeSpotColorName($name)
+            . ' /DeviceCMYK <<'
+            . '/Range [0 1 0 1 0 1 0 1]'
+            . ' /C0 [0 0 0 0]'
+            . ' /C1 ['
+            . $cmyk->getComponentsString()
+            . ']'
+            . ' /FunctionType 2'
+            . ' /Domain [0 1]'
+            . ' /N 1'
+            . '>>]'
+        );
     }
 
     /**
@@ -599,9 +732,14 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Returns the PDF command to output the provided Spot color resources.
      *
+     * An entry carries a PDF object number only after getPdfSpotObjects() has
+     * emitted it; one that does not raises.
+     *
      * @param array<string, array{'i': int, 'n': int}|TSpotColor> $data Spot color array.
      *
      * @return string PDF command
+     *
+     * @throws ColorException if an entry has not been emitted as a PDF object
      */
     private function getOutPdfSpotResources(array $data): string
     {
@@ -611,7 +749,15 @@ class Spot extends \Com\Tecnick\Color\Web
 
         $out = '/ColorSpace <<';
 
-        foreach ($data as $spot_color) {
+        foreach ($data as $key => $spot_color) {
+            if ($spot_color['n'] === 0) {
+                throw new ColorException(
+                    'unable to reference a spot color that has no PDF object,'
+                    . ' call getPdfSpotObjects() first: '
+                    . $key,
+                );
+            }
+
             $out .= ' /CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R';
         }
 
@@ -621,21 +767,28 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Returns the PDF command to output Spot color resources.
      *
+     * Call getPdfSpotObjects() first: every registered spot color must have been
+     * emitted as a PDF object.
+     *
      * @return string PDF command
+     *
+     * @throws ColorException if a registered spot color has not been emitted
      */
-    public function getPdfSpotResources(): string
+    final public function getPdfSpotResources(): string
     {
         return $this->getOutPdfSpotResources($this->spot_colors);
     }
 
     /**
-     * Returns the PDF command to output Spot color resources.
+     * Returns the PDF command to output the Spot color resources for the given keys.
      *
-     * @param array<string> $keys Array of font keys.
+     * @param array<string> $keys Array of spot color keys.
      *
      * @return string PDF command
+     *
+     * @throws ColorException if a key is not registered or has not been emitted
      */
-    public function getPdfSpotResourcesByKeys(array $keys): string
+    final public function getPdfSpotResourcesByKeys(array $keys): string
     {
         if ($keys === []) {
             return '';
@@ -644,7 +797,7 @@ class Spot extends \Com\Tecnick\Color\Web
         $data = [];
         foreach ($keys as $key) {
             if (!\array_key_exists($key, $this->spot_colors)) {
-                continue;
+                throw new ColorException('unable to find the spot color: ' . $key);
             }
 
             $data[$key] = $this->spot_colors[$key];

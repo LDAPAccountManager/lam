@@ -23,19 +23,15 @@ use Com\Tecnick\Unicode\Data\Devanagari as DevanagariData;
 /**
  * Com\Tecnick\Unicode\Substitution\Devanagari
  *
- * Repositions Devanagari left-positional matras (vowel signs with Indic
- * Positional Category "Left", such as U+093F VOWEL SIGN I) to precede their
- * base consonant cluster in the codepoint array.
+ * Repositions Devanagari left-positional matras (vowel signs with Indic Positional
+ * Category "Left", such as U+093F VOWEL SIGN I) to precede their base consonant
+ * cluster: in Unicode logical order they are stored after the cluster they modify,
+ * while their glyph is displayed before it.
  *
- * In Unicode logical order a left matra is stored after the consonant (or
- * conjunct cluster) it modifies. For PDF glyph streams the matra glyph must
- * appear before the consonant, so each left matra is moved to immediately
- * before the cluster that precedes it.
- *
- * A consonant cluster is: base_consonant (VIRAMA base_consonant)*
- * Only base consonants in the range U+0915–U+0939 and U+0958–U+095F are
- * recognised as cluster heads. Orphaned matras (no preceding consonant) and
- * unknown codepoints are left unchanged.
+ * A consonant cluster is: base_consonant NUKTA? (VIRAMA base_consonant NUKTA?)*
+ * Only base consonants in the ranges U+0915-U+0939, U+0958-U+095F and
+ * U+0978-U+097F are recognized as cluster heads. Orphaned matras (no preceding
+ * consonant) and unknown codepoints are left unchanged.
  *
  * @since     2026-04-30
  * @category  Library
@@ -137,7 +133,7 @@ final class Devanagari
     }
 
     /**
-     * Collects the full conjunct cluster: base_consonant (VIRAMA base_consonant)*
+     * Collects the full conjunct cluster: base_consonant NUKTA? (VIRAMA base_consonant NUKTA?)*
      *
      * @param int $idx Starting index of the cluster head.
      * @param int $len Length of $this->ordarr.
@@ -152,7 +148,7 @@ final class Devanagari
         }
 
         $cluster = [$first];
-        $pos = $idx + 1;
+        $pos = $this->appendNukta($idx + 1, $len, $cluster);
         while (($pos + 1) < $len) {
             $virama = $this->ordarr[$pos] ?? null;
             $baseConsonant = $this->ordarr[$pos + 1] ?? null;
@@ -163,10 +159,30 @@ final class Devanagari
 
             $cluster[] = $virama;
             $cluster[] = $baseConsonant;
-            $pos += 2;
+            $pos = $this->appendNukta($pos + 2, $len, $cluster);
         }
 
         return $cluster;
+    }
+
+    /**
+     * Appends the nukta at $pos to the cluster when there is one.
+     *
+     * @param int       $pos     Index of the nukta candidate.
+     * @param int       $len     Length of $this->ordarr.
+     * @param list<int> $cluster Cluster accumulator (passed by reference).
+     *
+     * @return int Index of the first codepoint after the nukta.
+     */
+    private function appendNukta(int $pos, int $len, array &$cluster): int
+    {
+        if ($pos >= $len || ($this->ordarr[$pos] ?? null) !== DevanagariData::NUKTA) {
+            return $pos;
+        }
+
+        $cluster[] = DevanagariData::NUKTA;
+
+        return $pos + 1;
     }
 
     /**
@@ -174,12 +190,28 @@ final class Devanagari
      */
     private function isBaseConsonant(int $codepoint): bool
     {
-        return $this->isInStandardRange($codepoint) || $this->isInExtendedRange($codepoint);
+        return (
+            $this->isInStandardRange($codepoint)
+            || $this->isInExtendedRange($codepoint)
+            || $this->isInAdditionalRange($codepoint)
+        );
+    }
+
+    /**
+     * Returns true when $codepoint is in the additional consonant range
+     * U+0978-U+097F.
+     */
+    private function isInAdditionalRange(int $codepoint): bool
+    {
+        return (
+            $codepoint >= DevanagariData::BASE_CONSONANT_ADD_FIRST
+            && $codepoint <= DevanagariData::BASE_CONSONANT_ADD_LAST
+        );
     }
 
     /**
      * Returns true when $codepoint is in the standard consonant range
-     * U+0915–U+0939.
+     * U+0915-U+0939.
      */
     private function isInStandardRange(int $codepoint): bool
     {
@@ -188,7 +220,7 @@ final class Devanagari
 
     /**
      * Returns true when $codepoint is in the extended consonant range
-     * U+0958–U+095F.
+     * U+0958-U+095F.
      */
     private function isInExtendedRange(int $codepoint): bool
     {

@@ -23,12 +23,9 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
 /**
  * Com\Tecnick\Pdf\Filter\Type\JbigTwo
  *
- * JBIG2Decode filter (PDF 32000-2008 §7.4.7).
- * Decompresses JBIG2-encoded bi-level image data by shelling out to the
- * jbig2dec CLI tool (https://jbig2dec.sourceforge.net/), which must be
- * installed and on PATH. If the tool is unavailable a PPException is thrown.
- *
- * Suggested system package: jbig2dec
+ * JBIG2Decode filter (PDF 32000-1:2008 §7.4.7).
+ * Decompresses JBIG2 bi-level image data with the jbig2dec CLI tool
+ * (https://jbig2dec.sourceforge.net/), which must be installed and on PATH.
  *
  * @since     2011-05-23
  * @category  Library
@@ -43,13 +40,11 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
     /**
      * Decode the data.
      *
-     * Requires the jbig2dec CLI tool to be installed and on PATH.
-     *
-     * @param string              $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters.
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
      *   - 'JBIG2Globals' (string): shared JBIG2 segments referenced by the page stream.
      *
-     * @return string Decoded data string.
+     * @return string Decoded data.
      *
      * @throws PPException if jbig2dec is not found or exits with an error.
      */
@@ -59,20 +54,27 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
             return '';
         }
 
+        // the filesystem and process functions below are called unqualified so the
+        // namespace fallback resolves them, allowing substitution in tests
         $binary = (string) shell_exec('command -v jbig2dec 2>/dev/null');
-        if (trim($binary) === '') {
+        if (\trim($binary) === '') {
             throw new PPException('JBIG2Decode requires the jbig2dec CLI tool to be installed and on PATH');
         }
 
         $inFile = tempnam(sys_get_temp_dir(), 'jbig2in_');
-        $outFile = tempnam(sys_get_temp_dir(), 'jbig2out_');
-
-        if ($inFile === false || $outFile === false) {
+        if ($inFile === false) {
             throw new PPException('JBIG2Decode: failed to create temporary files');
         }
 
+        // tempnam() creates the file, so from here every exit removes it
+        $outFile = null;
         $globalsFile = null;
         try {
+            $outFile = tempnam(sys_get_temp_dir(), 'jbig2out_');
+            if ($outFile === false) {
+                throw new PPException('JBIG2Decode: failed to create temporary files');
+            }
+
             if (file_put_contents($inFile, $data) === false) {
                 throw new PPException('JBIG2Decode: failed to write temporary input file');
             }
@@ -81,7 +83,10 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
             $result = $this->runJbig2dec($inFile, $outFile, $globalsFile);
         } finally {
             $this->cleanupTempFile($inFile);
-            $this->cleanupTempFile($outFile);
+            if (\is_string($outFile)) {
+                $this->cleanupTempFile($outFile);
+            }
+
             if ($globalsFile !== null) {
                 $this->cleanupTempFile($globalsFile);
             }
@@ -93,7 +98,7 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
     /**
      * Write the optional JBIG2Globals stream to a temporary file.
      *
-     * @param mixed $globals Shared JBIG2 segments (a string), or null/other when there are none.
+     * @param mixed $globals Shared JBIG2 segments as a string; any other value means none.
      *
      * @return string|null Path to the globals file, or null when there are no globals.
      *
@@ -119,7 +124,9 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
     }
 
     /**
-     * Remove a temporary file while suppressing runtime warnings without using `@`.
+     * Remove a temporary file, suppressing the runtime warnings.
+     *
+     * @param string $path Path to the temporary file.
      */
     private function cleanupTempFile(string $path): void
     {
@@ -144,13 +151,13 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
      */
     private function runJbig2dec(string $inFile, string $outFile, ?string $globalsFile = null): string
     {
-        // The globals stream (if any) must precede the page stream on the command line.
-        $globalsArg = $globalsFile !== null ? escapeshellarg($globalsFile) . ' ' : '';
-        $cmd = sprintf(
+        // the globals stream (if any) must precede the page stream on the command line
+        $globalsArg = $globalsFile !== null ? \escapeshellarg($globalsFile) . ' ' : '';
+        $cmd = \sprintf(
             'jbig2dec -e -o %s %s%s 2>/dev/null',
-            escapeshellarg($outFile),
+            \escapeshellarg($outFile),
             $globalsArg,
-            escapeshellarg($inFile),
+            \escapeshellarg($inFile),
         );
 
         $pipes = [];
@@ -161,7 +168,7 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
 
         $exitCode = proc_close($proc);
 
-        if ($exitCode !== 0 || !file_exists($outFile)) {
+        if ($exitCode !== 0) {
             throw new PPException('JBIG2Decode: jbig2dec failed to decode the stream');
         }
 
@@ -169,6 +176,11 @@ class JbigTwo implements \Com\Tecnick\Pdf\Filter\Type\Template
 
         if ($result === false) {
             throw new PPException('JBIG2Decode: failed to read jbig2dec output');
+        }
+
+        // tempnam() pre-created the output file, so an empty read means jbig2dec wrote nothing
+        if ($result === '') {
+            throw new PPException('JBIG2Decode: jbig2dec produced no output');
         }
 
         return $result;

@@ -51,7 +51,7 @@ abstract class Output
     /**
      * Current PDF object number.
      */
-    protected int $pon;
+    protected int $pon = 0;
 
     /**
      * Store image object IDs for the XObject Dictionary.
@@ -75,12 +75,17 @@ abstract class Output
     protected array $image = [];
 
     /**
-     * Cache used to store imported image data.
-     * The same image data can be reused multiple times.
+     * In-process cache of the imported image data, keyed by image key.
      *
      * @var array<string, ImageRawData>
      */
     protected array $cache = [];
+
+    /**
+     * True when the soft mask of an alpha image was dropped because of the
+     * $notransparency flag.
+     */
+    protected bool $droppedalpha = false;
 
     /**
      * Initialize images data.
@@ -90,8 +95,9 @@ abstract class Output
      * @param ObjFile                 $fileHelper File helper for image loading and writing.
      * @param bool                    $pdfa       True if we are in PDF/A mode.
      * @param bool                    $compress   Set to false to disable stream compression.
-     * @param ?ImageCacheInterface    $imageCache Optional external cache to persist processed image
-     *                                            data across instances and processes (null = disabled).
+     * @param ?ImageCacheInterface    $imageCache External cache used to persist processed image data
+     *                                            across instances and processes (null = disabled).
+     * @param bool                    $notransparency True to suppress the soft mask of an alpha image.
      */
     public function __construct(
         protected float $kunit,
@@ -100,9 +106,8 @@ abstract class Output
         protected bool $pdfa = false,
         protected bool $compress = true,
         protected ?ImageCacheInterface $imageCache = null,
-    ) {
-        $this->fileHelper = $fileHelper;
-    }
+        protected bool $notransparency = false,
+    ) {}
 
     /**
      * Returns current PDF object number.
@@ -110,6 +115,38 @@ abstract class Output
     public function getObjectNumber(): int
     {
         return $this->pon;
+    }
+
+    /**
+     * Returns true when the soft mask of an alpha image was dropped because
+     * transparency is disabled. Set by getOutImagesBlock().
+     */
+    public function hasDroppedAlpha(): bool
+    {
+        return $this->droppedalpha;
+    }
+
+    /**
+     * Returns true when any added image is emitted in the DeviceCMYK color space.
+     */
+    public function hasDeviceCmykImage(): bool
+    {
+        foreach ($this->image as $img) {
+            $data = $this->cache[$img['key']] ?? null;
+            if ($data === null) {
+                continue;
+            }
+
+            if ($data['colspace'] === 'DeviceCMYK') {
+                return true;
+            }
+
+            if (($data['plain']['colspace'] ?? '') === 'DeviceCMYK') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -194,43 +231,45 @@ abstract class Output
     {
         $this->pon = $pon;
         $out = '';
-        foreach ($this->image as $iid => $img) {
-            if (!isset($this->cache[$img['key']]['out'])) {
-                if (isset($this->cache[$img['key']]['mask'])) {
-                    /** @var ImageRawData $mask */
-                    $mask = &$this->cache[$img['key']]['mask'];
-                    $out .= $this->getOutImage($img, $mask, 'mask');
-                    if (isset($this->cache[$img['key']]['plain'])) {
+        foreach ($this->image as $img) {
+            $key = $img['key'];
+
+            if (!isset($this->cache[$key]['out'])) {
+                if (isset($this->cache[$key]['mask'])) {
+                    // the mask of an alpha-split image is written only as the soft
+                    // mask of the plain sub-image, so it is dropped along with it
+                    $dropmask = $this->notransparency && isset($this->cache[$key]['plain']);
+                    if ($dropmask) {
+                        $this->droppedalpha = true;
+                    } else {
+                        /** @var ImageRawData $mask */
+                        $mask = &$this->cache[$key]['mask'];
+                        $out .= $this->getOutImage($img, $mask, 'mask');
+                    }
+
+                    if (isset($this->cache[$key]['plain'])) {
                         /** @var ImageRawData $plain */
-                        $plain = &$this->cache[$img['key']]['plain'];
+                        $plain = &$this->cache[$key]['plain'];
                         $out .= $this->getOutImage($img, $plain, 'plain');
                     }
+
+                    unset($mask, $plain);
+                } else {
+                    $out .= $this->getOutImage($img, $this->cache[$key]);
                 }
-
-                if (!isset($this->cache[$img['key']]['mask'])) {
-                    $out .= $this->getOutImage($img, $this->cache[$img['key']]);
-                }
-
-                unset($mask, $plain);
-
-                $this->image[$iid] = $img;
             }
 
-            if (($this->cache[$img['key']]['mask']['obj'] ?? 0) === 0) {
-                $this->xobjdict['IMG' . $img['iid']] = $this->cache[$img['key']]['obj'];
-            } else {
-                $maskData = $this->cache[$img['key']]['mask'] ?? null;
-                if ($maskData === null) {
-                    $this->xobjdict['IMG' . $img['iid']] = $this->cache[$img['key']]['obj'];
-                    continue;
-                }
+            // an alpha-split image is referenced through its plain sub-image,
+            // a mask-only image through its mask, any other through itself
+            $maskobj = (int) ($this->cache[$key]['mask']['obj'] ?? 0);
+            $plainobj = (int) ($this->cache[$key]['plain']['obj'] ?? 0);
 
-                $plainData = $this->cache[$img['key']]['plain'] ?? null;
-                if (($plainData['obj'] ?? 0) === 0) {
-                    $this->xobjdict['IMGmask' . $img['iid']] = (int) $maskData['obj'];
-                } elseif ($plainData !== null) {
-                    $this->xobjdict['IMGplain' . $img['iid']] = (int) $plainData['obj'];
-                }
+            if ($plainobj !== 0) {
+                $this->xobjdict['IMGplain' . $img['iid']] = $plainobj;
+            } elseif ($maskobj !== 0) {
+                $this->xobjdict['IMGmask' . $img['iid']] = $maskobj;
+            } else {
+                $this->xobjdict['IMG' . $img['iid']] = $this->cache[$key]['obj'];
             }
         }
 
@@ -275,18 +314,20 @@ abstract class Output
             . $this->getOutColorInfo($data);
 
         if ($data['exturl']) {
-            // external stream
+            // external stream: the file specification carries the source URL
             $out .=
                 ' /Length 0 /F'
                 . ' <<'
                 . ' /FS /URL /F '
-                . $this->encrypt->escapeDataString('true', $this->pon)
+                . $this->encrypt->escapeDataString($data['file'], $this->pon)
                 . ' >>';
             if ($data['filter'] !== '') {
                 $out .= ' /FFilter /' . $data['filter'];
             }
 
-            $out .= ' >>' . "\n";
+            // an image XObject is a stream object: the body holds the zero
+            // bytes declared by /Length, as the data lives in the linked file
+            $out .= ' >> stream' . "\n" . 'endstream' . "\n";
         } else {
             if ($data['filter'] !== '') {
                 $out .= ' /Filter /' . $data['filter'];
@@ -342,20 +383,12 @@ abstract class Output
         $out = '';
 
         foreach ($keys as $iid) {
-            $key = 'IMG' . $iid;
-            if (isset($this->xobjdict[$key])) {
-                $out .= ' /' . $key . ' ' . $this->xobjdict[$key] . ' 0 R';
-                continue;
-            }
-            $key = 'IMGplain' . $iid;
-            if (isset($this->xobjdict[$key])) {
-                $out .= ' /' . $key . ' ' . $this->xobjdict[$key] . ' 0 R';
-                continue;
-            }
-            $key = 'IMGmask' . $iid;
-            if (isset($this->xobjdict[$key])) {
-                $out .= ' /' . $key . ' ' . $this->xobjdict[$key] . ' 0 R';
-                continue;
+            foreach (['IMG', 'IMGplain', 'IMGmask'] as $prefix) {
+                $key = $prefix . $iid;
+                if (isset($this->xobjdict[$key])) {
+                    $out .= ' /' . $key . ' ' . $this->xobjdict[$key] . ' 0 R';
+                    break;
+                }
             }
         }
 
@@ -375,16 +408,13 @@ abstract class Output
             return '';
         }
 
+        // for an indexed image the profile describes the RGB palette entries,
+        // so /N and /Alternate describe that base
+        $channels = $data['colspace'] === 'Indexed' ? 3 : $data['channels'];
+        $alternate = $data['colspace'] === 'Indexed' ? 'DeviceRGB' : $data['colspace'];
+
         $data['obj_icc'] = ++$this->pon;
-        $out =
-            $data['obj_icc']
-            . ' 0 obj'
-            . "\n"
-            . '<<'
-            . ' /N '
-            . $data['channels']
-            . ' /Alternate /'
-            . $data['colspace'];
+        $out = $data['obj_icc'] . ' 0 obj' . "\n" . '<< /N ' . $channels . ' /Alternate /' . $alternate;
         $icc = $data['icc'];
         if ($this->compress) {
             $out .= ' /Filter /FlateDecode';
@@ -461,23 +491,7 @@ abstract class Output
      */
     protected function getOutColorInfo(array $data): string
     {
-        $out = '';
-        // set color space
-        if ($data['obj_icc'] !== 0) {
-            // ICC Colour Space
-            $out .= ' /ColorSpace [/ICCBased ' . $data['obj_icc'] . ' 0 R]';
-        } elseif ($data['obj_pal'] !== 0) {
-            // Indexed Colour Space
-            $out .=
-                ' /ColorSpace [/Indexed /DeviceRGB '
-                . ((\strlen($data['pal']) / 3) - 1)
-                . ' '
-                . $data['obj_pal']
-                . ' 0 R]';
-        } else {
-            // Device Colour Space
-            $out .= ' /ColorSpace /' . $data['colspace'];
-        }
+        $out = ' /ColorSpace ' . $this->getOutColorSpace($data);
 
         if ($data['colspace'] === 'DeviceCMYK') {
             $out .= ' /Decode [1 0 1 0 1 0 1 0]';
@@ -486,7 +500,7 @@ abstract class Output
         $out .= ' /BitsPerComponent ' . $data['bits'];
 
         $maskobj = (int) ($this->cache[$data['key']]['mask']['obj'] ?? 0);
-        if (!$data['ismask'] && $maskobj > 0) {
+        if (!$this->notransparency && !$data['ismask'] && $maskobj > 0) {
             $out .= ' /SMask ' . $maskobj . ' 0 R';
         }
 
@@ -496,6 +510,37 @@ abstract class Output
         }
 
         return $out;
+    }
+
+    /**
+     * Get the PDF colour space entry for the image.
+     *
+     * An indexed image is emitted as an /Indexed space; an ICC profile, when
+     * present, becomes its base colour space instead of replacing it.
+     *
+     * @param ImageRawData $data Image raw data.
+     */
+    private function getOutColorSpace(array $data): string
+    {
+        $icc = $data['obj_icc'] === 0 ? '' : '[/ICCBased ' . $data['obj_icc'] . ' 0 R]';
+
+        if ($data['obj_pal'] !== 0) {
+            return (
+                '[/Indexed '
+                . ($icc === '' ? '/DeviceRGB' : $icc)
+                . ' '
+                . \max(0, \intdiv(\strlen($data['pal']), 3) - 1)
+                . ' '
+                . $data['obj_pal']
+                . ' 0 R]'
+            );
+        }
+
+        if ($icc !== '') {
+            return $icc;
+        }
+
+        return '/' . $data['colspace'];
     }
 
     /**
@@ -518,21 +563,19 @@ abstract class Output
             return '';
         }
 
-        $data['obj_alt'] = ++$this->pon;
-
-        $out = $this->pon . ' 0 obj' . "\n" . '[';
+        $entries = '';
         foreach ($img['altimgs'] as $iid) {
             $altimg = $this->image[$iid] ?? null;
             if ($altimg === null) {
                 continue;
             }
 
-            $altobj = (int) ($this->cache[$altimg['key']]['obj'] ?? 0);
+            $altobj = $this->getAltImageObject($altimg['key']);
             if ($altobj === 0) {
                 continue;
             }
 
-            $out .=
+            $entries .=
                 ' << /Image '
                 . $altobj
                 . ' 0 R'
@@ -541,7 +584,43 @@ abstract class Output
                 . ' >>';
         }
 
-        return $out . (' ]' . "\n" . 'endobj' . "\n");
+        if ($entries === '') {
+            // no alternate resolved to a written object
+            return '';
+        }
+
+        $data['obj_alt'] = ++$this->pon;
+
+        return $data['obj_alt'] . ' 0 obj' . "\n" . '[' . $entries . ' ]' . "\n" . 'endobj' . "\n";
+    }
+
+    /**
+     * Get the object number of the image to reference as an alternate.
+     *
+     * An alpha-split image has no top-level object: its plain sub-image is
+     * referenced instead, or its mask when there is no plain one.
+     *
+     * @param string $key Image key.
+     *
+     * @return int Object number, or 0 if the image has not been written yet.
+     */
+    private function getAltImageObject(string $key): int
+    {
+        $data = $this->cache[$key] ?? null;
+        if ($data === null) {
+            return 0;
+        }
+
+        if ($data['obj'] !== 0) {
+            return $data['obj'];
+        }
+
+        $plainobj = (int) ($data['plain']['obj'] ?? 0);
+        if ($plainobj !== 0) {
+            return $plainobj;
+        }
+
+        return (int) ($data['mask']['obj'] ?? 0);
     }
 
     /**
@@ -554,8 +633,8 @@ abstract class Output
         $trns = '';
 
         if ($data['colspace'] === 'Indexed') {
-            // Indexed: trns holds one alpha byte per palette entry; mask the
-            // fully-transparent entries (alpha 0) by their palette index.
+            // indexed: trns holds one alpha byte per palette entry; the
+            // fully-transparent entries are masked by their palette index
             foreach ($data['trns'] as $idx => $val) {
                 if ($val !== 0) {
                     continue;
@@ -567,8 +646,8 @@ abstract class Output
             return $trns;
         }
 
-        // DeviceRGB / DeviceGray: trns holds the transparent colour sample
-        // values themselves, emitted as single-value colour-key ranges.
+        // DeviceRGB / DeviceGray: trns holds the transparent colour samples,
+        // emitted as single-value colour-key ranges
         foreach ($data['trns'] as $val) {
             $trns .= $val . ' ' . $val . ' ';
         }

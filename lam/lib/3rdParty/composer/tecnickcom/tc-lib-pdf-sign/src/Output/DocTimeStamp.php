@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Sign\Output;
 
+use Com\Tecnick\Pdf\Sign\Exception;
+
 /**
  * Com\Tecnick\Pdf\Sign\Output\DocTimeStamp
  *
@@ -46,14 +48,23 @@ final class DocTimeStamp
      * Emit the /DocTimeStamp value object.
      *
      * @param int $objectId       Object number for the value object.
-     * @param int $contentsLength Placeholder length reserved for the token.
+     * @param int $contentsLength Placeholder length reserved for the token, in hex
+     *                            digits; must be even and positive.
+     *
+     * @throws Exception If the object number or the placeholder length is invalid.
      */
     public function valueObject(int $objectId, int $contentsLength = Signature::DEFAULT_CONTENTS_LENGTH): string
     {
-        $out = $objectId . " 0 obj\n";
-        $out .= '<< /Type /DocTimeStamp /Filter /Adobe.PPKLite /SubFilter /' . self::SUB_FILTER . ' ';
-        $out .= Signature::BYTE_RANGE_PLACEHOLDER;
-        $out .= ' /Contents<' . \str_repeat('0', \max(0, $contentsLength)) . '>';
+        // ISO 32000-2 section 12.8.5 gives a document timestamp the same shape as a
+        // signature, so the head is the one Signature emits. A /DocTimeStamp carries
+        // no further entries.
+        $out = Signature::objectHead(
+            $objectId,
+            'DocTimeStamp',
+            self::SUB_FILTER,
+            $contentsLength,
+            'document timestamp',
+        );
 
         return $out . " >>\nendobj\n";
     }

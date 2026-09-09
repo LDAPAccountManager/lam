@@ -58,6 +58,14 @@ class Subset
     ];
 
     /**
+     * Largest glyph offset the short format of the loca table can address.
+     *
+     * The entries are stored halved as 16-bit values, so the last one they reach is
+     * 0xFFFF * 2.
+     */
+    protected const MAX_SHORT_LOCA_OFFSET = 131_070;
+
+    /**
      * Content of the input font file
      */
     protected string $font = '';
@@ -72,121 +80,7 @@ class Subset
      *
      * @var TFontData
      */
-    protected array $fdt = [
-        'Ascender' => 0,
-        'Ascent' => 0,
-        'AvgWidth' => 0.0,
-        'CapHeight' => 0,
-        'CharacterSet' => '',
-        'Descender' => 0,
-        'Descent' => 0,
-        'EncodingScheme' => '',
-        'FamilyName' => '',
-        'Flags' => 0,
-        'FontBBox' => [],
-        'FontName' => '',
-        'FullName' => '',
-        'IsFixedPitch' => false,
-        'ItalicAngle' => 0,
-        'Leading' => 0,
-        'MaxWidth' => 0,
-        'MissingWidth' => 0,
-        'StdHW' => 0,
-        'StdVW' => 0,
-        'StemH' => 0,
-        'StemV' => 0,
-        'UnderlinePosition' => 0,
-        'UnderlineThickness' => 0,
-        'Version' => '',
-        'Weight' => '',
-        'XHeight' => 0,
-        'bbox' => '',
-        'cbbox' => [],
-        'cidinfo' => [
-            'Ordering' => '',
-            'Registry' => '',
-            'Supplement' => 0,
-            'uni2cid' => [],
-        ],
-        'compress' => false,
-        'ctg' => '',
-        'ctgdata' => [],
-        'cw' => [],
-        'cwu' => [],
-        'datafile' => '',
-        'desc' => [
-            'Ascent' => 0,
-            'AvgWidth' => 0,
-            'CapHeight' => 0,
-            'Descent' => 0,
-            'Flags' => 0,
-            'FontBBox' => '',
-            'ItalicAngle' => 0,
-            'Leading' => 0,
-            'MaxWidth' => 0,
-            'MissingWidth' => 0,
-            'StemH' => 0,
-            'StemV' => 0,
-            'XHeight' => 0,
-        ],
-        'diff' => '',
-        'diff_n' => 0,
-        'dir' => '',
-        'dw' => 0,
-        'enc' => '',
-        'enc_map' => [],
-        'encodingTables' => [],
-        'encoding_id' => 0,
-        'encrypted' => '',
-        'fakestyle' => false,
-        'family' => '',
-        'file' => '',
-        'file_n' => 0,
-        'file_name' => '',
-        'i' => 0,
-        'ifile' => '',
-        'indexToLoc' => [],
-        'input_file' => '',
-        'isUnicode' => false,
-        'italicAngle' => 0,
-        'key' => '',
-        'lenIV' => 0,
-        'length1' => 0,
-        'length2' => 0,
-        'linked' => false,
-        'mode' => [
-            'bold' => false,
-            'italic' => false,
-            'linethrough' => false,
-            'overline' => false,
-            'underline' => false,
-        ],
-        'n' => 0,
-        'name' => '',
-        'numGlyphs' => 0,
-        'numHMetrics' => 0,
-        'originalsize' => 0,
-        'pdfa' => false,
-        'platform_id' => 0,
-        'settype' => '',
-        'short_offset' => false,
-        'size1' => 0,
-        'size2' => 0,
-        'style' => '',
-        'subset' => false,
-        'subsetchars' => [],
-        'table' => [],
-        'tot_num_glyphs' => 0,
-        'type' => '',
-        'underlinePosition' => 0,
-        'underlineThickness' => 0,
-        'unicode' => false,
-        'unitsPerEm' => 0,
-        'up' => 0,
-        'urk' => 0.0,
-        'ut' => 0,
-        'weight' => '',
-    ];
+    protected array $fdt = Load::DEFAULT_DATA;
 
     /**
      * Array containing subset glyphs indexes of chars from cmap table
@@ -211,11 +105,11 @@ class Subset
     protected ObjFile $fileHelper;
 
     /**
-     * Process TrueType font
+     * Build the subset of a TrueType font
      *
      * @param string           $font       Content of the input font file
      * @param TFontData        $fdt        Extracted font metrics
-     * @param ObjFile          $fileHelper Optional file helper for font loading.
+     * @param ObjFile          $fileHelper File helper for font loading.
      * @param array<int, bool> $subchars   Array containing subset chars
      *
      * @throws FontException in case of error
@@ -225,26 +119,39 @@ class Subset
         $this->fileHelper = $fileHelper;
         $this->font = $font;
         $this->fbyte = new Byte($font);
-        $trueType = new TrueType(
-            font: $font,
-            fdt: $fdt,
-            fileHelper: $this->fileHelper,
-            fbyte: $this->fbyte,
-            subchars: $subchars,
-            // Subsetting only needs the glyph program (loca/glyf); per-glyph bounding
-            // boxes are never read here, so skip computing them.
-            withCbbox: false,
-        );
-        $this->fdt = $trueType->getFontMetrics();
-        $this->subglyphs = $trueType->getSubGlyphs();
-        $this->addCompositeGlyphs();
-        $this->addProcessedTables();
-        $this->removeUnusedTables();
-        $this->buildSubsetFont();
+
+        try {
+            $trueType = new TrueType(
+                font: $font,
+                fdt: $fdt,
+                fileHelper: $this->fileHelper,
+                fbyte: $this->fbyte,
+                subchars: $subchars,
+                // subsetting only needs the glyph program (loca and glyf tables)
+                withCbbox: false,
+                subsetting: true,
+            );
+            $this->fdt = $trueType->getFontMetrics();
+            if (!$trueType->isSubsettingAllowed()) {
+                // the OS/2 fsType carries the "No Subsetting" bit, so the whole program
+                // is returned untouched
+                $this->subfont = $font;
+                return;
+            }
+
+            $this->subglyphs = $trueType->getSubGlyphs();
+            $this->addCompositeGlyphs();
+            $this->addProcessedTables();
+            $this->removeUnusedTables();
+            $this->buildSubsetFont();
+        } catch (\RangeException $exc) {
+            // the byte reader ran past the end of a truncated or corrupt font program
+            throw new FontException('Malformed font program: ' . $exc->getMessage(), 0, $exc);
+        }
     }
 
     /**
-     * Get all the extracted font metrics
+     * Returns the subset font program
      */
     public function getSubsetFont(): string
     {
@@ -258,36 +165,22 @@ class Subset
      * @param int    $length Length of table in bytes
      *
      * @return int checksum
-     *
-     * @throws FontException
      */
     protected function getTableChecksum(string $table, int $length): int
     {
         $sum = 0;
-        $tlen = (int) floor(($length + 3) / 4);
+        $tlen = (int) \floor(($length + 3) / 4);
         $offset = 0;
         for ($idx = 0; $idx < $tlen; ++$idx) {
-            $chunk = \substr($table, $offset, 4);
-            if (\strlen($chunk) < 4) {
-                // OpenType checksums use zero-padding for trailing partial words.
-                $chunk = \str_pad($chunk, 4, "\0", STR_PAD_RIGHT);
-            }
-
-            $val = \unpack('Ni', $chunk);
-            if ($val === false) {
-                throw new FontException('Unable to unpack table data');
-            }
-
-            $sum += $val['i'];
+            // OpenType checksums use zero-padding for trailing partial words
+            $chunk = \str_pad(\substr($table, $offset, 4), 4, "\0", STR_PAD_RIGHT);
+            $sum += (\ord($chunk[0]) << 24) | (\ord($chunk[1]) << 16) | (\ord($chunk[2]) << 8) | \ord($chunk[3]);
+            // the sum is truncated to 32 bits at every word
+            $sum &= 0xFFFF_FFFF;
             $offset += 4;
         }
 
-        $sum = \unpack('Ni', \pack('N', $sum));
-        if ($sum === false) {
-            throw new FontException('Unable to unpack checksum');
-        }
-
-        return $sum['i'];
+        return $sum;
     }
 
     /**
@@ -317,10 +210,10 @@ class Subset
     }
 
     /**
-     * Find composite glyphs
+     * Find the component glyphs of a composite glyph
      *
-     * @param array<int, bool> $new_sga
-     * @param int $key
+     * @param array<int, bool> $new_sga Glyph indexes to add to the subset
+     * @param int              $key     Glyph index to inspect
      *
      * @return array<int, bool>
      */
@@ -337,6 +230,11 @@ class Subset
              */
 
             $this->offset = $this->fdt['table']['glyf']['offset'] + $this->fdt['indexToLoc'][$key];
+            // the MORE_COMPONENTS chain is bounded by the end of this glyph
+            $nextidx = $this->getNextLocaIndex($key + 1);
+            $glyphEnd = $nextidx === null
+                ? $this->fdt['table']['glyf']['offset'] + $this->fdt['table']['glyf']['length']
+                : $this->fdt['table']['glyf']['offset'] + $this->fdt['indexToLoc'][$nextidx];
             $numberOfContours = $this->fbyte->getShort($this->offset);
             $this->offset += 2;
             if ($numberOfContours < 0) { // composite glyph
@@ -350,6 +248,10 @@ class Subset
                  */
                 $this->offset += 8; // skip xMin, yMin, xMax, yMax
                 do {
+                    if (($this->offset + 4) > $glyphEnd) {
+                        break; // the component record does not fit this glyph
+                    }
+
                     $flags = $this->fbyte->getUShort($this->offset);
                     $this->offset += 2;
                     $glyphIndex = $this->fbyte->getUShort($this->offset);
@@ -386,9 +288,15 @@ class Subset
 
     /**
      * Remove unused tables
+     *
+     * @throws FontException if a preserved table is truncated by the font file.
      */
     protected function removeUnusedTables(): void
     {
+        // the sfnt specification requires the table directory to be sorted by tag in
+        // ascending order, which is also the order buildSubsetFont() emits
+        \ksort($this->fdt['table']);
+
         // get the tables to preserve
         $this->offset = 12;
         $tabname = \array_keys($this->fdt['table']);
@@ -399,15 +307,6 @@ class Subset
                 continue;
             }
 
-            if (!isset($this->fdt['table'][$tag])) {
-                $this->fdt['table'][$tag] = [
-                    'checkSum' => 0,
-                    'data' => '',
-                    'length' => 0,
-                    'offset' => 0,
-                ];
-            }
-
             $isSubsetTable = $tag === 'loca' || $tag === 'glyf';
             if (!$isSubsetTable) {
                 $this->fdt['table'][$tag]['data'] = \substr(
@@ -415,31 +314,55 @@ class Subset
                     $this->fdt['table'][$tag]['offset'],
                     $this->fdt['table'][$tag]['length'],
                 );
-                if ($tag === 'head') {
-                    // set the checkSumAdjustment to 0
-                    $this->fdt['table'][$tag]['data'] =
-                        \substr($this->fdt['table'][$tag]['data'], 0, 8)
-                        . "\x0\x0\x0\x0"
-                        . \substr($this->fdt['table'][$tag]['data'], 12);
+                // the emitted table directory advertises the declared length
+                if (\strlen($this->fdt['table'][$tag]['data']) !== $this->fdt['table'][$tag]['length']) {
+                    throw new FontException('truncated font table: ' . $tag);
                 }
+
+                if ($tag === 'head') {
+                    // set the checkSumAdjustment to 0, replacing the four bytes in place
+                    $this->fdt['table'][$tag]['data'] = \substr_replace(
+                        $this->fdt['table'][$tag]['data'],
+                        "\x0\x0\x0\x0",
+                        8,
+                        4,
+                    );
+                }
+
+                // the checksum is computed from the bytes emitted, not copied from the
+                // directory of the input font
+                $this->fdt['table'][$tag]['checkSum'] = $this->getTableChecksum(
+                    $this->fdt['table'][$tag]['data'],
+                    $this->fdt['table'][$tag]['length'],
+                );
             }
 
-            $pad = 4 - ((int) $this->fdt['table'][$tag]['length'] % 4);
-            if ($pad !== 4) {
-                // the length of a table must be a multiple of four bytes
-                $this->fdt['table'][$tag]['length'] += (int) $pad;
-                $this->fdt['table'][$tag]['data'] .= \str_repeat("\x0", max(0, $pad));
-            }
-
+            $this->padTable($tag);
             $this->fdt['table'][$tag]['offset'] = $this->offset;
-            $this->offset += $this->fdt['table'][$tag]['length'];
+            $this->offset += \strlen($this->fdt['table'][$tag]['data']);
+        }
+    }
 
-            // check sum is not changed
+    /**
+     * Pad the data of a table to the next four byte boundary.
+     *
+     * The gap to the next boundary is filled with zeroes. The table directory keeps
+     * advertising the real length of the table.
+     *
+     * @param string $tag Tag of the table to pad.
+     */
+    protected function padTable(string $tag): void
+    {
+        $pad = (4 - (\strlen($this->fdt['table'][$tag]['data']) % 4)) % 4;
+        if ($pad !== 0) {
+            $this->fdt['table'][$tag]['data'] .= \str_repeat("\x0", $pad);
         }
     }
 
     /**
      * Add glyf and loca tables
+     *
+     * @throws FontException if the glyph data does not fit the format of the loca table.
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      * @SuppressWarnings("PHPMD.NPathComplexity")
@@ -453,15 +376,19 @@ class Subset
         $glyf_offset = $this->fdt['table']['glyf']['offset'];
         for ($i = 0; $i < $this->fdt['tot_num_glyphs']; ++$i) {
             $nextidx = $this->getNextLocaIndex($i + 1);
+            $length = 0;
             if (isset($this->subglyphs[$i], $this->fdt['indexToLoc'][$i]) && $nextidx !== null) {
-                $length = $this->fdt['indexToLoc'][$nextidx] - $this->fdt['indexToLoc'][$i];
+                // a non-monotonic loca table would give a negative length
+                $length = \max(0, $this->fdt['indexToLoc'][$nextidx] - $this->fdt['indexToLoc'][$i]);
                 $glyf .= \substr($this->font, $glyf_offset + $this->fdt['indexToLoc'][$i], $length);
-            } else {
-                $length = 0;
             }
 
             if ($this->fdt['short_offset']) {
-                $loca .= \pack('n', \floor($this->offset / 2));
+                if ($this->offset > self::MAX_SHORT_LOCA_OFFSET) {
+                    throw new FontException('The subset glyph data is too large for a short loca table');
+                }
+
+                $loca .= \pack('n', \intdiv($this->offset, 2));
             } else {
                 $loca .= \pack('N', $this->offset);
             }
@@ -469,56 +396,21 @@ class Subset
             $this->offset += $length;
         }
 
-        // add loca
-        if (!isset($this->fdt['table']['loca'])) {
-            $this->fdt['table']['loca'] = [
-                'checkSum' => 0,
-                'data' => '',
-                'length' => 0,
-                'offset' => 0,
-            ];
-        }
-
+        // add loca and glyf; removeUnusedTables() assigns their offsets
         $this->fdt['table']['loca']['data'] = $loca;
         $this->fdt['table']['loca']['length'] = \strlen($loca);
-        $this->fdt['table']['loca']['offset'] = $this->offset;
-        $pad = 4 - ($this->fdt['table']['loca']['length'] % 4);
-        if ($pad !== 4) {
-            // the length of a table must be a multiple of four bytes
-            $this->fdt['table']['loca']['length'] += $pad;
-            $this->fdt['table']['loca']['data'] .= \str_repeat("\x0", $pad);
-        }
-
+        $this->padTable('loca');
         $this->fdt['table']['loca']['checkSum'] = $this->getTableChecksum(
             $this->fdt['table']['loca']['data'],
-            $this->fdt['table']['loca']['length'],
+            \strlen($this->fdt['table']['loca']['data']),
         );
-
-        $this->offset += $this->fdt['table']['loca']['length'];
-
-        // add glyf
-        if (!isset($this->fdt['table']['glyf'])) {
-            $this->fdt['table']['glyf'] = [
-                'checkSum' => 0,
-                'data' => '',
-                'length' => 0,
-                'offset' => 0,
-            ];
-        }
 
         $this->fdt['table']['glyf']['data'] = $glyf;
         $this->fdt['table']['glyf']['length'] = \strlen($glyf);
-        $this->fdt['table']['glyf']['offset'] = $this->offset;
-        $pad = 4 - ($this->fdt['table']['glyf']['length'] % 4);
-        if ($pad !== 4) {
-            // the length of a table must be a multiple of four bytes
-            $this->fdt['table']['glyf']['length'] += $pad;
-            $this->fdt['table']['glyf']['data'] .= \str_repeat("\x0", $pad);
-        }
-
+        $this->padTable('glyf');
         $this->fdt['table']['glyf']['checkSum'] = $this->getTableChecksum(
             $this->fdt['table']['glyf']['data'],
-            $this->fdt['table']['glyf']['length'],
+            \strlen($this->fdt['table']['glyf']['data']),
         );
     }
 
@@ -537,9 +429,7 @@ class Subset
     }
 
     /**
-     * build new subset font
-     *
-     * @throws FontException
+     * Build the subset font program
      */
     protected function buildSubsetFont(): void
     {
@@ -547,21 +437,24 @@ class Subset
         $this->subfont .= \pack('N', 0x1_0000); // sfnt version
         $numTables = \count($this->fdt['table']);
         $this->subfont .= \pack('n', $numTables); // numTables
-        $entrySelector = \floor(\log($numTables, 2));
-        $searchRange = (2 ** $entrySelector) * 16;
+        // entrySelector = floor(log2(numTables))
+        $entrySelector = 0;
+        while ((2 << $entrySelector) <= $numTables) {
+            ++$entrySelector;
+        }
+
+        $searchRange = (1 << $entrySelector) * 16;
         $rangeShift = ($numTables * 16) - $searchRange;
         $this->subfont .= \pack('n', $searchRange); // searchRange
         $this->subfont .= \pack('n', $entrySelector); // entrySelector
         $this->subfont .= \pack('n', $rangeShift); // rangeShift
-        // Table offsets stored in $this->fdt start after the 12-byte sfnt header.
-        // The full output adds the table directory immediately after that header,
-        // so both directory offsets and in-buffer table positions must include this base.
+        // the offsets stored in $this->fdt start after the 12-byte sfnt header, so they are
+        // shifted by the size of the table directory that follows it
         $tableDataBaseOffset = $numTables * 16;
-        $this->offset = $tableDataBaseOffset;
         foreach ($this->fdt['table'] as $tag => $data) {
             $this->subfont .= $tag; // tag
             $this->subfont .= \pack('N', $data['checkSum']); // checkSum
-            $this->subfont .= \pack('N', $data['offset'] + $this->offset); // offset
+            $this->subfont .= \pack('N', $data['offset'] + $tableDataBaseOffset); // offset
             $this->subfont .= \pack('N', $data['length']); // length
         }
 

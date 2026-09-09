@@ -63,4 +63,14 @@ enum SignatureProfile: string
 
         return self::tryFrom($value) ?? throw new Exception('Invalid signature profile: ' . $value);
     }
+
+    /**
+     * The backing value of every case, in declaration order.
+     *
+     * @return list<string>
+     */
+    public static function values(): array
+    {
+        return \array_map(static fn(self $case): string => $case->value, self::cases());
+    }
 }

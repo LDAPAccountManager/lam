@@ -107,10 +107,12 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
  *        'XHeight': int,
  *        'bbox': string,
  *        'cbbox': array<int, array<int, int>>,
+ *        'cbboxu': array<int, array<int, int>>,
  *        'cidinfo': TFontDataCidInfo,
  *        'compress': bool,
  *        'ctg': string,
  *        'ctgdata': array<int, int>,
+ *        'ctgu': array<int, int>,
  *        'cw':  array<int, int>,
  *        'cwu': array<int, int>,
  *        'datafile': string,
@@ -130,6 +132,7 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
  *        'file': string,
  *        'file_n': int,
  *        'file_name': string,
+ *        'gidenc': bool,
  *        'i': int,
  *        'ifile': string,
  *        'indexToLoc': array<int, int>,
@@ -165,6 +168,7 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
  *        'unitsPerEm': int,
  *        'up': int,
  *        'urk': float,
+ *        'usedgid': array<int, int>,
  *        'ut': int,
  *        'weight': string,
  *    }
@@ -195,11 +199,13 @@ abstract class Load
     ];
 
     /**
-     * Font data
+     * Default value of every font data entry.
+     *
+     * Shared with Import and Subset, which start from the same state.
      *
      * @var TFontData
      */
-    protected array $data = [
+    public const DEFAULT_DATA = [
         'Ascender' => 0,
         'Ascent' => 0,
         'AvgWidth' => 0.0,
@@ -229,6 +235,7 @@ abstract class Load
         'XHeight' => 0,
         'bbox' => '',
         'cbbox' => [],
+        'cbboxu' => [],
         'cidinfo' => [
             'Ordering' => '',
             'Registry' => '',
@@ -238,6 +245,7 @@ abstract class Load
         'compress' => false,
         'ctg' => '',
         'ctgdata' => [],
+        'ctgu' => [],
         'cw' => [],
         'cwu' => [],
         'datafile' => '',
@@ -270,6 +278,7 @@ abstract class Load
         'file' => '',
         'file_n' => 0,
         'file_name' => '',
+        'gidenc' => false,
         'i' => 0,
         'ifile' => '',
         'indexToLoc' => [],
@@ -311,9 +320,17 @@ abstract class Load
         'unitsPerEm' => 0,
         'up' => 0,
         'urk' => 0.0,
+        'usedgid' => [],
         'ut' => 0,
         'weight' => '',
     ];
+
+    /**
+     * Font data
+     *
+     * @var TFontData
+     */
+    protected array $data = self::DEFAULT_DATA;
 
     /**
      * @param ObjFile|null $fileHelper Optional file helper for font loading.
@@ -343,7 +360,7 @@ abstract class Load
     }
 
     /**
-     * Load the font data
+     * Read and decode the font definition file
      *
      * @throws FontException in case of error
      *
@@ -369,11 +386,12 @@ abstract class Load
             throw new FontException('JSON decoding error [' . \json_last_error() . ']');
         }
 
-        if (!isset($fdtdata['type'])) {
+        // the type drives every branch below, so it must be a plain string
+        if (!isset($fdtdata['type']) || !\is_string($fdtdata['type'])) {
             throw new FontException('The font definition file has a bad format: ' . $this->data['ifile']);
         }
 
-        $merged = \array_replace_recursive($this->data, $fdtdata);
+        $merged = \array_replace_recursive($this->data, Definition::normalize($fdtdata));
         /** @var TFontData $merged */
         $this->data = $merged;
     }
@@ -398,8 +416,8 @@ abstract class Load
             }
         }
 
-        $parent_font_dir = $dir->findParentDir('fonts', __DIR__);
-        if ($parent_font_dir !== '' && $parent_font_dir !== '/') {
+        $parent_font_dir = \rtrim($dir->findParentDir('fonts', __DIR__), '/\\');
+        if ($parent_font_dir !== '') {
             $dirs[] = $parent_font_dir;
             $glb = \glob($parent_font_dir . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
             if ($glb !== false) {
@@ -421,7 +439,7 @@ abstract class Load
     }
 
     /**
-     * Load the font data
+     * Locate the font definition file and set the 'ifile' and 'dir' entries
      *
      * @throws FontException in case of error
      */
@@ -454,20 +472,24 @@ abstract class Load
                 break 2;
             }
 
-            // we have not found the version with style variations
+            // the definition file with the style variations is missing
             $this->data['fakestyle'] = true;
         }
     }
 
+    /**
+     * Set the default character width
+     */
     protected function setDefaultWidth(): void
     {
-        if ($this->data['dw'] !== 0) {
+        if ($this->data['dw'] > 0) {
             return;
         }
 
+        // a width below zero is treated as unset
         if ($this->data['desc']['MissingWidth'] > 0) {
             $this->data['dw'] = $this->data['desc']['MissingWidth'];
-        } elseif (isset($this->data['cw'][32]) && $this->data['cw'][32] !== 0) {
+        } elseif (($this->data['cw'][32] ?? 0) > 0) {
             $this->data['dw'] = $this->data['cw'][32];
         } else {
             $this->data['dw'] = 600;
@@ -489,7 +511,7 @@ abstract class Load
     }
 
     /**
-     * @return void
+     * Set the font name, encoding and subset mode by font type
      *
      * @throws FontException on using a CID0 font in a pdfa
      */
@@ -502,8 +524,16 @@ abstract class Load
             $this->data['subset'] = false;
         } elseif ($this->data['type'] === 'TrueTypeUnicode') {
             $this->data['enc'] = 'Identity-H';
-        } elseif ($this->data['type'] === 'cidfont0' && $this->data['pdfa']) {
-            throw new FontException('CID0 fonts are not supported, all fonts must be embedded in PDF/A mode!');
+            // the character codes are glyph indices (CID == GID) when a CIDToGIDMap
+            // artifact is available to translate the codepoints
+            $this->data['gidenc'] = $this->data['ctg'] !== '';
+        } elseif ($this->data['type'] === 'cidfont0') {
+            if ($this->data['pdfa']) {
+                throw new FontException('CID0 fonts are not supported, all fonts must be embedded in PDF/A mode!');
+            }
+
+            // a CID-0 font is not embedded, so there is no program to subset
+            $this->data['subset'] = false;
         }
 
         if ($this->data['name'] === '') {
@@ -527,20 +557,14 @@ abstract class Load
         // artificial italic
         if ($this->data['mode']['italic']) {
             $this->data['name'] .= 'Italic';
-            if ($this->data['desc']['ItalicAngle'] !== 0) {
-                $this->data['desc']['ItalicAngle'] -= 11;
-            } else {
-                $this->data['desc']['ItalicAngle'] = -11;
-            }
-
-            if ($this->data['desc']['Flags'] !== 0) {
-                $this->data['desc']['Flags'] |= 64; //bit 7
-            } else {
-                $this->data['desc']['Flags'] = 64;
-            }
+            $this->data['desc']['ItalicAngle'] -= 11;
+            $this->data['desc']['Flags'] |= 64; //bit 7
         }
     }
 
+    /**
+     * Set the embedded font file lengths
+     */
     public function setFileData(): void
     {
         if ($this->data['file'] === '') {

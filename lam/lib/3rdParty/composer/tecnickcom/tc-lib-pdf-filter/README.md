@@ -16,9 +16,7 @@
 
 ## Overview
 
-`tc-lib-pdf-filter` decodes compression and transformation filters defined by the PDF specification.
-
-It is intended for parsing workflows where encoded PDF streams must be decoded according to the standard filter pipeline. By isolating filter logic in one component, callers get predictable behavior and easier testing across different document inputs.
+`tc-lib-pdf-filter` decodes the stream filters defined by the PDF specification (PDF 32000-1:2008 §7.4), one at a time or as a chain, with the `DecodeParms` of each filter.
 
 | | |
 |---|---|
@@ -36,19 +34,48 @@ It is intended for parsing workflows where encoded PDF streams must be decoded a
 - `FlateDecode`, `LZWDecode`, `RunLengthDecode`
 - `ASCIIHexDecode`, `ASCII85Decode`
 - `CCITTFaxDecode`, `DCTDecode`, `JPXDecode`, `JBIG2Decode`
+- `Crypt` (`Identity` and `None`)
 
-### API Design
-- Decode one filter or apply multiple filters in sequence
-- Pure-PHP implementation suitable for parser integration
-- Typed exceptions for unknown/invalid filter handling
+### API
+- Decode one filter, or a chain of filters applied in order
+- `DecodeParms` as a single dictionary or as an array parallel to `Filter`
+- `Predictor` (TIFF and PNG) for `FlateDecode` and `LZWDecode`
+- Filter names as the full name, the inline-image abbreviation, or a `FilterType` enum case
+- A single exception class for unknown filters and malformed streams
 
 ---
 
 ## Requirements
 
 - PHP 8.2 or later
-- Extension: `zlib`
+- Extensions: `zlib`, `pcre`
 - Composer
+
+Optional:
+
+- Extension `imagick`: required by `CCITTFaxDecode` and `JPXDecode`
+- CLI tool `jbig2dec`: required by `JBIG2Decode`
+
+Without them those three filters throw; the others are unaffected.
+
+---
+
+## Decode parameters
+
+`DecodeParms` entries are passed to `decode()` and `decodeAll()` as an array.
+Beyond the parameters defined by the PDF specification, three filters accept
+one more:
+
+| Parameter | Filters | Meaning |
+|---|---|---|
+| `MaxOutputSize` | `FlateDecode`, `LZWDecode`, `RunLengthDecode` | Decoded-size cap in bytes; `0` (default) = unlimited |
+
+`FlateDecode` reaches compression ratios above 1000:1, so callers decoding
+untrusted documents should set `MaxOutputSize` to bound decompression bombs.
+
+`CCITTFaxDecode` derives the image height from `Rows`. When `Rows` is absent the
+height is estimated from the encoded length, which under-estimates it and
+truncates the image, so pass `Rows` (the image dictionary `/Height`).
 
 ---
 

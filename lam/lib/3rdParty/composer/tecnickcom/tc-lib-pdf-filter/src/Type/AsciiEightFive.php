@@ -23,8 +23,8 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
 /**
  * Com\Tecnick\Pdf\Filter\Type\AsciiEightFive
  *
- * ASCII85
- * Decodes data encoded in an ASCII base-85 representation, reproducing the original binary data.
+ * ASCII85Decode filter (PDF 32000-1:2008 §7.4.3).
+ * Decodes data written in the ASCII base-85 representation.
  *
  * @since     2011-05-23
  * @category  Library
@@ -37,14 +37,14 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
 class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
 {
     /**
-     * Decode the data
+     * Decode the data.
      *
-     * @param string $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters.
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
      *
-     * @return string Decoded data string.
+     * @return string Decoded data.
      *
-     * @throws \Com\Tecnick\Pdf\Filter\Exception
+     * @throws PPException
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
@@ -63,36 +63,44 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
     }
 
     /**
-     * @throws \Com\Tecnick\Pdf\Filter\Exception
+     * Strip the white space and the EOD marker, and reject characters outside the alphabet.
+     *
+     * @param string $data Data to decode.
+     *
+     * @throws PPException
      */
     private function normalizeInput(string $data): string
     {
-        // all white-space characters shall be ignored
-        $data = \preg_replace('/[\s]+/', '', $data);
+        // all white-space characters shall be ignored (PDF 32000-1:2008 Table 1 also lists NUL)
+        $data = \preg_replace('/[\x00\s]+/', '', $data);
         if ($data === null) {
-            throw new PPException('invalid code');
+            throw new PPException('invalid code: white-space removal failed');
         }
 
-        // check for EOD: 2-character sequence ~> (7Eh)(3Eh)
+        // EOD marker: the 2-character sequence ~> (7Eh)(3Eh); it and any data after it are dropped
         $eod = \strpos($data, '~>');
         if ($eod !== false) {
-            // remove EOD and following characters (if any)
             $data = \substr($data, 0, $eod);
         }
 
-        // check for invalid characters: valid bytes are '!'..'u' (0x21-0x75) and 'z' (0x7A)
+        // valid bytes are '!'..'u' (0x21-0x75) and 'z' (0x7A)
         $invalid = \preg_match('/[^\x21-\x75\x7A]/', $data);
         if ($invalid === false || $invalid > 0) {
-            throw new PPException('invalid code');
+            throw new PPException('invalid code: character outside the ASCII85 alphabet');
         }
 
         return $data;
     }
 
     /**
-     * @return array{string, int, int}
+     * Decode the complete five-character groups.
      *
-     * @throws \Com\Tecnick\Pdf\Filter\Exception
+     * @param string $data Normalized data.
+     *
+     * @return array{string, int, int} Decoded bytes, position within the trailing
+     *   partial group, and the value accumulated for it.
+     *
+     * @throws PPException
      */
     private function decodeTuples(string $data): array
     {
@@ -105,7 +113,7 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
             $char = \ord($data[$i]);
             if ($char === 122) {
                 if ($group_pos !== 0) {
-                    throw new PPException('invalid code');
+                    throw new PPException('invalid code: z inside a group');
                 }
 
                 $decoded .= $zseq;
@@ -114,6 +122,11 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
 
             $tuple += ($char - 33) * $this->getPow85($group_pos);
             if ($group_pos === 4) {
+                // a group encodes a 32-bit integer: anything above 0xFFFF_FFFF is malformed
+                if ($tuple > 0xFFFF_FFFF) {
+                    throw new PPException('invalid code: group value above 32 bits');
+                }
+
                 $decoded .=
                     \chr(($tuple >> 24) & 0xFF)
                     . \chr(($tuple >> 16) & 0xFF)
@@ -136,7 +149,9 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
     }
 
     /**
-     * @throws \Com\Tecnick\Pdf\Filter\Exception
+     * Weight of the character at $group_pos within its five-character group.
+     *
+     * @param int $group_pos Position within the group (0 to 4).
      */
     private function getPow85(int $group_pos): int
     {
@@ -145,37 +160,56 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
             1 => 85 * 85 * 85,
             2 => 85 * 85,
             3 => 85,
-            4 => 1,
-            default => throw new PPException('invalid code'),
+            default => 1,
         };
     }
 
+    /**
+     * Pad a final partial group to five characters.
+     *
+     * PDF 32000-1:2008 §7.4.3 pads with the character 'u' (value 84), which is
+     * worth 85^d - 1 for the d missing characters.
+     *
+     * @param int $group_pos Number of characters present in the final group.
+     * @param int $tuple     Value accumulated for the final group.
+     */
     private function applyPadding(int $group_pos, int $tuple): int
     {
         return $tuple
         + match ($group_pos) {
-            2 => 85 * 85 * 85,
-            3 => 85 * 85,
-            4 => 85,
+            2 => (85 * 85 * 85) - 1,
+            3 => (85 * 85) - 1,
+            4 => 84,
             default => 0,
         };
     }
 
     /**
-     * Get last tuple
+     * Decode the padded final group, one byte less than the characters it holds.
      *
-     * @return string Decoded data string.
+     * @param int $group_pos Number of characters present in the final group.
+     * @param int $tuple     Padded value of the final group.
      *
-     * @throws \Com\Tecnick\Pdf\Filter\Exception
+     * @return string Decoded bytes of the final group.
+     *
+     * @throws PPException
      */
     protected function getLastTuple(int $group_pos, int $tuple): string
     {
-        // last tuple (if any)
+        // a final group of one character encodes nothing
+        if ($group_pos === 1) {
+            throw new PPException('invalid code: final group has a single character');
+        }
+
+        // the padded final group encodes a 32-bit integer too
+        if ($tuple > 0xFFFF_FFFF) {
+            throw new PPException('invalid code: final group value above 32 bits');
+        }
+
         return match ($group_pos) {
             4 => \chr(($tuple >> 24) & 0xFF) . \chr(($tuple >> 16) & 0xFF) . \chr(($tuple >> 8) & 0xFF),
             3 => \chr(($tuple >> 24) & 0xFF) . \chr(($tuple >> 16) & 0xFF),
             2 => \chr(($tuple >> 24) & 0xFF),
-            1 => throw new PPException('invalid code'),
             default => '',
         };
     }

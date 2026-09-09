@@ -36,7 +36,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *            'color': string,
  *            'width': float,
  *            'style': string,
- *            'dash': array<int>,
+ *            'dash': array<float|int>,
  *          }
  *
  * @phpstan-type PageBox array{
@@ -47,7 +47,42 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *            'bci'?: PageBci,
  *          }
  *
+ * @phpstan-type PageBciInput array{
+ *            'color'?: string,
+ *            'width'?: float,
+ *            'style'?: string,
+ *            'dash'?: array<float|int>,
+ *          }
+ *
+ * @phpstan-type PageBoxInput array{
+ *            'llx'?: float,
+ *            'lly'?: float,
+ *            'urx'?: float,
+ *            'ury'?: float,
+ *            'bci'?: PageBciInput,
+ *          }
+ *
+ * @phpstan-type PageDataBox array{
+ *            'llx': float,
+ *            'lly': float,
+ *            'urx': float,
+ *            'ury': float,
+ *            'bci': PageBci,
+ *          }
+ *
  * @phpstan-type MarginData array{
+ *            'CB': float,
+ *            'CT': float,
+ *            'FT': float,
+ *            'HB': float,
+ *            'PB': float,
+ *            'PL': float,
+ *            'PR': float,
+ *            'PT': float,
+ *        }
+ *
+ * @phpstan-type PageMarginData array{
+ *            'booklet': bool,
  *            'CB': float,
  *            'CT': float,
  *            'FT': float,
@@ -84,6 +119,17 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *        }
  *
  *
+ * @phpstan-type TransitionInput array{
+ *            'B'?: bool,
+ *            'D'?: int,
+ *            'Di'?: string|int,
+ *            'Dm'?: string,
+ *            'Dur'?: float,
+ *            'M'?: string,
+ *            'S'?: string,
+ *            'SS'?: float,
+ *        }
+ *
  * @phpstan-type TransitionData array{
  *            'B': bool,
  *            'D': int,
@@ -98,13 +144,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @phpstan-type PageData array{
  *        'annotrefs': array<int,int>,
  *        'autobreak': bool,
- *        'box': array<string, array{
- *            'llx': float,
- *            'lly': float,
- *            'urx': float,
- *            'ury': float,
- *            'bci': PageBci,
- *        }>,
+ *        'box': array<string, PageDataBox>,
  *        'columns': int,
  *        'content': array<string>,
  *        'content_mark': array<int>,
@@ -116,7 +156,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *        'format': string,
  *        'group': int,
  *        'height': float,
- *        'margin': MarginData,
+ *        'margin': PageMarginData,
  *        'n': int,
  *        'num': int,
  *        'orientation': string,
@@ -127,7 +167,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *        'region': array<int, RegionData>,
  *        'rotation': int,
  *        'time': int,
- *        'transition': TransitionData,
+ *        'transition'?: TransitionData,
  *        'width': float,
  *        'zoom': float,
  *    }
@@ -135,18 +175,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @phpstan-type PageInputData array{
  *        'annotrefs'?: array<int,int>,
  *        'autobreak'?: bool,
- *        'box'?: array<string, array{
- *             'llx'?: float,
- *             'lly'?: float,
- *             'urx'?: float,
- *             'ury'?: float,
- *             'bci'?: array{
- *                'color'?: string,
- *                'width'?: float,
- *                'style'?: string,
- *                'dash'?: array<int>,
- *             },
- *        }>,
+ *        'box'?: array<string, PageBoxInput>,
  *        'columns'?: int,
  *        'content'?: array<string>|string,
  *        'content_mark'?: array<int>,
@@ -190,16 +219,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  *        }>,
  *        'rotation'?: int,
  *        'time'?: int,
- *        'transition'?: array{
- *            'B'?: bool,
- *            'D'?: int,
- *            'Di'?: string|int,
- *            'Dm'?: string,
- *            'Dur'?: float,
- *            'M'?: string,
- *            'S'?: string,
- *            'SS'?: float,
- *        },
+ *        'transition'?: TransitionInput,
  *        'width'?: float,
  *        'zoom'?: float,
  *    }
@@ -215,6 +235,13 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
      * Color object.
      */
     protected Color $col;
+
+    /**
+     * Memoized PDF RGB components, keyed by the color representation.
+     *
+     * @var array<string, string>
+     */
+    private array $rgbcomponents = [];
 
     /**
      * Page box names.
@@ -239,7 +266,6 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
     public function swapCoordinates(array $dims): array
     {
         foreach (self::BOX as $type) {
-            // swap X and Y coordinates
             if (!array_key_exists($type, $dims)) {
                 continue;
             }
@@ -267,7 +293,8 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
      * @param float                  $lly  Lower-left y coordinate in user units.
      * @param float                  $urx  Upper-right x coordinate in user units.
      * @param float                  $ury  Upper-right y coordinate in user units.
-     * @param PageBci                $bci  BoxColorInfo: guideline style (color, width, style, dash).
+     * @param ?PageBciInput          $bci  BoxColorInfo: guideline style (color, width, style, dash).
+     *                                     Missing entries are filled with the default style.
      *
      * @return array<string, PageBox> Page dimensions.
      *
@@ -290,24 +317,158 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
             throw new PageException('unknown page box type: ' . $type);
         }
 
-        $dims[$type]['llx'] = $llx;
-        $dims[$type]['lly'] = $lly;
-        $dims[$type]['urx'] = $urx;
-        $dims[$type]['ury'] = $ury;
+        $dims[$type] = $this->orderBoxCorners([
+            'llx' => $llx,
+            'lly' => $lly,
+            'urx' => $urx,
+            'ury' => $ury,
+        ]);
+        $dims[$type]['bci'] = $this->normalizeBoxColorInfo($bci);
 
+        return $dims;
+    }
+
+    /**
+     * Order the two corners of a page box so that llx <= urx and lly <= ury.
+     *
+     * @param PageBox $box Page box.
+     *
+     * @return PageBox Page box with ordered corners.
+     */
+    protected function orderBoxCorners(array $box): array
+    {
+        if ($box['llx'] > $box['urx']) {
+            [$box['llx'], $box['urx']] = [$box['urx'], $box['llx']];
+        }
+
+        if ($box['lly'] > $box['ury']) {
+            [$box['lly'], $box['ury']] = [$box['ury'], $box['lly']];
+        }
+
+        return $box;
+    }
+
+    /**
+     * Clamp a page box inside the given bounding box.
+     *
+     * @param PageDataBox $box    Page box to clamp.
+     * @param PageDataBox $bounds Bounding box.
+     *
+     * @return PageDataBox Clamped page box.
+     */
+    protected function clampBox(array $box, array $bounds): array
+    {
+        $box['llx'] = \min(\max($box['llx'], $bounds['llx']), $bounds['urx']);
+        $box['urx'] = \min(\max($box['urx'], $bounds['llx']), $bounds['urx']);
+        $box['lly'] = \min(\max($box['lly'], $bounds['lly']), $bounds['ury']);
+        $box['ury'] = \min(\max($box['ury'], $bounds['lly']), $bounds['ury']);
+
+        return $box;
+    }
+
+    /**
+     * Clamp every page box other than the MediaBox inside the MediaBox.
+     * Nothing is rendered outside the MediaBox and the reader intersects the other
+     * boxes with it.
+     *
+     * @param array<string, PageDataBox> $box Page boxes.
+     *
+     * @return array<string, PageDataBox> Page boxes.
+     */
+    protected function clampBoxesToMediaBox(array $box): array
+    {
+        $media = $box['MediaBox'] ?? null;
+        if ($media === null) {
+            // @codeCoverageIgnoreStart
+            return $box;
+
+            // @codeCoverageIgnoreEnd
+        }
+
+        foreach ($box as $type => $dims) {
+            if ($type === 'MediaBox') {
+                continue;
+            }
+
+            $box[$type] = $this->clampBox($dims, $media);
+        }
+
+        return $box;
+    }
+
+    /**
+     * Returns the default BoxColorInfo guideline style.
+     *
+     * @return PageBci Default BoxColorInfo.
+     */
+    protected function getDefaultBoxColorInfo(): array
+    {
+        return [
+            'color' => '#000000',
+            'width' => 1.0 / $this->kunit,
+            'style' => 'S', // S = solid; D = dash
+            'dash' => [3],
+        ];
+    }
+
+    /**
+     * Fill the missing entries of a BoxColorInfo with the default guideline style.
+     *
+     * @param ?PageBciInput $bci BoxColorInfo to complete, or null for the default one.
+     *
+     * @return PageBci Complete BoxColorInfo.
+     */
+    protected function normalizeBoxColorInfo(?array $bci): array
+    {
+        $def = $this->getDefaultBoxColorInfo();
         if ($bci === null) {
-            // set default values
-            $bci = [
-                'color' => '#000000',
-                'width' => 1.0 / $this->kunit,
-                'style' => 'S', // S = solid; D = dash
-                'dash' => [3],
+            return $def;
+        }
+
+        return [
+            'color' => $bci['color'] ?? $def['color'],
+            // A width of 0 hides the guideline: it is a value, not a missing entry.
+            'width' => \max(0.0, $bci['width'] ?? $def['width']),
+            'style' => $bci['style'] ?? $def['style'],
+            'dash' => $bci['dash'] ?? $def['dash'],
+        ];
+    }
+
+    /**
+     * Complete the caller-supplied page boxes with the shape the output methods expect:
+     * every box gets four coordinates and a full BoxColorInfo.
+     *
+     * @param array<string, PageBoxInput> $box Page boxes.
+     *
+     * @return array<string, PageDataBox> Page boxes.
+     *
+     * @throws PageException
+     */
+    protected function normalizeBoxes(array $box): array
+    {
+        $out = [];
+        foreach ($box as $type => $dims) {
+            if (!\in_array($type, self::BOX, true)) {
+                throw new PageException('unknown page box type: ' . $type);
+            }
+
+            $ordered = $this->orderBoxCorners([
+                'llx' => $dims['llx'] ?? 0.0,
+                'lly' => $dims['lly'] ?? 0.0,
+                'urx' => $dims['urx'] ?? 0.0,
+                'ury' => $dims['ury'] ?? 0.0,
+            ]);
+
+            $out[$type] = [
+                'llx' => $ordered['llx'],
+                'lly' => $ordered['lly'],
+                'urx' => $ordered['urx'],
+                'ury' => $ordered['ury'],
+                'bci' => $this->normalizeBoxColorInfo($dims['bci'] ?? null),
             ];
         }
 
-        $dims[$type]['bci'] = $bci;
-
-        return $dims;
+        return $out;
     }
 
     /**
@@ -365,6 +526,22 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
     }
 
     /**
+     * Returns the DeviceRGB components of a color, or an empty string if the
+     * color cannot be resolved.
+     *
+     * The lookup resolves spot colors without registering them, so it adds no
+     * Separation color space to the document resources. Results are memoized per
+     * color representation: a spot color redefined after the first lookup keeps
+     * its previous components.
+     *
+     * @param string $color HTML, CSS or Spot color to parse.
+     */
+    protected function getRgbComponents(string $color): string
+    {
+        return $this->rgbcomponents[$color] ??= $this->col->getPdfRgbComponents($color);
+    }
+
+    /**
      * Returns the PDF command to output the specified page BoxColorInfo.
      *
      * @param array<string, array{
@@ -377,14 +554,21 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
     {
         $out = '/BoxColorInfo <<' . "\n";
         foreach (self::BOX as $box) {
-            $out .= '/' . $box . ' <<' . "\n";
-            if (!empty($dims[$box]['bci']['color'])) {
-                $out .= '/C [' . $this->col->getPdfRgbComponents($dims[$box]['bci']['color']) . ']' . "\n";
+            if (!array_key_exists($box, $dims)) {
+                // The box is not part of this page dictionary.
+                continue;
             }
 
-            if (!empty($dims[$box]['bci']['width'])) {
-                $out .= \sprintf('/W %F' . "\n", $dims[$box]['bci']['width'] * $this->kunit);
+            $out .= '/' . $box . ' <<' . "\n";
+            $color = empty($dims[$box]['bci']['color']) ? '' : $this->getRgbComponents($dims[$box]['bci']['color']);
+            if ($color !== '') {
+                $out .= '/C [' . $color . ']' . "\n";
             }
+
+            // A width of 0 hides the guideline and is emitted: omitting the entry
+            // would let the reader apply the default width of 1.
+            $width = $dims[$box]['bci']['width'];
+            $out .= \sprintf('/W %F' . "\n", \max(0.0, $width) * $this->kunit);
 
             if (!empty($dims[$box]['bci']['style'])) {
                 $mode = \strtoupper($dims[$box]['bci']['style'][0]);

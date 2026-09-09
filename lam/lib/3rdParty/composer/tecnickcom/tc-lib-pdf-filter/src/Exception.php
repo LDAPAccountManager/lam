@@ -21,7 +21,7 @@ namespace Com\Tecnick\Pdf\Filter;
 /**
  * Com\Tecnick\Pdf\Filter\Exception
  *
- * Custom Exception class
+ * Exception thrown by this library.
  *
  * @since     2011-05-23
  * @category  Library

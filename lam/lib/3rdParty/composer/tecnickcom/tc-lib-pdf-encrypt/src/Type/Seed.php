@@ -34,39 +34,25 @@ namespace Com\Tecnick\Pdf\Encrypt\Type;
 class Seed
 {
     /**
-     * Encrypt the data
+     * Number of random bytes returned.
      *
-     * @param string $data Random seed data
-     * @param string $key  Random seed data
-     * @param string $mode Default mode (openssl or raw)
+     * @var int
+     */
+    public const SEEDLEN = 64;
+
+    /**
+     * Generate a random seed.
+     *
+     * @param string $data  Additional data appended to the random bytes.
+     * @param string $key   Additional data appended to the random bytes.
+     * @param string $_mode Unused; retained for signature compatibility.
      *
      * @return string seed
      *
-     * @throws \Random\RandomException
+     * @throws \Random\RandomException When no cryptographically secure source is available.
      */
-    public function encrypt(string $data = '', string $key = '', string $mode = 'openssl'): string
+    public function encrypt(string $data = '', string $key = '', string $_mode = ''): string
     {
-        $rnd = \uniqid(\random_int(0, \mt_getrandmax()) . microtime(true), true);
-
-        if (\function_exists('posix_getpid')) {
-            $rnd .= \posix_getpid();
-        }
-
-        if (
-            $mode === 'openssl'
-            && \function_exists('openssl_random_pseudo_bytes')
-            && \strtoupper(\substr(PHP_OS, 0, 3)) !== 'WIN'
-        ) {
-            // this is not used on windows systems because it is very slow for a known bug
-            $rnd .= \openssl_random_pseudo_bytes(512);
-
-            return $rnd . $data . __DIR__ . __FILE__ . $key . \serialize($_SERVER) . microtime(true);
-        }
-
-        for ($idx = 0; $idx < 23; ++$idx) {
-            $rnd .= \uniqid('', true);
-        }
-
-        return $rnd . $data . __DIR__ . __FILE__ . $key . \serialize($_SERVER) . microtime(true);
+        return \random_bytes(self::SEEDLEN) . $data . $key;
     }
 }

@@ -94,13 +94,18 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     }
 
     /**
-     * Get the transformation matrix (CTM) PDF string
+     * Get the transformation matrix (CTM) PDF string.
+     * The matrix is recorded on the transformation stack only when a block
+     * opened by getStartTransform() is active.
      *
      * @param TTMatrix $ctm Transformation matrix array.
      */
     public function getTransformation(array $ctm): string
     {
-        $this->ctm[$this->ctmid][] = $ctm;
+        if ($this->ctmid >= 0) {
+            $this->ctm[$this->ctmid][] = $ctm;
+        }
+
         return \sprintf('%F %F %F %F %F %F cm' . "\n", $ctm[0], $ctm[1], $ctm[2], $ctm[3], $ctm[4], $ctm[5]);
     }
 
@@ -268,7 +273,6 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      */
     public function getTranslation(float $trx, float $try): string
     {
-        //calculate elements of transformation matrix
         $ctm = [1, 0, 0, 1, $trx * $this->kunit, -$try * $this->kunit];
         return $this->getTransformation($ctm);
     }
@@ -362,7 +366,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     /**
      * Get the product of two Transformation Matrix.
      *
-     * @param TTMatrix $tma First  Transformation Matrix.
+     * @param TTMatrix $tma First Transformation Matrix.
      * @param TTMatrix $tmb Second Transformation Matrix.
      *
      * @return TTMatrix CTM Transformation Matrix.
@@ -381,7 +385,6 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
 
     /**
      * Converts the number in degrees to the radian equivalent.
-     * We use this instead of the deg2rad() function to avoid precision problems with hhvm.
      *
      * @param float $deg Angular value in degrees.
      *

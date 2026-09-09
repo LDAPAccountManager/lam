@@ -21,10 +21,9 @@ namespace Com\Tecnick\Pdf\Graph;
 /**
  * Com\Tecnick\Pdf\Graph\PathPaintOp
  *
- * Backed enum for the PDF path-painting operators (PDF 32000-1:2008 - 8.5.3).
+ * Backed enum of the PDF path-painting operators (PDF 32000-1:2008 - 8.5.3).
  * The backing value of each case is the canonical operator produced by
- * Style::getPathPaintOp(); its many input aliases collapse onto these cases via
- * fromLoose().
+ * Style::getPathPaintOp().
  *
  * @since     2026-07-17
  * @category  Library
@@ -65,11 +64,9 @@ enum PathPaintOp: string
     case NoOp = 'n';
 
     /**
-     * Resolve a loose path paint mode to the matching canonical operator case.
-     *
-     * Accepts an enum instance (returned unchanged) or any of the input aliases
-     * accepted by Style::getPathPaintOp() (case sensitive). Unknown values fall
-     * back to Stroke, matching the default of Style::getPathPaintOp().
+     * Returns the canonical operator case matching the given path paint mode.
+     * Accepts an enum case or any of the case-sensitive aliases accepted by
+     * Style::getPathPaintOp(). Unknown values return Stroke.
      *
      * @param string|self $value Path paint mode or enum case.
      */

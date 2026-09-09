@@ -25,6 +25,11 @@ use Com\Tecnick\Color\Exception as ColorException;
  *
  * Css Color class
  *
+ * Parses the CSS and Acrobat JavaScript color notations. Component scaling is
+ * delegated to a ComponentNormalizer held as a collaborator.
+ *
+ * Extension points: the protected parser methods.
+ *
  * @since     2015-02-21
  * @category  Library
  * @package   Color
@@ -35,39 +40,113 @@ use Com\Tecnick\Color\Exception as ColorException;
  */
 abstract class Css
 {
-    abstract public function normalizeValue(mixed $value, int $max): float;
+    /**
+     * A CSS number: an optionally signed integer or decimal.
+     *
+     * A digit-and-dot run such as "1.2.3" does not match.
+     */
+    private const REX_NUMBER = '[+-]?(?:\d+(?:\.\d*)?|\.\d+)';
+
+    /**
+     * A CSS component value: a number, optionally expressed as a percentage.
+     *
+     * Out-of-range values are accepted here and clamped by the component readers.
+     */
+    private const REX_VALUE = self::REX_NUMBER . '%?';
+
+    /**
+     * The separator between two CSS component values: a comma or a space run.
+     */
+    private const REX_SEP = '(?:\s*,\s*|\s+)';
+
+    /**
+     * The optional alpha component: a comma or a slash, then a value.
+     */
+    private const REX_ALPHA = '(?:\s*[\/,]\s*(' . self::REX_VALUE . '))?';
+
+    /**
+     * Scales a parsed component value into the [0..1] range.
+     */
+    protected ComponentNormalizer $normalizer;
+
+    /**
+     * @param ComponentNormalizer|null $normalizer Component scaler; the default is used when omitted.
+     */
+    public function __construct(?ComponentNormalizer $normalizer = null)
+    {
+        $this->normalizer = $normalizer ?? new ComponentNormalizer();
+    }
+
+    /**
+     * Match a color string against a regular expression.
+     *
+     * A PCRE failure raises; a color that does not match yields an empty array.
+     *
+     * @param string $rex   Regular expression to match.
+     * @param string $color Color specification.
+     *
+     * @return array<array-key, string> the matched groups, empty if there is no match
+     *
+     * @throws ColorException if the expression cannot be evaluated
+     */
+    protected function tryMatchColor(string $rex, string $color): array
+    {
+        $col = [];
+        if (\preg_match($rex, $color, $col) === false) {
+            throw new ColorException('unable to parse the color (' . \preg_last_error_msg() . '): ' . $color);
+        }
+
+        return $col;
+    }
+
+    /**
+     * Match a color string against a regular expression, requiring a match.
+     *
+     * @param string $rex   Regular expression to match.
+     * @param string $color Color specification.
+     * @param string $error Error message prefix for a color that does not match.
+     *
+     * @return array<array-key, string> the matched groups
+     *
+     * @throws ColorException if the color does not match or cannot be parsed
+     */
+    private function matchColor(string $rex, string $color, string $error): array
+    {
+        $col = $this->tryMatchColor($rex, $color);
+        if ($col === []) {
+            throw new ColorException($error . $color);
+        }
+
+        return $col;
+    }
 
     /**
      * Get the color object from acrobat Javascript syntax
      *
      * @param string $color color specification (e.g.: ["RGB",0.1,0.3,1])
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     protected function getColorObjFromJs(string $color): ?\Com\Tecnick\Color\Model
     {
-        $col = [];
-        $colorType = $color[2] ?? null;
-        if ($colorType === null || !str_contains('tgrc', $colorType)) {
-            throw new ColorException('invalid javascript color: ' . $color);
-        }
+        // the model is the quoted name (the input is lowercased by the caller)
+        $col = $this->matchColor('/^\[\s*[\'"](t|g|rgb|cmyk)[\'"]/', $color, 'invalid javascript color: ');
+        $num = '\s*,\s*(' . self::REX_NUMBER . ')';
 
-        switch ($color[2]) {
+        switch ($col[1] ?? '') {
             case 'g':
-                $rex = '/[\[][\"\']g[\"\'][\,]([0-9\.]+)[\]]/';
-                if (\preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: ' . $color);
-                }
+                $col = $this->matchColor('/^\[\s*[\'"]g[\'"]' . $num . '\s*\]$/', $color, 'invalid javascript color: ');
 
                 return new \Com\Tecnick\Color\Model\Gray([
                     'gray' => $col[1] ?? '0',
                     'alpha' => 1,
                 ]);
-            case 'r':
-                $rex = '/[\[][\"\']rgb[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
-                if (\preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: ' . $color);
-                }
+            case 'rgb':
+                $col = $this->matchColor(
+                    '/^\[\s*[\'"]rgb[\'"]' . $num . $num . $num . '\s*\]$/',
+                    $color,
+                    'invalid javascript color: ',
+                );
 
                 return new \Com\Tecnick\Color\Model\Rgb([
                     'red' => $col[1] ?? '0',
@@ -75,11 +154,12 @@ abstract class Css
                     'blue' => $col[3] ?? '0',
                     'alpha' => 1,
                 ]);
-            case 'c':
-                $rex = '/[\[][\"\']cmyk[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
-                if (\preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: ' . $color);
-                }
+            case 'cmyk':
+                $col = $this->matchColor(
+                    '/^\[\s*[\'"]cmyk[\'"]' . $num . $num . $num . $num . '\s*\]$/',
+                    $color,
+                    'invalid javascript color: ',
+                );
 
                 return new \Com\Tecnick\Color\Model\Cmyk([
                     'cyan' => $col[1] ?? '0',
@@ -90,7 +170,8 @@ abstract class Css
                 ]);
         }
 
-        // case 't'
+        // case 't': the transparent form carries no components
+        $this->matchColor('/^\[\s*[\'"]t[\'"]\s*\]$/', $color, 'invalid javascript color: ');
         return null;
     }
 
@@ -100,10 +181,12 @@ abstract class Css
      * @param string $type  color type: t, g, rgb, rgba, hsl, hsla, cmyk, cmyka, lab
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     protected function getColorObjFromCss(string $type, string $color): ?\Com\Tecnick\Color\Model
     {
+        $this->checkSeparators($color);
+
         switch ($type) {
             case 'g':
                 return $this->getColorObjFromCssGray($color);
@@ -120,8 +203,32 @@ abstract class Css
                 return $this->getColorObjFromCssLab($color);
         }
 
-        // case 't'
+        // case 't': the transparent form carries no components
+        $this->matchColor('/^t\s*\(\s*\)$/', $color, 'invalid css color: ');
         return null;
+    }
+
+    /**
+     * Reject an argument list that mixes the two CSS component syntaxes.
+     *
+     * Either the comma-separated form, rgb(64, 128, 191, 0.5), or the
+     * space-separated form with a slash before the alpha,
+     * rgb(64 128 191 / 0.5). Whitespace around a comma is allowed.
+     *
+     * @param string $color color specification.
+     *
+     * @throws ColorException if the separators are mixed
+     */
+    private function checkSeparators(string $color): void
+    {
+        if (!str_contains($color, ',')) {
+            return;
+        }
+
+        $mixed = str_contains($color, '/') || \preg_match('/[0-9%a-z]\s+[0-9.+-]/', $color) === 1;
+        if ($mixed) {
+            throw new ColorException('mixed css color separators: ' . $color);
+        }
     }
 
     /**
@@ -129,18 +236,15 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: g(128))
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     private function getColorObjFromCssGray(string $color): \Com\Tecnick\Color\Model\Gray
     {
-        $col = [];
-        $rex = '/[\(]\s*([0-9.]+%?)\s*[\)]/';
-        if (\preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: ' . $color);
-        }
+        $rex = '/^g\s*\(\s*(' . self::REX_VALUE . ')\s*\)$/';
+        $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Gray([
-            'gray' => $this->normalizeValue($col[1] ?? '0', 255),
+            'gray' => $this->normalizer->normalize($col[1] ?? '0', 255),
             'alpha' => 1,
         ]);
     }
@@ -150,22 +254,30 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     private function getColorObjFromCssRgb(string $color): \Com\Tecnick\Color\Model\Rgb
     {
-        $col = [];
         $rex =
-            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)'
-            . '\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
-        if (\preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: ' . $color);
-        }
+            '/^rgba?\s*\(\s*('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_ALPHA
+            . '\s*\)$/';
+        $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Rgb([
-            'red' => $this->normalizeValue($col[1] ?? '0', 255),
-            'green' => $this->normalizeValue($col[2] ?? '0', 255),
-            'blue' => $this->normalizeValue($col[3] ?? '0', 255),
+            'red' => $this->normalizer->normalize($col[1] ?? '0', 255),
+            'green' => $this->normalizer->normalize($col[2] ?? '0', 255),
+            'blue' => $this->normalizer->normalize($col[3] ?? '0', 255),
             'alpha' => $this->normalizeAlpha($col[4] ?? ''),
         ]);
     }
@@ -175,26 +287,65 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: hsl(120,100%,50%))
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
-        $col = [];
         $rex =
-            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)'
-            . '\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
-        if (\preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: ' . $color);
-        }
+            '/^hsla?\s*\(\s*('
+            . self::REX_NUMBER
+            . '(?:%|deg|grad|rad|turn)?)'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_ALPHA
+            . '\s*\)$/';
+        $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
-        // Saturation and lightness are CSS percentages: a bare number (e.g. "50")
-        // is treated the same as "50%", i.e. divided by 100, not by the max.
+        // saturation and lightness are percentages: a bare number is divided by 100
         return new \Com\Tecnick\Color\Model\Hsl([
-            'hue' => $this->normalizeValue($col[1] ?? '0', 360),
-            'saturation' => $this->normalizeValue($col[2] ?? '0', 100),
-            'lightness' => $this->normalizeValue($col[3] ?? '0', 100),
+            'hue' => $this->normalizeHue($col[1] ?? '0'),
+            'saturation' => $this->normalizer->normalize($col[2] ?? '0', 100),
+            'lightness' => $this->normalizer->normalize($col[3] ?? '0', 100),
             'alpha' => $this->normalizeAlpha($col[4] ?? ''),
         ]);
+    }
+
+    /**
+     * Normalize a CSS hue angle to a fraction of a full turn.
+     *
+     * Accepts the CSS angle units (deg, grad, rad, turn); a bare number and a
+     * percentage are read as degrees. The result is not clamped: the color
+     * model wraps it into [0..1).
+     */
+    private function normalizeHue(string $hue): float
+    {
+        $units = [
+            'grad' => 400.0,
+            'turn' => 1.0,
+            'deg' => 360.0,
+            'rad' => 2 * \M_PI,
+            '%' => 360.0,
+        ];
+
+        $value = $hue;
+        $turn = 360.0;
+        foreach ($units as $unit => $full) {
+            if (!str_ends_with($hue, $unit)) {
+                continue;
+            }
+
+            $value = \substr($hue, 0, -\strlen($unit));
+            $turn = $full;
+            break;
+        }
+
+        return \is_numeric($value) ? (float) $value / $turn : 0.0;
     }
 
     /**
@@ -202,23 +353,35 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: cmyk(100,0,50,0))
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
-        $col = [];
         $rex =
-            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)'
-            . '\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
-        if (\preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: ' . $color);
-        }
+            '/^cmyka?\s*\(\s*('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_ALPHA
+            . '\s*\)$/';
+        $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Cmyk([
-            'cyan' => $this->normalizeValue($col[1] ?? '0', 100),
-            'magenta' => $this->normalizeValue($col[2] ?? '0', 100),
-            'yellow' => $this->normalizeValue($col[3] ?? '0', 100),
-            'key' => $this->normalizeValue($col[4] ?? '0', 100),
+            'cyan' => $this->normalizer->normalize($col[1] ?? '0', 100),
+            'magenta' => $this->normalizer->normalize($col[2] ?? '0', 100),
+            'yellow' => $this->normalizer->normalize($col[3] ?? '0', 100),
+            'key' => $this->normalizer->normalize($col[4] ?? '0', 100),
             'alpha' => $this->normalizeAlpha($col[5] ?? ''),
         ]);
     }
@@ -228,15 +391,25 @@ abstract class Css
      *
      * Supports forms such as: lab(52% 0 -39), lab(52% 0 -39 / 0.85), lab(52,0,-39,0.85)
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the color syntax is invalid
      */
     private function getColorObjFromCssLab(string $color): \Com\Tecnick\Color\Model\Lab
     {
-        $col = [];
-        $rex = '/[\(]\s*([0-9\.]+%?)\s*(?:[\s,]+)\s*([\+\-]?[0-9\.]+)\s*(?:[\s,]+)\s*([\+\-]?[0-9\.]+)\s*(?:[\/,]\s*([0-9\.]+%?)\s*)?[\)]/';
-        if (\preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: ' . $color);
-        }
+        $rex =
+            '/^lab\s*\(\s*('
+            . self::REX_VALUE
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_NUMBER
+            . ')'
+            . self::REX_SEP
+            . '('
+            . self::REX_NUMBER
+            . ')'
+            . self::REX_ALPHA
+            . '\s*\)$/';
+        $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         $lstarRaw = $col[1] ?? '0';
         $lstarVal = str_ends_with($lstarRaw, '%') ? \str_replace('%', '', $lstarRaw) : $lstarRaw;

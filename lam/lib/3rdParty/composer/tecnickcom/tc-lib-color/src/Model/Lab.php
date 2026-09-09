@@ -34,44 +34,62 @@ namespace Com\Tecnick\Color\Model;
 class Lab extends \Com\Tecnick\Color\Model
 {
     /**
-     * Color Model type
+     * Linear red response of the XYZ to sRGB matrix for the reference white.
      *
-     * @var string
+     * The three LINEAR_WHITE_* values normalize the matrix rows so that the
+     * reference white maps back to exactly (1, 1, 1).
      */
-    protected $type = 'LAB';
+    private const LINEAR_WHITE_R =
+        (3.240_454_2 * self::REF_WHITE_X) - (1.537_138_5 * self::REF_WHITE_Y) - (0.498_531_4 * self::REF_WHITE_Z);
+
+    /**
+     * Linear green response of the XYZ to sRGB matrix for the reference white.
+     */
+    private const LINEAR_WHITE_G =
+        (1.876_010_8 * self::REF_WHITE_Y) - (0.969_266_0 * self::REF_WHITE_X) + (0.041_556_0 * self::REF_WHITE_Z);
+
+    /**
+     * Linear blue response of the XYZ to sRGB matrix for the reference white.
+     */
+    private const LINEAR_WHITE_B =
+        (0.055_643_4 * self::REF_WHITE_X) - (0.204_025_9 * self::REF_WHITE_Y) + (1.057_225_2 * self::REF_WHITE_Z);
+
+    /**
+     * Color Model type
+     */
+    protected string $type = 'LAB';
 
     /**
      * Value of the Lab L* component [0..100]
-     *
-     * @var float
      */
     protected float $cmp_lstar = 0.0;
 
     /**
      * Value of the Lab a* component [-128..127]
-     *
-     * @var float
      */
     protected float $cmp_astar = 0.0;
 
     /**
      * Value of the Lab b* component [-128..127]
-     *
-     * @var float
      */
     protected float $cmp_bstar = 0.0;
 
     /**
      * Initialize a new Lab color object.
      *
+     * L* is clamped to [0..100], a* and b* to [-128..127] and alpha to [0..1].
+     *
      * @param array<string, int|float|string> $components Color components.
+     *
+     * @throws \Com\Tecnick\Color\UnknownComponentException if a component name is not defined by this model
      */
     public function __construct(array $components)
     {
-        $this->cmp_alpha = \max(0.0, \min(1.0, (float) ($components['alpha'] ?? 1.0)));
-        $this->cmp_lstar = \max(0.0, \min(100.0, (float) ($components['lstar'] ?? 0.0)));
-        $this->cmp_astar = \max(-128.0, \min(127.0, (float) ($components['astar'] ?? 0.0)));
-        $this->cmp_bstar = \max(-128.0, \min(127.0, (float) ($components['bstar'] ?? 0.0)));
+        self::checkComponents($components, ['lstar', 'astar', 'bstar', 'alpha']);
+        $this->cmp_lstar = self::component($components, 'lstar', 0.0, 0.0, 100.0);
+        $this->cmp_astar = self::component($components, 'astar', 0.0, -128.0, 127.0);
+        $this->cmp_bstar = self::component($components, 'bstar', 0.0, -128.0, 127.0);
+        $this->cmp_alpha = self::component($components, 'alpha', 1.0);
     }
 
     /**
@@ -93,6 +111,10 @@ class Lab extends \Com\Tecnick\Color\Model
      * Get an array with all color components for
      * the PDF appearance characteristics dictionary.
      *
+     * The values are in the range 0.0 to 1.0 and the number of array elements
+     * determines the color space:
+     * 3 = DeviceRGB
+     *
      * @return array<float> DeviceRGB color components ('R', 'G', 'B')
      */
     public function getPDFacArray(): array
@@ -108,7 +130,11 @@ class Lab extends \Com\Tecnick\Color\Model
     /**
      * Get an array with color components values normalized.
      *
-     * @param int $max Unused parameter for interface compatibility.
+     * NOTE: the $max argument is not applied here. L* is returned in its own
+     * [0..100] range, a* and b* in [-128..127], and alpha is a fraction
+     * component kept in the [0..1] range.
+     *
+     * @param int $max Unused; kept for interface compatibility.
      *
      * @return array<string, float> with keys ('L', 'a', 'b', 'A')
      */
@@ -124,19 +150,27 @@ class Lab extends \Com\Tecnick\Color\Model
 
     /**
      * Get the CSS representation of the color: lab(L a b) or lab(L a b / A)
+     *
+     * Components are emitted in fixed notation with up to 4 decimals.
      */
     public function getCssColor(): string
     {
-        $color = 'lab(' . $this->cmp_lstar . '% ' . $this->cmp_astar . ' ' . $this->cmp_bstar;
+        $color =
+            'lab('
+            . $this->getCssNumber($this->cmp_lstar)
+            . '% '
+            . $this->getCssNumber($this->cmp_astar)
+            . ' '
+            . $this->getCssNumber($this->cmp_bstar);
         if ($this->cmp_alpha < 1.0) {
-            $color .= ' / ' . $this->cmp_alpha;
+            $color .= ' / ' . $this->getCssValue($this->cmp_alpha, 1);
         }
 
         return $color . ')';
     }
 
     /**
-     * Get the color format used in Acrobat JavaScript.
+     * Get the color format used in Acrobat JavaScript
      * NOTE: the alpha channel is omitted from this representation unless it is 0 = transparent
      */
     public function getJsPdfColor(): string
@@ -159,14 +193,13 @@ class Lab extends \Com\Tecnick\Color\Model
 
     /**
      * Get the color components format used in PDF documents (RGB)
-     * NOTE: the alpha channel is omitted.
+     * NOTE: the alpha channel is omitted
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
     public function getPdfColor(bool $stroke = false): string
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->getPdfColor($stroke);
+        return self::rgbPdfColor($this->toRgbArray(), $stroke);
     }
 
     /**
@@ -176,8 +209,7 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     public function toGrayArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toGrayArray();
+        return self::rgbToGray($this->toRgbArray());
     }
 
     /**
@@ -197,13 +229,13 @@ class Lab extends \Com\Tecnick\Color\Model
         );
         $zRel = $this->pivotLabToXyz($fzn);
 
-        $xTri = ($xRel * 95.047) / 100.0;
-        $yTri = ($yRel * 100.000) / 100.0;
-        $zTri = ($zRel * 108.883) / 100.0;
+        $xTri = $xRel * self::REF_WHITE_X;
+        $yTri = $yRel * self::REF_WHITE_Y;
+        $zTri = $zRel * self::REF_WHITE_Z;
 
-        $red = (3.240_454_2 * $xTri) + (-1.537_138_5 * $yTri) + (-0.498_531_4 * $zTri);
-        $green = (-0.969_266_0 * $xTri) + (1.876_010_8 * $yTri) + (0.041_556_0 * $zTri);
-        $blue = (0.055_643_4 * $xTri) + (-0.204_025_9 * $yTri) + (1.057_225_2 * $zTri);
+        $red = ((3.240_454_2 * $xTri) + (-1.537_138_5 * $yTri) + (-0.498_531_4 * $zTri)) / self::LINEAR_WHITE_R;
+        $green = ((-0.969_266_0 * $xTri) + (1.876_010_8 * $yTri) + (0.041_556_0 * $zTri)) / self::LINEAR_WHITE_G;
+        $blue = ((0.055_643_4 * $xTri) + (-0.204_025_9 * $yTri) + (1.057_225_2 * $zTri)) / self::LINEAR_WHITE_B;
 
         return [
             'red' => \max(0.0, \min(1.0, $this->linearToSrgb($red))),
@@ -220,8 +252,7 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     public function toHslArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toHslArray();
+        return self::rgbToHsl($this->toRgbArray());
     }
 
     /**
@@ -231,8 +262,7 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     public function toCmykArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toCmykArray();
+        return self::rgbToCmyk($this->toRgbArray());
     }
 
     /**
@@ -253,14 +283,12 @@ class Lab extends \Com\Tecnick\Color\Model
     /**
      * Invert the color.
      */
-    public function invertColor(): self
+    public function invertColor(): static
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        $rgb->invertColor();
-        $lab = new self($rgb->toLabArray());
-        $this->cmp_lstar = $lab->cmp_lstar;
-        $this->cmp_astar = $lab->cmp_astar;
-        $this->cmp_bstar = $lab->cmp_bstar;
+        $lab = self::rgbToLab(self::invertRgb($this->toRgbArray()));
+        $this->cmp_lstar = $lab['lstar'] ?? 0.0;
+        $this->cmp_astar = $lab['astar'] ?? 0.0;
+        $this->cmp_bstar = $lab['bstar'] ?? 0.0;
         return $this;
     }
 

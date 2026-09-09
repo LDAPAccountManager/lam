@@ -22,7 +22,8 @@ namespace Com\Tecnick\Pdf\Page;
  * Com\Tecnick\Pdf\Page\TransparencyGroupMode
  *
  * Backed enum for the per-page transparency /Group emission policy: 'auto'
- * (only on pages flagged as using transparency), 'always' or 'never'.
+ * (every standard page except those explicitly flagged as opaque), 'always' or
+ * 'never'.
  *
  * @since     2026-07-17
  * @category  Library
@@ -44,8 +45,8 @@ enum TransparencyGroupMode: string
      * Resolve a loose transparency group mode value to the matching enum case.
      *
      * Accepts the canonical value (case-insensitively) or an enum instance
-     * (returned unchanged). Unknown values fall back to Auto, matching the
-     * lenient behavior of Page::setPageTransparencyGroupMode().
+     * (returned unchanged). Unknown values fall back to Auto, matching
+     * Page::setPageTransparencyGroupMode().
      *
      * @param string|self $value Transparency group mode or enum case.
      */

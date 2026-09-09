@@ -21,7 +21,7 @@ namespace Com\Tecnick\Pdf\Filter\Type;
 /**
  * Com\Tecnick\Pdf\Filter\Type\Template
  *
- * Interface implemented by all filter decoders (defines the decode() method).
+ * Interface implemented by all filter decoders.
  *
  * @since     2011-05-23
  * @category  Library
@@ -36,10 +36,10 @@ interface Template
     /**
      * Decode the data.
      *
-     * @param string              $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters (e.g., DecodeParms from PDF).
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
      *
-     * @return string Decoded data string.
+     * @return string Decoded data.
      */
     public function decode(string $data, array $params = []): string;
 }

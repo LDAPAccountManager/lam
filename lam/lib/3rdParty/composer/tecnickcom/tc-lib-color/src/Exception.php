@@ -23,6 +23,9 @@ namespace Com\Tecnick\Color;
  *
  * Custom Exception class
  *
+ * Raised for an invalid input condition: an unparsable color string, an unknown
+ * color or spot color name, a PDF resource that cannot be referenced.
+ *
  * @since     2015-02-21
  * @category  Library
  * @package   Color
@@ -31,4 +34,4 @@ namespace Com\Tecnick\Color;
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-class Exception extends \Exception {}
+class Exception extends \Exception implements ExceptionInterface {}

@@ -126,6 +126,14 @@ abstract class Layers extends \Com\Tecnick\Barcode\Type\Square\Aztec\Codeword
     }
 
     /**
+     * Maximum number of data codewords a Compact symbol can declare: the mode message
+     * stores the count minus one in 6 bits.
+     *
+     * @var int
+     */
+    protected const MAX_COMPACT_CODEWORDS = 64;
+
+    /**
      * Computes the type and number of required layers and performs bit stuffing
      *
      * @param int    $ecc  The error correction level.
@@ -135,15 +143,28 @@ abstract class Layers extends \Com\Tecnick\Barcode\Type\Square\Aztec\Codeword
      */
     protected function sizeAndBitStuffing(int $ecc, string $mode = 'A'): bool
     {
-        $nsbits = 0;
         $eccbits = 11 + (int) (($this->totbits * $ecc) / 100);
-        do {
-            if (!$this->setLayerByBits($this->totbits + $nsbits + $eccbits, $mode)) {
+        // the first request is expressed in unstuffed bits
+        $reqbits = $this->totbits + $eccbits;
+        while (true) {
+            if (!$this->setLayerByBits($reqbits, $mode)) {
                 return false;
             }
 
             $nsbits = $this->bitStuffing();
-        } while (($nsbits + $eccbits) > $this->layer[3]);
+            if ($this->compact && \count($this->tmpCdws) > self::MAX_COMPACT_CODEWORDS) {
+                // the count does not fit the Compact mode message: restart in Full Range mode
+                $mode = 'F';
+                continue;
+            }
+
+            if (($nsbits + $eccbits) <= $this->layer[3]) {
+                break;
+            }
+
+            // ask for more than the current layer holds, so the next iteration selects a larger one
+            $reqbits = \max($nsbits + $eccbits, $this->layer[3] + 1);
+        }
 
         $this->bitstream = [];
         $this->totbits = 0;
@@ -152,7 +173,7 @@ abstract class Layers extends \Com\Tecnick\Barcode\Type\Square\Aztec\Codeword
     }
 
     /**
-     * Bit-stuffing the bitstream into Reed–Solomon codewords.
+     * Bit-stuffing the bitstream into Reed-Solomon codewords.
      * The resulting codewords are stored in the temporary tmpCdws array.
      *
      * @return int The number of bits in the bitstream after bit stuffing.
@@ -172,7 +193,7 @@ abstract class Layers extends \Com\Tecnick\Barcode\Type\Square\Aztec\Codeword
                 }
             }
 
-            // If the first b−1 bits of a code word have the same value,
+            // If the first b-1 bits of a code word have the same value,
             // an extra bit with the complementary value is inserted into the data stream.
             $maskedWord = $word & $mask;
             [$word, $wid] = match (true) {

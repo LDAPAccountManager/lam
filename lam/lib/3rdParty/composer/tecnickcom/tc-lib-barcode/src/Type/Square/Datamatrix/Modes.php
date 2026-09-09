@@ -62,6 +62,29 @@ abstract class Modes extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Placeme
     public string $shape;
 
     /**
+     * Requested symbol size as rows by columns, empty for the smallest size
+     * that fits. The encodation termination rules depend on how many codewords
+     * the symbol holds, so they need the requested size and not the smallest.
+     */
+    public string $size = '';
+
+    /**
+     * True when the GS1 variant is selected and FNC1 separators are encoded as codeword 232.
+     */
+    public bool $gsonemode = false;
+
+    /**
+     * Tell if the character is a GS1 separator: FNC1 (232) or GS (29).
+     * Only meaningful when the GS1 variant is selected.
+     *
+     * @param int $chr Character (byte) to check.
+     */
+    public function isGsOneChar(int $chr): bool
+    {
+        return $this->gsonemode && ($chr === 232 || $chr === 29);
+    }
+
+    /**
      * Return the 253-state codeword
      *
      * @param int $cdwpad Pad codeword.
@@ -200,7 +223,8 @@ abstract class Modes extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Placeme
     }
 
     /**
-     * Choose the minimum matrix size and return the max number of data codewords.
+     * Return the max number of data codewords of the requested matrix size, or
+     * of the minimum one that fits when no size is requested.
      *
      * @param int $numcw Number of current codewords.
      *
@@ -210,6 +234,14 @@ abstract class Modes extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Placeme
     {
         $mdc = 0;
         foreach ($this->getShapeMatrices() as $matrix) {
+            if ($this->size !== '') {
+                if ($this->size !== $matrix[0] . 'x' . $matrix[1]) {
+                    continue;
+                }
+
+                return $matrix[11] < $numcw ? 0 : $matrix[11];
+            }
+
             if ($matrix[11] < $numcw) {
                 continue;
             }

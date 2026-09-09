@@ -58,12 +58,24 @@ class PageResolver
     private const INHERITABLE = ['MediaBox', 'CropBox', 'BleedBox', 'TrimBox', 'ArtBox', 'Rotate', 'Resources'];
 
     /**
-     * Hard ceiling on page tree nodes visited in a single walk.
-     * Far above any legitimate document; defense in depth on top of the
-     * duplicate-reference guard, which already bounds every walk by the
-     * number of distinct objects in the source file.
+     * Hard ceiling on page tree nodes visited in a single walk, on top of the
+     * duplicate-reference guard that bounds every walk by the number of
+     * distinct objects in the source file.
      */
     public const MAX_PAGE_TREE_NODES = 1_000_000;
+
+    /**
+     * Raw parser object converter.
+     */
+    private DictParser $dict;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->dict = new DictParser();
+    }
 
     /**
      * Resolve the effective page dictionary for the given 1-based page number.
@@ -124,11 +136,9 @@ class PageResolver
      * nodes) per reachable page, in document order.
      *
      * The walk is iterative, visits every node exactly once (a global visited
-     * set rejects duplicate and cyclic references) and is bounded by $maxNodes,
-     * so a hostile page tree can neither recurse nor amplify the traversal.
-     * The declared /Count entry is intentionally ignored: it is under the
-     * control of whoever produced the source file and must never size an
-     * allocation or bound a loop.
+     * set rejects duplicate and cyclic references) and is bounded by $maxNodes.
+     * The declared /Count entry is ignored: it is controlled by the source file
+     * and never sizes an allocation or bounds a loop.
      *
      * @param SourceDocument $src      Parsed source document.
      * @param int            $maxNodes Maximum number of tree nodes to visit.
@@ -144,7 +154,7 @@ class PageResolver
         $trailer = $src->getTrailer();
         $rootRef = SourceDocument::refToKey($trailer['root']);
         $rootObj = $src->getObject($rootRef);
-        $rootDict = $this->objectToDict($rootObj);
+        $rootDict = $this->dict->objectToDict($rootObj);
 
         if (!isset($rootDict['Pages'])) {
             throw new ImportCorruptedSourceException('PDF /Root is missing /Pages entry.');
@@ -171,8 +181,8 @@ class PageResolver
                 throw new ImportCorruptedSourceException('Page tree exceeds the maximum node budget: ' . $maxNodes);
             }
 
-            $nodeDict = $this->objectToDict($src->getObject($ref));
-            $nodeType = isset($nodeDict['Type']) && \is_string($nodeDict['Type']) ? $nodeDict['Type'] : '';
+            $nodeDict = $this->dict->objectToDict($src->getObject($ref));
+            $nodeType = isset($nodeDict['Type']) && \is_string($nodeDict['Type']) ? \ltrim($nodeDict['Type'], '/') : '';
             if ($nodeType === 'Page') {
                 $index[] = $this->effectivePageDict($inherited, $nodeDict);
                 continue;
@@ -205,11 +215,10 @@ class PageResolver
     /**
      * Count the pages actually reachable through the /Kids page tree.
      *
-     * The declared /Count entry of the /Pages dictionary is intentionally
-     * ignored: it is under the control of whoever produced the source file
-     * and must never size an allocation or bound a loop. The walk applies
-     * the same acceptance rules as resolve(), so both methods always agree
-     * on which pages are reachable.
+     * The declared /Count entry of the /Pages dictionary is ignored: it is
+     * controlled by the source file and never sizes an allocation or bounds a
+     * loop. The walk applies the same acceptance rules as resolve(), so both
+     * methods agree on which pages are reachable.
      *
      * @param SourceDocument $src      Parsed source document.
      * @param int            $maxNodes Maximum number of tree nodes to visit.
@@ -294,12 +303,9 @@ class PageResolver
         $bleedBox = $this->resolveBox($dict['BleedBox'] ?? null, $src) ?? $cropBox;
         $trimBox = $this->resolveBox($dict['TrimBox'] ?? null, $src) ?? $cropBox;
         $artBox = $this->resolveBox($dict['ArtBox'] ?? null, $src) ?? $cropBox;
-        if (isset($dict['Rotate']) && \is_int($dict['Rotate'])) {
-            $rotate = $dict['Rotate'];
-        } elseif (isset($dict['Rotate']) && \is_numeric($dict['Rotate'])) {
+        $rotate = 0;
+        if (isset($dict['Rotate']) && \is_numeric($dict['Rotate'])) {
             $rotate = (int) $dict['Rotate'];
-        } else {
-            $rotate = 0;
         }
 
         $resources = [];
@@ -311,7 +317,7 @@ class PageResolver
         if (\is_string($resources) && $resources !== '') {
             $resKey = SourceDocument::refToKey($resources);
             $resObj = $src->findObject($resKey);
-            $resources = $resObj !== null ? $this->objectToDict($resObj) : [];
+            $resources = $resObj !== null ? $this->dict->objectToDict($resObj) : [];
         }
 
         /** @var array<string, mixed> $resources */
@@ -418,115 +424,10 @@ class PageResolver
                 continue;
             }
 
-            $values = \array_map($this->parseValue(...), \array_values($element[1]));
+            $values = \array_map($this->dict->parseValue(...), \array_values($element[1]));
             return $this->parseBox($values);
         }
 
         return null;
-    }
-
-    /**
-     * Convert a raw parsed object array to a dictionary (key => scalar/array).
-     *
-     * The first element of the object array whose type is "<<" (dictionary) is extracted.
-     * All values that are indirect references (type "objref") are left as their raw
-     * string values for lazy resolution by callers.
-     *
-     * @param array<int, mixed> $objData Raw object data from the parser.
-     *
-     * @return array<string, mixed>
-     *
-     * @throws ImportCorruptedSourceException If no dictionary element is found.
-     */
-    private function objectToDict(array $objData): array
-    {
-        $elements = \array_values($objData);
-        $elmCount = \count($elements);
-        for ($elmIdx = 0; $elmIdx < $elmCount; ++$elmIdx) {
-            $elementSlice = \array_slice($elements, $elmIdx, 1);
-            if (\count($elementSlice) !== 1 || !\is_array($elementSlice[0])) {
-                continue;
-            }
-
-            if (($elementSlice[0][0] ?? null) === '<<' && \is_array($elementSlice[0][1] ?? null)) {
-                return $this->parseDictArray(\array_values($elementSlice[0][1]));
-            }
-        }
-
-        throw new ImportCorruptedSourceException('Expected dictionary object but none found.');
-    }
-
-    /**
-     * Recursively convert a raw parser dictionary array into a PHP associative array.
-     * Each entry in the raw array is a pair [key_element, value_element].
-     *
-     * @param array<int, mixed> $raw Raw dictionary pairs from the parser.
-     *
-     * @return array<string, mixed>
-     */
-    private function parseDictArray(array $raw): array
-    {
-        $dict = [];
-        $pairs = \array_values($raw);
-        $cnt = \count($pairs);
-        for ($idx = 0; $idx < ($cnt - 1); $idx += 2) {
-            $pair = \array_slice($pairs, $idx, 2);
-            if (\count($pair) < 2) {
-                continue;
-            }
-
-            if (!\is_array($pair[0]) || ($pair[0][0] ?? null) !== '/') {
-                continue;
-            }
-
-            if (!\array_key_exists(1, $pair[0]) || !\is_string($pair[0][1])) {
-                continue;
-            }
-
-            $key = \ltrim($pair[0][1], '/');
-            $dict[$key] = $this->parseValue($pair[1]);
-        }
-
-        return $dict;
-    }
-
-    /**
-     * Convert a single raw parser value to a PHP scalar, array, or reference string.
-     *
-     * @param mixed $raw Raw element from the parser.
-     *
-     * @return mixed
-     */
-    private function parseValue(mixed $raw): mixed
-    {
-        if (!\is_array($raw)) {
-            return $raw;
-        }
-
-        if (!\array_key_exists(0, $raw)) {
-            return null;
-        }
-
-        $type = \is_string($raw[0]) ? $raw[0] : '';
-
-        if ($type === '<<' && \array_key_exists(1, $raw) && \is_array($raw[1])) {
-            return $this->parseDictArray(\array_values($raw[1]));
-        }
-
-        if ($type === '[' && \array_key_exists(1, $raw) && \is_array($raw[1])) {
-            return \array_map($this->parseValue(...), $raw[1]);
-        }
-
-        if ($type === 'objref') {
-            // Return the raw reference string; callers resolve via SourceDocument::refToKey()
-            return \array_key_exists(1, $raw) && \is_string($raw[1]) ? $raw[1] : '';
-        }
-
-        if (\in_array($type, ['/', 'string', 'numeric', 'boolean', 'null'], true)) {
-            return $raw[1] ?? null;
-        }
-
-        // Fallback: return scalar value
-        return $raw[1] ?? null;
     }
 }

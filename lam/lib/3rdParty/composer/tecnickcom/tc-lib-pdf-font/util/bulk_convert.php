@@ -61,10 +61,17 @@ $inopt = \getopt($sopt, $lopt);
 
 // import options (with some sanitization)
 foreach ($inopt as $opt => $val) {
+    // getopt() hands over an array when the same option is repeated: the last occurrence wins
+    if (\is_array($val)) {
+        $val = \end($val);
+    }
+
     switch ($opt) {
         case 'o':
         case 'outpath':
-            $options['outpath'] = \realpath($val);
+            // a missing directory keeps its raw value and is normalized below, once created
+            $resolved = \realpath($val);
+            $options['outpath'] = ($resolved !== false) ? $resolved : $val;
             if (\substr($options['outpath'], -1) != '/') {
                 $options['outpath'] .= '/';
             }
@@ -81,7 +88,7 @@ foreach ($inopt as $opt => $val) {
 if (!is_dir($options['outpath'])) {
     \mkdir($options['outpath'], 0755, true);
 }
-if (!\is_writable($options['outpath'])) {
+if (!is_dir($options['outpath']) || !\is_writable($options['outpath'])) {
     \fwrite(STDERR, 'ERROR: Can\'t write to '.$options['outpath']."\n\n");
     exit(2);
 }
@@ -98,9 +105,34 @@ if (!is_dir($ttfdir)) {
 $convert_errors = 0;
 $convert_success = 0;
 
-require_once (\dirname(__DIR__).'/vendor/autoload.php');
+// locate the Composer autoloader of a standalone checkout or of a host project
+$autoloadFound = false;
+foreach (
+    array(
+        \dirname(__DIR__) . '/vendor/autoload.php',    // standalone repository checkout
+        \dirname(__DIR__, 4) . '/vendor/autoload.php', // installed under <project>/vendor/tecnickcom/tc-lib-pdf-font
+    ) as $autoloadFile
+) {
+    if (\is_file($autoloadFile)) {
+        require_once $autoloadFile;
+        $autoloadFound = true;
+        break;
+    }
+}
 
-$fontdir = \array_diff(\scandir($ttfdir), array('.', '..', '.git'));
+if (!$autoloadFound) {
+    \fwrite(STDERR, 'ERROR: Composer autoloader not found. Run "composer install" first.'."\n\n");
+    exit(5);
+}
+
+// scandir() returns false for a directory it cannot read
+$entries = \scandir($ttfdir);
+if ($entries === false) {
+    \fwrite(STDERR, 'ERROR: Unable to read the '.$ttfdir.' directory.'."\n\n");
+    exit(6);
+}
+
+$fontdir = \array_diff($entries, array('.', '..', '.git'));
 
 // URL of websites containing the font sources
 $font_url = array(
@@ -134,12 +166,16 @@ foreach ($fontdir as $dir) {
     if (!is_dir($outdir)) {
         \mkdir($outdir, 0755, true);
     }
-    \copy($indir.'/LICENSE', $outdir.'LICENSE');
+    if (\is_readable($indir.'/LICENSE')) {
+        \copy($indir.'/LICENSE', $outdir.'LICENSE');
+    } else {
+        \fwrite(STDERR, "\033[33m".'!!! WARN : no LICENSE file in '.$indir."\033[m\n");
+    }
 
     // generate a README file
     $readme = '# '.$dir.' font files for tc-lib-pdf-font'."\n\n"
         .'This folder contains font files and/or font data extracted from:'."\n"
-        .$font_url[$dir]."\n"
+        .($font_url[$dir] ?? 'an unlisted source')."\n"
         .'using the "bulk_convert.php" utility in https://github.com/tecnickcom/tc-lib-pdf-font'."\n\n"
         .'The original files (if present) have been renamed and compressed using the ZLIB data format (.z files).'."\n"
         .'The font files are subject to the conditions stated in the LICENSE file.'."\n"
@@ -148,8 +184,8 @@ foreach ($fontdir as $dir) {
 
     foreach ($fonts as $font) {
         if (\substr($font, -4) == '.otf') {
-            // OTF fonts are not yet supported but we can try to convert them to TTF using FontForge
-            \system('fontforge -script otf2ttf.ff '.\escapeshellcmd($font), $err);
+            // OTF fonts are unsupported: convert them to TTF using FontForge
+            \system('fontforge -script otf2ttf.ff '.\escapeshellarg((string) $font), $err);
             if ($err != 0) {
                 \fwrite(STDERR, "\033[31m".'Unable to convert: '.$font."\033[m");
                 continue;

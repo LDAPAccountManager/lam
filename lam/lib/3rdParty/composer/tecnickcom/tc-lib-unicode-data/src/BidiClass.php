@@ -21,10 +21,10 @@ namespace Com\Tecnick\Unicode\Data;
 /**
  * Com\Tecnick\Unicode\Data\BidiClass
  *
- * Backed enum for the strong, weak and neutral bidirectional character classes.
- * The backing value of each case is the canonical class abbreviation used as the
- * keys of Type::STRONG, Type::WEAK and Type::NEUTRAL. The explicit formatting
- * codes (LRE, LRO, RLE, RLO, PDF, ...) are intentionally not part of this set.
+ * Strong, weak and neutral bidirectional character classes.
+ * The backing value of each case is the class abbreviation used as key of
+ * Type::STRONG, Type::WEAK and Type::NEUTRAL. The explicit formatting codes
+ * (LRE, LRO, RLE, RLO, PDF, LRI, RLI, FSI, PDI) are not part of this set.
  *
  * @since       2026-07-17
  * @category    Library
@@ -68,11 +68,9 @@ enum BidiClass: string
     case ON = 'ON';
 
     /**
-     * Resolve a loose bidirectional class value to the matching enum case.
+     * Get the enum case of a bidirectional class abbreviation.
      *
-     * Accepts the canonical class abbreviation or an enum instance (returned
-     * unchanged). Unknown values throw a \ValueError, matching the closed set
-     * defined by Type::STRONG, Type::WEAK and Type::NEUTRAL.
+     * An enum case is returned unchanged. Unknown values throw a \ValueError.
      *
      * @param string|self $value Bidirectional class abbreviation or enum case.
      */

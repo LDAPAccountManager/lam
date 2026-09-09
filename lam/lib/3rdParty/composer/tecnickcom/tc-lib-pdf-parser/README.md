@@ -16,9 +16,7 @@
 
 ## Overview
 
-`tc-lib-pdf-parser` parses raw PDF data into structured PHP arrays suitable for extraction, analysis, and downstream processing.
-
-The parser is designed for tooling scenarios such as content inspection, metadata extraction, validation, and migration pipelines. It favors clear structured output so applications can build higher-level analysis features without depending on fragile regular-expression parsing.
+`tc-lib-pdf-parser` parses raw PDF data into the cross-reference and trailer data of the document and an array of its objects, each decoded into a token array.
 
 | | |
 |---|---|
@@ -32,22 +30,37 @@ The parser is designed for tooling scenarios such as content inspection, metadat
 
 ## Features
 
-### Parsing Capabilities
-- Cross-reference and object stream parsing
-- Filter-aware stream decoding integration
-- Structured output suitable for custom extractors
+### Parsing
+- Cross-reference tables and cross-reference streams, including `/Prev` chains and incremental updates
+- Object streams (`/ObjStm`)
+- Indirect references, resolved on demand and bounded against cycles
+- Stream decoding through [tc-lib-pdf-filter](https://github.com/tecnickcom/tc-lib-pdf-filter), including the `Predictor` of `DecodeParms`
 
-### Runtime Design
-- Configuration options for tolerant parsing modes
-- Pure-PHP parser with no external service dependency
-- Typed exceptions for error handling
+### Limits
+- Maximum decoded size of a single stream
+- Maximum nesting depth of arrays and dictionaries
+- Maximum depth of indirect object resolutions
+- Maximum number of chained cross-reference sections
 
 ---
 
 ## Requirements
 
 - PHP 8.2 or later
+- Extension: `pcre`
 - Composer
+
+---
+
+## Configuration
+
+The constructor accepts an array of parameters:
+
+| Parameter | Type | Default | Meaning |
+|---|---|---|---|
+| `ignore_filter_errors` | `bool` | `false` | If true, a stream that fails to decode is kept as raw data instead of raising an exception |
+| `decode_streams` | `bool` | `true` | If true, decode the stream payloads of the indirect objects while parsing |
+| `max_stream_size` | `int` | `33554432` | Maximum size in bytes of a single decoded stream; `0` means unlimited |
 
 ---
 
@@ -68,9 +81,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 $raw = file_get_contents('/path/to/document.pdf');
 $parser = new \Com\Tecnick\Pdf\Parser\Parser(['ignore_filter_errors' => true]);
-$data = $parser->parse((string) $raw);
 
-var_dump($data);
+// $xref holds the cross-reference and trailer data,
+// $objects the parsed objects keyed as "[object number]_[generation number]"
+[$xref, $objects] = $parser->parse((string) $raw);
 ```
 
 ---

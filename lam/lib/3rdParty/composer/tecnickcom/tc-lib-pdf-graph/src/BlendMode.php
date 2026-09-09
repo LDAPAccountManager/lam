@@ -21,8 +21,8 @@ namespace Com\Tecnick\Pdf\Graph;
 /**
  * Com\Tecnick\Pdf\Graph\BlendMode
  *
- * Backed enum for the PDF blend modes (PDF 32000-1:2008 - 11.3.5). The backing
- * value of each case is the canonical /BM name validated by Gradient::getAlpha().
+ * Backed enum of the PDF blend modes (PDF 32000-1:2008 - 11.3.5).
+ * The backing value of each case is the /BM name.
  *
  * @since     2026-07-17
  * @category  Library
@@ -67,11 +67,9 @@ enum BlendMode: string
     case Luminosity = 'Luminosity';
 
     /**
-     * Resolve a loose blend mode value to the matching enum case.
-     *
-     * Accepts an enum instance (returned unchanged) or a string (with an
-     * optional leading '/' stripped, as PDF /BM names carry). Unknown values
-     * fall back to Normal, matching Gradient::getAlpha().
+     * Returns the enum case matching the given blend mode.
+     * Accepts an enum case or a name with an optional leading '/'.
+     * Unknown values return Normal.
      *
      * @param string|self $value Blend mode name or enum case.
      */

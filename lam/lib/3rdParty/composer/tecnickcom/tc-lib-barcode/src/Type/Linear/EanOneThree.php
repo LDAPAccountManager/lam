@@ -26,6 +26,10 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * EanOneThree Barcode type class
  * EAN 13
  *
+ * An optional 2 or 5 digit add-on symbol is appended to the code after a plus
+ * sign, as in "9781234567897+12345". Main symbol and add-on are drawn as a
+ * single symbol, separated by the right quiet zone of the main symbol.
+ *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode
@@ -67,6 +71,23 @@ class EanOneThree extends \Com\Tecnick\Barcode\Type\Linear
      * Check digit
      */
     protected int $check = 0;
+
+    /**
+     * Separation in modules between the main symbol and the add-on symbol,
+     * equal to the right quiet zone of the main symbol.
+     * A value of zero marks a symbology that admits no add-on symbol.
+     */
+    protected int $addon_separation = 7;
+
+    /**
+     * Digits of the add-on symbol, empty when there is no add-on
+     */
+    protected string $addon = '';
+
+    /**
+     * Code of the main symbol, without the add-on
+     */
+    protected string $maincode = '';
 
     /**
      * Map characters to barcodes
@@ -134,6 +155,102 @@ class EanOneThree extends \Com\Tecnick\Barcode\Type\Linear
     ];
 
     /**
+     * Split the optional add-on symbol from the input code
+     */
+    protected function setParameters(): void
+    {
+        parent::setParameters();
+
+        $this->maincode = $this->code;
+        $plus = \strpos($this->code, '+');
+        if ($plus === false) {
+            return;
+        }
+
+        $this->maincode = \substr($this->code, 0, $plus);
+        $this->addon = \substr($this->code, $plus + 1);
+    }
+
+    /**
+     * Check that the input code is a digit string that fits the fixed length of this symbology.
+     * Shorter codes are left-padded with zeros by formatCode().
+     *
+     * @throws BarcodeException if the code is not numeric or is too long
+     */
+    protected function validateCode(): void
+    {
+        if (!\ctype_digit($this->maincode)) {
+            throw new BarcodeException('Input code must be a number');
+        }
+
+        if (\strlen($this->maincode) > $this->code_length) {
+            throw new BarcodeException(
+                'The code is too long: '
+                . \strlen($this->maincode)
+                . ' digits (maximum '
+                . $this->code_length
+                . ' for '
+                . $this::FORMAT
+                . ')',
+            );
+        }
+
+        $this->validateAddon();
+    }
+
+    /**
+     * Check the add-on symbol, which carries 2 or 5 digits.
+     *
+     * @throws BarcodeException if the add-on cannot be represented
+     */
+    protected function validateAddon(): void
+    {
+        if (!\str_contains($this->code, '+')) {
+            return;
+        }
+
+        if ($this->addon_separation === 0) {
+            throw new BarcodeException($this::FORMAT . ' admits no add-on symbol');
+        }
+
+        $addon_len = \strlen($this->addon);
+        if ($addon_len !== 2 && $addon_len !== 5 || !\ctype_digit($this->addon)) {
+            throw new BarcodeException('The add-on must be 2 or 5 digits: ' . $this->addon);
+        }
+    }
+
+    /**
+     * Get the modules of the separation and of the add-on symbol, or an empty
+     * string when the symbol carries no add-on.
+     *
+     * @throws BarcodeException in case of error
+     * @throws \Com\Tecnick\Color\Exception in case of color error
+     */
+    protected function getAddonSequence(): string
+    {
+        if ($this->addon === '') {
+            return '';
+        }
+
+        $addon = \strlen($this->addon) === 2 ? new EanTwo($this->addon) : new EanFive($this->addon);
+
+        return \str_repeat('0', \max(0, $this->addon_separation)) . \rtrim($addon->getGrid(), "\n");
+    }
+
+    /**
+     * Add the add-on digits to the human readable interpretation,
+     * once the symbol has been drawn.
+     */
+    protected function appendAddonToExtendedCode(): void
+    {
+        if ($this->addon === '') {
+            return;
+        }
+
+        $this->extcode .= '+' . $this->addon;
+    }
+
+    /**
      * Calculate checksum
      *
      * @param string $code Code to represent.
@@ -189,10 +306,8 @@ class EanOneThree extends \Com\Tecnick\Barcode\Type\Linear
      */
     protected function formatCode(): void
     {
-        $code = \str_pad($this->code, $this->code_length - 1, '0', STR_PAD_LEFT);
-        // getChecksum() returns the missing check digit, or validates (and returns 0)
-        // when the input already carries it; in the latter case keep the code unchanged
-        // to avoid appending a spurious extra digit to the extended code.
+        $code = \str_pad($this->maincode, $this->code_length - 1, '0', STR_PAD_LEFT);
+        // getChecksum() returns the missing check digit, or 0 when the input already carries it
         $check = $this->getChecksum($code);
         $this->extcode = \strlen($code) >= $this->code_length ? $code : $code . $check;
     }
@@ -201,13 +316,11 @@ class EanOneThree extends \Com\Tecnick\Barcode\Type\Linear
      * Set the bars array.
      *
      * @throws BarcodeException in case of error
+     * @throws \Com\Tecnick\Color\Exception in case of color error
      */
     protected function setBars(): void
     {
-        if (!\is_numeric($this->code)) {
-            throw new BarcodeException('Input code must be a number');
-        }
-
+        $this->validateCode();
         $this->formatCode();
         $seq = '101'; // left guard bar
         $half_len = (int) \ceil($this->code_length / 2);
@@ -222,6 +335,8 @@ class EanOneThree extends \Com\Tecnick\Barcode\Type\Linear
         }
 
         $seq .= '101'; // right guard bar
+        $seq .= $this->getAddonSequence();
         $this->processBinarySequence($this->getRawCodeRows($seq));
+        $this->appendAddonToExtendedCode();
     }
 }

@@ -67,6 +67,20 @@ class StandardTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear
     ];
 
     /**
+     * Start pattern, including the separator space that follows it
+     *
+     * @var string
+     */
+    protected const START = '1110111010';
+
+    /**
+     * Stop pattern
+     *
+     * @var string
+     */
+    protected const STOP = '111010111';
+
+    /**
      * Calculate the checksum
      *
      * @param string $code Code to represent.
@@ -110,12 +124,7 @@ class StandardTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear
     protected function setBars(): void
     {
         $this->formatCode();
-        if ((\strlen($this->extcode) % 2) !== 0) {
-            // add leading zero if code-length is odd
-            $this->extcode = '0' . $this->extcode;
-        }
-
-        $seq = '1110111010';
+        $seq = $this::START;
         $clen = \strlen($this->extcode);
         for ($idx = 0; $idx < $clen; ++$idx) {
             $digit = $this->extcode[$idx];
@@ -126,7 +135,7 @@ class StandardTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear
             $seq .= $this->getPattern($digit);
         }
 
-        $seq .= '111010111';
+        $seq .= $this::STOP;
         $this->processBinarySequence($this->getRawCodeRows($seq));
     }
 }

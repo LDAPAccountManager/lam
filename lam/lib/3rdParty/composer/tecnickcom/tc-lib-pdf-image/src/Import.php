@@ -105,15 +105,18 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     protected int $iid = 0;
 
     /**
-     * Namespace + schema version prefix for external cache keys.
-     * Bump the version when the ImageRawData shape changes so that stale
-     * persisted entries are ignored instead of being fed into output.
+     * Namespace and schema version prefix for external cache keys.
+     * The version changes with the ImageRawData shape.
      */
-    private const CACHE_PREFIX = 'tc-lib-pdf-image:v2:';
+    private const CACHE_PREFIX = 'tc-lib-pdf-image:v4:';
 
     /**
-     * Native image types and associated importing class.
-     * (Image types for which we have an import method).
+     * Maximum number of pixels of an image handed over to the GD extension.
+     */
+    protected const MAX_PIXELS = 64_000_000;
+
+    /**
+     * Native image types and the class that imports them.
      *
      * @var array<int, string>
      */
@@ -123,7 +126,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     ];
 
     /**
-     * Lossless image types.
+     * Image types re-encoded to PNG instead of JPEG: lossless formats and
+     * formats that can carry an alpha channel.
      *
      * @var array<int>
      */
@@ -139,6 +143,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         IMAGETYPE_IFF, // 14
         IMAGETYPE_SWC, // 13
         IMAGETYPE_ICO, // 17
+        IMAGETYPE_WEBP, // 18
+        IMAGETYPE_AVIF, // 19
     ];
 
     /**
@@ -181,10 +187,11 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         array $altimgs = [],
     ): int {
         $data = $this->import($image, $width, $height, $ismask, $quality);
+        $key = $this->getAltVariantKey($data, $altimgs);
         ++$this->iid;
         $this->image[$this->iid] = [
             'iid' => $this->iid,
-            'key' => $data['key'],
+            'key' => $key,
             'width' => $data['width'],
             'height' => $data['height'],
             'defprint' => $defprint,
@@ -200,13 +207,54 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
      * @param int    $width   Width in pixels.
      * @param int    $height  Height in pixels.
      * @param int    $quality Quality for JPEG files.
+     * @param bool   $ismask  True if the image is a transparency mask.
      */
-    public function getKey(string $image, int $width = 0, int $height = 0, int $quality = 100): string
+    public function getKey(
+        string $image,
+        int $width = 0,
+        int $height = 0,
+        int $quality = 100,
+        bool $ismask = false,
+    ): string {
+        // delimited seed: image, width, height, quality and mask flag
+        $seed = $image . '|' . $width . '|' . $height . '|' . $quality . '|' . ($ismask ? '1' : '0');
+        $digest = \substr(\hash('sha256', $seed, true), 0, 16);
+        return \strtr(\rtrim(\base64_encode($digest), '='), '+/', '-_');
+    }
+
+    /**
+     * Get the cache key of the image variant carrying the given alternate images.
+     *
+     * A non-empty alternate list stores a copy of the entry under a key of its
+     * own, so that images differing only by their alternates get one XObject each.
+     *
+     * @param ImageRawData    $data    Imported image data.
+     * @param array<int, int> $altimgs Arrays of alternate image keys.
+     *
+     * @return string Image key.
+     */
+    private function getAltVariantKey(array $data, array $altimgs): string
     {
-        // The parts are joined with a delimiter so that distinct inputs cannot
-        // collapse into the same digest (e.g. ('img', 12, 3) vs ('img1', 2, 3)).
-        $seed = $image . '|' . $width . '|' . $height . '|' . $quality;
-        return \strtr(\rtrim(\base64_encode(\pack('H*', \md5($seed))), '='), '+/', '-_');
+        if ($altimgs === []) {
+            return $data['key'];
+        }
+
+        $key = $this->getKey($data['key'] . '|alt|' . \implode(',', $altimgs));
+        if (!isset($this->cache[$key])) {
+            $data['key'] = $key;
+
+            if (isset($data['mask'])) {
+                $data['mask']['key'] = $key;
+            }
+
+            if (isset($data['plain'])) {
+                $data['plain']['key'] = $key;
+            }
+
+            $this->cache[$key] = $data;
+        }
+
+        return $key;
     }
 
     /**
@@ -290,20 +338,27 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         int $quality = 100,
     ): array {
         $quality = \max(0, \min(100, $quality));
-        $imgkey = $this->getKey($image, (int) $width, (int) $height, $quality);
+        $imgkey = $this->getKey($image, (int) $width, (int) $height, $quality, $ismask);
 
-        // Tier 1: in-process memory cache (fast path, also dedups within a document).
+        // in-process memory cache
         if (isset($this->cache[$imgkey])) {
             return $this->cache[$imgkey];
         }
 
-        // Tier 2: optional external cache (survives across instances and processes).
+        // optional external cache, shared across instances and processes
         $cache = $this->imageCache;
         $extkey = '';
         if ($cache !== null) {
-            $extkey = $this->getExternalCacheKey($image, $imgkey, (int) $width, (int) $height, $quality);
-            $cached = $cache->get($extkey);
-            if ($cached !== null) {
+            $extkey = $this->getExternalCacheKey($image, $imgkey, (int) $width, (int) $height, $quality, $ismask);
+            // a backend failure is treated as a miss
+            try {
+                $cached = $cache->get($extkey);
+            } catch (\Throwable) {
+                $cached = null;
+            }
+
+            if ($cached !== null && $this->isValidCachedData($cached)) {
+                $cached = $this->getImportedData($cached);
                 $cached['key'] = $imgkey;
                 $this->cache[$imgkey] = $cached;
                 return $cached;
@@ -321,52 +376,71 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
         $data = $this->getData($data, $width, $height, $quality);
 
+        // an external stream is decoded by /FFilter alone: only a file usable
+        // as the image stream itself (DCTDecode) stays linked
+        if ($data['exturl'] && $data['filter'] !== 'DCTDecode') {
+            $data['exturl'] = false;
+        }
+
         $data = $this->enrichMaskData($data, $width, $height, $quality, $ismask);
 
         // store data in the in-process cache
         $this->cache[$imgkey] = $data;
 
-        // write-through to the external cache (best-effort, persistable snapshot)
+        // write-through of the persistable snapshot to the external cache
         if ($cache !== null) {
-            $cache->set($extkey, $this->getPersistableData($data));
+            try {
+                $cache->set($extkey, $this->getPersistableData($data));
+
+                // @mago-expect lint:no-empty-catch-clause
+            } catch (\Throwable) {
+                // a write failure leaves the imported image unchanged
+            }
         }
 
         return $data;
     }
 
     /**
-     * Build the persistent (external) cache key for an image.
+     * Build the external cache key for an image.
      *
-     * For local file inputs the file modification time and size are folded into
-     * the key, so that editing a file in place invalidates stale persisted
-     * entries. Inline data ('@...') and remote URLs are identified by their
-     * string, which already carries their content/identity.
+     * For a local file the modification time and size are folded into the key.
+     * Inline data ('@...') and remote URLs are identified by their string alone.
+     * The path is canonicalized and checked against the allowlist of the file
+     * helper that reads the image.
      *
      * @param string $image   Image file name, URL or '@'-prefixed data string.
      * @param string $imgkey  Image key already computed from the raw image string.
      * @param int    $width   Width in pixels.
      * @param int    $height  Height in pixels.
      * @param int    $quality Quality for JPEG files.
+     * @param bool   $ismask  True if the image is a transparency mask.
      */
-    private function getExternalCacheKey(string $image, string $imgkey, int $width, int $height, int $quality): string
-    {
+    private function getExternalCacheKey(
+        string $image,
+        string $imgkey,
+        int $width,
+        int $height,
+        int $quality,
+        bool $ismask,
+    ): string {
         $identity = $image;
 
         if ($image !== '' && $image[0] !== '@') {
-            $path = $image[0] === '*' ? \substr($image, 1) : $image;
-            if (\is_file($path)) {
+            $path = $this->fileHelper->resolveLocalPath($image[0] === '*' ? \substr($image, 1) : $image);
+            if ($this->fileHelper->isAllowedFile($path) && \is_file($path)) {
                 $mtime = \filemtime($path);
                 $size = \filesize($path);
                 if ($mtime !== false && $size !== false) {
+                    // the raw image string stays as the identity prefix, so the
+                    // linked ('*') form of the same file gets its own entry
                     $identity = $image . ':' . $mtime . ':' . $size;
                 }
             }
         }
 
-        // When the identity is just the raw image string the key is identical
-        // to the one already computed by the caller, so reuse it and avoid a
-        // second md5/base64 round.
-        $key = $identity === $image ? $imgkey : $this->getKey($identity, $width, $height, $quality);
+        // an unchanged identity yields the key already computed by the caller
+        $key = $identity === $image ? $imgkey : $this->getKey($identity, $width, $height, $quality, $ismask);
 
         return self::CACHE_PREFIX . $key;
     }
@@ -374,10 +448,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     /**
      * Produce a persistable snapshot of the imported image data.
      *
-     * Drops the original raw bytes (not used at output time) to shrink the
-     * stored payload. PDF object numbers and the output flag are intentionally
-     * left as imported (all zero / unset), so a loaded entry is ready for a
-     * fresh document without any reset.
+     * Drops the original raw bytes, which are not used at output time. PDF
+     * object numbers and the output flag are left as imported (zero or unset).
      *
      * @param ImageRawData $data Imported image data.
      *
@@ -394,6 +466,52 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         if (isset($data['plain'])) {
             $data['plain']['raw'] = '';
         }
+
+        return $data;
+    }
+
+    /**
+     * Reset the document-scoped fields of an entry loaded from the external cache.
+     *
+     * PDF object numbers and the output flag are assigned per document at
+     * output time, so any value carried by a stored entry is discarded.
+     *
+     * @param ImageRawData $data Entry loaded from the external cache.
+     *
+     * @return ImageRawData Image data ready for a fresh document.
+     */
+    private function getImportedData(array $data): array
+    {
+        unset($data['out']);
+        $data['obj'] = 0;
+        $data['obj_alt'] = 0;
+        $data['obj_icc'] = 0;
+        $data['obj_pal'] = 0;
+
+        if (isset($data['mask'])) {
+            $data['mask'] = $this->getResetObjectNumbers($data['mask']);
+        }
+
+        if (isset($data['plain'])) {
+            $data['plain'] = $this->getResetObjectNumbers($data['plain']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Zero the PDF object numbers of an image data array.
+     *
+     * @param ImageBaseData $data Image data.
+     *
+     * @return ImageBaseData Image data with no object number assigned.
+     */
+    private function getResetObjectNumbers(array $data): array
+    {
+        $data['obj'] = 0;
+        $data['obj_alt'] = 0;
+        $data['obj_icc'] = 0;
+        $data['obj_pal'] = 0;
 
         return $data;
     }
@@ -423,8 +541,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
      *   in which case the result is scaled to fit within the $width x $height box
      *   while preserving the source aspect ratio.
      *
-     * An explicit zero (as opposed to null) is kept as-is so that callers can
-     * detect and reject invalid target dimensions downstream.
+     * An explicit zero, as opposed to null, is kept as-is.
      *
      * @param int  $srcwidth  Source width in pixels.
      * @param int  $srcheight Source height in pixels.
@@ -510,6 +627,15 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         $basedata = $this->getBaseData($data);
 
         if ($ismask) {
+            if ($data['splitalpha']) {
+                // the mask body of an image with an alpha channel is its
+                // flattened variant
+                $basedata = $this->createPlainImage($basedata, $width, $height, $quality);
+            }
+
+            // the flag keeps the output stage from attaching an /SMask entry
+            // pointing back at the mask object itself
+            $basedata['ismask'] = true;
             $data['mask'] = $basedata;
             return $data;
         }
@@ -651,21 +777,13 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * Get the original image raw data.
+     * Get the default image data array.
      *
-     * @param string $image Image file name, URL or a '@' character followed by the image data string.
-     *                      To link an image without embedding it on the document, set an asterisk character
-     *                      before the URL (i.e.: '*http://www.example.com/image.jpg').
-     *
-     * @return ImageRawData Image data array.
-     *
-     * @throws \Com\Tecnick\Pdf\Image\Exception If the image cannot be read.
-     * @throws \Com\Tecnick\File\Exception If reading image content fails.
+     * @return ImageBaseData Image data array with default values.
      */
-    protected function getRawData(string $image): array
+    private function getDefaultData(): array
     {
-        // default data to return
-        $data = [
+        return [
             'bits' => 8, // number of bits per channel
             'channels' => 3, // number of channels
             'colspace' => 'DeviceRGB', // color space
@@ -693,6 +811,65 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             'type' => 0, // image type constant: IMAGETYPE_XXX
             'width' => 0, // image width in pixels
         ];
+    }
+
+    /**
+     * Check that an entry loaded from the external cache has the expected shape.
+     *
+     * An entry with a missing or mistyped field is ignored.
+     *
+     * @param array<mixed> $data Entry loaded from the external cache.
+     */
+    private function isValidCachedData(array $data): bool
+    {
+        foreach ($this->getDefaultData() as $key => $value) {
+            if (!isset($data[$key]) || \gettype($data[$key]) !== \gettype($value)) {
+                return false;
+            }
+        }
+
+        foreach (['mask', 'plain'] as $sub) {
+            if (isset($data[$sub]) && (!\is_array($data[$sub]) || !$this->isValidCachedData($data[$sub]))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check that an image fits the pixel budget before it is handed over to GD.
+     *
+     * @param int $width  Width in pixels.
+     * @param int $height Height in pixels.
+     *
+     * @throws \Com\Tecnick\Pdf\Image\Exception If the image exceeds the budget.
+     */
+    private function checkPixelBudget(int $width, int $height): void
+    {
+        // compared by division to avoid an integer overflow on the product
+        if ($width > 0 && $height > 0 && $height > \intdiv(static::MAX_PIXELS, $width)) {
+            throw new ImageException(
+                'Image is too large: ' . $width . 'x' . $height . ' exceeds ' . static::MAX_PIXELS . ' pixels',
+            );
+        }
+    }
+
+    /**
+     * Get the original image raw data.
+     *
+     * @param string $image Image file name, URL or a '@' character followed by the image data string.
+     *                      To link an image without embedding it on the document, set an asterisk character
+     *                      before the URL (i.e.: '*http://www.example.com/image.jpg').
+     *
+     * @return ImageRawData Image data array.
+     *
+     * @throws \Com\Tecnick\Pdf\Image\Exception If the image cannot be read.
+     * @throws \Com\Tecnick\File\Exception If reading image content fails.
+     */
+    protected function getRawData(string $image): array
+    {
+        $data = $this->getDefaultData();
 
         if ($image === '' || ($image[0] === '@' || $image[0] === '*') && \strlen($image) === 1) {
             throw new ImageException('Empty image');
@@ -730,8 +907,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
      */
     protected function getMetaData(array $data): array
     {
-        // getimagesizefromstring() does not throw: it emits warnings (silenced
-        // below) and returns false on failure, which is handled right after.
+        // getimagesizefromstring() emits warnings and returns false on failure
         \set_error_handler(static fn(): bool => true);
         try {
             $meta = \getimagesizefromstring($data['raw']);
@@ -793,6 +969,9 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             throw new ImageException('Image width and/or height are empty');
         }
 
+        $this->checkPixelBudget($data['width'], $data['height']);
+        $this->checkPixelBudget($width, $height);
+
         $img = \imagecreatefromstring($data['raw']);
         if ($img === false) {
             throw new ImageException('Unable to create new image from string');
@@ -827,7 +1006,9 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             }
         }
 
-        \imagealphablending($newimg, !$alpha);
+        // blending is always off: the source colour is copied verbatim, so the
+        // plain half of an alpha split is not premultiplied against the canvas
+        \imagealphablending($newimg, false);
         \imagesavealpha($newimg, $alpha);
 
         \imagecopyresampled($newimg, $img, 0, 0, 0, 0, $width, $height, $data['width'], $data['height']);
@@ -860,6 +1041,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
      */
     protected function getAlphaChannelRawData(array $data): array
     {
+        $this->checkPixelBudget($data['width'], $data['height']);
+
         $img = \imagecreatefromstring($data['raw']);
         if ($img === false) {
             throw new ImageException('Unable to create alpha channel image from string');
@@ -877,9 +1060,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             \imagecolorallocate($newimg, $col, $col, $col);
         }
 
-        // Precompute the gamma-corrected output for each of the 128 possible
-        // GD alpha values (7-bit: 0 -> 127), so the expensive pow() runs 128
-        // times instead of once per pixel.
+        // gamma-corrected output for each of the 128 GD alpha values
         $alphamap = [];
         for ($alf = 0; $alf < 128; ++$alf) {
             // GD alpha is only 7 bit (0 -> 127); 2.2 is the gamma value
@@ -889,8 +1070,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         $truecolor = \imageistruecolor($img);
 
         // extract alpha channel
-        for ($xpx = 0; $xpx < $data['width']; ++$xpx) {
-            for ($ypx = 0; $ypx < $data['height']; ++$ypx) {
+        for ($ypx = 0; $ypx < $data['height']; ++$ypx) {
+            for ($xpx = 0; $xpx < $data['width']; ++$xpx) {
                 $colindex = \imagecolorat($img, $xpx, $ypx);
                 if ($colindex === false) {
                     throw new ImageException('Unable to extract alpha channel color index');
@@ -898,9 +1079,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
                 // get and correct gamma color (keys 0-127 are always present)
                 if ($truecolor) {
-                    // For truecolor images the alpha is packed in bits 24-30 of
-                    // the pixel value, so it can be read directly instead of
-                    // allocating a colour-component array per pixel.
+                    // the alpha of a truecolor pixel is packed in bits 24-30
                     $alpha = $alphamap[($colindex >> 24) & 0x7F] ?? 0;
                 } else {
                     /** @var array{'red': int, 'green': int, 'blue': int, 'alpha': int} $color */
@@ -922,6 +1101,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         $data['raw'] = $ogc;
         $data['channels'] = 1;
         $data['colspace'] = 'DeviceGray';
+        // the mask carries opacity, not colour
+        $data['icc'] = '';
         $data['exturl'] = false;
         $data['recoded'] = true;
         $data['ismask'] = true;

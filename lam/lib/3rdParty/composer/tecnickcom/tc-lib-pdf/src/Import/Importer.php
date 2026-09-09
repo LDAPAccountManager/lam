@@ -20,6 +20,7 @@ namespace Com\Tecnick\Pdf\Import;
 
 use Com\Tecnick\File\Exception as FileException;
 use Com\Tecnick\File\File as ObjFile;
+use Com\Tecnick\Pdf\Encrypt\Encrypt as ObjEncrypt;
 
 /**
  * Com\Tecnick\Pdf\Import\Importer
@@ -106,19 +107,103 @@ class Importer implements ImporterInterface
     private ObjFile $file;
 
     /**
+     * PDF/A part of the destination document (0 when PDF/A is not active).
+     *
+     * @var int
+     */
+    private int $pdfa;
+
+    /**
+     * Encryption object of the destination document.
+     */
+    private ObjEncrypt $encrypt;
+
+    /**
+     * True when the conformance mode of the destination document requires every
+     * font to be embedded.
+     */
+    private bool $requireEmbeddedFonts;
+
+    /**
+     * Conformance warnings raised while pages were imported.
+     *
+     * @var array<int, string>
+     */
+    private array $warnings = [];
+
+    /**
      * Constructor.
      *
      * @param array<string, mixed> $xobjects Reference to the destination document's xobjects array.
      * @param int                  $pon      Reference to the PDF object number counter.
      * @param ObjFile              $file     Shared file helper instance.
+     * @param int                  $pdfa     PDF/A part of the destination document (0 when not active).
+     * @param ?ObjEncrypt          $encrypt  Encryption object of the destination document; a disabled
+     *                                       one is used when null.
+     * @param bool                 $requireEmbeddedFonts True when the destination document requires
+     *                                       every font to be embedded.
+     *
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
-    public function __construct(array &$xobjects, int &$pon, ObjFile $file)
-    {
+    public function __construct(
+        array &$xobjects,
+        int &$pon,
+        ObjFile $file,
+        int $pdfa = 0,
+        ?ObjEncrypt $encrypt = null,
+        bool $requireEmbeddedFonts = false,
+    ) {
         // Bind by reference so importPage() writes directly into $pdf->xobjects.
 
         $this->xobjects = &$xobjects;
         $this->pon = &$pon;
         $this->file = $file;
+        $this->pdfa = $pdfa;
+        $this->encrypt = $encrypt ?? new ObjEncrypt();
+        $this->requireEmbeddedFonts = $requireEmbeddedFonts;
+    }
+
+    /**
+     * Return the conformance warnings raised while pages were imported.
+     *
+     * @return array<int, string>
+     */
+    public function getWarnings(): array
+    {
+        return $this->warnings;
+    }
+
+    /**
+     * Record a warning for each font of an imported page whose program is not
+     * embedded in the source document.
+     *
+     * The source page is copied into a Form XObject as it stands, so a font the
+     * source does not carry cannot be embedded by the destination document.
+     *
+     * @param array<string, mixed> $resources Resolved page resource dictionary.
+     * @param SourceDocument       $src       Source document.
+     * @param int                  $pageNum   1-based page number of the imported page.
+     */
+    private function checkImportedFonts(array $resources, SourceDocument $src, int $pageNum): void
+    {
+        if (!$this->requireEmbeddedFonts || $resources === []) {
+            return;
+        }
+
+        $inspector = new FontInspector();
+        foreach ($inspector->findNonEmbeddedFonts($resources, $src) as $name) {
+            $message =
+                'The active conformance mode requires embedded fonts: the imported page '
+                . $pageNum
+                . ' uses the font '
+                . $name
+                . ', whose program is not embedded in the source document';
+            if (\in_array($message, $this->warnings, true)) {
+                continue;
+            }
+
+            $this->warnings[] = $message;
+        }
     }
 
     /**
@@ -179,10 +264,9 @@ class Importer implements ImporterInterface
     /**
      * Return the total number of pages in a registered source document.
      *
-     * The count is derived from the page tree actually reachable through
-     * /Kids; the declared /Count entry is intentionally ignored because it
-     * is under the control of whoever produced the source file and must
-     * never size an allocation or bound a loop.
+     * The count is derived from the page tree reachable through /Kids. The
+     * declared /Count entry is ignored: it is controlled by the source file and
+     * never sizes an allocation or bounds a loop.
      *
      * @param string $sourceId Source document identifier.
      *
@@ -210,6 +294,7 @@ class Importer implements ImporterInterface
      * @throws ImportCorruptedSourceException    If the page tree is malformed.
      * @throws ImportException                   If object mapping or cloning fails.
      * @throws ImportUnsupportedFeatureException If an unsupported feature is encountered.
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function importPage(string $sourceId, int $pageNum, array $options = []): PageTemplateInterface
     {
@@ -239,6 +324,8 @@ class Importer implements ImporterInterface
         $resolver = new PageResolver();
         $resolved = $resolver->resolveFromIndex($src, $this->getPageIndex($sourceId), $pageNum);
 
+        $this->checkImportedFonts($resolved['resources'], $src, $pageNum);
+
         $box = $this->selectBox($resolved, $useBox);
         $rotate = $respectRotation ? $resolved['rotate'] : 0;
         $map = $this->objectMaps[$sourceId] ?? null;
@@ -252,8 +339,8 @@ class Importer implements ImporterInterface
         $tid = 'IMP' . $xobjNum;
 
         // Clone resources.
-        $cloner = new ResourceCloner($this->pon);
-        $resDict = $cloner->cloneResources($resolved['resources'], $src, $map);
+        $cloner = new ResourceCloner($this->pon, $this->pdfa, $this->encrypt);
+        $resDict = $cloner->cloneResources($resolved['resources'], $src, $map, $xobjNum);
         $this->pon = $cloner->getPon();
 
         // Extract content stream.
@@ -281,8 +368,8 @@ class Importer implements ImporterInterface
         $matrix = $this->rotationMatrix($rotate, $rawW, $rawH);
         $matrixStr = \implode(' ', $matrix);
 
-        // Serialize the Form XObject.
-        $streamBytes = $contentStream['bytes'];
+        // Serialize the Form XObject: the content is filtered first and encrypted last.
+        $streamBytes = $this->encrypt->encryptString($contentStream['bytes'], $xobjNum);
         $filterEntry = $contentStream['filter'] !== '' ? ' /Filter ' . $contentStream['filter'] : '';
         $groupEntry = $useGroup ? ' /Group << /Type /Group /S /Transparency >>' : '';
 
@@ -328,7 +415,7 @@ class Importer implements ImporterInterface
             'gheight' => 0.0,
         ];
 
-        // Determine user-unit dimensions (points → same unit as pon; leave in pt for now).
+        // Template dimensions stay in points.
         $tpl = new PageTemplate($tid, $bboxW, $bboxH, $rotate, $sourceId, $pageNum, [$xMin, $yMin, $xMax, $yMax]);
 
         if ($useCache) {
@@ -352,6 +439,7 @@ class Importer implements ImporterInterface
      * @throws ImportCorruptedSourceException    If the page tree is malformed.
      * @throws ImportException                   If object mapping or cloning fails.
      * @throws ImportUnsupportedFeatureException If an unsupported feature is encountered.
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception
      */
     public function importPages(string $sourceId, ?array $range = null, array $options = []): array
     {

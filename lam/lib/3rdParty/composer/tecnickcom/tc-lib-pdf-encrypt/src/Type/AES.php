@@ -54,13 +54,19 @@ class AES
 
         $aesnopad = new AESnopad();
         $aesnopad->checkCipher($mode);
+        $aesnopad->checkKeyLength($key, $mode);
 
         $len = \openssl_cipher_iv_length($mode);
         if ($len === false || $len <= 0) {
             throw new EncException('openssl_cipher_iv_length failed');
         }
 
-        $ivect = \openssl_random_pseudo_bytes($len);
+        try {
+            $ivect = \random_bytes($len);
+        } catch (\Random\RandomException $e) {
+            throw new EncException('unable to generate the initialization vector', 0, $e);
+        }
+
         $enc = \openssl_encrypt($data, $mode, $key, OPENSSL_RAW_DATA, $ivect);
 
         if ($enc === false) {

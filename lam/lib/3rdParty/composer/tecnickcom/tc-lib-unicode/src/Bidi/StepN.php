@@ -19,9 +19,13 @@ declare(strict_types=1);
 namespace Com\Tecnick\Unicode\Bidi;
 
 use Com\Tecnick\Unicode\Data\Bracket as UniBracket;
+use Com\Tecnick\Unicode\Data\Type as UniType;
 
 /**
  * Com\Tecnick\Unicode\Bidi\StepN
+ *
+ * N steps of the Bidirectional Algorithm: resolving neutral and isolate formatting
+ * types (N0 to N2).
  *
  * @since     2015-07-13
  * @category  Library
@@ -41,11 +45,48 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
     protected array $brackets = [];
 
     /**
+     * Maximum number of entries of the BD16 bracket stack
+     */
+    public const MAX_PAIRING_DEPTH = 63;
+
+    /**
      * Stack used to store bracket positions
      *
      * @var array<int, array{int, int}>
      */
     protected array $bstack = [];
+
+    /**
+     * True when BD16 has been stopped for the remainder of the isolating run sequence
+     * because the bracket stack overflowed.
+     */
+    protected bool $bstackFull = false;
+
+    /**
+     * Isolate formatting types per UAX #9. Together with the neutral types B, S, WS and
+     * ON of UniType::NEUTRAL they form the NI types resolved by the N rules.
+     * 'NI' itself is not a bidirectional character type: it is accepted as a synonym of
+     * the whole set.
+     *
+     * @var array<string, string>
+     */
+    protected const ISOLATE_FORMATTING = [
+        'FSI' => 'FSI',
+        'LRI' => 'LRI',
+        'RLI' => 'RLI',
+        'PDI' => 'PDI',
+        'NI' => 'NI',
+    ];
+
+    /**
+     * Returns true when the character at the given index has a Neutral or Isolate formatting
+     * (NI) type per UAX #9, i.e. it is subject to the N rules.
+     */
+    protected function isNI(int $idx): bool
+    {
+        $type = $this->getItem($idx)['type'];
+        return isset(self::ISOLATE_FORMATTING[$type]) || isset(UniType::NEUTRAL[$type]);
+    }
 
     /**
      * @return array{char: int, i: int, level: int, otype: string, pdimatch: int, pos: int, type: string, x: int}
@@ -94,11 +135,29 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function getBracketPairs(int $idx): void
     {
-        $char = $this->getItem($idx)['char'];
+        if ($this->bstackFull) {
+            return;
+        }
+
+        $item = $this->getItem($idx);
+        // BD14 and BD15: only a bracket whose current bidirectional type is ON can be part
+        // of a pair, so a bracket retyped by an override (X6) does not pair.
+        if ($item['type'] !== 'ON') {
+            return;
+        }
+
+        $char = $item['char'];
         if (array_key_exists($char, UniBracket::OPEN)) {
             // process open bracket
             if ($char === 0x3008) {
                 $char = 0x2329;
+            }
+
+            // BD16 uses a fixed 63 element stack: when it overflows, stop processing BD16 for
+            // the remainder of the isolating run sequence and keep the pairs found so far.
+            if (\count($this->bstack) >= self::MAX_PAIRING_DEPTH) {
+                $this->bstackFull = true;
+                return;
             }
 
             $this->bstack[] = [$idx, (int) $char];
@@ -111,10 +170,8 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
                 $char = 0x232A;
             }
 
-            // Find the matching opening bracket: scan the stack from the top and stop at the
-            // first (nearest) match, popping through and including the matched entry. Per BD16
-            // a closing bracket pairs with the nearest opener; without stopping here, multiple
-            // openers of the same type would be paired to the same closer and the stack emptied.
+            // BD16: a closing bracket pairs with the nearest matching opening bracket, so
+            // the stack is scanned from the top and popped through the first match only.
             $tmpstack = $this->bstack;
             while ($tmpstack !== []) {
                 $item = \array_pop($tmpstack);
@@ -251,12 +308,11 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function processN1(int $idx): void
     {
-        if ($this->getItem($idx)['type'] !== 'NI') {
+        if (!$this->isNI($idx)) {
             return;
         }
 
-        $bdx = $idx - 1;
-        $prev = $this->processN1prev($bdx);
+        $prev = $this->processN1prev($idx - 1);
         if ($prev === '') {
             return;
         }
@@ -281,10 +337,9 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @return string Previous direction
      */
-    protected function processN1prev(int &$bdx): string
+    protected function processN1prev(int $bdx): string
     {
         if ($bdx < 0) {
-            $bdx = 0;
             return $this->seq['sos'];
         }
 
@@ -307,10 +362,9 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @return string Next direction
      */
-    protected function processN1next(int &$jdx): string
+    protected function processN1next(int $jdx): string
     {
         if ($jdx >= $this->seq['length']) {
-            $jdx = $this->seq['length'];
             return $this->seq['eos'];
         }
 
@@ -334,7 +388,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
     protected function getNextN1Char(int $idx): int
     {
         $jdx = $idx + 1;
-        while ($jdx < $this->seq['length'] && $this->getItem($jdx)['type'] === 'NI') {
+        while ($jdx < $this->seq['length'] && $this->isNI($jdx)) {
             ++$jdx;
         }
 
@@ -348,7 +402,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function processN2(int $idx): void
     {
-        if ($this->getItem($idx)['type'] === 'NI') {
+        if ($this->isNI($idx)) {
             $this->setItemType($idx, $this->seq['edir']);
         }
     }

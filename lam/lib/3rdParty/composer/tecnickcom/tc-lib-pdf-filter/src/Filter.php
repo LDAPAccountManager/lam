@@ -21,7 +21,7 @@ namespace Com\Tecnick\Pdf\Filter;
 /**
  * Com\Tecnick\Pdf\Filter\Filter
  *
- * PHP class for decoding common PDF filters (PDF 32000-2008 - 7.4 Filters)
+ * Decoder for the PDF stream filters (PDF 32000-1:2008 §7.4).
  *
  * @since     2011-05-23
  * @category  Library
@@ -34,13 +34,13 @@ namespace Com\Tecnick\Pdf\Filter;
 class Filter
 {
     /**
-     * Decode data using the specified filter type.
+     * Decode the data with a single filter.
      *
-     * @param string|FilterType    $filter Filter name or FilterType enum case.
-     * @param string              $data   Data to decode.
+     * @param string|FilterType    $filter Filter name or FilterType case; an empty name is a pass-through.
+     * @param string               $data   Data to decode.
      * @param array<string, mixed> $params Optional DecodeParms dictionary for the filter.
      *
-     * @return string  Decoded data string.
+     * @return string Decoded data.
      *
      * @throws \Com\Tecnick\Pdf\Filter\Exception
      */
@@ -71,22 +71,66 @@ class Filter
     }
 
     /**
-     * Decode the input data using multiple filters
+     * Decode the data with a chain of filters, applied in order.
      *
-     * @param array<string|FilterType> $filters Array of decoding filters to apply in order
-     * @param string              $data    Data to decode.
-     * @param array<string, mixed> $params  Optional DecodeParms dictionary.
+     * @param array<string|FilterType> $filters Filters to apply in order.
+     * @param string                   $data    Data to decode.
+     * @param array<array-key, mixed>  $params  Optional DecodeParms: a single dictionary
+     *   applied to every filter, or a list holding one dictionary (or null) per filter,
+     *   consumed positionally, as /DecodeParms parallel to /Filter. An entry that is not
+     *   a dictionary leaves the corresponding filter without parameters.
      *
-     * @return string Decoded data
+     * @return string Decoded data.
      *
      * @throws \Com\Tecnick\Pdf\Filter\Exception
      */
     public function decodeAll(array $filters, string $data, array $params = []): string
     {
+        $positional = $this->isPositionalParams($params);
+
+        $position = 0;
         foreach ($filters as $filter) {
-            $data = $this->decode($filter, $data, $params);
+            $data = $this->decode($filter, $data, $this->paramsAt($params, $positional, $position));
+            ++$position;
         }
 
         return $data;
+    }
+
+    /**
+     * DecodeParms for one filter of the chain.
+     *
+     * @param array<array-key, mixed> $params     DecodeParms value.
+     * @param bool                    $positional Whether $params is the per-filter list form.
+     * @param int                     $position   Index of the filter in the chain.
+     *
+     * @return array<string, mixed>
+     */
+    private function paramsAt(array $params, bool $positional, int $position): array
+    {
+        if (!$positional) {
+            /** @var array<string, mixed> $params */
+            return $params;
+        }
+
+        // a missing, null or non-dictionary entry means no parameters
+        if (!\is_array($params[$position] ?? null)) {
+            return [];
+        }
+
+        /** @var array<string, mixed> */
+        return $params[$position];
+    }
+
+    /**
+     * Whether the DecodeParms value is a per-filter list rather than a single dictionary.
+     *
+     * A PDF dictionary is keyed by name objects, so a non-empty list is the array form.
+     *
+     * @param array<array-key, mixed> $params DecodeParms value.
+     */
+    private function isPositionalParams(array $params): bool
+    {
+        return $params !== [] && \array_is_list($params);
     }
 }

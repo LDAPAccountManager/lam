@@ -44,7 +44,8 @@ abstract class Steps extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Modes
      */
     public function lookAheadTest(string $data, int $pos, int $mode): int
     {
-        $data_length = \strlen($data);
+        // an FNC1 separator ends the current field: it is written as an ASCII codeword
+        $data_length = $this->gsonemode ? $pos + \strcspn($data, "\x1d\xe8", $pos) : \strlen($data);
         if ($pos >= $data_length) {
             return $mode;
         }

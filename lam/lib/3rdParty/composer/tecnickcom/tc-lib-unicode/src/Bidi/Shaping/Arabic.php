@@ -23,6 +23,10 @@ use Com\Tecnick\Unicode\Data\Arabic as UniArabic;
 /**
  * Com\Tecnick\Unicode\Bidi\Shaping\Arabic
  *
+ * Joining context of the Arabic shaping: the form of a character is decided by the
+ * Joining_Type of the nearest non-transparent characters around it, as defined by
+ * ArabicShaping.txt and section 9.2 of the Unicode standard.
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode
@@ -57,6 +61,26 @@ use Com\Tecnick\Unicode\Data\Arabic as UniArabic;
 abstract class Arabic
 {
     /**
+     * Index of the isolated form in the substitution rows.
+     */
+    protected const FORM_ISOLATED = 0;
+
+    /**
+     * Index of the final form in the substitution rows.
+     */
+    protected const FORM_FINAL = 1;
+
+    /**
+     * Index of the initial form in the substitution rows.
+     */
+    protected const FORM_INITIAL = 2;
+
+    /**
+     * Index of the medial form in the substitution rows.
+     */
+    protected const FORM_MEDIAL = 3;
+
+    /**
      * Sequence to process and return
      *
      * @var SeqData
@@ -81,47 +105,71 @@ abstract class Arabic
     protected array $newchardata = [];
 
     /**
-     * Array of AL characters
+     * Codepoints of the paragraph the sequence belongs to, in logical order.
+     * The joining context is read from the paragraph and not from the sequence because
+     * X9 removes the joining-relevant format characters (ZWJ and ZWNJ) from the latter.
      *
-     * @var array<int, CharData>
+     * @var array<int, int>
      */
-    protected array $alchars = [];
+    protected array $paragraph = [];
 
     /**
-     * Number of AL characters
+     * Joining_Type of each paragraph position
+     *
+     * @var array<int, string>
      */
-    protected int $numalchars = 0;
+    protected array $joining = [];
 
     /**
-     * @param array<int, array<int>> $arabicarr
+     * Index of the sequence item of each paragraph position
+     *
+     * @var array<int, int>
      */
-    private function getSubstitute(array $arabicarr, int $char, int $form): ?int
+    protected array $seqindex = [];
+
+    /**
+     * Joining_Type of every position of the given paragraph.
+     *
+     * @param array<int, int> $paragraph Codepoints of the paragraph, in logical order
+     *
+     * @return array<int, string>
+     */
+    public static function getJoiningTypes(array $paragraph): array
     {
-        $forms = $arabicarr[$char] ?? null;
-        if ($forms === null) {
-            return null;
+        $joining = [];
+        foreach ($paragraph as $pos => $ord) {
+            $joining[$pos] = UniArabic::getJoiningType($ord);
         }
 
-        $substitute = $forms[$form] ?? null;
-        if (!\is_int($substitute)) {
-            return null;
+        return $joining;
+    }
+
+    /**
+     * Build the joining type of every paragraph position and the map from a paragraph
+     * position to the sequence item that holds it. The joining types are kept when they
+     * have been supplied by the caller: they depend only on the paragraph, which is
+     * shared by all the isolating run sequences of that paragraph.
+     */
+    protected function setJoiningContext(): void
+    {
+        if ($this->joining === []) {
+            $this->joining = self::getJoiningTypes($this->paragraph);
         }
 
-        return $substitute;
+        $this->seqindex = [];
+        foreach ($this->seq['item'] as $idx => $item) {
+            $this->seqindex[$item['pos']] = $idx;
+        }
     }
 
-    private function setNewChar(int $idx, int $char): void
+    /**
+     * Position of the nearest non-transparent character before the given one,
+     * or null at the beginning of the paragraph.
+     */
+    protected function getPrevPosition(int $pos): ?int
     {
-        $item = $this->newchardata[$idx] ?? null;
-        assert($item !== null, 'Expected shaped character at the requested index');
-        $item['char'] = $char;
-        $this->newchardata[$idx] = $item;
-    }
-
-    private function getNewCharIndexBySourceIndex(int $sourceIndex): ?int
-    {
-        foreach ($this->newchardata as $idx => $item) {
-            if ($item['i'] === $sourceIndex) {
+        for ($idx = $pos - 1; $idx >= 0; --$idx) {
+            if (($this->joining[$idx] ?? 'U') !== 'T') {
                 return $idx;
             }
         }
@@ -130,221 +178,109 @@ abstract class Arabic
     }
 
     /**
-     * Check if it is a LAA LETTER
-     *
-     * @param ?CharData $prevchar Previous char
-     * @param CharData  $thischar Current char
+     * Position of the nearest non-transparent character after the given one,
+     * or null at the end of the paragraph.
      */
-    protected function isLaaLetter(?array $prevchar, array $thischar): bool
+    protected function getNextPosition(int $pos): ?int
     {
-        return $prevchar !== null
-        && $prevchar['char'] === UniArabic::LAM
-        && array_key_exists($thischar['char'], UniArabic::LAA);
+        $length = \count($this->paragraph);
+        for ($idx = $pos + 1; $idx < $length; ++$idx) {
+            if (($this->joining[$idx] ?? 'U') !== 'T') {
+                return $idx;
+            }
+        }
+
+        return null;
     }
 
     /**
-     * Check next char
-     *
-     * @param CharData  $thischar Current char
-     * @param ?CharData $nextchar Next char
+     * Returns the Joining_Type of a paragraph position (Non_Joining outside the paragraph).
      */
-    protected function hasNextChar(array $thischar, ?array $nextchar): bool
+    protected function getJoiningType(?int $pos): string
+    {
+        if ($pos === null) {
+            return 'U';
+        }
+
+        return $this->joining[$pos] ?? 'U';
+    }
+
+    /**
+     * True when a character of the given joining type connects to the character that
+     * follows it: Dual_Joining, Join_Causing and Left_Joining do.
+     */
+    protected function linksForward(string $type): bool
+    {
+        return $type === 'D' || $type === 'C' || $type === 'L';
+    }
+
+    /**
+     * True when a character of the given joining type connects to the character that
+     * precedes it: Dual_Joining, Join_Causing and Right_Joining do.
+     */
+    protected function linksBackward(string $type): bool
+    {
+        return $type === 'D' || $type === 'C' || $type === 'R';
+    }
+
+    /**
+     * True when the character at the given paragraph position connects to the preceding one.
+     */
+    protected function joinsPrev(int $pos): bool
     {
         return (
-            $nextchar !== null
-            && ($nextchar['otype'] === 'AL' || $nextchar['otype'] === 'NSM')
-            && $nextchar['type'] === $thischar['type']
-            && $nextchar['char'] !== UniArabic::QUESTION_MARK
+            $this->linksBackward($this->getJoiningType($pos))
+            && $this->linksForward($this->getJoiningType($this->getPrevPosition($pos)))
         );
     }
 
     /**
-     * Check previous char
-     *
-     * @param ?CharData $prevchar Previous char
-     * @param CharData  $thischar Current char
+     * True when the character at the given paragraph position connects to the following one.
      */
-    protected function hasPrevChar(?array $prevchar, array $thischar): bool
+    protected function joinsNext(int $pos): bool
     {
         return (
-            $prevchar !== null
-            && ($prevchar['otype'] === 'AL' || $prevchar['otype'] === 'NSM')
-            && $prevchar['type'] === $thischar['type']
+            $this->linksForward($this->getJoiningType($pos))
+            && $this->linksBackward($this->getJoiningType($this->getNextPosition($pos)))
         );
     }
 
     /**
-     * Check if it is a middle character
-     *
-     * @param ?CharData $prevchar Previous char
-     * @param CharData  $thischar Current char
-     * @param ?CharData $nextchar Next char
+     * Index of the presentation form of the character at the given paragraph position.
      */
-    protected function isMiddleChar(?array $prevchar, array $thischar, ?array $nextchar): bool
+    protected function getForm(int $pos): int
     {
-        return $this->hasPrevChar($prevchar, $thischar) && $this->hasNextChar($thischar, $nextchar);
+        $prev = $this->joinsPrev($pos);
+        $next = $this->joinsNext($pos);
+
+        return match (true) {
+            $prev && $next => self::FORM_MEDIAL,
+            $prev => self::FORM_FINAL,
+            $next => self::FORM_INITIAL,
+            default => self::FORM_ISOLATED,
+        };
     }
 
     /**
-     * Check if it is a final character
-     *
-     * @param ?CharData $prevchar Previous char
-     * @param CharData  $thischar Current char
-     * @param ?CharData $nextchar Next char
+     * Replace the character of a sequence item, or mark it for deletion with -1.
      */
-    protected function isFinalChar(?array $prevchar, array $thischar, ?array $nextchar): bool
+    protected function setNewChar(int $idx, int $char): void
     {
-        if ($this->hasPrevChar($prevchar, $thischar)) {
-            return true;
-        }
-
-        return $nextchar !== null && $nextchar['char'] === UniArabic::QUESTION_MARK;
+        $item = $this->newchardata[$idx] ?? null;
+        assert($item !== null, 'Expected shaped character at the requested index');
+        $item['char'] = $char;
+        $this->newchardata[$idx] = $item;
     }
 
     /**
-     * Set initial or middle char
-     *
-     * @param int                    $idx       Current index
-     * @param ?CharData              $prevchar  Previous char
-     * @param CharData               $thischar  Current char
-     * @param array<int, array<int>> $arabicarr Substitution array
+     * Returns the codepoint at the given paragraph position, or null outside of it.
      */
-    protected function setMiddleChar(int $idx, ?array $prevchar, array $thischar, array $arabicarr): void
+    protected function getParagraphChar(?int $pos): ?int
     {
-        if ($prevchar !== null && \in_array($prevchar['char'], UniArabic::END, true)) {
-            $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 2);
-            if ($substitute !== null) {
-                // initial
-                $this->setNewChar($idx, $substitute);
-            }
-
-            return;
+        if ($pos === null) {
+            return null;
         }
 
-        $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 3);
-        if ($substitute !== null) {
-            // medial
-            $this->setNewChar($idx, $substitute);
-        }
-    }
-
-    /**
-     * Set initial char
-     *
-     * @param int                    $idx       Current index
-     * @param CharData               $thischar  Current char
-     * @param array<int, array<int>> $arabicarr Substitution array
-     */
-    protected function setInitialChar(int $idx, array $thischar, array $arabicarr): void
-    {
-        $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 2);
-        if ($substitute !== null) {
-            $this->setNewChar($idx, $substitute);
-        }
-    }
-
-    /**
-     * Set final char
-     *
-     * @param int                    $idx       Current index
-     * @param ?CharData              $prevchar  Previous char
-     * @param CharData               $thischar  Current char
-     * @param array<int, array<int>> $arabicarr Substitution array
-     */
-    protected function setFinalChar(int $idx, ?array $prevchar, array $thischar, array $arabicarr): void
-    {
-        $prevItem = $idx > 0 ? $this->seq['item'][$idx - 1] ?? null : null;
-        $prevPrevItem = $idx > 1 ? $this->seq['item'][$idx - 2] ?? null : null;
-        if (
-            $idx > 1
-            && $thischar['char'] === UniArabic::HEH
-            && $prevItem !== null
-            && $prevPrevItem !== null
-            && $prevItem['char'] === UniArabic::LAM
-            && $prevPrevItem['char'] === UniArabic::LAM
-        ) {
-            // Allah Word
-            $this->setNewChar($idx - 2, -1);
-            $this->setNewChar($idx - 1, -1);
-            $this->setNewChar($idx, UniArabic::LIGATURE_ALLAH_ISOLATED_FORM);
-            return;
-        }
-
-        if ($prevchar !== null && \in_array($prevchar['char'], UniArabic::END, true)) {
-            $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 0);
-            if ($substitute !== null) {
-                // isolated
-                $this->setNewChar($idx, $substitute);
-            }
-
-            return;
-        }
-
-        $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 1);
-        if ($substitute !== null) {
-            // final
-            $this->setNewChar($idx, $substitute);
-        }
-    }
-
-    /**
-     * Process AL character
-     *
-     * @param int       $idx      Current index
-     * @param int       $pos      Current char position
-     * @param ?CharData $prevchar Previous char
-     * @param CharData  $thischar Current char
-     * @param ?CharData $nextchar Next char
-     */
-    protected function processAlChar(int $idx, int $pos, ?array $prevchar, array $thischar, ?array $nextchar): void
-    {
-        $laaletter = $this->isLaaLetter($prevchar, $thischar);
-        $arabicarr = UniArabic::SUBSTITUTE;
-        if ($laaletter) {
-            $arabicarr = UniArabic::LAA;
-            $prevchar = $pos > 1 ? $this->alchars[$pos - 2] ?? null : null;
-        }
-
-        $resolved = false;
-        if ($this->isMiddleChar($prevchar, $thischar, $nextchar)) {
-            $this->setMiddleChar($idx, $prevchar, $thischar, $arabicarr);
-            $resolved = true;
-        }
-
-        if (!$resolved && $this->hasNextChar($thischar, $nextchar)) {
-            $this->setInitialChar($idx, $thischar, $arabicarr);
-            $resolved = true;
-        }
-
-        if (!$resolved && $this->isFinalChar($prevchar, $thischar, $nextchar)) {
-            // final
-            $this->setFinalChar($idx, $prevchar, $thischar, $arabicarr);
-            $resolved = true;
-        }
-
-        if (!$resolved) {
-            $substitute = $this->getSubstitute($arabicarr, $thischar['char'], 0);
-            if ($substitute !== null) {
-                // isolated
-                $this->setNewChar($idx, $substitute);
-            }
-        }
-
-        // if laa letter
-        if ($laaletter) {
-            // mark characters to delete
-            $laaChar = $this->alchars[$pos - 1] ?? null;
-            assert($laaChar !== null, 'Expected previous lam character while composing lam-alef ligature');
-            $deleteIdx = $this->getNewCharIndexBySourceIndex($laaChar['i']);
-            if ($deleteIdx === null) {
-                assert(false, 'Expected shaped lam-alef source item before marking it for deletion');
-                return;
-            }
-
-            $item = $this->newchardata[$deleteIdx] ?? null;
-            assert($item !== null, 'Expected shaped lam-alef source item before marking it for deletion');
-            $item['char'] = -1;
-            $this->newchardata[$deleteIdx] = $item;
-        }
+        return $this->paragraph[$pos] ?? null;
     }
 }

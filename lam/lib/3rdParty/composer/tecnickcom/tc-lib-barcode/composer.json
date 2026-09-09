@@ -1,100 +1,149 @@
 {
-    "name": "tecnickcom/tc-lib-barcode",
-    "description": "PHP library to generate linear and bidimensional barcodes",
-    "type": "library",
-    "homepage": "https://tcpdf.org",
-    "license": "LGPL-3.0-or-later",
-    "keywords": [
-        "tc-lib-barcode",
-        "barcode",
-        "3 of 9",
-        "ANSI MH10.8M-1983",
-        "AZTEC",
-        "barcode",
-        "CBC",
-        "CODABAR",
-        "CODE 11",
-        "CODE 128 A B C",
-        "CODE 39",
-        "CODE 93",
-        "Datamatrix",
-        "EAN 13",
-        "EAN 8",
-        "ECC200",
-        "Intelligent Mail Barcode",
-        "Interleaved 2 of 5",
-        "ISO IEC 15438 2006",
-        "ISO IEC 16022",
-        "ISO IEC 24778 2008",
-        "KIX",
-        "Klant",
-        "MSI",
-        "Onecode",
-        "PDF417",
-        "PHARMACODE TWO-TRACKS",
-        "PHARMACODE",
-        "PLANET",
-        "POSTNET",
-        "QR-Code",
-        "RMS4CC",
-        "Royal Mail",
-        "Standard 2 of 5",
-        "tc-lib-barcode",
-        "UPC-A",
-        "UPC-E",
-        "UPC",
-        "USD-3",
-        "USPS-B-3200",
-        "USS-93"
-    ],
-    "authors": [
-        {
-            "name": "Nicola Asuni",
-            "email": "info@tecnick.com",
-            "role": "lead"
-        }
-    ],
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/tecnickcom"
-        }
-    ],
-    "require": {
-        "php": ">=8.2",
-        "ext-bcmath": "*",
-        "ext-gd": "*",
-        "tecnickcom/tc-lib-color": "^2.13"
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require-dev": {
-        "pdepend/pdepend": "^2.16",
-        "phpunit/phpunit": "^11.5 || ^12.5 || ^13.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "Com\\Tecnick\\Barcode\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Test\\": "test"
-        }
-    },
-    "support": {
-        "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-        "source": "https://github.com/tecnickcom/tc-lib-barcode"
-    },
-    "scripts": {
-        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
-        "analyse": ["@analyse:src", "@analyse:test"],
-        "analyse:src": "mago --config mago.src.toml analyze src",
-        "analyse:test": "mago --config mago.test.toml analyze test",
-        "cs-check": ["@cs-check:src", "@cs-check:test"],
-        "cs-check:src": "mago --config mago.src.toml lint src",
-        "cs-check:test": "mago --config mago.test.toml lint test",
-        "cs-fix": "mago fmt src test",
-        "qa": ["@cs-check", "@analyse", "@test"]
+  "name": "tecnickcom/tc-lib-barcode",
+  "description": "PHP library to generate 73 types of linear, 2D and postal barcodes as SVG, PNG, HTML or GD images",
+  "type": "library",
+  "homepage": "https://tcpdf.org",
+  "license": "LGPL-3.0-or-later",
+  "keywords": [
+    "tc-lib-barcode",
+    "barcode",
+    "linear barcode",
+    "2D barcode",
+    "matrix barcode",
+    "postal barcode",
+    "stacked barcode",
+    "SVG",
+    "PNG",
+    "Australia Post",
+    "AZTEC",
+    "AZTEC Rune",
+    "CODABAR",
+    "CODE 11",
+    "CODE 128",
+    "CODE 16K",
+    "CODE 32",
+    "CODE 39",
+    "CODE 49",
+    "CODE 93",
+    "Datamatrix",
+    "Deutsche Post",
+    "DMRE",
+    "EAN 13",
+    "EAN 8",
+    "EAN 2",
+    "EAN 5",
+    "ECC200",
+    "GS1",
+    "GS1-128",
+    "GS1-14",
+    "GS1 DataBar",
+    "Han Xin Code",
+    "HIBC",
+    "IATA 2 of 5",
+    "Identcode",
+    "Intelligent Mail Barcode",
+    "Interleaved 2 of 5",
+    "ITF-14",
+    "Japan Post",
+    "KIX",
+    "Leitcode",
+    "LOGMARS",
+    "Mailmark",
+    "Matrix 2 of 5",
+    "Micro QR Code",
+    "MSI",
+    "Onecode",
+    "PDF417",
+    "PHARMACODE",
+    "PHARMACODE TWO-TRACKS",
+    "PLANET",
+    "Plessey",
+    "POSTNET",
+    "PZN",
+    "QR-Code",
+    "RMS4CC",
+    "Royal Mail",
+    "SSCC-18",
+    "Standard 2 of 5",
+    "Telepen",
+    "UPC",
+    "UPC-A",
+    "UPC-E",
+    "ISO IEC 15438",
+    "ISO IEC 16022",
+    "ISO IEC 18004",
+    "ISO IEC 20830",
+    "ISO IEC 21471",
+    "ISO IEC 24724",
+    "ISO IEC 24778",
+    "GB T 21049"
+  ],
+  "authors": [
+    {
+      "name": "Nicola Asuni",
+      "email": "info@tecnick.com",
+      "role": "lead"
     }
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/tecnickcom"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "ext-ctype": "*",
+    "ext-gd": "*",
+    "ext-pcre": "*",
+    "tecnickcom/tc-lib-color": "^3.0"
+  },
+  "suggest": {
+    "ext-bcmath": "Speeds up the arbitrary precision arithmetic used by the IMB and PDF417 barcode types (a pure-PHP implementation is used when missing)",
+    "ext-imagick": "Alternative PNG renderer used by getPngData() when the extension is loaded"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require-dev": {
+    "carthage-software/mago": "1.47.6",
+    "pdepend/pdepend": "^2.16",
+    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Com\\Tecnick\\Barcode\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "test"
+    }
+  },
+  "support": {
+    "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
+    "source": "https://github.com/tecnickcom/tc-lib-barcode"
+  },
+  "scripts": {
+    "test": "@php vendor/bin/phpunit --stderr --no-coverage --display-skipped test",
+    "test:coverage": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr --display-skipped --coverage-clover=target/coverage/coverage.xml --coverage-html=target/coverage test",
+    "analyse": ["@analyse:src", "@analyse:test", "@analyse:example"],
+    "analyse:src": "vendor/bin/mago --config mago.src.toml analyze -m warning src resources/autoload.php",
+    "analyse:test": "vendor/bin/mago --config mago.test.toml analyze -m warning test",
+    "analyse:example": "vendor/bin/mago --config mago.example.toml analyze -m warning example",
+    "cs-check": ["@cs-check:src", "@cs-check:test", "@cs-check:example"],
+    "cs-check:src": "vendor/bin/mago --config mago.src.toml lint -m warning src resources/autoload.php",
+    "cs-check:test": "vendor/bin/mago --config mago.test.toml lint -m warning test",
+    "cs-check:example": "vendor/bin/mago --config mago.example.toml lint -m warning example",
+    "fmt-check": ["@fmt-check:src", "@fmt-check:test", "@fmt-check:example"],
+    "fmt-check:src": "vendor/bin/mago --config mago.src.toml fmt --check src resources/autoload.php",
+    "fmt-check:test": "vendor/bin/mago --config mago.test.toml fmt --check test",
+    "fmt-check:example": "vendor/bin/mago --config mago.example.toml fmt --check example",
+    "cs-fix": ["@cs-fix:src", "@cs-fix:test", "@cs-fix:example"],
+    "cs-fix:src": "vendor/bin/mago --config mago.src.toml fmt src resources/autoload.php",
+    "cs-fix:test": "vendor/bin/mago --config mago.test.toml fmt test",
+    "cs-fix:example": "vendor/bin/mago --config mago.example.toml fmt example",
+    "report": "mkdir -p target/report && vendor/bin/pdepend --jdepend-xml=target/report/dependencies.xml --summary-xml=target/report/metrics.xml --jdepend-chart=target/report/dependencies.svg --overview-pyramid=target/report/overview-pyramid.svg --ignore=vendor ./src",
+    "check-deps": ["@composer validate --strict --no-check-lock", "@composer audit"],
+    "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"]
+  }
 }

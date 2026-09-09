@@ -22,6 +22,9 @@ use Com\Tecnick\File\Byte;
 use Com\Tecnick\File\Exception as FileException;
 use Com\Tecnick\File\File as ObjFile;
 use Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Pdf\Font\FileWriter;
+use Com\Tecnick\Pdf\Font\Import as FontImport;
+use Com\Tecnick\Pdf\Font\Zlib;
 
 /**
  * Com\Tecnick\Pdf\Font\Import\TrueType
@@ -39,7 +42,7 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
  * @SuppressWarnings("PHPMD.ExcessiveClassLength")
  */
-class TrueType
+class TrueType implements ProcessorInterface
 {
     /**
      * File helper used to load font definition files.
@@ -52,21 +55,63 @@ class TrueType
     private const OS2_MIN_LENGTH = 10;
 
     /**
+     * Minimum byte length of the tables whose fixed-size header is read by this class.
+     *
+     * @var array<string, int>
+     */
+    private const MIN_TABLE_LENGTH = [
+        'head' => 54, // fixed size of the table
+        'hhea' => 36, // fixed size of the table
+        'maxp' => 6, // through numGlyphs
+        'post' => 16, // through isFixedPitch
+        'cmap' => 4, // through numTables
+        'name' => 6, // through stringOffset
+        'hmtx' => 4, // one longHorMetric
+    ];
+
+    /**
      * Highest valid Unicode code point (U+10FFFF).
      *
-     * Used to clamp attacker-controlled character ranges in the uint32-based cmap
-     * subtable formats (8, 12 and 13) so a malformed font cannot drive a multi-billion
-     * iteration loop or unbounded memory growth.
+     * Bounds the character ranges of the uint32-based cmap subtable formats (8, 12 and 13).
      */
     private const MAX_UNICODE_CODEPOINT = 0x10_FFFF;
 
     /**
      * Maximum number of character codes a single cmap subtable may map.
      *
-     * A valid (non-overlapping) Unicode cmap cannot map more code points than exist,
-     * so this acts as a hard upper bound that rejects abusive subtables.
+     * A non-overlapping Unicode cmap cannot map more code points than exist.
      */
     private const MAX_CMAP_ENTRIES = 0x11_0000;
+
+    /**
+     * Maximum number of character codes a cmap subtable may map for each glyph of the font.
+     *
+     * The budget follows the number of glyphs the loca table accounts for, so that the
+     * extracted metrics stay proportional to the font program.
+     */
+    private const MAX_CMAP_ENTRIES_PER_GLYPH = 8;
+
+    /**
+     * Smallest number of character codes a cmap subtable may map, whatever the glyph count.
+     *
+     * This is the size of the byte encoded subtable formats, which map the whole code space
+     * they can address regardless of how many glyphs the font carries.
+     */
+    private const MIN_CMAP_ENTRIES = 256;
+
+    /**
+     * Name records usable as the font name, by decreasing preference.
+     *
+     * nameID 6 (PostScript name) is the one a PDF /BaseFont expects; the full name and
+     * the family name are only used when the font does not declare it.
+     *
+     * @var array<int, int>
+     */
+    private const NAME_ID_PRIORITY = [
+        6 => 3, // PostScript name
+        4 => 2, // Full font name
+        1 => 1, // Font family name
+    ];
 
     /**
      * Priority-ordered (platformID, encodingID) fallback pairs for cmap subtable selection.
@@ -84,6 +129,9 @@ class TrueType
         [0, 1], // Unicode platform - 1.1 (deprecated)
         [0, 0], // Unicode platform - 1.0 (deprecated)
         [1, 0], // Macintosh Roman (legacy)
+        // Windows Symbol, last because its codes are not code points but the
+        // 0xF000..0xF0FF private use range, which is kept as it is read
+        [3, 0],
     ];
 
     /**
@@ -108,6 +156,13 @@ class TrueType
     protected int $offset = 0;
 
     /**
+     * True while the licensing bits of this font program allow subsetting.
+     *
+     * A font without an OS/2 table states no restriction, so the default is permissive.
+     */
+    protected bool $subsettingAllowed = true;
+
+    /**
      * Process TrueType font
      *
      * @param string           $font       Content of the input font file
@@ -115,9 +170,10 @@ class TrueType
      * @param ObjFile          $fileHelper File helper for font loading.
      * @param Byte             $fbyte      Object used to read font bytes
      * @param array<int, bool> $subchars   Array containing subset chars
-     * @param bool             $withCbbox  Whether to compute per-glyph bounding boxes.
-     *                                     The subsetting path does not use them, so it can
-     *                                     skip the per-glyph glyf reads by passing false.
+     * @param bool             $withCbbox  If true, compute the per-glyph bounding boxes.
+     * @param bool             $subsetting If true, the font program is being subset rather
+     *                                     than imported, so the original file is neither
+     *                                     copied nor linked again.
      *
      * @throws FileException
      * @throws FontException
@@ -129,9 +185,9 @@ class TrueType
         protected Byte $fbyte,
         array $subchars = [],
         protected bool $withCbbox = true,
+        protected bool $subsetting = false,
     ) {
         $this->fileHelper = $fileHelper;
-        \ksort($subchars);
         $this->subchars = $subchars;
         $this->process();
     }
@@ -157,6 +213,17 @@ class TrueType
     }
 
     /**
+     * Returns true when the OS/2 licensing bits of this font program allow subsetting.
+     *
+     * This reports what the program declares, unlike the 'subset' metric, which carries
+     * what the document asked for.
+     */
+    public function isSubsettingAllowed(): bool
+    {
+        return $this->subsettingAllowed;
+    }
+
+    /**
      * Process TrueType font
      *
      * @throws FileException
@@ -168,16 +235,18 @@ class TrueType
         $this->setFontFile();
         $this->getTables();
         $this->checkRequiredTables();
+        $this->checkTableBounds();
         $this->checkMagickNumber();
         $this->offset += 2; // skip flags
         $this->getBbox();
+        // read before the loca table so that its entry count can be bounded by numGlyphs
+        $this->getMaxpData();
         $this->getIndexToLoc();
         $this->getEncodingTables();
         $this->getOS2Metrics();
         $this->getFontName();
         $this->getPostData();
         $this->getHheaData();
-        $this->getMaxpData();
         $this->getCIDToGIDMap();
         $this->getHeights();
         $this->getWidths();
@@ -207,8 +276,8 @@ class TrueType
      */
     protected function setFontFile(): void
     {
-        if ($this->fdt['desc']['MaxWidth'] !== 0) {
-            // subsetting mode
+        if ($this->subsetting) {
+            // the artifacts of an already imported font are not written again
             $this->fdt['Flags'] = $this->fdt['desc']['Flags'];
             return;
         }
@@ -218,22 +287,75 @@ class TrueType
         }
 
         if ($this->fdt['linked']) {
-            // creates a symbolic link to the existing font
-            \symlink($this->fdt['input_file'], $this->fdt['dir'] . $this->fdt['file_name']);
+            // Link to the existing font instead of copying it. The link keeps the original
+            // extension, so the stored program is the raw (uncompressed) font file.
+            //
+            // The link resolves to the original font directory, which is outside the roots
+            // FontPaths::buildAllowedPaths() trusts at render time: embedding a linked font
+            // requires either K_PATH_FONTS to cover that directory, or a file helper passed
+            // to Output whose allowlist includes it.
+            $link = FontImport::linkedFileName($this->fdt['file_name'], $this->fdt['input_file']);
+            $target = $this->fdt['dir'] . $link;
+            // a relative input path would produce a dangling symlink
+            $source = \realpath($this->fdt['input_file']);
+            if ($source === false) {
+                throw new FontException('unable to resolve the font file: ' . $this->fdt['input_file']);
+            }
+
+            // an existing link is reused; anything else occupying the name is an error
+            if (!\is_link($target)) {
+                if (\file_exists($target)) {
+                    throw new FontException('unable to create the symbolic link: ' . $target);
+                }
+
+                $this->createLink($source, $target);
+            }
+
+            // no '.z' suffix, as the stored program is raw
+            $this->fdt['file'] = $link;
             return;
         }
 
         // store compressed font
         $this->fdt['file'] = $this->fdt['file_name'] . '.z';
-        $fpt = $this->fileHelper->fopenLocal($this->fdt['dir'] . $this->fdt['file'], 'wb');
+        FileWriter::write(
+            $this->fileHelper,
+            $this->fdt['dir'] . $this->fdt['file'],
+            Zlib::compress($this->font, 'Error compressing font file.'),
+        );
+    }
 
-        $cmpr = \gzcompress($this->font);
-        if ($cmpr === false) {
-            throw new FontException('Error compressing font file.');
+    /**
+     * Create the symbolic link of a linked font.
+     *
+     * The E_WARNING symlink() emits on failure is captured and carried by the exception
+     * message.
+     *
+     * @param string $source Resolved font file to link to.
+     * @param string $target Link to create.
+     *
+     * @throws FontException if the link cannot be created.
+     */
+    protected function createLink(string $source, string $target): void
+    {
+        $reason = '';
+        \set_error_handler(static function (int $level, string $message) use (&$reason): bool {
+            if ($level === E_WARNING) {
+                $reason = ' (' . $message . ')';
+            }
+
+            return true;
+        }, E_WARNING);
+
+        try {
+            $linked = \symlink($source, $target);
+        } finally {
+            \restore_error_handler();
         }
 
-        \fwrite($fpt, $cmpr);
-        \fclose($fpt);
+        if (!$linked) {
+            throw new FontException('unable to create the symbolic link: ' . $target . $reason);
+        }
     }
 
     /**
@@ -257,6 +379,9 @@ class TrueType
         // get number of tables
         $numTables = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
+        // a record is 16 bytes and the directory starts after the 12-byte header, so the
+        // count is bounded by the number of records the file can hold
+        $numTables = \min($numTables, \intdiv(\max(0, \strlen($this->font) - 12), 16));
 
         // Skip the searchRange, entrySelector and rangeShift fields (3 * uint16)
         $this->offset += 6;
@@ -268,6 +393,13 @@ class TrueType
             // get table info
             $tag = \substr($this->font, $this->offset, 4);
             $this->offset += 4;
+            if ($tag === (string) (int) $tag) {
+                // PHP would turn a numeric tag into an integer array key, breaking the shape
+                // of the directory; no table this library reads carries one
+                $this->offset += 12;
+                continue;
+            }
+
             $this->fdt['table'][$tag] = [
                 'checkSum' => 0,
                 'data' => '',
@@ -284,11 +416,7 @@ class TrueType
     }
 
     /**
-     * Ensure every table the parser later dereferences is present in the table directory.
-     *
-     * A truncated or malformed font that omits one of these would otherwise trigger an
-     * undefined-array-key warning followed by an uncaught TypeError; converting that into
-     * a controlled FontException keeps the documented exception contract.
+     * Ensure every table dereferenced by this parser is present in the table directory.
      *
      * @throws FontException if a mandatory table is missing
      */
@@ -297,6 +425,28 @@ class TrueType
         foreach (['head', 'loca', 'cmap', 'name', 'post', 'hhea', 'maxp', 'hmtx', 'glyf'] as $tag) {
             if (!isset($this->fdt['table'][$tag])) {
                 throw new FontException('Missing required font table: ' . $tag);
+            }
+        }
+    }
+
+    /**
+     * Ensure every table of the directory lies inside the font file.
+     *
+     * Records are also rejected when shorter than the fixed-size header this class reads
+     * from them (see MIN_TABLE_LENGTH).
+     *
+     * @throws FontException if a table record points outside the font file
+     */
+    protected function checkTableBounds(): void
+    {
+        $fontlen = \strlen($this->font);
+        foreach ($this->fdt['table'] as $tag => $record) {
+            if ($record['offset'] > $fontlen || $record['length'] > ($fontlen - $record['offset'])) {
+                throw new FontException('Font table out of bounds: ' . $tag);
+            }
+
+            if ($record['length'] < (self::MIN_TABLE_LENGTH[$tag] ?? 0)) {
+                throw new FontException('Font table too short: ' . $tag);
             }
         }
     }
@@ -325,13 +475,13 @@ class TrueType
      *
      *  0 - uint16             majorVersion        Major version of font header table (always 1)
      *  2 - uint16             minorVersion        Major version of font header table (always 0)
-     *  6 - Fixed (32-bit)     fontRevision        Set by font manufacturer (Fixed = 4 bytes)
-     * 10 - uint32             checksumAdjustment
-     * 14 - uint32             magicNumber         Always 0x5F0F3CF5
+     *  4 - Fixed (32-bit)     fontRevision        Set by font manufacturer (Fixed = 4 bytes)
+     *  8 - uint32             checksumAdjustment
+     * 12 - uint32             magicNumber         Always 0x5F0F3CF5
      * 16 - uint16             flags               @Link https://learn.microsoft.com/en-us/typography/opentype/spec/head
      * 18 - uint16             unitsPerEm          Any value from 16 to 16384 (a power of 2 is recommended)
-     * 26 - LONGDATETIME       created             64-bit number of seconds since 12:00 midnight 1904/01/01 in GMT/UTC time zone.
-     * 34 - LONGDATETIME       modified            64-bit number of seconds since 12:00 midnight 1904/01/01 in GMT/UTC time zone.
+     * 20 - LONGDATETIME       created             64-bit number of seconds since 12:00 midnight 1904/01/01 in GMT/UTC time zone.
+     * 28 - LONGDATETIME       modified            64-bit number of seconds since 12:00 midnight 1904/01/01 in GMT/UTC time zone.
      * 36 - int16              xMin                Minimum x coordinate across all glyph bounding boxes.
      * 38 - int16              yMin                Minimum y coordinate across all glyph bounding boxes.
      * 40 - int16              xMax                Maximum x coordinate across all glyph bounding boxes.
@@ -341,13 +491,15 @@ class TrueType
      * 48 - int16              fontDirectionHint   Deprecated -- Set to 2
      * 50 - int16              indexToLocFormat    0 for short offsets (Offset16), 1 for long (Offset32).
      * 52 - int16              glyphDataFormat     0 for current format.
-     *
-     *  @return void
      */
     protected function getBbox(): void
     {
         $this->fdt['unitsPerEm'] = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
+        if ($this->fdt['unitsPerEm'] < 16 || $this->fdt['unitsPerEm'] > 16_384) {
+            throw new FontException('unitsPerEm must be between 16 and 16384, got: ' . $this->fdt['unitsPerEm']);
+        }
+
         // units ratio constant
         $this->fdt['urk'] = 1000 / $this->fdt['unitsPerEm'];
         // skip field: created: (LONGDATETIME int64)
@@ -364,7 +516,9 @@ class TrueType
         $this->fdt['bbox'] = $xMin . ' ' . $yMin . ' ' . $xMax . ' ' . $yMax;
         $macStyle = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
-        // PDF font flags
+        // the 'head' table settles the italic bit either way, overriding the guess
+        // Import::initFlags() makes from the file name
+        $this->fdt['Flags'] &= ~64;
         if (($macStyle & 2) === 2) {
             // italic flag
             $this->fdt['Flags'] |= 64;
@@ -387,36 +541,34 @@ class TrueType
         // get the offsets to the locations of the glyphs in the font, relative to the beginning of the glyphData table
         $this->fdt['indexToLoc'] = [];
         $this->offset = $this->fdt['table']['loca']['offset'];
+        // the loca table holds exactly numGlyphs + 1 entries, anything past that is padding
+        $maxEntries = $this->fdt['numGlyphs'] + 1;
+        // offsets are relative to the start of the glyf table, and one pointing past its end
+        // is clamped to the end, which yields an empty glyph
+        $glyfLength = $this->fdt['table']['glyf']['length'];
+        // the short format stores halved offsets, so it can only address even ones
         if ($this->fdt['short_offset']) {
-            // The loca table uses data type Offset16 (uint16-be)
-            $this->fdt['tot_num_glyphs'] = (int) \floor($this->fdt['table']['loca']['length'] / 2); // numGlyphs + 1
-            for ($idx = 0; $idx < $this->fdt['tot_num_glyphs']; ++$idx) {
-                $this->fdt['indexToLoc'][$idx] = $this->fbyte->getUShort($this->offset) * 2;
-                if (
-                    isset($this->fdt['indexToLoc'][$idx - 1])
-                    && $this->fdt['indexToLoc'][$idx] === $this->fdt['indexToLoc'][$idx - 1]
-                ) {
-                    // the last glyph didn't have an outline
-                    unset($this->fdt['indexToLoc'][$idx - 1]);
-                }
+            $glyfLength &= ~1;
+        }
 
-                $this->offset += 2;
+        // Offset16 entries are stored halved, so the short format reads two bytes and
+        // doubles them where the long one reads four and takes them as they are
+        $stride = $this->fdt['short_offset'] ? 2 : 4;
+        $this->fdt['tot_num_glyphs'] = (int) \min($maxEntries, \intdiv($this->fdt['table']['loca']['length'], $stride)); // numGlyphs + 1
+        for ($idx = 0; $idx < $this->fdt['tot_num_glyphs']; ++$idx) {
+            $entry = $this->fdt['short_offset']
+                ? $this->fbyte->getUShort($this->offset) * 2
+                : $this->fbyte->getULong($this->offset);
+            $this->fdt['indexToLoc'][$idx] = \min($entry, $glyfLength);
+            if (
+                isset($this->fdt['indexToLoc'][$idx - 1])
+                && $this->fdt['indexToLoc'][$idx] === $this->fdt['indexToLoc'][$idx - 1]
+            ) {
+                // the last glyph didn't have an outline
+                unset($this->fdt['indexToLoc'][$idx - 1]);
             }
-        } else {
-            // The loca table uses data type Offset32 (uint32-be)
-            $this->fdt['tot_num_glyphs'] = (int) \floor($this->fdt['table']['loca']['length'] / 4); // numGlyphs + 1
-            for ($idx = 0; $idx < $this->fdt['tot_num_glyphs']; ++$idx) {
-                $this->fdt['indexToLoc'][$idx] = $this->fbyte->getULong($this->offset);
-                if (
-                    isset($this->fdt['indexToLoc'][$idx - 1])
-                    && $this->fdt['indexToLoc'][$idx] === $this->fdt['indexToLoc'][$idx - 1]
-                ) {
-                    // the last glyph didn't have an outline
-                    unset($this->fdt['indexToLoc'][$idx - 1]);
-                }
 
-                $this->offset += 4;
-            }
+            $this->offset += $stride;
         }
     }
 
@@ -431,23 +583,79 @@ class TrueType
      *   - uint16   platformId         Platform ID
      *   - uint16   encodingId         Platform-specific encoding ID
      *   - Offset32 subtableOffset     Byte offset from beginning of cmap table to the encoding subtable
-     *
-     * @return void
      */
     protected function getEncodingTables(): void
     {
         $this->offset = $this->fdt['table']['cmap']['offset'] + 2;
         $numEncodingTables = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
+        // bounded by the declared length of the cmap table: the records are 8 bytes each
+        // and start after the 4-byte header
+        $numEncodingTables = \min($numEncodingTables, \intdiv(\max(0, $this->fdt['table']['cmap']['length'] - 4), 8));
         $this->fdt['encodingTables'] = [];
-        for ($idx = 0; $idx < $numEncodingTables; ++$idx) {
-            $this->fdt['encodingTables'][$idx]['platformID'] = $this->fbyte->getUShort($this->offset);
+        // every subtable format this class handles reads at least the 4 bytes of the format
+        // and the length that follows it, so a record pointing past that is dropped
+        $maxSubtableOffset = \max(0, $this->fdt['table']['cmap']['length'] - 4);
+        $idx = 0;
+        for ($rec = 0; $rec < $numEncodingTables; ++$rec) {
+            $platformID = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $this->fdt['encodingTables'][$idx]['encodingID'] = $this->fbyte->getUShort($this->offset);
+            $encodingID = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $this->fdt['encodingTables'][$idx]['offset'] = $this->fbyte->getULong($this->offset);
+            $subtableOffset = $this->fbyte->getULong($this->offset);
             $this->offset += 4;
+            if ($subtableOffset > $maxSubtableOffset) {
+                continue;
+            }
+
+            $this->fdt['encodingTables'][$idx] = [
+                'platformID' => $platformID,
+                'encodingID' => $encodingID,
+                'offset' => $subtableOffset,
+            ];
+            ++$idx;
         }
+    }
+
+    /**
+     * Returns the offset of the first byte past the cmap table, or past the font file when
+     * the declared length of the table runs beyond it.
+     *
+     * Every subtable is addressed within the cmap table, so its entry count is bounded by
+     * this offset.
+     */
+    protected function getCmapEnd(): int
+    {
+        return \min(
+            $this->fdt['table']['cmap']['offset'] + $this->fdt['table']['cmap']['length'],
+            \strlen($this->font),
+        );
+    }
+
+    /**
+     * Returns how many records of the given size still fit in the cmap table.
+     *
+     * The arrays of every subtable format are clamped with this.
+     *
+     * @param int $recordSize Size in bytes of one record of the array being read.
+     */
+    protected function getCmapCapacity(int $recordSize): int
+    {
+        return \intdiv(\max(0, $this->getCmapEnd() - $this->offset), $recordSize);
+    }
+
+    /**
+     * Returns how many character codes a cmap subtable is allowed to map.
+     *
+     * The budget is derived from the glyph count of the loca table, never below
+     * MIN_CMAP_ENTRIES and never above the number of Unicode code points.
+     */
+    protected function getCmapEntryBudget(): int
+    {
+        return \min(self::MAX_CMAP_ENTRIES, \max(
+            self::MIN_CMAP_ENTRIES,
+            self::MAX_CMAP_ENTRIES_PER_GLYPH * $this->fdt['tot_num_glyphs'],
+        ));
     }
 
     /**
@@ -491,15 +699,12 @@ class TrueType
      *  66 - UFWORD       usWinAscent
      *  68 - UFWORD       usWinDescent
      *
-     * @return void
-     *
      * @throws FontException
      */
     protected function getOS2Metrics(): void
     {
-        // OS/2 is optional in some older or non-Windows TrueType fonts.
+        // the OS/2 table is optional, and its metrics have a default
         if (!isset($this->fdt['table']['OS/2'])) {
-            // No OS/2 table present: use conservative metric defaults.
             $this->fdt['AvgWidth'] = 0;
             $this->fdt['StemV'] = 70;
             $this->fdt['StemH'] = 30;
@@ -518,17 +723,18 @@ class TrueType
 
         $this->offset = $this->fdt['table']['OS/2']['offset'];
         $this->offset += 2; // skip version
-        // xAvgCharWidth
-        $this->fdt['AvgWidth'] = (int) \round($this->fbyte->getFWord($this->offset) * $this->fdt['urk']);
+        // xAvgCharWidth, read as signed and floored at zero
+        $this->fdt['AvgWidth'] = \max(0, (int) \round($this->fbyte->getFWord($this->offset) * $this->fdt['urk']));
         $this->offset += 2;
-        // usWeightClass
-        $usWeightClass = \round($this->fbyte->getUFWord($this->offset) * $this->fdt['urk']);
-        // estimate StemV and StemH (400 = usWeightClass for Normal - Regular font)
-        $this->fdt['StemV'] = (int) \round((70 * $usWeightClass) / 400);
-        $this->fdt['StemH'] = (int) \round((30 * $usWeightClass) / 400);
+        // usWeightClass is a weight class in the 1..1000 range, not a value in font design
+        // units, so it is not scaled by the units ratio
+        $usWeightClass = \min(1000, \max(1, $this->fbyte->getUShort($this->offset)));
+        // estimate StemV and StemH, floored at one (400 = usWeightClass of a Regular font)
+        $this->fdt['StemV'] = \max(1, (int) \round((70 * $usWeightClass) / 400));
+        $this->fdt['StemH'] = \max(1, (int) \round((30 * $usWeightClass) / 400));
         $this->offset += 2;
         $this->offset += 2; // usWidthClass
-        $fsType = $this->fbyte->getShort($this->offset);
+        $fsType = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
         $this->applyEmbeddingPolicy($fsType);
     }
@@ -550,7 +756,7 @@ class TrueType
      */
     protected function applyEmbeddingPolicy(int $fsType): void
     {
-        // Restricted-license: bit 1 set, no permissive override from bits 2 or 3.
+        // restricted license: bit 1 set, no permissive override from bits 2 or 3
         if (($fsType & 0x000E) === 0x0002) {
             throw new FontException(
                 'This Font cannot be modified, embedded or exchanged in any manner'
@@ -558,14 +764,15 @@ class TrueType
             );
         }
 
-        // Bitmap-embedding-only: incompatible with vector PDF stream embedding.
+        // bitmap embedding only: incompatible with vector PDF stream embedding
         if (($fsType & 0x0200) !== 0) {
             throw new FontException('This font is licensed for bitmap embedding only'
             . ' and cannot be embedded in a vector PDF document.');
         }
 
-        // No-subsetting: embedding is allowed but the font must not be subsetted.
+        // no subsetting: embedding is allowed but the whole program must be embedded
         if (($fsType & 0x0100) !== 0) {
+            $this->subsettingAllowed = false;
             $this->fdt['subset'] = false;
         }
     }
@@ -574,12 +781,12 @@ class TrueType
      * Convert string encoding based on the platformId and encodingId using the mb_convert_encoding
      * or iconv functions if they are available.
      *
-     * @param string    $str           The encoded string from the TTF NameRecord to convert
-     * @param int       $platformId    The platformId from the TTF NameRecord
-     * @param int       $encodingId    The encodingId from the TTF NameRecord
+     * @param string $str        The encoded string from the TTF NameRecord to convert
+     * @param int    $platformId The platformId from the TTF NameRecord
+     * @param int    $encodingId The encodingId from the TTF NameRecord
      *
-     * @return string   Returns the string converted to UTF-8 or the original string if conversion
-     *                  fails or is not  available.
+     * @return string The string converted to UTF-8, or the original string when the
+     *                conversion fails or is not available.
      */
     protected function convertStringEncoding(string $str, int $platformId, int $encodingId): string
     {
@@ -589,28 +796,58 @@ class TrueType
             // Legacy Macintosh platform uses 'MacRoman' encoding which is not available in PHP mbstring.
             // Convert with iconv (macintosh = MacRoman) if available or mb_convert_encoding using
             // Windows-1252 (closest substitute for MacRoman) if available.
-            if (\function_exists('\iconv')) {
-                $str = \iconv('macintosh', 'UTF-8', $str);
-            } elseif (\function_exists('\mb_convert_encoding')) {
+            if ($this->hasIconv()) {
+                // the E_WARNING a build without the 'macintosh' charset emits is silenced,
+                // and the false it returns falls back to the original string below
+                \set_error_handler(static fn(): bool => true, E_WARNING);
+
+                try {
+                    $str = \iconv('macintosh', 'UTF-8', $str);
+                } finally {
+                    \restore_error_handler();
+                }
+            } elseif ($this->hasMbstring()) {
                 $str = \mb_convert_encoding($str, 'UTF-8', 'Windows-1252');
             }
-        } elseif (\function_exists('\mb_convert_encoding')) {
+        } elseif ($this->hasMbstring()) {
             // All Unicode (platformId=0) strings are UTF-16BE
             $stringEncoding = 'UTF-16BE';
 
-            // Windows platform (platformId=3) uses specific string encodings for encodingIds 3, 4, and 5
-            if ($platformId === 3) {
+            if ($platformId === 2) {
+                // the deprecated ISO platform stores single-byte ASCII/ISO 8859-1 strings
+                $stringEncoding = 'ISO-8859-1';
+            } elseif ($platformId === 3) {
+                // Windows platform uses specific string encodings for encodingIds 2, 3, 4 and 5
+                // (encodingId 6, Johab, has no mbstring counterpart and stays UTF-16BE)
                 $stringEncoding = match ($encodingId) {
+                    2 => 'CP932',
                     3 => 'CP936',
                     4 => 'CP950',
                     5 => 'CP949',
                     default => 'UTF-16BE',
                 };
             }
+
             $str = \mb_convert_encoding($str, 'UTF-8', $stringEncoding);
         }
 
         return is_string($str) ? $str : $original;
+    }
+
+    /**
+     * Returns true when the iconv extension is available.
+     */
+    protected function hasIconv(): bool
+    {
+        return \function_exists('iconv');
+    }
+
+    /**
+     * Returns true when the mbstring extension is available.
+     */
+    protected function hasMbstring(): bool
+    {
+        return \function_exists('mb_convert_encoding');
     }
 
     /**
@@ -630,18 +867,20 @@ class TrueType
      *  8 - uint16   length             String length (in bytes)
      * 10 - Offset16 stringOffset       String offset from start of storage area (in bytes)
      *
-     * @return void
-     *
      * @throws FontException
      */
     protected function getFontName(): void
     {
         $this->fdt['name'] = '';
+        $priority = 0;
         $this->offset = $this->fdt['table']['name']['offset'];
         $this->offset += 2; // skip Format selector (=0).
         // Number of NameRecords that follow n.
         $numNameRecords = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
+        // bounded by the declared length of the table: the records are 12 bytes each and
+        // start after the 6-byte header
+        $numNameRecords = \min($numNameRecords, \intdiv(\max(0, $this->fdt['table']['name']['length'] - 6), 12));
 
         // Offset to start of string storage (from start of table).
         $stringStorageOffset = $this->fbyte->getUShort($this->offset);
@@ -675,37 +914,50 @@ class TrueType
              */
             $nameID = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            if ($nameID === 6) {
-                // String length (in bytes).
-                $stringLength = $this->fbyte->getUShort($this->offset);
-                $this->offset += 2;
-                // String offset from start of storage area (in bytes).
-                $stringOffset = $this->fbyte->getUShort($this->offset);
-                $this->offset += 2;
-
-                $this->offset = $this->fdt['table']['name']['offset'] + $stringStorageOffset + $stringOffset;
-                // TTF encoded name string
-                $name = \substr($this->font, $this->offset, $stringLength);
-                // Convert the string encoding if possible
-                $name = $this->convertStringEncoding($name, $platformId, $encodingId);
-
-                $name = \preg_replace('/[^a-zA-Z0-9_\-]/', '', $name);
-                if ($name === null || $name === '') {
-                    throw new FontException('Error getting font name.');
-                }
-
-                $this->fdt['name'] = $name;
-                break;
-            } else {
+            if (!isset(self::NAME_ID_PRIORITY[$nameID])) {
                 $this->offset += 4; // skip String length, String offset
+                continue;
             }
+
+            // String length (in bytes).
+            $stringLength = $this->fbyte->getUShort($this->offset);
+            $this->offset += 2;
+            // String offset from start of storage area (in bytes).
+            $stringOffset = $this->fbyte->getUShort($this->offset);
+            $this->offset += 2;
+            $recordOffset = $this->offset;
+
+            $this->offset = $this->fdt['table']['name']['offset'] + $stringStorageOffset + $stringOffset;
+            // a record whose string is not entirely inside the name table describes no name
+            $name = ($stringStorageOffset + $stringOffset + $stringLength) > $this->fdt['table']['name']['length']
+                ? ''
+                : \substr($this->font, $this->offset, $stringLength);
+            // Convert the string encoding if possible
+            $name = $this->convertStringEncoding($name, $platformId, $encodingId);
+            $name = (string) \preg_replace('/[^a-zA-Z0-9_\-]/', '', $name);
+
+            // nameID 6 is the PostScript name and wins outright
+            if ($nameID === 6 && $name !== '') {
+                $this->fdt['name'] = $name;
+                return;
+            }
+
+            // records are ordered by nameID, so a better fallback may still follow
+            if ($name !== '' && self::NAME_ID_PRIORITY[$nameID] > $priority) {
+                $priority = self::NAME_ID_PRIORITY[$nameID];
+                $this->fdt['name'] = $name;
+            }
+
+            $this->offset = $recordOffset;
+        }
+
+        if ($this->fdt['name'] === '') {
+            throw new FontException('Error getting font name.');
         }
     }
 
     /**
      * Get the PostScript Table (TTF post table)
-     *
-     * @return void
      */
     protected function getPostData(): void
     {
@@ -718,9 +970,17 @@ class TrueType
         $this->fdt['underlineThickness'] = (int) \round($this->fbyte->getFWord($this->offset) * $this->fdt['urk']);
         $this->offset += 2;
         $isFixedPitch = $this->fbyte->getULong($this->offset) !== 0;
-        $this->offset += 2;
+        $this->offset += 4; // isFixedPitch is a uint32
+        // the 'post' table settles the fixed pitch bit either way, overriding the guess
+        // Import::initFlags() makes from the file name
+        $this->fdt['Flags'] &= ~1;
         if ($isFixedPitch) {
             $this->fdt['Flags'] |= 1;
+        }
+
+        if ($this->fdt['italicAngle'] !== 0.0) {
+            // a slanted font is italic whatever 'head.macStyle' claims
+            $this->fdt['Flags'] |= 64;
         }
     }
 
@@ -745,8 +1005,6 @@ class TrueType
      * 30 - int16       reserved (set to 0)
      * 32 - int16       metricDataFormat (set to 0)
      * 34 - uint16      numberOfHMetrics (in hmtx table)
-     *
-     * @return void
      */
     protected function getHheaData(): void
     {
@@ -775,8 +1033,6 @@ class TrueType
 
     /**
      * Get the Maximum Profile Table (TTF maxp table)
-     *
-     * @return void
      */
     protected function getMaxpData(): void
     {
@@ -791,43 +1047,81 @@ class TrueType
 
     /**
      * Get font heights
-     *
-     * @return void
      */
     protected function getHeights(): void
     {
         // get xHeight (height of x)
         $this->fdt['XHeight'] = $this->fdt['Ascent'] + $this->fdt['Descent'];
-        if (isset($this->fdt['ctgdata'][120]) && $this->fdt['ctgdata'][120] !== 0) {
-            $this->offset =
-                $this->fdt['table']['glyf']['offset'] + $this->fdt['indexToLoc'][$this->fdt['ctgdata'][120]] + 4;
-            $yMin = $this->fbyte->getFWord($this->offset);
-            $this->offset += 4;
-            $yMax = $this->fbyte->getFWord($this->offset);
-            $this->offset += 2;
-            $this->fdt['XHeight'] = (int) \round(($yMax - $yMin) * $this->fdt['urk']);
+        $xheight = $this->getGlyphHeight(120);
+        if ($xheight !== null) {
+            $this->fdt['XHeight'] = $xheight;
         }
 
         // get CapHeight (height of H)
         $this->fdt['CapHeight'] = (int) $this->fdt['Ascent'];
-        if (isset($this->fdt['ctgdata'][72]) && $this->fdt['ctgdata'][72] !== 0) {
-            $this->offset =
-                $this->fdt['table']['glyf']['offset'] + $this->fdt['indexToLoc'][$this->fdt['ctgdata'][72]] + 4;
-            $yMin = $this->fbyte->getFWord($this->offset);
-            $this->offset += 4;
-            $yMax = $this->fbyte->getFWord($this->offset);
-            $this->offset += 2;
-            $this->fdt['CapHeight'] = (int) \round(($yMax - $yMin) * $this->fdt['urk']);
+        $capheight = $this->getGlyphHeight(72);
+        if ($capheight !== null) {
+            $this->fdt['CapHeight'] = $capheight;
         }
     }
 
     /**
-     * Get font widths
+     * Returns the height of the glyph of a character, or null when it has no outline.
      *
-     * @return void
+     * @param int $cid Character identifier ('x' or 'H').
+     */
+    private function getGlyphHeight(int $cid): ?int
+    {
+        $gid = $this->fdt['ctgdata'][$cid] ?? 0;
+        if ($gid === 0) {
+            return null;
+        }
+
+        // glyphs without an outline are removed from indexToLoc (see getIndexToLoc)
+        $offset = $this->getGlyphHeaderOffset($gid);
+        if ($offset === null) {
+            return null;
+        }
+
+        // ISO 32000-1 Table 122 defines /XHeight and /CapHeight as the height of the glyph
+        // above the baseline, so the height is yMax alone
+        $yMax = $this->fbyte->getFWord($offset + 8);
+        return (int) \round($yMax * $this->fdt['urk']);
+    }
+
+    /**
+     * Returns the absolute offset of a glyph header, or null when it is not readable.
+     *
+     * The 10-byte header (numberOfContours and the four bounding box values) must lie
+     * inside the glyf table.
+     *
+     * @param int $gid Glyph index.
+     */
+    private function getGlyphHeaderOffset(int $gid): ?int
+    {
+        $loc = $this->fdt['indexToLoc'][$gid] ?? null;
+        if ($loc === null || ($loc + 10) > $this->fdt['table']['glyf']['length']) {
+            return null;
+        }
+
+        return $this->fdt['table']['glyf']['offset'] + $loc;
+    }
+
+    /**
+     * Get font widths
      */
     protected function getWidths(): void
     {
+        if ($this->fdt['numHMetrics'] < 1) {
+            throw new FontException('hhea.numberOfHMetrics must be greater than zero');
+        }
+
+        // bounded by the declared length of the hmtx table: each metric is 4 bytes
+        $this->fdt['numHMetrics'] = \min($this->fdt['numHMetrics'], \intdiv($this->fdt['table']['hmtx']['length'], 4));
+        if ($this->fdt['numHMetrics'] < 1) {
+            throw new FontException('the hmtx table is too short to hold a single metric');
+        }
+
         // create widths array
         $chw = [];
         $this->offset = $this->fdt['table']['hmtx']['offset'];
@@ -844,20 +1138,24 @@ class TrueType
         $this->fdt['MissingWidth'] = $chw[0] ?? 0;
         $this->fdt['cw'] = [];
         $this->fdt['cbbox'] = [];
-        // Iterate the actual CID->GID map instead of scanning the full 0..65535 code space,
-        // so fonts with few glyphs skip the empty positions. ctgdata is built in ascending
-        // CID order, so the resulting cw/cbbox ordering is unchanged.
+        // ctgdata is built in ascending CID order, so cw and cbbox are filled in the same order
         foreach ($this->fdt['ctgdata'] as $cid => $gid) {
+            if ($gid === 0) {
+                // a codepoint mapped to .notdef gets no width; the ctgdata entry is kept
+                // as a faithful copy of the cmap
+                continue;
+            }
+
             if (isset($chw[$gid])) {
                 $this->fdt['cw'][$cid] = $chw[$gid];
             }
 
-            if ($this->withCbbox && isset($this->fdt['indexToLoc'][$gid])) {
-                $this->offset = $this->fdt['table']['glyf']['offset'] + $this->fdt['indexToLoc'][$gid];
-                $xMin = (int) \round($this->fbyte->getFWord($this->offset + 2) * $this->fdt['urk']);
-                $yMin = (int) \round($this->fbyte->getFWord($this->offset + 4) * $this->fdt['urk']);
-                $xMax = (int) \round($this->fbyte->getFWord($this->offset + 6) * $this->fdt['urk']);
-                $yMax = (int) \round($this->fbyte->getFWord($this->offset + 8) * $this->fdt['urk']);
+            $offset = $this->withCbbox ? $this->getGlyphHeaderOffset($gid) : null;
+            if ($offset !== null) {
+                $xMin = (int) \round($this->fbyte->getFWord($offset + 2) * $this->fdt['urk']);
+                $yMin = (int) \round($this->fbyte->getFWord($offset + 4) * $this->fdt['urk']);
+                $xMax = (int) \round($this->fbyte->getFWord($offset + 6) * $this->fdt['urk']);
+                $yMax = (int) \round($this->fbyte->getFWord($offset + 8) * $this->fdt['urk']);
                 $this->fdt['cbbox'][$cid] = [$xMin, $yMin, $xMax, $yMax];
             }
         }
@@ -868,8 +1166,6 @@ class TrueType
      *
      * @param int  $cid Character Identifier
      * @param int  $gid Glyph ID (zero-based index of the glyph in the font's glyph collection)
-     *
-     * @return void
      */
     protected function addCtgItem(int $cid, int $gid): void
     {
@@ -936,8 +1232,6 @@ class TrueType
      *
      * The Glyph ID (GID) is the zero-based index of the glyph in the font's glyph collection.
      *
-     * @return void
-     *
      * @throws FontException
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
@@ -975,7 +1269,10 @@ class TrueType
             10 => $this->processFormat10(),
             12 => $this->processFormat12(),
             13 => $this->processFormat13(),
-            14 => $this->processFormat14(),
+            14 => throw new FontException(
+                'cmap format 14 is a supplementary Unicode Variation Sequences subtable'
+                . ' and cannot be used as the character map of the font',
+            ),
             default => throw new FontException('Unsupported cmap format: ' . $format),
         };
 
@@ -992,6 +1289,11 @@ class TrueType
             return;
         }
 
+        // a byte encoded font is one whose character codes all fit a single byte
+        if (\max(\array_keys($this->fdt['ctgdata'])) > 0xFF) {
+            return;
+        }
+
         $this->fdt['type'] = 'TrueType';
     }
 
@@ -1005,7 +1307,9 @@ class TrueType
     protected function processFormat0(): void
     {
         $this->offset += 4; // skip length and version/language
-        for ($chr = 0; $chr < 256; ++$chr) {
+        // a subtable holding fewer than the 256 documented bytes stops where it ends
+        $entries = \min(256, $this->getCmapCapacity(1));
+        for ($chr = 0; $chr < $entries; ++$chr) {
             $gid = $this->fbyte->getByte($this->offset);
             $this->addCtgItem($chr, $gid);
             ++$this->offset;
@@ -1032,9 +1336,12 @@ class TrueType
         $this->offset += 4; // skip length and version/language
         $subHeaderKeys = [];
         $numSubHeaders = 0;
-        for ($chr = 0; $chr < 256; ++$chr) {
-            // Array that maps high bytes to subHeaders: value is subHeader index * 8.
-            $subHeaderKeys[$chr] = $this->fbyte->getUShort($this->offset) / 8;
+        // the array of high byte keys is a fixed 256 entries, and stops at the end of the
+        // cmap table like every other array of this subtable
+        $numKeys = \min(256, $this->getCmapCapacity(2));
+        for ($chr = 0; $chr < $numKeys; ++$chr) {
+            // the stored value is the subHeader index * 8
+            $subHeaderKeys[$chr] = \intdiv($this->fbyte->getUShort($this->offset), 8);
             $this->offset += 2;
             if ($numSubHeaders < $subHeaderKeys[$chr]) {
                 $numSubHeaders = $subHeaderKeys[$chr];
@@ -1043,51 +1350,96 @@ class TrueType
 
         // the number of subHeaders is equal to the max of subHeaderKeys + 1
         ++$numSubHeaders;
-        // read subHeader structures
+        // each record is 8 bytes, and the array stops at the end of the cmap table; the high
+        // bytes keyed to a sub-header the table has no room for map no glyph
+        $numSubHeaders = \min($numSubHeaders, $this->getCmapCapacity(8));
+        // keyed by index rather than as a list, as the lookup below indexes it with a value
+        // read from the font file
+        /** @var array<int, array{firstCode: int, entryCount: int, idDelta: int, idRangeOffset: int}> $subHeaders */
         $subHeaders = [];
         $numGlyphIndexArray = 0;
         for ($ish = 0; $ish < $numSubHeaders; ++$ish) {
-            $subHeaders[$ish]['firstCode'] = $this->fbyte->getUShort($this->offset);
+            $firstCode = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $subHeaders[$ish]['entryCount'] = $this->fbyte->getUShort($this->offset);
+            $entryCount = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $subHeaders[$ish]['idDelta'] = $this->fbyte->getUShort($this->offset);
+            $idDelta = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $subHeaders[$ish]['idRangeOffset'] = $this->fbyte->getUShort($this->offset);
+            $idRangeOffset = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
-            $subHeaders[$ish]['idRangeOffset'] -= 2 + (($numSubHeaders - $ish - 1) * 8);
-            $subHeaders[$ish]['idRangeOffset'] /= 2;
-            $numGlyphIndexArray += $subHeaders[$ish]['entryCount'];
+            // the stored offset is relative to its own field, so rebase it on the start of
+            // the glyph index array and convert it from bytes to entries
+            $idRangeOffset -= 2 + (($numSubHeaders - $ish - 1) * 8);
+            $subHeaders[$ish] = [
+                'firstCode' => $firstCode,
+                'entryCount' => $entryCount,
+                'idDelta' => $idDelta,
+                'idRangeOffset' => \intdiv($idRangeOffset, 2),
+            ];
+            $numGlyphIndexArray += $entryCount;
         }
 
-        $glyphIndexArray = [
-            0 => 0,
-        ];
+        // this is the size of the shared glyph index array, not a number of mapped codes, so
+        // it is bounded by the absolute ceiling rather than by the entry budget of the font
+        if ($numGlyphIndexArray > self::MAX_CMAP_ENTRIES) {
+            throw new FontException('cmap format 2 subtable declares too many glyph indexes');
+        }
+
+        // sub-headers may address overlapping ranges of the shared glyph index array, so the
+        // sum of their entry counts over-estimates its real size
+        $numGlyphIndexArray = \min($numGlyphIndexArray, $this->getCmapCapacity(2));
+
+        $glyphIndexArray = [];
         for ($gid = 0; $gid < $numGlyphIndexArray; ++$gid) {
             $glyphIndexArray[$gid] = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
         }
 
-        for ($chr = 0; $chr < 256; ++$chr) {
+        for ($chr = 0; $chr < $numKeys; ++$chr) {
             $shk = $subHeaderKeys[$chr];
+            $subHeader = $subHeaders[$shk] ?? null;
+            if ($subHeader === null) {
+                continue;
+            }
+
             if ($shk === 0) {
-                // one byte code
-                $cdx = $chr;
-                $gid = $glyphIndexArray[0];
-                $this->addCtgItem($cdx, $gid);
-            } else {
-                // two bytes code
-                $start_byte = $subHeaders[$shk]['firstCode'];
-                $end_byte = $start_byte + $subHeaders[$shk]['entryCount'];
-                for ($jdx = $start_byte; $jdx < $end_byte; ++$jdx) {
-                    // combine high and low bytes
-                    $cdx = ($chr << 8) + $jdx;
-                    $idRangeOffset = $subHeaders[$shk]['idRangeOffset'] + $jdx - $subHeaders[$shk]['firstCode'];
-                    $gid = \max(0, ($glyphIndexArray[$idRangeOffset] + $subHeaders[$shk]['idDelta']) % 65_536);
-                    $this->addCtgItem($cdx, $gid);
-                }
+                // one byte code: subHeaders[0] describes the single-byte range and the
+                // code is its own low byte
+                $this->addCtgItem($chr, $this->getFormat2Glyph($subHeader, $chr, $glyphIndexArray));
+                continue;
+            }
+
+            // two bytes code: the range is a run of low bytes, so it stops at 256
+            $start_byte = \min($subHeader['firstCode'], 256);
+            $end_byte = \min($start_byte + $subHeader['entryCount'], 256);
+            for ($jdx = $start_byte; $jdx < $end_byte; ++$jdx) {
+                // combine high and low bytes
+                $cdx = ($chr << 8) + $jdx;
+                $this->addCtgItem($cdx, $this->getFormat2Glyph($subHeader, $jdx, $glyphIndexArray));
             }
         }
+    }
+
+    /**
+     * Resolve the glyph index of a cmap format 2 low byte through its sub-header.
+     *
+     * @param array{firstCode: int, entryCount: int, idDelta: int, idRangeOffset: int} $subHeader Sub-header record.
+     * @param int              $low             Low byte of the character code.
+     * @param array<int, int>  $glyphIndexArray Glyph index array of the subtable.
+     */
+    private function getFormat2Glyph(array $subHeader, int $low, array $glyphIndexArray): int
+    {
+        $entry = $low - $subHeader['firstCode'];
+        if ($entry < 0 || $entry >= $subHeader['entryCount']) {
+            // the code is outside the range covered by this sub-header
+            return 0;
+        }
+
+        // idRangeOffset comes from the font file, so an entry outside the glyph index
+        // array falls back to notdef
+        $glyphIndex = $glyphIndexArray[$subHeader['idRangeOffset'] + $entry] ?? 0;
+        // a zero entry encodes missingGlyph and must not be shifted by idDelta
+        return $glyphIndex === 0 ? 0 : ($glyphIndex + $subHeader['idDelta']) % 65_536;
     }
 
     /**
@@ -1111,9 +1463,12 @@ class TrueType
         $length = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
         $this->offset += 2; // skip version/language
-        $segCount = \floor($this->fbyte->getUShort($this->offset) / 2);
+        $segCount = \intdiv($this->fbyte->getUShort($this->offset), 2);
         $this->offset += 2;
         $this->offset += 6; // skip searchRange, entrySelector, rangeShift
+        // the four parallel arrays that follow hold one uint16 per segment each, plus the
+        // reserved pad between the first two
+        $segCount = \min($segCount, \intdiv(\max(0, $this->getCmapCapacity(2) - 1), 4));
         $endCount = []; // array of end character codes for each segment
         for ($kdx = 0; $kdx < $segCount; ++$kdx) {
             $endCount[$kdx] = $this->fbyte->getUShort($this->offset);
@@ -1139,20 +1494,41 @@ class TrueType
             $this->offset += 2;
         }
 
-        $gidlen = \floor($length / 2) - 8 - (4 * $segCount);
+        // the size is derived from the declared subtable length, and the array also stops at
+        // the end of the cmap table; a segment indexing past it resolves to notdef
+        $gidlen = \min(\max(0, \intdiv($length, 2) - 8 - (4 * $segCount)), $this->getCmapCapacity(2));
         $glyphIdArray = []; // glyph index array
         for ($kdx = 0; $kdx < $gidlen; ++$kdx) {
             $glyphIdArray[$kdx] = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
         }
 
+        $budget = $this->getCmapEntryBudget();
         for ($kdx = 0; $kdx < $segCount; ++$kdx) {
+            // the mandatory 0xFFFF -> 0xFFFF segment closes the table and maps nothing,
+            // so it is not charged to the budget
+            if ($startCount[$kdx] !== 0xFFFF || $endCount[$kdx] !== 0xFFFF) {
+                $budget -= \max(0, $endCount[$kdx] - $startCount[$kdx] + 1);
+                if ($budget < 0) {
+                    throw new FontException('cmap format 4 subtable maps too many code points');
+                }
+            }
+
             for ($chr = $startCount[$kdx]; $chr <= $endCount[$kdx]; ++$chr) {
                 if ($idRangeOffset[$kdx] === 0) {
-                    $gid = \max(0, ($idDelta[$kdx] + $chr) % 65_536);
+                    $gid = ($idDelta[$kdx] + $chr) % 65_536;
                 } else {
-                    $gid = (int) (\floor($idRangeOffset[$kdx] / 2) + ($chr - $startCount[$kdx]) - ($segCount - $kdx));
-                    $gid = \max(0, ($glyphIdArray[$gid] + $idDelta[$kdx]) % 65_536);
+                    $gid = \intdiv($idRangeOffset[$kdx], 2) + ($chr - $startCount[$kdx]) - ($segCount - $kdx);
+                    // idRangeOffset comes from the font file, so an entry outside the glyph
+                    // index array falls back to notdef
+                    $glyphIndex = $glyphIdArray[$gid] ?? 0;
+                    // a zero entry encodes missingGlyph and must not be shifted by idDelta
+                    $gid = $glyphIndex === 0 ? 0 : ($glyphIndex + $idDelta[$kdx]) % 65_536;
+                }
+
+                if ($chr === 0xFFFF && $gid === 0) {
+                    // the terminating segment closes the table, it does not map U+FFFF
+                    continue;
                 }
 
                 $this->addCtgItem($chr, $gid);
@@ -1176,10 +1552,17 @@ class TrueType
         $this->offset += 2;
         $entryCount = $this->fbyte->getUShort($this->offset);
         $this->offset += 2;
+        // the subrange stops at the end of the cmap table
+        $entryCount = \min($entryCount, $this->getCmapCapacity(2));
         for ($kdx = 0; $kdx < $entryCount; ++$kdx) {
             $chr = $kdx + $firstCode;
             $gid = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;
+            if ($chr > 0xFFFF) {
+                // format 6 addresses its subrange with uint16 codes
+                continue;
+            }
+
             $this->addCtgItem($chr, $gid);
         }
     }
@@ -1202,15 +1585,17 @@ class TrueType
     protected function processFormat8(): void
     {
         $this->offset += 10; // skip reserved, length and version/language
-        $is32 = [];
-        for ($kdx = 0; $kdx < 8192; ++$kdx) {
-            $is32[$kdx] = $this->fbyte->getByte($this->offset);
-            ++$this->offset;
-        }
+        // the is32 bit array only tells whether a group's bounds were written as 16 or 32 bit
+        // values, which does not change them, so it is skipped; its last byte is read to
+        // reject a subtable truncated inside it
+        $this->fbyte->getByte($this->offset + 8191);
+        $this->offset += 8192;
 
         $nGroups = $this->fbyte->getULong($this->offset);
         $this->offset += 4;
-        $budget = self::MAX_CMAP_ENTRIES;
+        // each record is 12 bytes, and the array stops at the end of the cmap table
+        $nGroups = \min($nGroups, $this->getCmapCapacity(12));
+        $budget = $this->getCmapEntryBudget();
         for ($idx = 0; $idx < $nGroups; ++$idx) {
             $startCharCode = $this->fbyte->getULong($this->offset);
             $this->offset += 4;
@@ -1223,24 +1608,13 @@ class TrueType
             }
 
             $endCharCode = \min($endCharCode, self::MAX_UNICODE_CODEPOINT);
-            $budget -= $endCharCode - $startCharCode + 1;
+            $budget -= \max(0, $endCharCode - $startCharCode + 1);
             if ($budget < 0) {
                 throw new FontException('cmap format 8 subtable maps too many code points');
             }
 
             for ($cpw = $startCharCode; $cpw <= $endCharCode; ++$cpw) {
-                $is32idx = (int) \floor($cpw / 8);
-                if (isset($is32[$is32idx]) && ($is32[$is32idx] & (1 << (7 - ($cpw % 8)))) === 0) {
-                    $chr = $cpw;
-                } else {
-                    // 32 bit format
-                    // convert to decimal (http://www.unicode.org/faq//utf_bom.html#utf16-4)
-                    //LEAD_OFFSET = (0xD800 - (0x10000 >> 10)) = 55232
-                    //SURROGATE_OFFSET = (0x10000 - (0xD800 << 10) - 0xDC00) = -56613888
-                    $chr = ((55_232 + ($cpw >> 10)) << 10) + (0xDC00 + ($cpw & 0x3FF)) - 56_613_888;
-                }
-
-                $this->addCtgItem($chr, $startGlyphID);
+                $this->addCtgItem($cpw, $startGlyphID);
                 ++$startGlyphID;
             }
         }
@@ -1263,11 +1637,21 @@ class TrueType
         $this->offset += 4;
         $numChars = $this->fbyte->getULong($this->offset);
         $this->offset += 4;
+        if ($numChars > $this->getCmapEntryBudget()) {
+            throw new FontException('cmap format 10 subtable maps too many code points');
+        }
+
+        // the covered range stops at the end of the cmap table
+        $numChars = \min($numChars, $this->getCmapCapacity(2));
         for ($kdx = 0; $kdx < $numChars; ++$kdx) {
             $chr = $kdx + $startCharCode;
             $gid = $this->fbyte->getUShort($this->offset);
-            $this->addCtgItem($chr, $gid);
             $this->offset += 2;
+            if ($chr > self::MAX_UNICODE_CODEPOINT) {
+                continue;
+            }
+
+            $this->addCtgItem($chr, $gid);
         }
     }
 
@@ -1290,7 +1674,9 @@ class TrueType
         $this->offset += 10; // skip length and version/language
         $nGroups = $this->fbyte->getULong($this->offset);
         $this->offset += 4;
-        $budget = self::MAX_CMAP_ENTRIES;
+        // each record is 12 bytes, and the array stops at the end of the cmap table
+        $nGroups = \min($nGroups, $this->getCmapCapacity(12));
+        $budget = $this->getCmapEntryBudget();
         for ($kdx = 0; $kdx < $nGroups; ++$kdx) {
             $startCharCode = $this->fbyte->getULong($this->offset);
             $this->offset += 4;
@@ -1303,7 +1689,7 @@ class TrueType
             }
 
             $endCharCode = \min($endCharCode, self::MAX_UNICODE_CODEPOINT);
-            $budget -= $endCharCode - $startCharCode + 1;
+            $budget -= \max(0, $endCharCode - $startCharCode + 1);
             if ($budget < 0) {
                 throw new FontException('cmap format 12 subtable maps too many code points');
             }
@@ -1334,7 +1720,9 @@ class TrueType
         $this->offset += 10; // skip reserved, length and language
         $nGroups = $this->fbyte->getULong($this->offset);
         $this->offset += 4;
-        $budget = self::MAX_CMAP_ENTRIES;
+        // each record is 12 bytes, and the array stops at the end of the cmap table
+        $nGroups = \min($nGroups, $this->getCmapCapacity(12));
+        $budget = $this->getCmapEntryBudget();
         for ($kdx = 0; $kdx < $nGroups; ++$kdx) {
             $startCharCode = $this->fbyte->getULong($this->offset);
             $this->offset += 4;
@@ -1347,7 +1735,7 @@ class TrueType
             }
 
             $endCharCode = \min($endCharCode, self::MAX_UNICODE_CODEPOINT);
-            $budget -= $endCharCode - $startCharCode + 1;
+            $budget -= \max(0, $endCharCode - $startCharCode + 1);
             if ($budget < 0) {
                 throw new FontException('cmap format 13 subtable maps too many code points');
             }
@@ -1355,78 +1743,6 @@ class TrueType
             for ($chr = $startCharCode; $chr <= $endCharCode; ++$chr) {
                 $this->addCtgItem($chr, $glyphID);
             }
-        }
-    }
-
-    /**
-     * Process Format 14: Unicode Variation Sequences
-     *
-     * 'cmap' Subtable Format 14 (format field already consumed, $this->offset points past it):
-     *   0 - uint16                                  format                  (already consumed) Always 14
-     *   2 - uint32                                  length                  Byte length of this subtable (incl. header)
-     *   6 - uint32                                  numVarSelectorRecords   Number of VariationSelector records
-     *  10 - VariationSelector[numVarSelectorRecords] varSelector            Array of VariationSelector records
-     *
-     * VariationSelector Record (11 bytes):
-     *   0 - uint24     varSelector          Variation selector value
-     *   3 - Offset32   defaultUVSOffset     Offset from subtable start to Default UVS table; 0 if absent
-     *   7 - Offset32   nonDefaultUVSOffset  Offset from subtable start to Non-Default UVS table; 0 if absent
-     *
-     * NonDefaultUVS Table:
-     *   0 - uint32        numUVSMappings  Number of UVS Mapping records
-     *   4 - UVSMapping[]  uvsMappings     Array of UVSMapping records
-     *
-     * UVSMapping Record (5 bytes):
-     *   0 - uint24   unicodeValue  Base Unicode code point of the variation sequence
-     *   3 - uint16   glyphID       Glyph ID to use for this variation sequence
-     *
-     * Default UVS sequences reuse the glyph already mapped in the main cmap table; no action required.
-     */
-    protected function processFormat14(): void
-    {
-        // The format field (uint16) was consumed before this method was called,
-        // so the subtable starts 2 bytes before the current offset.
-        $subtableOffset = $this->offset - 2;
-
-        $this->offset += 4; // skip length (uint32)
-
-        $numVarSelectors = $this->fbyte->getULong($this->offset);
-        $this->offset += 4;
-
-        for ($idx = 0; $idx < $numVarSelectors; ++$idx) {
-            $this->offset += 3; // skip varSelector (uint24)
-
-            $this->offset += 4; // skip defaultUVSOffset - default sequences use the main cmap glyph
-
-            $nonDefaultOffset = $this->fbyte->getULong($this->offset);
-            $this->offset += 4;
-
-            if ($nonDefaultOffset === 0) {
-                continue;
-            }
-
-            // Process the Non-Default UVS table for this variation selector.
-            $savedOffset = $this->offset;
-            $this->offset = $subtableOffset + $nonDefaultOffset;
-
-            $numUVSMappings = $this->fbyte->getULong($this->offset);
-            $this->offset += 4;
-
-            for ($jdx = 0; $jdx < $numUVSMappings; ++$jdx) {
-                // unicodeValue: uint24 (3 bytes, big-endian)
-                $unicodeValue =
-                    ($this->fbyte->getByte($this->offset) << 16)
-                    | ($this->fbyte->getByte($this->offset + 1) << 8)
-                    | $this->fbyte->getByte($this->offset + 2);
-                $this->offset += 3;
-
-                $glyphID = $this->fbyte->getUShort($this->offset);
-                $this->offset += 2;
-
-                $this->addCtgItem($unicodeValue, $glyphID);
-            }
-
-            $this->offset = $savedOffset;
         }
     }
 }

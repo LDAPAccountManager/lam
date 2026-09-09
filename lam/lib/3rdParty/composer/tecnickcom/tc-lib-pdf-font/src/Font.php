@@ -54,19 +54,9 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
      * @param string $ifile    The font definition file (or empty for autodetect).
      *                         By default, the name is built from the family and
      *                         style, in lower case with no spaces.
-     * @param bool   $subset   If true embed only a subset of the font
-     *                         (stores only the information related to
-     *                         the used characters); If false embed
-     *                         full font; This option is valid only for
-     *                         TrueTypeUnicode fonts and is disabled
-     *                         for PDF/A. If you want to enable users
-     *                         to modify the document, set this
-     *                         parameter to false. If you subset the
-     *                         font, the person who receives your PDF
-     *                         would need to have your same font in
-     *                         order to make changes to your PDF. The
-     *                         file size of the PDF would also be
-     *                         smaller because you are embedding only a subset.
+     * @param bool   $subset   If true, embed only the characters used by the document.
+     *                         Valid only for TrueTypeUnicode fonts.
+     *                         Subsetting is computational and memory intensive.
      * @param bool   $unicode  True in Unicode mode, False otherwise.
      * @param bool   $pdfa     True in PDF/A mode, False otherwise.
      * @param bool   $compress Set to false to disable stream compression.
@@ -90,11 +80,9 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
             throw new FontException('empty font family name');
         }
 
-        if ($ifile !== '') {
-            $validatedIfile = $ifile;
-            if (!$this->fileHelper->isValidFile($validatedIfile)) {
-                throw new FontException('Invalid font ifile: ' . $ifile);
-            }
+        $ifile = \trim($ifile);
+        if ($ifile !== '' && !$this->fileHelper->isAllowedFile($ifile)) {
+            throw new FontException('Invalid font ifile: ' . $ifile);
         }
 
         $this->data['ifile'] = $ifile;

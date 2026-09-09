@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Com\Tecnick\Barcode\Type\Square\Aztec;
 
 use Com\Tecnick\Barcode\Exception as BarcodeException;
+use Com\Tecnick\Barcode\Type\ReedSolomon;
 
 /**
  * Com\Tecnick\Barcode\Type\Square\Aztec\Encode
@@ -99,7 +100,7 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Aztec\Bitstream
         $numcdw = \count($cdw);
         $totwords = (int) ($nbits / $wsize);
         $eccwords = $totwords - $numcdw;
-        $errorCorrection = new ErrorCorrection($wsize);
+        $errorCorrection = new ReedSolomon($wsize);
         $checkwords = $errorCorrection->checkwords($cdw, $eccwords);
         // append check codewords
         foreach ($checkwords as $checkword) {

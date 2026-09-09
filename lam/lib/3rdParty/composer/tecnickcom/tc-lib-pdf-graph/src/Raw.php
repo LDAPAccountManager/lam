@@ -63,11 +63,11 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      * Append a rectangle to the current path as a complete subpath,
      * with lower-left corner in the specified point and dimensions width and height in user units.
      *
-     * @param float  $posx   Abscissa of upper-left corner.
-     * @param float  $posy   Ordinate of upper-left corner.
-     * @param float  $width  Width.
-     * @param float  $height Height.
-     * @param string|PathPaintOp $mode Mode of rendering (or PathPaintOp enum case). @see getPathPaintOp()
+     * @param float              $posx   Abscissa of upper-left corner.
+     * @param float              $posy   Ordinate of upper-left corner.
+     * @param float              $width  Width.
+     * @param float              $height Height.
+     * @param string|PathPaintOp $mode   Mode of rendering. @see getPathPaintOp()
      *
      * @return string PDF command
      */
@@ -78,13 +78,15 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
         float $height,
         string|PathPaintOp $mode = '',
     ): string {
-        return \sprintf(
-            '%F %F %F %F re' . "\n" . $this->getPathPaintOp($mode, ''),
+        $rect = \sprintf(
+            '%F %F %F %F re' . "\n",
             $posx * $this->kunit,
             ($this->pageh - $posy) * $this->kunit,
             $width * $this->kunit,
             -$height * $this->kunit,
         );
+
+        return $rect . $this->getPathPaintOp($mode, '');
     }
 
     /**
@@ -215,22 +217,20 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      * Append an elliptical arc to the current path.
      * An ellipse is formed from n Bezier curves.
      *
-     * @param float      $posxc      Abscissa of center point.
-     * @param float      $posyc      Ordinate of center point.
-     * @param float      $rdh        Horizontal radius.
-     * @param float      $rdv        Vertical radius (if = 0 then it is a circle).
-     * @param float      $posxang    Angle between the X-axis and the major axis of the ellipse.
-     * @param float      $angs       Angle in degrees at which starting drawing.
-     * @param float      $angf       Angle in degrees at which stop drawing.
-     * @param bool       $pie        If true do not mark the border point (used to draw pie sectors).
-     * @param float      $ncv        Number of curves used to draw a 90 degrees portion of ellipse.
-     * @param bool       $startpoint If true output a starting point.
-     * @param bool       $ccw        If true draws in counter-clockwise direction.
-     * @param bool       $svg        If true the angles are in svg mode (already calculated).
-     * @param array<float> $bbox     If provided, it will be filled with the bounding box coordinates
-     *                               (x min, y min, x max, y max). The box is derived from the Bezier
-     *                               control points, so (by the convex-hull property) it is guaranteed
-     *                               to contain the arc but may be slightly larger than its tight bounds.
+     * @param float        $posxc      Abscissa of center point.
+     * @param float        $posyc      Ordinate of center point.
+     * @param float        $rdh        Horizontal radius.
+     * @param float        $rdv        Vertical radius (if = 0 then it is a circle).
+     * @param float        $posxang    Angle between the X-axis and the major axis of the ellipse.
+     * @param float        $angs       Angle in degrees at which starting drawing.
+     * @param float        $angf       Angle in degrees at which stop drawing.
+     * @param bool         $pie        If true do not mark the border point (used to draw pie sectors).
+     * @param float        $ncv        Number of curves used to draw a 90 degrees portion of ellipse.
+     * @param bool         $startpoint If true output a starting point.
+     * @param bool         $ccw        If true draws in counter-clockwise direction.
+     * @param bool         $svg        If true the angles are in svg mode (already calculated).
+     * @param array<float> $bbox       Filled with the bounding box coordinates (x min, y min, x max, y max)
+     *                                 derived from the Bezier control points, or emptied when no arc is drawn.
      *
      * @return string PDF command
      *
@@ -254,12 +254,13 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
     ): string {
         $out = '';
         if ($rdh <= 0 || $rdv < 0) {
+            // no arc is drawn
+            $bbox = [];
             return '';
         }
 
         if ($rdv === 0.0) {
-            // a zero vertical radius means a circle: use the horizontal radius
-            // (also avoids a division by zero when computing the arc angles)
+            // a zero vertical radius means a circle
             $rdv = $rdh;
         }
 
@@ -295,10 +296,14 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
             $alpha,
             $ang,
         );
+        $py1u = $pageh - $py1;
+        // include the arc starting point
+        $bbox = [\min($bbox[0], $px1), \min($bbox[1], $py1u), \max($bbox[2], $px1), \max($bbox[3], $py1u)];
+
         if ($pie) {
-            $out .= $this->getRawLine($px1, $pageh - $py1); // line from center to arc starting point
+            $out .= $this->getRawLine($px1, $py1u); // line from center to arc starting point
         } elseif ($startpoint) {
-            $out .= $this->getRawPoint($px1, $pageh - $py1); // arc starting point
+            $out .= $this->getRawPoint($px1, $py1u); // arc starting point
         }
 
         // draw arcs

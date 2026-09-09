@@ -21,10 +21,9 @@ namespace Com\Tecnick\Pdf\Filter\Type;
 /**
  * Com\Tecnick\Pdf\Filter\Type\Dct
  *
- * DCTDecode filter (PDF 32000-2008 §7.4.8).
- * A DCT stream in a PDF is a self-contained JFIF/JPEG byte sequence.
- * Returning the data unchanged is spec-correct: JPEG decompression is
- * the responsibility of the image-rendering layer, not the filter pipeline.
+ * DCTDecode filter (PDF 32000-1:2008 §7.4.8).
+ * A DCT stream is a self-contained JFIF/JPEG byte sequence and is passed
+ * through unchanged; JPEG decompression is left to the image-rendering layer.
  *
  * @since     2011-05-23
  * @category  Library
@@ -37,15 +36,12 @@ namespace Com\Tecnick\Pdf\Filter\Type;
 class Dct implements \Com\Tecnick\Pdf\Filter\Type\Template
 {
     /**
-     * Decode the data.
+     * Return the data unchanged.
      *
-     * DCT streams are self-contained JPEG files; pass through unchanged.
-     * JPEG decompression is left to the image-rendering layer.
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
      *
-     * @param string              $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters.
-     *
-     * @return string Decoded data string.
+     * @return string Decoded data.
      */
     public function decode(string $data, array $params = []): string
     {

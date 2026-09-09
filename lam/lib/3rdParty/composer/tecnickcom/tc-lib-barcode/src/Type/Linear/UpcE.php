@@ -26,9 +26,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * UpcE Barcode type class
  * UPC-E
  *
- * UPC-E is a variation of UPC-A which allows for a more compact barcode by eliminating "extra" zeros.
- * Since the resulting UPC-E barcode is about half the size as an UPC-A barcode, UPC-E is generally used on products
- * with very small packaging where a full UPC-A barcode couldn't reasonably fit.
+ * Variation of UPC-A that compresses the zeros of the manufacturer and product fields
+ * into six digits. It is defined for the number systems 0 and 1 only.
  *
  * @since       2015-02-21
  * @category    Library
@@ -70,6 +69,12 @@ class UpcE extends \Com\Tecnick\Barcode\Type\Linear\UpcA
      * Fixed code length
      */
     protected int $code_length = 12;
+
+    /**
+     * Separation in modules between the main symbol and the add-on symbol,
+     * equal to the right quiet zone of the main symbol.
+     */
+    protected int $addon_separation = 7;
 
     /**
      * Map parities
@@ -161,14 +166,13 @@ class UpcE extends \Com\Tecnick\Barcode\Type\Linear\UpcA
      */
     protected function formatCode(): void
     {
-        $code = $this->code;
+        $code = $this->maincode;
         if (\strlen($code) === 6) {
             $code = $this->convertUpceToUpca($code);
         }
 
         $code = \str_pad($code, $this->code_length - 1, '0', STR_PAD_LEFT);
-        // append the computed check digit only when the input does not already carry it,
-        // otherwise getChecksum() just validates it and returns 0 (avoid a spurious digit)
+        // getChecksum() returns the missing check digit, or 0 when the input already carries it
         $check = $this->getChecksum($code);
         if (\strlen($code) < $this->code_length) {
             $code .= $check;
@@ -179,18 +183,42 @@ class UpcE extends \Com\Tecnick\Barcode\Type\Linear\UpcA
     }
 
     /**
+     * Check that the UPC-A form of the code can be represented as a UPC-E symbol.
+     * UPC-E is defined for number system 0 and 1 only, and only for the UPC-A codes
+     * that convertUpcaToUpce() can compress without losing digits.
+     *
+     * @param string $extcode  UPC-A code prefixed with a leading zero (13 digits)
+     * @param string $upcecode Compressed 6-digit UPC-E code
+     *
+     * @throws BarcodeException if the code has no UPC-E representation
+     */
+    protected function validateUpceCode(string $extcode, string $upcecode): void
+    {
+        $system = $this->getCharAt($extcode, 1);
+        if ($system !== '0' && $system !== '1') {
+            throw new BarcodeException('UPC-E is defined for number system 0 and 1 only, got ' . $system);
+        }
+
+        // the number system is carried by the parity pattern rather than by the six encoded
+        // digits, so compare the manufacturer and product digits only
+        $upca = \substr($this->convertUpceToUpca($upcecode), 1);
+        if ($upca !== \substr($extcode, 2, \strlen($upca))) {
+            throw new BarcodeException('The code cannot be represented as a UPC-E symbol: ' . $this->maincode);
+        }
+    }
+
+    /**
      * Set the bars array.
      *
      * @throws BarcodeException in case of error
+     * @throws \Com\Tecnick\Color\Exception in case of color error
      */
     protected function setBars(): void
     {
-        if (!\is_numeric($this->code)) {
-            throw new BarcodeException('Input code must be a number');
-        }
-
+        $this->validateCode();
         $this->formatCode();
         $upce_code = $this->convertUpcaToUpce($this->extcode);
+        $this->validateUpceCode($this->extcode, $upce_code);
         $seq = '101'; // left guard bar
         $parity = $this->getUpceParityPattern($this->getCharAt($this->extcode, 1), $this->check);
         for ($pos = 0; $pos < 6; ++$pos) {
@@ -198,6 +226,8 @@ class UpcE extends \Com\Tecnick\Barcode\Type\Linear\UpcA
         }
 
         $seq .= '010101'; // right guard bar
+        $seq .= $this->getAddonSequence();
         $this->processBinarySequence($this->getRawCodeRows($seq));
+        $this->appendAddonToExtendedCode();
     }
 }

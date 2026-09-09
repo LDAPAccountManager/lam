@@ -38,47 +38,56 @@ final class Config
     /**
      * Legacy ISO 32000-1 signature (/SubFilter /adbe.pkcs7.detached).
      */
-    public const PROFILE_LEGACY = 'legacy';
+    public const PROFILE_LEGACY = SignatureProfile::Legacy->value;
 
     /**
      * PAdES baseline B-B (CAdES-based, /SubFilter /ETSI.CAdES.detached).
      */
-    public const PROFILE_PADES_B_B = 'pades-b-b';
+    public const PROFILE_PADES_B_B = SignatureProfile::PadesBB->value;
 
     /**
      * PAdES baseline B-T (B-B plus a signature timestamp).
      */
-    public const PROFILE_PADES_B_T = 'pades-b-t';
+    public const PROFILE_PADES_B_T = SignatureProfile::PadesBT->value;
 
     /**
      * PAdES baseline B-LT (B-T plus a Document Security Store).
      */
-    public const PROFILE_PADES_B_LT = 'pades-b-lt';
+    public const PROFILE_PADES_B_LT = SignatureProfile::PadesBLT->value;
 
     /**
      * PAdES baseline B-LTA (B-LT plus a document timestamp).
      */
-    public const PROFILE_PADES_B_LTA = 'pades-b-lta';
+    public const PROFILE_PADES_B_LTA = SignatureProfile::PadesBLTA->value;
 
     /**
      * Supported signature profiles.
      *
+     * Derived from SignatureProfile, which is the closed set the constructor
+     * enforces.
+     *
      * @var list<string>
      */
     public const PROFILES = [
-        self::PROFILE_LEGACY,
-        self::PROFILE_PADES_B_B,
-        self::PROFILE_PADES_B_T,
-        self::PROFILE_PADES_B_LT,
-        self::PROFILE_PADES_B_LTA,
+        SignatureProfile::Legacy->value,
+        SignatureProfile::PadesBB->value,
+        SignatureProfile::PadesBT->value,
+        SignatureProfile::PadesBLT->value,
+        SignatureProfile::PadesBLTA->value,
     ];
 
     /**
      * Supported CMS digest algorithms.
      *
+     * Derived from DigestAlgorithm, as PROFILES is from SignatureProfile.
+     *
      * @var list<string>
      */
-    public const DIGEST_ALGORITHMS = ['sha256', 'sha384', 'sha512'];
+    public const DIGEST_ALGORITHMS = [
+        DigestAlgorithm::Sha256->value,
+        DigestAlgorithm::Sha384->value,
+        DigestAlgorithm::Sha512->value,
+    ];
 
     /**
      * Selected signature profile (one of the PROFILE_* constants).
@@ -86,7 +95,7 @@ final class Config
     public readonly string $profile;
 
     /**
-     * Selected CMS digest algorithm (one of the DIGEST_ALGORITHMS values).
+     * Selected CMS digest algorithm (one of the DigestAlgorithm backing values).
      */
     public readonly string $digestAlgorithm;
 
@@ -106,23 +115,17 @@ final class Config
         string|DigestAlgorithm $digestAlgorithm = 'sha256',
         public readonly int $certType = 2,
     ) {
-        $profile = $profile instanceof SignatureProfile ? $profile->value : $profile;
-        $digestAlgorithm = $digestAlgorithm instanceof DigestAlgorithm ? $digestAlgorithm->value : $digestAlgorithm;
-
-        if (!\in_array($profile, self::PROFILES, true)) {
-            throw new Exception('Invalid signature profile: ' . $profile);
-        }
-
-        if (!\in_array($digestAlgorithm, self::DIGEST_ALGORITHMS, true)) {
-            throw new Exception('Invalid digest algorithm: ' . $digestAlgorithm);
-        }
+        // The enums are the closed set for both options and throw on anything
+        // outside it.
+        $selectedProfile = SignatureProfile::fromLoose($profile);
+        $selectedDigest = DigestAlgorithm::fromLoose($digestAlgorithm);
 
         if ($certType < 0 || $certType > 3) {
             throw new Exception('Invalid certification level (cert_type): ' . $certType);
         }
 
-        $this->profile = $profile;
-        $this->digestAlgorithm = $digestAlgorithm;
+        $this->profile = $selectedProfile->value;
+        $this->digestAlgorithm = $selectedDigest->value;
     }
 
     /**
@@ -142,8 +145,7 @@ final class Config
     }
 
     /**
-     * Build a Config from the legacy associative-array shape used by
-     * Tcpdf::setSignature(), for backward compatibility.
+     * Build a Config from the associative-array shape used by Tcpdf::setSignature().
      *
      * @param array<string, mixed> $data Signature options.
      *

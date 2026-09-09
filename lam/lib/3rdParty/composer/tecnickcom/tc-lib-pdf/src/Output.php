@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf;
 
+use Com\Tecnick\Color\Exception as ColorException;
 use Com\Tecnick\File\Exception as FileException;
 use Com\Tecnick\Pdf\Encrypt\Exception as EncryptException;
 use Com\Tecnick\Pdf\Exception as PdfException;
@@ -25,6 +26,7 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
 use Com\Tecnick\Pdf\Font\Output as OutFont;
 use Com\Tecnick\Pdf\Page\Exception as PageException;
 use Com\Tecnick\Pdf\Sign\Cms\Builder as SignBuilder;
+use Com\Tecnick\Pdf\Sign\Cms\SignedDataVerifier;
 use Com\Tecnick\Pdf\Sign\Config as SignConfig;
 use Com\Tecnick\Pdf\Sign\Exception as SignException;
 use Com\Tecnick\Pdf\Sign\Output\DocTimeStamp as SignDocTimeStamp;
@@ -51,8 +53,10 @@ use OpenSSLAsymmetricKey;
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type PageData from \Com\Tecnick\Pdf\Page\Box
+ * @phpstan-import-type StyleDataOpt from \Com\Tecnick\Pdf\Graph\Base
  *
  * @phpstan-import-type TFourFloat from \Com\Tecnick\Pdf\Base
+ * @phpstan-import-type TPdfUaStructElem from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TAnnotQuadPoint from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TAnnotBorderStyle from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TAnnotBorderEffect from \Com\Tecnick\Pdf\Base
@@ -120,15 +124,73 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected OutFont $outfont;
 
     /**
-     * Output-local transparency gate used by import and document assembly code.
+     * Records a warning when the soft mask of an image was dropped because the
+     * active conformance mode forbids transparency.
+     *
+     * ISO 19005-1 clause 6.4 forbids the /SMask key of an image XObject, as do
+     * ISO 15930-4 and ISO 15930-6 (PDF/X-1a and PDF/X-3). The flattened image is
+     * emitted alone, so the alpha channel is lost.
      */
-    protected function isTransparencyAllowed(): bool
+    protected function checkDroppedImageAlpha(): void
     {
-        if (!$this->pdfx) {
-            return true;
+        if (!$this->image->hasDroppedAlpha()) {
+            return;
         }
 
-        return \in_array($this->pdfxMode, ['pdfx4', 'pdfx5'], true);
+        $this->addWarning(
+            'The active conformance mode forbids transparency: the soft mask of an image was dropped'
+            . ' and only the flattened image is emitted',
+        );
+    }
+
+    /**
+     * Copies the warnings raised by the importer into the document warnings.
+     */
+    protected function collectImportWarnings(): void
+    {
+        foreach ($this->importer?->getWarnings() ?? [] as $warning) {
+            $this->addWarning($warning);
+        }
+    }
+
+    /**
+     * Records a warning when a DeviceCMYK image or colour is emitted in a PDF/A
+     * document whose output intent is not a CMYK profile.
+     *
+     * ISO 19005-1 clause 6.2.3.3 and ISO 19005-2 and ISO 19005-3 clause 6.2.4.3
+     * allow a device colour space only when the output intent defines the same
+     * space, and apply the same rule to the alternate space of a Separation.
+     * The default output intent is sRGB.
+     */
+    protected function checkDeviceCmykOutputIntent(): void
+    {
+        if ($this->pdfa === 0 || $this->outputintentComponents === 4) {
+            return;
+        }
+
+        if ($this->image->hasDeviceCmykImage()) {
+            $this->addWarning(
+                'PDF/A: a DeviceCMYK image is emitted while the output intent is not a CMYK profile;'
+                . ' call setOutputIntent() with a CMYK ICC profile or convert the image',
+            );
+        }
+
+        if ($this->color->hasEmittedDeviceCmyk()) {
+            $this->addWarning(
+                'PDF/A: a DeviceCMYK colour is emitted while the output intent is not a CMYK profile;'
+                . ' call setOutputIntent() with a CMYK ICC profile or use another colour space',
+            );
+        }
+
+        foreach ($this->color->getEmittedCmykSpotColors() as $name) {
+            $this->addWarning(
+                'PDF/A: the spot colour "'
+                . $name
+                . '" is emitted as a Separation with a DeviceCMYK alternate space while the output intent'
+                . ' is not a CMYK profile; call setOutputIntent() with a CMYK ICC profile or define the'
+                . ' spot colour in the Lab space',
+            );
+        }
     }
 
     /**
@@ -137,11 +199,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      *
      * A page is flagged transparent when its content blends (a sub-1 alpha, a
      * non-Normal blend mode or a soft mask), paints a soft-masked image, draws
-     * an imported page, or paints a Form XObject that itself blends. The actual
+     * an imported page, or paints a Form XObject that itself blends. The
      * emission policy ('auto'/'always'/'never', set via
-     * Tcpdf::setPageTransparencyGroup()) and the PDF/A suppression are applied by
-     * the page layer; this method only supplies the facts it needs. Called once,
-     * just before the page objects are serialized.
+     * Tcpdf::setPageTransparencyGroup()) and the PDF/A suppression are applied
+     * by the page layer. Called once, just before the page objects are
+     * serialized.
      *
      * @throws PageException
      */
@@ -267,11 +329,6 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected int $structtreerootoid = 0;
 
     /**
-     * ParentTree object ID.
-     */
-    protected int $parenttreeoid = 0;
-
-    /**
      * Struct parent keys assigned to page object IDs.
      *
      * @var array<int, int>
@@ -279,18 +336,25 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected array $pagestructparents = [];
 
     /**
-     * Count of MCID-tagged content blocks per page object ID, for PDF/UA structure tree building.
-     *
-     * @var array<int, int>
-     */
-    protected array $pagestructmcids = [];
-
-    /**
      * Struct parent keys assigned to annotation object IDs.
      *
      * @var array<int, int>
      */
     protected array $annotstructparents = [];
+
+    /**
+     * Object ID of the first structure element emitted on each page object ID.
+     *
+     * @var array<int, int>
+     */
+    protected array $pagestructelems = [];
+
+    /**
+     * DER-encoded CMS embedded in the signature /Contents, or '' before signing.
+     *
+     * The DSS collection reads the signature timestamp tokens back out of it.
+     */
+    protected string $signaturecms = '';
 
     /**
      * Returns the RAW PDF string.
@@ -345,8 +409,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutPDFBody(): string
     {
-        if ($this->pdfuaMode === '') {
-            $this->pagestructmcids = [];
+        if (!$this->isTaggedMode()) {
             $this->pdfuaStructLog = [];
             $this->pdfuaStructStack = [];
         }
@@ -354,7 +417,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $this->detectPageTransparency();
         $out = $this->page->getPdfPages($this->pon);
         $this->objid['pages'] = $this->page->getRootObjID();
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $out = $this->setPageStructParents($out);
         } else {
             $this->pagestructparents = [];
@@ -373,24 +436,28 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $this->pon = $this->outfont->getObjectNumber();
         $out .= $this->image->getOutImagesBlock($this->pon);
         $this->pon = $this->image->getObjectNumber();
+        $this->checkDroppedImageAlpha();
         $out .= $this->color->getPdfSpotObjects($this->pon);
         $out .= $this->graph->getOutGradientShaders($this->pon);
         $this->pon = $this->graph->getObjectNumber();
         $out .= $this->getOutXObjects();
         $out .= $this->getOutImportedObjects();
+        $this->collectImportWarnings();
         $out .= $this->getOutPatterns();
         $out .= $this->getOutSVGMasks();
         $out .= $this->getOutResourcesDict();
-        $out .= $this->getOutDestinations();
         $out .= $this->getOutEmbeddedFiles();
         $out .= $this->getOutStructTreeRoot();
+        // The named destinations follow the structure tree because a structure
+        // destination points at a structure element object.
+        $out .= $this->getOutDestinations();
         $out .= $this->getOutAnnotations();
         $out .= $this->getOutJavascript();
         $out .= $this->getOutBookmarks();
         $enc = $this->encrypt->getEncryptionData();
         $isEncrypted = $enc['encrypted'];
-        // PDF/X prohibits encryption (ISO 15930); skip the encryption object when PDF/X mode is active.
-        if ($isEncrypted && !$this->pdfx) {
+        // PDF/A (ISO 19005) and PDF/X (ISO 15930) prohibit encryption: skip the encryption object.
+        if ($isEncrypted && !$this->forbidsEncryption()) {
             $out .= $this->encrypt->getPdfEncryptionObj($this->pon);
         }
 
@@ -402,6 +469,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $out .= $this->getOutMetaInfo();
         $out .= $this->getOutXMP();
         $out .= $this->getOutICC();
+        $this->checkDeviceCmykOutputIntent();
         $result = $out . $this->getOutCatalog();
         $this->importer?->cleanUp();
         return $result;
@@ -470,8 +538,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             . ' 0 R';
         $encData = $this->encrypt->getEncryptionData();
         $enc = $encData;
-        // PDF/X prohibits encryption; omit the /Encrypt trailer entry when PDF/X mode is active.
-        if ((int) $enc['objid'] !== 0 && !$this->pdfx) {
+        // PDF/A and PDF/X prohibit encryption: omit the /Encrypt trailer entry in those modes.
+        if ((int) $enc['objid'] !== 0 && !$this->forbidsEncryption()) {
             $out .= ' /Encrypt ' . (int) $enc['objid'] . ' 0 R';
         }
 
@@ -516,7 +584,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $out = $pdf . $body;
         $xrefOffset = \strlen($out);
-        $size = \max($this->pon, \array_key_last($offsets) ?? 0) + 1;
+        $size = \max($this->pon, \array_key_last($offsets)) + 1;
 
         $out .= $this->buildIncrementalXref($offsets);
         $out .= $this->buildIncrementalTrailer($this->previousStartxref($pdf), $size);
@@ -590,7 +658,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             . $prevStartxref;
 
         $enc = $this->encrypt->getEncryptionData();
-        if ((int) $enc['objid'] !== 0 && !$this->pdfx) {
+        if ((int) $enc['objid'] !== 0 && !$this->forbidsEncryption()) {
             $out .= ' /Encrypt ' . (int) $enc['objid'] . ' 0 R';
         }
 
@@ -626,13 +694,14 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutICC(): string
     {
+        $out = $this->getOutOutputIntentICC();
+
         if ($this->pdfa === 0 && !$this->sRGB) {
-            return '';
+            return $out;
         }
 
         $oid = ++$this->pon;
         $this->objid['srgbicc'] = $oid;
-        $out = $oid . ' 0 obj' . "\n";
         try {
             $icc = $this->file->getLocalFileData(__DIR__ . '/include/sRGB.icc.z');
         } catch (FileException $e) {
@@ -646,12 +715,71 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $icc = $this->encrypt->encryptString($icc, $oid);
         return (
             $out
+            . $oid
+            . ' 0 obj'
+            . "\n"
             . '<< /N 3 /Filter /FlateDecode /Length '
             . \strlen($icc)
             . ' >>'
             . ' stream'
             . "\n"
             . $icc
+            . "\n"
+            . 'endstream'
+            . "\n"
+            . 'endobj'
+            . "\n"
+        );
+    }
+
+    /**
+     * Returns the PDF object embedding the ICC profile supplied through
+     * setOutputIntent(), used as the /DestOutputProfile of the output intent.
+     *
+     * @return string ICC profile PDF object, or empty string when none was supplied.
+     *
+     * @throws PdfException
+     * @throws EncryptException
+     */
+    protected function getOutOutputIntentICC(): string
+    {
+        $this->objid['outputintenticc'] = 0;
+        $this->outputintentComponents = 0;
+        $iccfile = $this->outputintent['iccfile'];
+        if ($iccfile === '') {
+            return '';
+        }
+
+        try {
+            $icc = $this->file->fileGetContents($iccfile);
+        } catch (FileException $e) {
+            throw new PdfException('Unable to read the output intent ICC profile: ' . $iccfile, 0, $e);
+        }
+
+        // The number of colour components is taken from the ICC colour space
+        // signature at offset 16 of the profile header.
+        $components = match (\substr($icc, 16, 4)) {
+            'GRAY' => 1,
+            'CMYK' => 4,
+            default => 3,
+        };
+
+        $this->outputintentComponents = $components;
+        $oid = ++$this->pon;
+        $this->objid['outputintenticc'] = $oid;
+        $stream = $this->encrypt->encryptString($icc, $oid);
+        return (
+            $oid
+            . ' 0 obj'
+            . "\n"
+            . '<< /N '
+            . $components
+            . ' /Length '
+            . \strlen($stream)
+            . ' >>'
+            . ' stream'
+            . "\n"
+            . $stream
             . "\n"
             . 'endstream'
             . "\n"
@@ -670,39 +798,49 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutputIntentsSrgb(): string
     {
-        if ($this->objid['srgbicc'] === 0) {
+        // An explicitly supplied profile takes precedence over the bundled sRGB one.
+        $intenticc = ($this->objid + ['outputintenticc' => 0])['outputintenticc'];
+        $profile = $intenticc !== 0 ? $intenticc : $this->objid['srgbicc'];
+        if ($profile === 0) {
             return '';
         }
+
+        $default = 'sRGB IEC61966-2.1';
+        $identifier = $this->outputintent['identifier'] === '' ? $default : $this->outputintent['identifier'];
+        $condition = $this->outputintent['condition'] === '' ? $default : $this->outputintent['condition'];
+        $info = $this->outputintent['info'] === '' ? $default : $this->outputintent['info'];
+        $registry = $this->outputintent['registry'] === '' ? 'http://www.color.org' : $this->outputintent['registry'];
 
         $oid = $this->objid['catalog'];
         return (
             ' /OutputIntents [<< /Type /OutputIntent /S /GTS_PDFA1 /OutputCondition '
-            . $this->getOutTextString('sRGB IEC61966-2.1', $oid, true)
+            . $this->getOutTextString($condition, $oid, true)
             . ' /OutputConditionIdentifier '
-            . $this->getOutTextString('sRGB IEC61966-2.1', $oid, true)
+            . $this->encrypt->escapeDataString($identifier, $oid)
             . ' /RegistryName '
-            . $this->getOutTextString('http://www.color.org', $oid, true)
+            . $this->encrypt->escapeDataString($registry, $oid)
             . ' /Info '
-            . $this->getOutTextString('sRGB IEC61966-2.1', $oid, true)
+            . $this->getOutTextString($info, $oid, true)
             . ' /DestOutputProfile '
-            . $this->objid['srgbicc']
+            . $profile
             . ' 0 R'
             . ' >>]'
         );
     }
 
     /**
-     * Get OutputIntents for PDF-X if required.
+     * Get the /OutputConditionIdentifier for PDF/X.
+     *
+     * Defaults to a name registered in the ICC characterization data registry, so
+     * that a document without an explicit output intent still satisfies the ISO 15930
+     * requirement that the identifier be either registered or paired with an embedded
+     * /DestOutputProfile. The PDF/X part names ('PDF/X-4' and friends) are not
+     * registered condition names and cannot be used here.
      */
     protected function getOutputIntentsPdfXIdentifier(): string
     {
-        return match ($this->pdfxMode) {
-            'pdfx1a' => 'PDF/X-1a',
-            'pdfx3' => 'PDF/X-3',
-            'pdfx4' => 'PDF/X-4',
-            'pdfx5' => 'PDF/X-5',
-            default => 'OFCOM_PO_P1_F60_95',
-        };
+        $identifier = $this->outputintent['identifier'];
+        return $identifier === '' ? 'OFCOM_PO_P1_F60_95' : $identifier;
     }
 
     /**
@@ -717,15 +855,45 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     {
         $oid = $this->objid['catalog'];
         $identifier = $this->getOutputIntentsPdfXIdentifier();
-        return (
+        $info = $this->outputintent['info'] === '' ? $identifier : $this->outputintent['info'];
+        $registry = $this->outputintent['registry'] === '' ? 'http://www.color.org' : $this->outputintent['registry'];
+
+        // ISO 15930-7 (PDF/X-4) and ISO 15930-8 (PDF/X-5) require the destination
+        // profile to be embedded; the earlier parts accept a registered condition name.
+        // Fall back to the bundled sRGB profile when the caller asked for it but did not
+        // supply a print profile, so that the emitted ICC object is actually referenced.
+        $intenticc = ($this->objid + ['outputintenticc' => 0])['outputintenticc'];
+        $profile = $intenticc !== 0 ? $intenticc : $this->objid['srgbicc'];
+
+        if ($profile === 0 && \in_array($this->pdfxMode, ['pdfx4', 'pdfx5'], true)) {
+            \trigger_error(
+                'PDF/X-4 and PDF/X-5 require an embedded output intent ICC profile:'
+                . ' pass one to setOutputIntent().',
+                E_USER_WARNING,
+            );
+        }
+
+        // The identifier and the registry name are matched against the ICC registry as
+        // plain text, so they are written as byte strings rather than UTF-16BE.
+        $out =
             ' /OutputIntents [<< /Type /OutputIntent /S /GTS_PDFX /OutputConditionIdentifier '
-            . $this->getOutTextString($identifier, $oid, true)
-            . ' /RegistryName '
-            . $this->getOutTextString('http://www.color.org', $oid, true)
+            . $this->encrypt->escapeDataString($identifier, $oid);
+
+        if ($this->outputintent['condition'] !== '') {
+            $out .= ' /OutputCondition ' . $this->getOutTextString($this->outputintent['condition'], $oid, true);
+        }
+
+        $out .=
+            ' /RegistryName '
+            . $this->encrypt->escapeDataString($registry, $oid)
             . ' /Info '
-            . $this->getOutTextString($identifier, $oid, true)
-            . ' >>]'
-        );
+            . $this->getOutTextString($info, $oid, true);
+
+        if ($profile !== 0) {
+            $out .= ' /DestOutputProfile ' . $profile . ' 0 R';
+        }
+
+        return $out . ' >>]';
     }
 
     /**
@@ -779,6 +947,19 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
         }
 
+        $usage = '';
+        if (!$this->forbidsOptionalContentUsage()) {
+            $usage =
+                ' /AS ['
+                . ' << /Event /Print /OCGs ['
+                . $lyrobjs
+                . '] /Category [/Print] >>'
+                . ' << /Event /View /OCGs ['
+                . $lyrobjs
+                . '] /Category [/View] >>'
+                . ' ]';
+        }
+
         return (
             ' /OCProperties << /OCGs ['
             . $lyrobjs
@@ -796,14 +977,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             . $lyrobjs_lock
             . ']'
             . ' /Intent /View'
-            . ' /AS ['
-            . ' << /Event /Print /OCGs ['
-            . $lyrobjs
-            . '] /Category [/Print] >>'
-            . ' << /Event /View /OCGs ['
-            . $lyrobjs
-            . '] /Category [/View] >>'
-            . ' ]'
+            . $usage
             . ' /Order ['
             . $lyrobjs
             . ']'
@@ -869,7 +1043,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $names .= ' /JavaScript ' . $this->jstree;
         }
 
-        if ($this->embeddedfiles !== []) {
+        // The file objects are suppressed in the modes that forbid them, so the
+        // catalog must not reference them either.
+        if ($this->embeddedfiles !== [] && !$this->forbidsEmbeddedFiles()) {
             $afnames = [];
             $afobjs = [];
             foreach ($this->embeddedfiles as $efname => $efdata) {
@@ -939,11 +1115,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out .= ' /StructTreeRoot ' . $this->structtreerootoid . ' 0 R';
         }
 
-        if ($this->pdfuaMode !== '') {
+        if ($this->isTaggedMode()) {
             $out .= ' /MarkInfo << /Marked true >>';
         }
 
-        $language = $this->lang['a_meta_language'] ?? ($this->pdfuaMode !== '' ? 'en-US' : '');
+        $language = $this->lang['a_meta_language'] ?? ($this->isTaggedMode() ? 'en-US' : '');
 
         if ($language !== '') {
             $out .= ' /Lang ' . $this->getOutTextString($language, $oid, true);
@@ -1006,6 +1182,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
             //$out .= ' /CO ';
 
+            $fontIndex = $this->getAcroFormDefaultFontIndex();
+
             if ($this->annotation_fonts !== []) {
                 $out .= ' /DR << /Font <<';
                 foreach ($this->annotation_fonts as $fontkey => $fontid) {
@@ -1017,9 +1195,10 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $out .= ' >> >>';
             }
 
-            $font = $this->font->getFont('helvetica');
-            $fontIndex = (int) $font['i'];
-            $out .= ' /DA ' . $this->encrypt->escapeDataString('/F' . $fontIndex . ' 0 Tf 0 g', $oid);
+            if ($fontIndex > 0) {
+                $out .= ' /DA ' . $this->encrypt->escapeDataString('/F' . $fontIndex . ' 0 Tf 0 g', $oid);
+            }
+
             $out .= ' /Q ' . ($this->rtl ? '2' : '0');
             //$out .= ' /XFA ';
             $out .= ' >>';
@@ -1044,6 +1223,43 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $out .= ' >>' . "\n" . 'endobj' . "\n";
         return $out;
+    }
+
+    /**
+     * Returns the font index to use in the AcroForm default appearance (/DA), or 0 if no font is loaded.
+     *
+     * The selected font is registered as an annotation font, so that it is always
+     * listed in the AcroForm default resource dictionary (/DR).
+     * The first annotation font is used when available, otherwise 'helvetica',
+     * the current font, or the first loaded font.
+     *
+     * @throws FontException
+     */
+    protected function getAcroFormDefaultFontIndex(): int
+    {
+        if ($this->annotation_fonts !== []) {
+            return (int) \reset($this->annotation_fonts);
+        }
+
+        $fontkey = '';
+        if ($this->font->isValidKey('helvetica')) {
+            $fontkey = 'helvetica';
+        } elseif ($this->font->hasCurrentFont()) {
+            $fontkey = $this->font->getCurrentFontKey();
+        } else {
+            $fonts = $this->font->getFonts();
+            if ($fonts !== []) {
+                $fontkey = \array_key_first($fonts);
+            }
+        }
+
+        if ($fontkey === '') {
+            return 0;
+        }
+
+        $fontIndex = (int) $this->font->getFont($fontkey)['i'];
+        $this->annotation_fonts[$fontkey] = $fontIndex;
+        return $fontIndex;
     }
 
     /**
@@ -1170,7 +1386,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     /**
      * Returns the PDF XObjects entry.
      *
+     * @throws ColorException
      * @throws EncryptException
+     * @throws FontException
      * @throws PdfException
      */
     protected function getOutXObjects(): string
@@ -1253,6 +1471,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
     /**
      * Returns the PDF Resources Dictionary entry.
+     *
+     * @throws ColorException
      */
     protected function getOutResourcesDict(): string
     {
@@ -1292,6 +1512,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     /**
      * Returns the PDF Pattern objects entry.
      *
+     * @throws ColorException
      * @throws EncryptException
      * @throws PdfException
      */
@@ -1478,6 +1699,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
     /**
      * Build a minimized resources dictionary fragment for a pattern stream.
+     *
+     * @throws ColorException
      */
     protected function getPatternStreamResourceDict(string $stream): string
     {
@@ -1621,7 +1844,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $pheight = $page['pheight'];
             $pgx = $this->toPoints($dst['x']);
             $pgy = $this->toYPoints($dst['y'], $pheight);
-            $out .= \sprintf(' /%s [%u 0 R /XYZ %F %F null]', $name, $poid, $pgx, $pgy);
+            $out .= ' /' . $name . ' ' . $this->getOutDestinationArray($poid, \sprintf('/XYZ %F %F null', $pgx, $pgy));
         }
 
         return $out . ' >>' . "\n" . 'endobj' . "\n";
@@ -1639,8 +1862,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutEmbeddedFiles(): string
     {
-        if ($this->pdfa === 1 || $this->pdfa === 2) {
-            // embedded files are not allowed in PDF/A mode version 1 and 2
+        if ($this->forbidsEmbeddedFiles()) {
             return '';
         }
 
@@ -1754,19 +1976,17 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutStructTreeRoot(): string
     {
-        if ($this->pdfuaMode === '') {
+        $this->pagestructelems = [];
+        if (!$this->isTaggedMode()) {
             $this->pagestructparents = [];
-            $this->pagestructmcids = [];
             $this->annotstructparents = [];
-            $this->parenttreeoid = 0;
             $this->structtreerootoid = 0;
             return '';
         }
 
-        $structLog = $this->pdfuaStructLog;
+        $structLog = $this->addAnnotationStructElems($this->pdfuaStructLog);
         if ($structLog === []) {
             $this->annotstructparents = [];
-            $this->parenttreeoid = 0;
             $this->structtreerootoid = 0;
             return '';
         }
@@ -1801,7 +2021,6 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         $this->pon = $nextOid - 1;
-        $this->parenttreeoid = $parentTreeOid;
         $this->structtreerootoid = $structTreeRootOid;
 
         $childEntryIdx = [];
@@ -1826,8 +2045,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         // Document StructElem.
         $firstPageOid = $this->pagestructparents === [] ? 0 : (int) \array_key_first($this->pagestructparents);
-        if ($rootEntryIdx !== []) {
-            $firstTaggedPageOid = $pidToOid[$structLog[$rootEntryIdx[0]]['pid']] ?? 0;
+        $firstRootEntry = $rootEntryIdx === [] ? null : $structLog[$rootEntryIdx[0]] ?? null;
+        if ($firstRootEntry !== null) {
+            $firstTaggedPageOid = $pidToOid[$firstRootEntry['pid']] ?? 0;
             if ($firstTaggedPageOid > 0) {
                 $firstPageOid = $firstTaggedPageOid;
             }
@@ -1868,9 +2088,13 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 continue;
             }
 
+            $entry = $structLog[$entryIdx] ?? null;
+            if ($entry === null) {
+                continue;
+            }
+
             $entryParentOid[$entryIdx] = $parentOid;
-            $entryOrder[] = $entryIdx;
-            $entry = $structLog[$entryIdx];
+            $entryOrder[$entryIdx] = $entry;
             $entryOid = $elemOids[$entryIdx] ?? 0;
             $childElemIdx = [];
             foreach ($entry['kids'] as $kid) {
@@ -1887,9 +2111,17 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
         }
 
-        foreach ($entryOrder as $entryIdx) {
-            $entry = $structLog[$entryIdx];
-            $entry += ['annots' => [], 'alt' => '', 'attr' => []];
+        // The elements are visited in document order, so the first one recorded for a
+        // page is the element a destination or a reference to that page points at.
+        foreach ($entryOrder as $entryIdx => $entry) {
+            $pageOid = $pidToOid[$entry['pid']] ?? 0;
+            if ($pageOid > 0 && !isset($this->pagestructelems[$pageOid])) {
+                $this->pagestructelems[$pageOid] = $elemOids[$entryIdx] ?? 0;
+            }
+        }
+
+        foreach ($entryOrder as $entryIdx => $entry) {
+            $entry += ['annots' => [], 'alt' => '', 'attr' => [], 'bbox' => [], 'refpid' => -1];
             $entryPageOid = $pidToOid[$entry['pid']] ?? 0;
             $kidsOut = '';
             foreach ($entry['kids'] as $kid) {
@@ -1927,11 +2159,25 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $altOut = ' /Alt ' . $this->getOutTextString($entry['alt'], $elemOids[$entryIdx] ?? 0, true);
             }
 
+            // The /BBox Layout attribute only applies to elements laid out on a single
+            // page, so it is skipped when the element content is split by a page break.
+            $bboxPairs = '';
+            $bbox = $entry['bbox'];
+            if (\count($bbox) === 4 && $this->isSinglePageStructElem($structLog, $entryIdx)) {
+                [$bllx, $blly, $burx, $bury] = $bbox;
+                $bboxPairs = \sprintf(' /O /Layout /BBox [%F %F %F %F]', $bllx, $blly, $burx, $bury);
+            }
+
             $attrOut = '';
             $idOut = '';
+            $attrPairs = $bboxPairs;
             if ($entry['attr'] !== []) {
-                $attrPairs = '';
                 foreach ($entry['attr'] as $akey => $aval) {
+                    if ($akey === 'O' && $bboxPairs !== '') {
+                        // The Layout owner is already set by the bounding box.
+                        continue;
+                    }
+
                     if ($akey === '' || $aval === '') {
                         continue;
                     }
@@ -1973,10 +2219,23 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
                     $attrPairs .= ' /' . $akey . ' /' . $aval;
                 }
+            }
 
-                if ($attrPairs !== '') {
-                    $attrOut = ' /A <<' . $attrPairs . ' >>';
-                }
+            if ($attrPairs !== '') {
+                $attrOut = ' /A <<' . $attrPairs . ' >>';
+            }
+
+            // An element that refers to a target elsewhere in the document, such as a
+            // table of contents item, names the structure element of the target page.
+            $refOut = '';
+            $refPid = $entry['refpid'];
+            $refElemOid = 0;
+            if (\array_key_exists($refPid, $pidToOid)) {
+                $refElemOid = $this->getPageStructElemOid($pidToOid[$refPid]);
+            }
+
+            if ($refElemOid > 0 && $refElemOid !== ($elemOids[$entryIdx] ?? 0)) {
+                $refOut = ' /Ref [' . $refElemOid . ' 0 R]';
             }
 
             $parentOid = $entryParentOid[$entryIdx] ?? $documentStructElemOid;
@@ -1995,6 +2254,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 . $altOut
                 . $idOut
                 . $attrOut
+                . $refOut
                 . ' /K ['
                 . $kidsOut
                 . ' ] >>'
@@ -2073,12 +2333,145 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     }
 
     /**
+     * Returns the destination array for a target inside the document.
+     *
+     * The target is the page object, or the first structure element of that page
+     * when the mode requires a structure destination (ISO 32000-2 clause 12.3.2.3).
+     *
+     * @param int    $pageObjN Object number of the destination page.
+     * @param string $args     Destination arguments following the target, e.g. '/XYZ 0 100.0 null'.
+     */
+    protected function getOutDestinationArray(int $pageObjN, string $args): string
+    {
+        $target = $pageObjN;
+        if ($this->requiresStructureDestinations()) {
+            $elemOid = $this->getPageStructElemOid($pageObjN);
+            if ($elemOid > 0) {
+                $target = $elemOid;
+            }
+        }
+
+        return \sprintf('[%u 0 R %s]', $target, $args);
+    }
+
+    /**
+     * Returns the object number of the first structure element emitted on the given
+     * page, or 0 when the page carries none.
+     *
+     * @param int $pageObjN Object number of the page.
+     */
+    protected function getPageStructElemOid(int $pageObjN): int
+    {
+        return $this->pagestructelems[$pageObjN] ?? 0;
+    }
+
+    /**
+     * Appends a structure element for every annotation that is not nested in one already.
+     *
+     * ISO 14289-1 requires a Widget annotation to be nested in a Form element, a Link
+     * annotation in a Link element, and every other annotation, except PrinterMark and
+     * Popup, in an Annot element.
+     *
+     * @param array<int, TPdfUaStructElem> $structLog Completed structure elements.
+     *
+     * @return array<int, TPdfUaStructElem>
+     */
+    protected function addAnnotationStructElems(array $structLog): array
+    {
+        $tagged = [];
+        foreach ($structLog as $entry) {
+            foreach ($entry['annots'] ?? [] as $annotOid) {
+                $tagged[$annotOid] = true;
+            }
+        }
+
+        foreach ($this->page->getPages() as $page) {
+            $page += ['annotrefs' => [], 'pid' => 0];
+            foreach ($page['annotrefs'] as $annotOid) {
+                $oid = (int) $annotOid;
+                $role = isset($tagged[$oid]) ? '' : $this->getAnnotationStructRole($oid);
+                if ($role === '') {
+                    continue;
+                }
+
+                $tagged[$oid] = true;
+                $structLog[] = [
+                    'role' => $role,
+                    'pid' => (int) $page['pid'],
+                    'mcids' => [],
+                    'kids' => [],
+                    'annots' => [$oid],
+                ];
+            }
+        }
+
+        return $structLog;
+    }
+
+    /**
+     * Returns the structure element role that nests the given annotation, or an empty
+     * string when the annotation needs none.
+     */
+    protected function getAnnotationStructRole(int $oid): string
+    {
+        // The signature widgets are written by getOutSignatureFields() and
+        // getOutSignature(), so they never reach the annotation registry.
+        if (\array_key_exists($oid, $this->getSignatureWidgetFields())) {
+            return 'Form';
+        }
+
+        $annot = $this->annotation[$oid] ?? null;
+        if ($annot === null) {
+            return '';
+        }
+
+        return match (\strtolower($annot['opt']['subtype'])) {
+            'link' => 'Link',
+            'widget' => 'Form',
+            '', 'printermark' => '',
+            default => 'Annot',
+        };
+    }
+
+    /**
+     * Returns true when a structure element and its whole subtree sit on a single page.
+     *
+     * @param array<int, TPdfUaStructElem> $structLog Completed structure elements.
+     * @param int $entryIdx Index of the element to inspect in $structLog.
+     */
+    protected function isSinglePageStructElem(array $structLog, int $entryIdx): bool
+    {
+        $pids = [];
+        $seen = [];
+        $stack = [$entryIdx];
+        while ($stack !== []) {
+            $idx = (int) \array_pop($stack);
+            $entry = $structLog[$idx] ?? null;
+            if ($entry === null || isset($seen[$idx])) {
+                continue;
+            }
+
+            $seen[$idx] = true;
+            $pids[$entry['pid']] = true;
+            foreach ($entry['kids'] as $kid) {
+                if ($kid['type'] === 'elem') {
+                    $stack[] = $kid['id'];
+                    continue;
+                }
+
+                $pids[$kid['pid'] ?? $entry['pid']] = true;
+            }
+        }
+
+        return \count($pids) <= 1;
+    }
+
+    /**
      * Inject StructParents entries into serialized page objects for PDF/UA mode.
      */
     protected function setPageStructParents(string $pdfpages): string
     {
         $this->pagestructparents = [];
-        $this->pagestructmcids = [];
         $pages = $this->page->getPages();
         $parentKey = 0;
         foreach ($pages as $page) {
@@ -2173,6 +2566,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     continue;
                 }
                 $subtype = $opt['subtype'];
+                if ($subtype === 'Widget' && $this->isTaggedMode() && !isset($opt['tu'])) {
+                    // ISO 14289-1 7.18.1 requires either a field description or an
+                    // alternative description on every widget; fall back to the field name.
+                    $opt['tu'] = \is_string($opt['t'] ?? null) && $opt['t'] !== '' ? $opt['t'] : $rawTxt;
+                }
+
                 /** @var array<string, mixed> $annotOpt */
                 $annotOpt = $opt;
 
@@ -2193,6 +2592,10 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $width = $this->toPoints($annot['w']);
                 $height = $this->toPoints($annot['h']);
                 $rect = \sprintf('%F %F %F %F', $orx, $ory, $orx + $width, $ory + $height);
+                if ($this->pdfx) {
+                    $this->checkPdfxAnnotationPlacement($subtype, $page, $orx, $ory, $width, $height, $pageNum);
+                }
+
                 $out .=
                     (int) $oid
                     . ' 0 obj'
@@ -2211,9 +2614,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $out .= ' /FT /' . $annotOpt['ft'];
                 }
 
-                if ($subtype !== 'Link' || $this->pdfuaMode !== '') {
+                if ($subtype !== 'Link' || $this->isTaggedMode()) {
                     $out .= ' /Contents ' . $this->getOutTextString($annot['txt'], $oid, true);
                 }
+
+                $annotOpt = $this->getConformingAnnotationAppearance($subtype, $annotOpt, $width, $height);
 
                 list($aas, $apx) = $this->getAnnotationAppearanceStream(['opt' => $annotOpt], $width, $height);
 
@@ -2233,7 +2638,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $out .= ' /C [ ' . $this->color->getPdfRgbComponents($annotOpt['c']) . ' ]';
                 }
 
-                if ($this->pdfuaMode !== '' && isset($this->annotstructparents[(int) $oid])) {
+                if ($this->isTaggedMode() && isset($this->annotstructparents[(int) $oid])) {
                     $oidKey = (int) $oid;
                     $out .= ' /StructParent ' . ($this->annotstructparents[$oidKey] ?? 0);
                 }
@@ -2331,7 +2736,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out .= ' /AS /' . $annot['opt']['as'];
         }
 
-        if (!isset($annot['opt']['ap']) || $annot['opt']['ap'] === '') {
+        if (!$this->hasAnnotationAppearance($annot['opt']) || !isset($annot['opt']['ap'])) {
             return [$out, ''];
         }
 
@@ -2379,6 +2784,248 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out . ' >>',
             $apxout,
         ];
+    }
+
+    /**
+     * Returns true when the active conformance mode requires the given annotation
+     * subtype to carry an appearance stream.
+     *
+     * ISO 19005 and ISO 15930 exempt only Popup annotations and links.
+     */
+    protected function requiresAnnotationAppearance(string $subtype): bool
+    {
+        if ($this->pdfa <= 0 && !$this->pdfx) {
+            return false;
+        }
+
+        return !\in_array($subtype, ['Link', 'Popup'], true);
+    }
+
+    /**
+     * Returns true when the annotation options define an appearance.
+     *
+     * @param array<string, mixed> $opt Annotation options.
+     */
+    protected function hasAnnotationAppearance(array $opt): bool
+    {
+        return ($opt['ap'] ?? '') !== '' && ($opt['ap'] ?? []) !== [];
+    }
+
+    /**
+     * Returns the annotation options carrying the appearance that the active
+     * conformance mode requires.
+     *
+     * @param string               $subtype Canonical annotation subtype name.
+     * @param array<string, mixed> $opt     Annotation options.
+     * @param float                $width   Annotation width in points.
+     * @param float                $height  Annotation height in points.
+     *
+     * @return array<string, mixed>
+     */
+    protected function getConformingAnnotationAppearance(
+        string $subtype,
+        array $opt,
+        float $width,
+        float $height,
+    ): array {
+        if (!$this->requiresAnnotationAppearance($subtype)) {
+            return $opt;
+        }
+
+        if (!$this->hasAnnotationAppearance($opt)) {
+            $opt['ap'] = [
+                'n' => $this->getDefaultAnnotationAppearance($subtype, $opt, $width, $height),
+            ];
+        }
+
+        // ISO 19005 requires the normal appearance of a button field to be a
+        // subdictionary of states rather than a single stream.
+        if (($opt['ft'] ?? '') !== 'Btn' || !\is_array($opt['ap'] ?? null)) {
+            return $opt;
+        }
+
+        if (!\is_string($opt['ap']['n'] ?? null) || $opt['ap']['n'] === '') {
+            return $opt;
+        }
+
+        $opt['ap'] = [
+            'n' => [
+                'Off' => $opt['ap']['n'],
+            ],
+        ];
+        if (($opt['as'] ?? '') === '') {
+            $opt['as'] = 'Off';
+        }
+
+        return $opt;
+    }
+
+    /**
+     * Returns a normal appearance content stream for an annotation that has none.
+     *
+     * The stream draws a placeholder inside the annotation rectangle: the shape of the
+     * annotation for the subtypes that have one, a bordered box otherwise. Pass an 'ap'
+     * option to setAnnotation() to supply a different appearance.
+     *
+     * @param string               $subtype Canonical annotation subtype name.
+     * @param array<string, mixed> $opt     Annotation options.
+     * @param float                $width   Annotation width in points.
+     * @param float                $height  Annotation height in points.
+     */
+    protected function getDefaultAnnotationAppearance(string $subtype, array $opt, float $width, float $height): string
+    {
+        if ($width <= 0.0 || $height <= 0.0) {
+            return 'q Q';
+        }
+
+        $color = \is_string($opt['c'] ?? null) && $opt['c'] !== '' ? $opt['c'] : '';
+        $line = $this->toUnit($this->getAnnotationAppearanceLineWidth($opt));
+        $wid = $this->toUnit($width);
+        $hei = $this->toUnit($height);
+        $inset = $line / 2;
+
+        $stroke = [
+            'lineWidth' => $line,
+            'lineColor' => $color === '' ? '#000000' : $color,
+        ];
+        $filled = $stroke
+        + [
+            'fillColor' => $color === '' ? '#ffff00' : $color,
+        ];
+
+        // The graph layer measures ordinates from the top of the page, so the page
+        // height is set to the annotation height while the appearance is drawn: the
+        // coordinate space of the stream is the annotation rectangle itself.
+        $pageh = $this->graph->setPageHeight($hei);
+
+        $path = match ($subtype) {
+            'Circle' => $this->graph->getEllipse(
+                $wid / 2,
+                $hei / 2,
+                ($wid - $line) / 2,
+                ($hei - $line) / 2,
+                0,
+                0,
+                360,
+                'S',
+                $stroke,
+            ),
+            'Highlight' => $this->graph->getStyleCmd($filled) . $this->graph->getRawRect(0, 0, $wid, $hei, 'F'),
+            'StrikeOut' => $this->graph->getLine(0, $hei / 2, $wid, $hei / 2, $stroke),
+            'Squiggly', 'Underline' => $this->graph->getLine(0, $hei - $inset, $wid, $hei - $inset, $stroke),
+            'Text' => $this->getNoteAppearancePath($stroke, $filled, $inset, $wid, $hei),
+            default => $this->graph->getStyleCmd($stroke)
+                . $this->graph->getRawRect($inset, $inset, $wid - $line, $hei - $line, 'S'),
+        };
+
+        $this->graph->setPageHeight($pageh);
+
+        return 'q ' . $path . ' Q';
+    }
+
+    /**
+     * Returns the border width in points to use for a generated annotation appearance.
+     *
+     * @param array<string, mixed> $opt Annotation options.
+     */
+    protected function getAnnotationAppearanceLineWidth(array $opt): float
+    {
+        $width = 1.0;
+        if (\is_array($opt['bs'] ?? null) && \is_numeric($opt['bs']['w'] ?? null)) {
+            $width = \floatval($opt['bs']['w']);
+        } elseif (\is_array($opt['border'] ?? null) && \is_numeric($opt['border'][2] ?? null)) {
+            $width = \floatval($opt['border'][2]);
+        }
+
+        return \max(0.2, \min(10.0, $width));
+    }
+
+    /**
+     * Returns the path operators of the note icon used for Text annotations.
+     *
+     * @param StyleDataOpt $stroke Style of the icon rules.
+     * @param StyleDataOpt $filled Style of the icon body.
+     * @param float        $inset  Distance of the body from the annotation edge in user units.
+     * @param float        $width  Annotation width in user units.
+     * @param float        $height Annotation height in user units.
+     */
+    protected function getNoteAppearancePath(
+        array $stroke,
+        array $filled,
+        float $inset,
+        float $width,
+        float $height,
+    ): string {
+        $out =
+            $this->graph->getStyleCmd($filled)
+            . $this->graph->getRawRect($inset, $inset, $width - (2 * $inset), $height - (2 * $inset), 'B');
+
+        $marginx = $width / 5;
+        for ($idx = 1; $idx <= 3; ++$idx) {
+            $posy = ($height * $idx) / 4;
+            $out .= $this->graph->getLine($marginx, $posy, $width - $marginx, $posy, $idx === 1 ? $stroke : []);
+        }
+
+        return $out;
+    }
+
+    /**
+     * Records a warning when a PDF/X annotation overlaps the page area that ISO 15930
+     * requires to be free of annotations.
+     *
+     * @param string $subtype  Canonical annotation subtype name.
+     * @param array<string, mixed> $page Page data.
+     * @param float  $posx     Annotation lower-left abscissa in points.
+     * @param float  $posy     Annotation lower-left ordinate in points.
+     * @param float  $width    Annotation width in points.
+     * @param float  $height   Annotation height in points.
+     * @param int    $pagenum  Page number.
+     */
+    protected function checkPdfxAnnotationPlacement(
+        string $subtype,
+        array $page,
+        float $posx,
+        float $posy,
+        float $width,
+        float $height,
+        int $pagenum,
+    ): void {
+        if ($subtype === 'Popup' || !\is_array($page['box'] ?? null)) {
+            return;
+        }
+
+        $boxes = $page['box'];
+        $name = 'BleedBox';
+        foreach (['BleedBox', 'TrimBox', 'ArtBox'] as $candidate) {
+            $name = $candidate;
+            if (\is_array($boxes[$candidate] ?? null)) {
+                break;
+            }
+        }
+
+        if (!\is_array($boxes[$name] ?? null)) {
+            return;
+        }
+
+        $box = $boxes[$name];
+        if (
+            $posx >= \floatval($box['urx'] ?? 0)
+            || ($posx + $width) <= \floatval($box['llx'] ?? 0)
+            || $posy >= \floatval($box['ury'] ?? 0)
+            || ($posy + $height) <= \floatval($box['lly'] ?? 0)
+        ) {
+            return;
+        }
+
+        $this->addWarning(
+            'PDF/X: the /'
+            . $subtype
+            . ' annotation on page '
+            . $pagenum
+            . ' overlaps the '
+            . $name
+            . '; ISO 15930 requires annotations to be positioned entirely outside it',
+        );
     }
 
     /**
@@ -2534,9 +3181,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $fval = $this->getAnnotationFlagsCode($annot['opt']['f']);
         }
 
-        if ($this->pdfa > 0) {
-            // force print flag for PDF/A mode
+        if ($this->pdfa > 0 || $this->pdfx) {
+            // ISO 19005 and ISO 15930 require the Print flag to be set and the Hidden
+            // and NoView flags to be clear on every annotation.
             $fval |= 4;
+            $fval &= ~(2 | 32);
         }
 
         return ' /F ' . $fval;
@@ -2703,7 +3352,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $pageObjN = (int) $page['n'];
                     $pageHeight = $page['pheight'];
                     $y = $this->toYPoints($l['y'], $pageHeight);
-                    $out .= \sprintf(' /Dest [%u 0 R /XYZ 0 %F null]', $pageObjN, $y);
+                    $out .= ' /Dest ' . $this->getOutDestinationArray($pageObjN, \sprintf('/XYZ 0 %F null', $y));
                     break;
                 case '%': // embedded PDF file
                     if (!$this->pdfx) {
@@ -2728,7 +3377,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                         . $filename
                         . '")'
                         . ' D.exportDataObject( { cName : MyData[i].name, nLaunch : 2});';
-                    if (!$this->pdfx && $this->pdfuaMode === '') {
+                    // ISO 19005 permits no JavaScript action: PDF/A-1 and PDF/A-2 refuse
+                    // embedded files altogether, PDF/A-3 accepts them but not this action.
+                    if (!$this->pdfx && $this->pdfa === 0 && $this->pdfuaMode === '') {
                         $out .= ' /A << /S /JavaScript /JS ' . $this->getOutTextString($jsa, $oid, true) . ' >>';
                     }
                     break;
@@ -3329,8 +3980,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             return '';
         }
 
-        // Limited support: currently writes sound file reference and icon name.
-        // Extended sound parameters (R, C, B, E, CO, CP) are intentionally not serialized yet.
+        // Writes the sound file reference and the icon name. The extended sound
+        // parameters (R, C, B, E, CO, CP) are not serialized.
         $out = ' /Sound ' . $this->embeddedfiles[$filename]['f'] . ' 0 R';
         $iconsapp = ['Speaker', 'Mic'];
         if (isset($annot['opt']['name']) && \in_array($annot['opt']['name'], $iconsapp, true)) {
@@ -3557,7 +4208,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     && \is_numeric($mkIf['a'][0])
                     && \is_numeric($mkIf['a'][1])
                 ) {
-                    $out .= \sprintf(' /A [%F %F]', $mkIf['a'][0], $mkIf['a'][1]);
+                    $out .= \sprintf(' /A [%F %F]', \floatval($mkIf['a'][0]), \floatval($mkIf['a'][1]));
                 }
 
                 if (($mkIf['fb'] ?? false) === true) {
@@ -3567,7 +4218,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $out .= '>>';
             }
 
-            if (isset($mk['tp']) && \is_numeric($mk['tp']) && $mk['tp'] >= 0 && $mk['tp'] <= 6) {
+            if (isset($mk['tp']) && \is_numeric($mk['tp']) && \floatval($mk['tp']) >= 0 && \floatval($mk['tp']) <= 6) {
                 $out .= ' /TP ' . (int) $mk['tp'];
             }
 
@@ -3628,7 +4279,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $out .= ' ' . $annot['opt']['v'][$vkey];
                 }
             } else {
-                if (\is_string($annot['opt']['v']) || \is_numeric($annot['opt']['v'])) {
+                if (\is_string($annot['opt']['v']) || \is_int($annot['opt']['v']) || \is_float($annot['opt']['v'])) {
                     $out .= ' ' . $this->getOutTextString((string) $annot['opt']['v'], $oid, true);
                 }
             }
@@ -3650,7 +4301,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $out .= ' ' . $annot['opt']['dv'][$dvkey];
                 }
             } else {
-                if (\is_string($annot['opt']['dv']) || \is_numeric($annot['opt']['dv'])) {
+                if (\is_string($annot['opt']['dv']) || \is_int($annot['opt']['dv']) || \is_float($annot['opt']['dv'])) {
                     $out .= ' ' . $this->getOutTextString((string) $annot['opt']['dv'], $oid, true);
                 }
             }
@@ -3672,7 +4323,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     $out .= ' ' . $annot['opt']['rv'][$rvkey];
                 }
             } else {
-                if (\is_string($annot['opt']['rv']) || \is_numeric($annot['opt']['rv'])) {
+                if (\is_string($annot['opt']['rv']) || \is_int($annot['opt']['rv']) || \is_float($annot['opt']['rv'])) {
                     $out .= ' ' . $this->getOutTextString((string) $annot['opt']['rv'], $oid, true);
                 }
             }
@@ -3683,6 +4334,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             \is_string($action)
             && $action !== ''
             && !$this->pdfx
+            && !$this->forbidsWidgetActions()
             && ($this->pdfuaMode === '' || !\str_contains($action, '/JavaScript'))
         ) {
             $out .= ' /A << ' . $action . ' >>';
@@ -3693,6 +4345,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             \is_string($additionalAction)
             && $additionalAction !== ''
             && !$this->pdfx
+            && !$this->forbidsWidgetActions()
             && ($this->pdfuaMode === '' || !\str_contains($additionalAction, '/JavaScript'))
         ) {
             $out .= ' /AA << ' . $additionalAction . ' >>';
@@ -3793,7 +4446,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $out .= ' /AC ' . $mk['ac'];
             }
 
-            if (isset($mk['tp']) && \is_numeric($mk['tp']) && $mk['tp'] >= 0 && $mk['tp'] <= 6) {
+            if (isset($mk['tp']) && \is_numeric($mk['tp']) && \floatval($mk['tp']) >= 0 && \floatval($mk['tp']) <= 6) {
                 $out .= ' /TP ' . (int) $mk['tp'];
             }
 
@@ -4161,7 +4814,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                         $poid = (int) $page['n'];
                         $pheight = $page['pheight'];
                         $y = $this->toYPoints($l['y'], $pheight);
-                        $out .= \sprintf(' /Dest [%u 0 R /XYZ 0 %F null]', $poid, $y);
+                        $out .= ' /Dest ' . $this->getOutDestinationArray($poid, \sprintf('/XYZ 0 %F null', $y));
                         break;
                     case '%':
                         // embedded PDF file
@@ -4210,7 +4863,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $poid = (int) $page['n'];
                 $pheight = $page['pheight'];
                 $y = $this->toYPoints($outline['y'], $pheight);
-                $out .= \sprintf(' /Dest [%u 0 R /XYZ %F %F null]', $poid, $x, $y);
+                $out .= ' /Dest ' . $this->getOutDestinationArray($poid, \sprintf('/XYZ %F %F null', $x, $y));
             }
 
             // set font style
@@ -4274,19 +4927,115 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             /** @throws \Throwable */
             fn(string $text, int $oid): string => $this->getOutTextString($text, $oid, true);
 
+        $fields = $this->getSignatureWidgetFields();
         $out = '';
-        foreach ($this->signature['appearance']['empty'] as $key => $esa) {
+        foreach ($this->signature['appearance']['empty'] as $esa) {
             $page = $this->page->getPage($esa['page']);
-            $signame = \sprintf('%s [%03d]', $esa['name'], $key + 1);
+            $objid = (int) $esa['objid'];
+            $signame = $fields[$objid] ?? $esa['name'];
+            list($width, $height) = $this->getSignatureRectSize($esa['rect']);
+            list($apEntry, $apxout) = $this->getConformingSignatureAppearance($width, $height);
             $out .= $widget->annotation(
-                $esa['objid'],
+                $objid,
                 $esa['rect'],
                 (int) $page['n'],
                 $signame,
                 null,
-                '',
+                $apEntry . $this->getSignatureWidgetTaggedEntries($objid, $signame),
                 $stringEncoder,
             );
+            $out .= $apxout;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Returns the object number of every emitted signature widget mapped to its field name.
+     *
+     * @return array<int, string>
+     */
+    protected function getSignatureWidgetFields(): array
+    {
+        if ($this->signature === []) {
+            return [];
+        }
+
+        $fields = [];
+        $soid = (int) $this->objid['signature'];
+        if ($soid > 0 && $this->sign && $this->signature['cert_type'] >= 0) {
+            $fields[$soid] = $this->signature['appearance']['name'];
+        }
+
+        foreach ($this->signature['appearance']['empty'] as $key => $esa) {
+            $fields[(int) $esa['objid']] = \sprintf('%s [%03d]', $esa['name'], $key + 1);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Returns the object number of every emitted signature widget mapped to the
+     * description the caller set for it.
+     *
+     * @return array<int, string>
+     */
+    protected function getSignatureWidgetDescriptions(): array
+    {
+        if ($this->signature === []) {
+            return [];
+        }
+
+        $descriptions = [];
+        $soid = (int) $this->objid['signature'];
+        $tu = $this->signature['appearance']['tu'] ?? '';
+        if ($soid > 0 && $tu !== '') {
+            $descriptions[$soid] = $tu;
+        }
+
+        foreach ($this->signature['appearance']['empty'] as $esa) {
+            $etu = $esa['tu'] ?? '';
+            if ($etu !== '') {
+                $descriptions[(int) $esa['objid']] = $etu;
+            }
+        }
+
+        return $descriptions;
+    }
+
+    /**
+     * Returns the signature widget dictionary entries required by a tagged mode.
+     *
+     * ISO 14289-1 clause 7.18.1 requires a form field to carry a /TU description,
+     * and clause 7.18.4 requires the widget to be nested in a Form structure
+     * element, which the /StructParent key points back to.
+     *
+     * The description set through setSignatureAppearanceDescription() or through
+     * the description argument of addEmptySignatureAppearance() is preferred to
+     * the field name, which is an identifier.
+     *
+     * @param int    $oid       Signature widget object number.
+     * @param string $fieldName Partial field name of the signature field.
+     *
+     * @throws \Throwable
+     */
+    protected function getSignatureWidgetTaggedEntries(int $oid, string $fieldName): string
+    {
+        if (!$this->isTaggedMode()) {
+            return '';
+        }
+
+        $description = $this->getSignatureWidgetDescriptions()[$oid] ?? '';
+        if (\trim($description) === '') {
+            $description = \trim($fieldName) === '' ? 'Signature field' : $fieldName;
+        }
+
+        $encoded = $this->getOutTextString($description, $oid, true);
+        // ISO 14289-2 clause 8.10.2.3 requires a widget with no label to describe
+        // itself through /Contents.
+        $out = ' /Contents ' . $encoded . ' /TU ' . $encoded;
+        if (isset($this->annotstructparents[$oid])) {
+            $out .= ' /StructParent ' . $this->annotstructparents[$oid];
         }
 
         return $out;
@@ -4312,6 +5061,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $pdfdoc = $prepared['pdfdoc'];
         $byteRange = $prepared['byte_range'];
         $cms = $this->buildSignatureCms($pdfdoc);
+        $this->signaturecms = $cms;
         $signature = $this->convertBinarySignatureToHex($cms);
 
         return \substr($pdfdoc, 0, $byteRange[1]) . '<' . $signature . '>' . \substr($pdfdoc, $byteRange[1]);
@@ -4319,11 +5069,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
     /**
      * Build the detached CMS (CAdES) signature over the ByteRange content using
-     * the native tc-lib-pdf-sign builder, replacing the temp-file PKCS#7 path.
+     * the tc-lib-pdf-sign builder.
      *
      * The produced CMS carries the ESS signing-certificate-v2 signed attribute,
-     * so it is a CAdES-BES structure for every profile; the legacy profile keeps
-     * the /SubFilter /adbe.pkcs7.detached wrapper and stays verifiable.
+     * making it a CAdES-BES structure for every profile. The ISO 32000-1 profile
+     * keeps the /SubFilter /adbe.pkcs7.detached wrapper.
      *
      * @param string $content ByteRange-covered document bytes to sign.
      *
@@ -4360,8 +5110,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      *
      * The RFC 3161 request/response codec lives in the tc-lib-pdf-sign package;
      * this host method only owns the HTTP transport (postTimestampRequest, which
-     * enforces the URL allow-list). The returned DER token is embedded by the CMS
+     * enforces the URL allow-list). The token is verified and matched against the
+     * request by the package before it is returned, then embedded by the CMS
      * builder as the id-aa-signatureTimeStampToken unsigned attribute (PAdES B-T).
+     *
+     * The allow_sha1 setting relaxes the digest rules for a TSA that still emits
+     * the RFC 2634 signing-certificate (v1) attribute, or signs with SHA-1.
      *
      * @param string $signature Raw SignerInfo signature bytes to be timestamped.
      *
@@ -4384,11 +5138,30 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $this->sigtimestamp['cert'],
             );
 
-            $timestampClient = new TimestampClient($config);
+            $timestampClient = new TimestampClient($config, verifier: $this->timestampTokenVerifier());
             return $timestampClient->requestToken($signature, $this->postTimestampRequest(...));
         } catch (SignException $e) {
             throw new PdfException('Unable to obtain the TSA timestamp: ' . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * The verifier applied to a TSA token, or null for the package default.
+     *
+     * A token is verified when it is received and again when the DSS collection
+     * reads the certificates it carries, so both calls share this verifier. The
+     * ESS signing-certificate attribute is demanded, as RFC 3161 section 2.4.2
+     * requires it and the package default does; allow_sha1 only relaxes the
+     * digests, for a TSA that still names its certificate with the RFC 2634
+     * signing-certificate (v1) attribute or signs with SHA-1.
+     */
+    protected function timestampTokenVerifier(): ?SignedDataVerifier
+    {
+        if (!($this->sigtimestamp['allow_sha1'] ?? false)) {
+            return null;
+        }
+
+        return new SignedDataVerifier(allowSha1: true, requireSigningCertificate: true);
     }
 
     /**
@@ -4546,9 +5319,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      *
      * A signature timestamp embeds a full RFC 3161 token in the CMS, roughly
      * tripling its size, so extra room is reserved when timestamping is enabled;
-     * otherwise the legacy SIGMAXLEN is kept so existing output is unchanged. The
-     * placeholder emission, the ByteRange computation, and the hex padding all
-     * read this so they stay in agreement.
+     * otherwise SIGMAXLEN is used. The placeholder emission, the ByteRange
+     * computation and the hex padding all read this value.
      */
     protected function signatureContentsLength(): int
     {
@@ -4617,10 +5389,13 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      * The signer certificate plus any extra certificates form a leaf-first chain
      * that the package Signer walks: OCSP is attempted for each certificate that
      * has an issuer in the chain, CRLs for every certificate's distribution
-     * points, with responses deduplicated. The HTTP transports (postOcspRequest /
-     * getCrlData) stay in the host, which owns networking and the URL allow-list;
-     * a null transport skips that revocation source. The embed_* flags gate which
-     * material is fetched and embedded.
+     * points, with responses deduplicated. Every response is verified by the
+     * package before it becomes material, against the signing time passed as the
+     * validation instant. The certificates embedded in the signature timestamp
+     * token are collected too, as ETSI EN 319 142-1 requires of a B-LT DSS. The
+     * HTTP transports (postOcspRequest / getCrlData) stay in the host, which owns
+     * networking and the URL allow-list; a null transport skips that revocation
+     * source. The embed_* flags gate which material is fetched and embedded.
      *
      * @return array{certs: list<string>, ocsp: list<string>, crls: list<string>}
      * @throws \Throwable
@@ -4643,8 +5418,14 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $crlTransport = $ltv['embed_crl'] ?? false ? $this->getCrlData(...) : null;
 
         try {
-            $signer = new Signer();
-            $material = $signer->collectValidationMaterial($chainPem, $ocspTransport, $crlTransport);
+            $signer = new Signer(tokenVerifier: $this->timestampTokenVerifier());
+            $material = $signer->collectValidationMaterial(
+                $chainPem,
+                $ocspTransport,
+                $crlTransport,
+                $this->collectSignatureTimestampTokens($signer),
+                $this->docmodtime,
+            );
         } catch (SignException $e) {
             throw new PdfException('Unable to collect validation material: ' . $e->getMessage(), 0, $e);
         }
@@ -4657,6 +5438,33 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     }
 
     /**
+     * Read the signature timestamp tokens back out of the embedded CMS.
+     *
+     * @return list<string> DER tokens, empty when the document is not signed yet
+     *         or the profile embeds no signature timestamp.
+     *
+     * @throws PdfException If the CMS cannot be parsed.
+     */
+    protected function collectSignatureTimestampTokens(Signer $signer): array
+    {
+        if ($this->signaturecms === '') {
+            return [];
+        }
+
+        try {
+            return $signer->signatureTimestampTokens($this->signaturecms);
+        } catch (SignException $e) {
+            throw new PdfException('Unable to read the signature timestamp: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
+     * Collect the signer chain as PEM certificates, leaf first.
+     *
+     * The package requires one certificate per entry and refuses a chain that is
+     * not ordered leaf-first, so a certificate given twice (a signcert repeated in
+     * an extracerts bundle) is kept once, at its first position.
+     *
      * @return array<int, string>
      * @throws \Throwable
      */
@@ -4677,7 +5485,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
         }
 
-        return $inputs;
+        $unique = [];
+        foreach ($inputs as $pem) {
+            $unique[\preg_replace('/\s+/', '', $pem) ?? $pem] = $pem;
+        }
+
+        return \array_values($unique);
     }
 
     /**
@@ -4736,8 +5549,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      * Extract the raw signature /Contents bytes from a signed document.
      *
      * The signature /Contents is a hexadecimal string padded with zeros to the
-     * reserved placeholder length; the decoded bytes (the CMS plus that padding)
-     * are what a reader hashes for the DSS VRI key, so they are returned verbatim.
+     * reserved placeholder length. The decoded bytes (the CMS plus that padding)
+     * are returned verbatim, as hashed by a reader for the DSS VRI key.
      *
      * @param string $pdf The signed PDF document.
      *
@@ -4765,13 +5578,14 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      * Append the PAdES B-LTA archive document timestamp as a further incremental
      * revision, then timestamp it.
      *
-     * For the `pades-b-lta` profile (which requires a configured TSA), a
+     * For the `pades-b-lta` profile, which requires a configured TSA, a
      * `/Type /DocTimeStamp` value object plus an invisible signature-field widget
-     * are emitted through the tc-lib-pdf-sign `Output\DocTimeStamp` / `Output\Widget`
-     * emitters; the catalog is re-emitted with the timestamp field added to the
-     * AcroForm `/Fields` (and the existing `/DSS` reference kept). A second signing
-     * pass then covers the whole document up to that point with a bare RFC 3161
-     * token (not a CAdES CMS), exactly like the main signature's ByteRange machinery.
+     * are emitted through the tc-lib-pdf-sign `Output\DocTimeStamp` and
+     * `Output\Widget` emitters. The catalog is re-emitted with the timestamp
+     * field added to the AcroForm `/Fields`, keeping the existing `/DSS`
+     * reference. A second signing pass then covers the whole document up to that
+     * point with a bare RFC 3161 token instead of a CAdES CMS, through the same
+     * ByteRange machinery as the main signature.
      *
      * @param string $pdf The signed, DSS-augmented PDF document.
      *
@@ -5047,24 +5861,6 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         return $response;
     }
 
-    /** @param int<0, max> $value */
-    protected function asn1EncodeBase128Int(int $value): string
-    {
-        $bytes = [$value & 0x7F];
-        $value = (int) ($value / 128);
-        while ($value > 0) {
-            \array_unshift($bytes, ($value & 0x7F) | 0x80);
-            $value = (int) ($value / 128);
-        }
-
-        $out = '';
-        foreach ($bytes as $byte) {
-            $out .= \chr($byte);
-        }
-
-        return $out;
-    }
-
     /**
      * Returns the PDF signarure entry.
      *
@@ -5080,23 +5876,10 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $soid = $this->objid['signature'];
         $oid = $soid + 1;
         $page = $this->page->getPage($this->signature['appearance']['page']);
-        $sigRect = \preg_split('/\s+/', \trim($this->signature['appearance']['rect']));
-        $sigWidth = 0.0;
-        $sigHeight = 0.0;
-        if ($sigRect !== false && \count($sigRect) >= 4) {
-            $x0Raw = $sigRect[0];
-            $y0Raw = $sigRect[1] ?? null;
-            $x1Raw = $sigRect[2] ?? null;
-            $y1Raw = $sigRect[3] ?? null;
-            $x0 = \is_numeric($x0Raw) ? \floatval($x0Raw) : 0.0;
-            $y0 = \is_numeric($y0Raw) ? \floatval($y0Raw) : 0.0;
-            $x1 = \is_numeric($x1Raw) ? \floatval($x1Raw) : 0.0;
-            $y1 = \is_numeric($y1Raw) ? \floatval($y1Raw) : 0.0;
-            $sigWidth = \abs($x1 - $x0);
-            $sigHeight = \abs($y1 - $y0);
-        }
+        list($sigWidth, $sigHeight) = $this->getSignatureRectSize($this->signature['appearance']['rect']);
 
         list($sigAppearance, $sigAppearanceXObj) = $this->getSignatureAppearanceStream($sigWidth, $sigHeight);
+        $sigAppearance .= $this->getSignatureWidgetTaggedEntries($soid, $this->signature['appearance']['name']);
         $pageObjN = (int) $page['n'];
 
         $stringEncoder =
@@ -5142,6 +5925,63 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     }
 
     /**
+     * Returns the width and the height in points of a signature widget rectangle.
+     *
+     * @param string $rect Rectangle coordinates "x0 y0 x1 y1".
+     *
+     * @return array{float, float}
+     */
+    protected function getSignatureRectSize(string $rect): array
+    {
+        $coords = \preg_split('/\s+/', \trim($rect));
+        if ($coords === false || \count($coords) < 4) {
+            return [0.0, 0.0];
+        }
+
+        $x0Raw = $coords[0];
+        $y0Raw = $coords[1] ?? null;
+        $x1Raw = $coords[2] ?? null;
+        $y1Raw = $coords[3] ?? null;
+        $x0 = \is_numeric($x0Raw) ? \floatval($x0Raw) : 0.0;
+        $y0 = \is_numeric($y0Raw) ? \floatval($y0Raw) : 0.0;
+        $x1 = \is_numeric($x1Raw) ? \floatval($x1Raw) : 0.0;
+        $y1 = \is_numeric($y1Raw) ? \floatval($y1Raw) : 0.0;
+
+        return [\abs($x1 - $x0), \abs($y1 - $y0)];
+    }
+
+    /**
+     * Returns the appearance entry and the appearance XObject that the active
+     * conformance mode requires on a signature widget carrying no appearance.
+     *
+     * ISO 19005-1 clause 6.5.3 and ISO 19005-2 and ISO 19005-3 clause 6.3.3
+     * require every widget annotation with a non-degenerate rectangle to hold an
+     * appearance dictionary with the single key /N.
+     *
+     * @param float $width  Widget width in points.
+     * @param float $height Widget height in points.
+     *
+     * @return array{string, string}
+     *
+     * @throws EncryptException
+     * @throws PdfException
+     */
+    protected function getConformingSignatureAppearance(float $width, float $height): array
+    {
+        if (!$this->requiresAnnotationAppearance('Widget') || $width <= 0.0 || $height <= 0.0) {
+            return ['', ''];
+        }
+
+        $apxout = $this->getOutAPXObjects(
+            $width,
+            $height,
+            $this->getDefaultAnnotationAppearance('Widget', [], $width, $height),
+        );
+
+        return [' /AP << /N ' . $this->pon . ' 0 R >>', $apxout];
+    }
+
+    /**
      * Returns the signature widget Appearance Stream.
      *
      * @return array{string, string}
@@ -5156,15 +5996,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out .= ' /AS /' . $appearance['as'];
         }
 
-        if (
-            (!isset($appearance['ap']) || $appearance['ap'] === '')
-            && isset($appearance['xobj'])
-            && $appearance['xobj'] !== ''
-        ) {
+        if (!$this->hasAnnotationAppearance($appearance) && isset($appearance['xobj']) && $appearance['xobj'] !== '') {
             $xobjid = $appearance['xobj'];
             if (isset($this->xobjects[$xobjid]) && $this->xobjects[$xobjid] !== []) {
-                $xobjw = $this->xobjects[$xobjid]['w'] ?? 0.0;
-                $xobjh = $this->xobjects[$xobjid]['h'] ?? 0.0;
+                $xobjw = $this->xobjects[$xobjid]['w'];
+                $xobjh = $this->xobjects[$xobjid]['h'];
                 if ($xobjw > 0.0 && $xobjh > 0.0) {
                     $sx = $width > 0.0 ? $width / $xobjw : 1.0;
                     $sy = $height > 0.0 ? $height / $xobjh : 1.0;
@@ -5175,18 +6011,23 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
         }
 
-        if (!isset($appearance['ap']) || $appearance['ap'] === '') {
-            return [$out, ''];
+        // An empty appearance yields no appearance dictionary: an empty one holds no
+        // /N key, which ISO 19005-1 clause 6.5.3 and ISO 19005-2 and ISO 19005-3
+        // clause 6.3.3 require. A conforming mode gets a generated one instead.
+        if (!$this->hasAnnotationAppearance($appearance)) {
+            list($apEntry, $apxout) = $this->getConformingSignatureAppearance($width, $height);
+            return [$out . $apEntry, $apxout];
         }
 
+        $apValue = $appearance['ap'] ?? '';
         $apxout = '';
         $out .= ' /AP <<';
-        if (!\is_array($appearance['ap'])) {
-            $out .= $appearance['ap'];
+        if (!\is_array($apValue)) {
+            $out .= $apValue;
             return [$out . ' >>', $apxout];
         }
 
-        foreach ($appearance['ap'] as $mode => $def) {
+        foreach ($apValue as $mode => $def) {
             $out .= ' /' . \strtoupper($mode);
             if (\is_array($def)) {
                 $out .= ' <<';

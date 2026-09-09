@@ -37,11 +37,12 @@ class MDFiveSixteen
      * Encrypt the data
      *
      * @param string $data Data string to encrypt
+     * @param string $_key Unused; retained for signature compatibility.
      *
      * @return string encrypted text
      */
     public function encrypt(string $data, string $_key = 'H*'): string
     {
-        return \pack('H*', \md5($data));
+        return \md5($data, true);
     }
 }

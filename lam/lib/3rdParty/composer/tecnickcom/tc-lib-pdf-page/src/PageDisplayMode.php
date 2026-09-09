@@ -50,8 +50,8 @@ enum PageDisplayMode: string
      * Resolve a loose display mode value to the matching enum case.
      *
      * Accepts the canonical name (case-insensitively) or an enum instance
-     * (returned unchanged). The empty string maps to UseAttachments and any
-     * other unknown value falls back to UseNone, matching Mode::getDisplay().
+     * (returned unchanged). Unknown values and the empty string fall back to
+     * UseNone, the PDF default for /PageMode.
      *
      * @param string|self $value Display mode name or enum case.
      */
@@ -62,12 +62,11 @@ enum PageDisplayMode: string
         }
 
         return match (\strtolower($value)) {
-            'usenone' => self::UseNone,
             'useoutlines' => self::UseOutlines,
             'usethumbs' => self::UseThumbs,
             'fullscreen' => self::FullScreen,
             'useoc' => self::UseOC,
-            'useattachments', '' => self::UseAttachments,
+            'useattachments' => self::UseAttachments,
             default => self::UseNone,
         };
     }

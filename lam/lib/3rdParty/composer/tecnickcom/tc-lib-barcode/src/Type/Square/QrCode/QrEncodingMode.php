@@ -22,7 +22,8 @@ namespace Com\Tecnick\Barcode\Type\Square\QrCode;
  * Com\Tecnick\Barcode\Type\Square\QrCode\QrEncodingMode
  *
  * Backed enum for the QR Code data encoding mode hint. The backing value of each
- * case is the token used as a key of Data::ENC_MODES.
+ * case is the token accepted as the second parameter of QrCode. Only KJ changes
+ * the encoder behaviour, by adding the kanji mode to the modes it may use.
  *
  * @since       2026-07-17
  * @category    Library
@@ -34,22 +35,22 @@ namespace Com\Tecnick\Barcode\Type\Square\QrCode;
  */
 enum QrEncodingMode: string
 {
-    /** Terminator / no data. */
+    /** Variable, the numeric, alphanumeric and byte modes mixed. */
     case NL = 'NL';
 
-    /** Numeric. */
+    /** Numeric, kept for compatibility and equivalent to NL. */
     case NM = 'NM';
 
-    /** Alphanumeric. */
+    /** Alphanumeric, kept for compatibility and equivalent to NL. */
     case AN = 'AN';
 
-    /** 8-bit byte. */
+    /** 8-bit byte, kept for compatibility and equivalent to NL. */
     case Byte = '8B';
 
-    /** Kanji. */
+    /** Kanji, which adds the kanji mode to the modes of NL. */
     case KJ = 'KJ';
 
-    /** Structured append. */
+    /** Structured append, which is not implemented and is equivalent to NL. */
     case ST = 'ST';
 
     /**

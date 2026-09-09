@@ -480,10 +480,10 @@ abstract class Format
     /**
      * Get page dimensions.
      *
-     * @param string $format      The page format name.
+     * @param string             $format      The page format name.
      * @param string|Orientation $orientation Page orientation ('P' portrait; 'L' landscape; '' default) or enum case.
      * @param string|Unit        $unit        Unit name (default points) or Unit enum case.
-     * @param int    $dec         Number of decimals to return.
+     * @param int                $dec         Number of decimals to return.
      *
      * @return array{0:float, 1:float, 2:string} Page width, height and orientation in specified unit.
      *
@@ -510,8 +510,8 @@ abstract class Format
     /**
      * Returns the page dimensions oriented as specified.
      *
-     * @param float  $width       Page width.
-     * @param float  $height      Page height.
+     * @param float              $width       Page width.
+     * @param float              $height      Page height.
      * @param string|Orientation $orientation Page orientation ('P' portrait; 'L' landscape; '' default) or enum case.
      *
      * @return array{0:float, 1:float, 2:string} Page width, height in points and orientation.
@@ -576,9 +576,9 @@ abstract class Format
     /**
      * Convert Points to another unit.
      *
-     * @param float  $points Value to convert.
-     * @param string|Unit $unit Name of the unit to convert to, or a Unit enum case.
-     * @param int    $dec    Number of decimals to return.
+     * @param float       $points Value to convert.
+     * @param string|Unit $unit   Name of the unit to convert to, or a Unit enum case.
+     * @param int         $dec    Number of decimals to return.
      *
      * @throws PageException
      */

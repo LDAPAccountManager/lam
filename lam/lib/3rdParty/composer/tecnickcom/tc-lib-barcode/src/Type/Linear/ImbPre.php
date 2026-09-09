@@ -26,6 +26,9 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * ImbPre Barcode type class
  * IMB - Intelligent Mail Barcode pre-processed (USPS-B-3200)
  *
+ * Intelligent Mail is a registered trademark of the United States
+ * Postal Service.
+ *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode
@@ -51,7 +54,7 @@ class ImbPre extends \Com\Tecnick\Barcode\Type\Linear
     protected function setBars(): void
     {
         $code = \strtolower($this->code);
-        if (\preg_match('/^[fadt]{65}$/', $code) !== 1) {
+        if (\preg_match('/^[fadt]{65}\z/', $code) !== 1) {
             throw new BarcodeException('Invalid character sequence');
         }
 

@@ -15,8 +15,7 @@ declare(strict_types=1);
  *
  * This file is part of tc-lib-unicode software library.
  *
- * Source: https://unicode.org/Public/15.1.0/ucd/UnicodeData.txt
- * Unicode Standard version: 15.1
+ * Source: https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt
  */
 
 namespace Com\Tecnick\Unicode\Data;
@@ -37,12 +36,9 @@ namespace Com\Tecnick\Unicode\Data;
 final class Thai
 {
     /**
-     * Thai leading vowels that must be repositioned after their base consonant
-     * in a PDF glyph stream (visual order).
-     *
-     * These vowels visually precede the base consonant in text but are stored
-     * before the consonant in Unicode logical order. For PDF rendering they
-     * must appear after the consonant in the glyph array.
+     * Thai preposed vowels: they are stored before the consonant they follow in
+     * pronunciation and are displayed in that same position, so they need no
+     * reordering in a left-to-right glyph stream.
      *
      * Codepoints:
      *   U+0E40 THAI CHARACTER SARA E
@@ -50,9 +46,6 @@ final class Thai
      *   U+0E42 THAI CHARACTER SARA O
      *   U+0E43 THAI CHARACTER SARA AI MAIMUAN
      *   U+0E44 THAI CHARACTER SARA AI MAIMALAI
-     *   U+0E4D THAI CHARACTER NIKHAHIT (leading form used with some vowels)
-     *
-     * Source: https://unicode.org/Public/15.1.0/ucd/UnicodeData.txt
      *
      * @var array<int, true>
      */
@@ -62,20 +55,16 @@ final class Thai
         0x0E42 => true,
         0x0E43 => true,
         0x0E44 => true,
-        0x0E4D => true,
     ];
 
     /**
-     * Thai tone marks (must not be treated as base consonants during cluster
-     * scanning).
+     * Thai tone marks: combining marks that are not base consonants.
      *
      * Codepoints:
      *   U+0E48 THAI CHARACTER MAI EK
      *   U+0E49 THAI CHARACTER MAI THO
      *   U+0E4A THAI CHARACTER MAI TRI
      *   U+0E4B THAI CHARACTER MAI JATTAWA
-     *
-     * Source: https://unicode.org/Public/15.1.0/ucd/UnicodeData.txt
      *
      * @var array<int, true>
      */
@@ -87,17 +76,13 @@ final class Thai
     ];
 
     /**
-     * Thai base consonant range: U+0E01–U+0E2E
+     * Thai base consonant range: U+0E01-U+0E2E
      * (THAI CHARACTER KO KAI through THAI CHARACTER HO NOKHUK)
-     *
-     * Source: https://unicode.org/Public/15.1.0/ucd/UnicodeData.txt
      */
     public const BASE_CONSONANT_FIRST = 0x0E01;
 
     /**
      * Thai base consonant range upper bound: U+0E2E
-     *
-     * Source: https://unicode.org/Public/15.1.0/ucd/UnicodeData.txt
      */
     public const BASE_CONSONANT_LAST = 0x0E2E;
 }

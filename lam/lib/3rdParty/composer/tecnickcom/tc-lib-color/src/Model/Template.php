@@ -44,10 +44,8 @@ interface Template
      * Get an array with all color components for
      * the PDF appearance characteristics dictionary.
      *
-     * The numbers that shall be in the range 0.0 to 1.0.
-     * The number of array elements determines the colour space
-     * in which the colour shall be defined:
-     *   0 = No colour; transparent
+     * The values are in the range 0.0 to 1.0 and the number of array elements
+     * determines the color space:
      *   1 = DeviceGray
      *   3 = DeviceRGB
      *   4 = DeviceCMYK
@@ -59,6 +57,10 @@ interface Template
     /**
      * Get an array with color components values normalized between 0 and $max.
      * NOTE: the alpha and other fraction component values are kept in the [0..1] range.
+     *
+     * $max applies to the components that have no range of their own (GRAY, RGB
+     * and CMYK) and is ignored by HSL and LAB, whose components are returned in
+     * degrees and in the CIE Lab ranges.
      *
      * @param int $max Maximum value to return (reference value)
      *
@@ -126,7 +128,14 @@ interface Template
     public function toLabArray(): array;
 
     /**
-     * Invert the color.
+     * Invert the color in place and return $this.
+     *
+     * Use withInvertedColor() to leave the receiver untouched.
      */
-    public function invertColor(): self;
+    public function invertColor(): static;
+
+    /**
+     * Get a copy of the color, inverted.
+     */
+    public function withInvertedColor(): static;
 }

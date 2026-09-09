@@ -18,12 +18,16 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Filter\Type;
 
+use Com\Tecnick\Pdf\Filter\Exception as PPException;
+
 /**
  * Com\Tecnick\Pdf\Filter\Type\Crypt
  *
- * Crypt filter (PDF 32000-2008 §7.4.10 / §7.6).
- * When DecodeParms/Name is Identity or None, the stream is passed through
- * unchanged (PDF §7.6.5).
+ * Crypt filter (PDF 32000-1:2008 §7.4.10).
+ * When DecodeParms/Name is absent, Identity or None, the stream is passed
+ * through unchanged (PDF 32000-1:2008 §7.6.5). Any other name identifies a
+ * crypt filter of the document /CF dictionary, which this library does not
+ * apply: decoding throws instead.
  *
  * @since     2011-05-23
  * @category  Library
@@ -38,13 +42,39 @@ class Crypt implements \Com\Tecnick\Pdf\Filter\Type\Template
     /**
      * Decode the data.
      *
-     * @param string              $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters.
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
+     *   - 'Name' (string): crypt filter name; only Identity and None are supported.
      *
-     * @return string Decoded data string.
+     * @return string Decoded data.
+     *
+     * @throws PPException if a crypt filter other than Identity or None is requested.
      */
     public function decode(string $data, array $params = []): string
     {
-        return $data;
+        if (!\array_key_exists('Name', $params)) {
+            return $data;
+        }
+
+        if (!\is_string($params['Name'])) {
+            throw new PPException('unsupported Crypt filter name: ' . \get_debug_type($params['Name']));
+        }
+
+        if (\in_array($this->nameObject($params['Name']), ['Identity', 'None'], true)) {
+            return $data;
+        }
+
+        throw new PPException('unsupported Crypt filter name: ' . $params['Name']);
+    }
+
+    /**
+     * Strip the leading solidus of a PDF name object, as FilterType::fromLoose
+     * does for filter names.
+     *
+     * @param string $value Crypt filter name.
+     */
+    private function nameObject(string $value): string
+    {
+        return \str_starts_with($value, '/') ? \substr($value, 1) : $value;
     }
 }

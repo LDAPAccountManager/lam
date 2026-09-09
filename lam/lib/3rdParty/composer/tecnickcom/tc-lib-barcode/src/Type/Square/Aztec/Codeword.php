@@ -144,7 +144,7 @@ abstract class Codeword
 
     /**
      * Returns the PUNCT two-bytes code if the given two characters are a punctuation pair.
-     * Punct codes 2–5 encode two bytes each.
+     * Punct codes 2-5 encode two bytes each.
      *
      * @param int $ord The current character code.
      * @param int $next The next character code.
@@ -312,6 +312,9 @@ abstract class Codeword
             $this->addShift(Data::MODE_PUNCT);
         }
 
+        // FLG(n) is the Punct codeword 0
+        $this->addRawCwd(Data::MODE_BITS[Data::MODE_PUNCT] ?? 5, 0);
+
         if ($eci === 0) {
             $this->addRawCwd(3, 0); // FNC1
             return;
@@ -319,7 +322,7 @@ abstract class Codeword
 
         $seci = (string) $eci;
         $digits = \strlen($seci);
-        $this->addRawCwd(3, $digits); // 1–6 digits
+        $this->addRawCwd(3, $digits); // 1-6 digits
         for ($idx = 0; $idx < $digits; ++$idx) {
             $this->addCdw(Data::MODE_DIGIT, $this->charEnc(Data::MODE_DIGIT, \ord($seci[$idx])));
         }

@@ -62,8 +62,6 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      *
      * @param TFontData $font Font to process
      *
-     * @return string
-     *
      * @throws EncException
      */
     protected function getCid0(array $font): string
@@ -86,10 +84,10 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
         }
 
         $this->uniToCid($font, $cidoffset);
-        $name = $fontname;
+        $name = $this->enc->encodeNameObject($fontname);
         $longname = $name;
         if ($fontenc !== '') {
-            $longname .= '-' . $fontenc;
+            $longname .= '-' . $this->enc->encodeNameObject($fontenc);
         }
 
         // obj 1
@@ -104,7 +102,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             . ' /Name /F'
             . $fonti;
         if ($fontenc !== '') {
-            $out .= ' /Encoding /' . $fontenc;
+            $out .= ' /Encoding /' . $this->enc->encodeNameObject($fontenc);
         }
 
         $out .= ' /DescendantFonts [' . ($this->pon + 1) . ' 0 R] >>' . "\n" . 'endobj' . "\n";
@@ -146,8 +144,8 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     /**
      * Convert Unicode to CID
      *
-     * @param TFontData $font Font to process
-     * @param int    $cidoffset Offset for CID values
+     * @param TFontData $font      Font to process
+     * @param int       $cidoffset Offset for CID values
      */
     protected function uniToCid(array &$font, int $cidoffset): void
     {
@@ -157,6 +155,11 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
         $uni2cid = [];
         foreach ($uni2cidraw as $uni => $cid) {
             $uni2cid[(int) $uni] = (int) $cid;
+        }
+
+        if ($uni2cid === []) {
+            // without a CID mapping the widths are already keyed as they are emitted
+            return;
         }
 
         $fontcwraw = $font['cw'];
@@ -174,11 +177,8 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             } // else unknown character
         }
 
-        foreach ($chw as $cid => $width) {
-            $fontcw[$cid] = $width;
-        }
-
-        $font['cw'] = $fontcw;
+        // the map is replaced, not merged: the surviving keys are CIDs
+        $font['cw'] = $chw;
     }
 
     /**
@@ -187,11 +187,8 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      *
      * @param TFontData $font Font to process
      *
-     * @return string
-     *
      * @throws EncException
      * @throws FontException
-     * @throws \RuntimeException
      *
      * @SuppressWarnings("PHPMD.ExcessiveMethodLength")
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
@@ -213,13 +210,13 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
 
         $fontname = '';
         if ($fontsubset) {
-            // change name for font subsetting
-            $subtag = \sprintf('%06u', $fonti);
+            // subset tag: exactly six uppercase letters followed by '+' (ISO 32000-1 9.6.4)
+            $subtag = \sprintf('%06u', $fonti % 1_000_000);
             $subtag = \strtr($subtag, '0123456789', 'ABCDEFGHIJ');
             $fontname .= $subtag . '+';
         }
 
-        $fontname .= $fontnamebase;
+        $fontname .= $this->enc->encodeNameObject($fontnamebase);
 
         // Type0 Font
         // A composite font composed of other fonts, organized hierarchically
@@ -236,7 +233,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             . ' /Name /F'
             . $fonti
             . ' /Encoding /'
-            . $fontenc
+            . $this->enc->encodeNameObject($fontenc)
             . ' /ToUnicode '
             . ($this->pon + 1)
             . ' 0 R'
@@ -250,13 +247,11 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
 
         // ToUnicode Object
         $out .= ++$this->pon . ' 0 obj' . "\n" . '<<';
-        $cidhmap = Identity::CIDHMAP;
+        // a GID encoded font needs a specific map, as its character codes are glyph indices
+        $cidhmap = $font['gidenc'] ? $this->getToUnicodeCMap($font) : Identity::CIDHMAP;
         if ($font['compress']) {
             $out .= ' /Filter /FlateDecode';
-            $cidhmap = \gzcompress($cidhmap);
-            if ($cidhmap === false) {
-                throw new \RuntimeException('Unable to compress CIDHMAP');
-            }
+            $cidhmap = Zlib::compress($cidhmap, 'Unable to compress CIDHMAP');
         }
 
         $stream = $this->enc->encryptString($cidhmap, $this->pon); // ToUnicode map for Identity-H
@@ -296,8 +291,11 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             . ' /DW '
             . $fontdw
             . "\n"
-            . $this->getCharWidths($font, 0);
-        if ($fontctg !== '') {
+            . ($font['gidenc'] ? $this->getGidWidths($font) : $this->getCharWidths($font, 0));
+        if ($font['gidenc']) {
+            // the character codes are the glyph indices themselves
+            $out .= "\n" . '/CIDToGIDMap /Identity';
+        } elseif ($fontctg !== '') {
             $out .= "\n" . '/CIDToGIDMap ' . ($this->pon + 2) . ' 0 R';
         }
 
@@ -317,13 +315,10 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
 
         $out .= ' >>' . "\n" . 'endobj' . "\n";
 
-        if ($fontctg !== '') {
+        if ($fontctg !== '' && !$font['gidenc']) {
             $out .= ++$this->pon . ' 0 obj' . "\n";
-            // Embed CIDToGIDMap
-            // A specification of the mapping from CIDs to glyph indices
-            // search and get CTG font file to embed
+            // embed the CIDToGIDMap: the mapping from CIDs to glyph indices
             $ctgfile = \strtolower($fontctg);
-            // search and get ctg font file to embed
             $fontfile = $this->getFontFullPath($fontdir, $ctgfile);
             $content = $this->fileHelper->getLocalFileData($fontfile);
             if ($content === false) {
@@ -332,10 +327,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
 
             $stream = $this->enc->encryptString($content, $this->pon);
             $out .= '<< /Length ' . \strlen($stream) . '';
-            if (\str_ends_with($fontfile, '.z')) { // check file extension
-                // Decompresses data encoded using the public-domain
-                // zlib/deflate compression method, reproducing the
-                // original text or binary data
+            if (\str_ends_with($fontfile, '.z')) {
                 $out .= ' /Filter /FlateDecode';
             }
 
@@ -346,16 +338,85 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     }
 
     /**
+     * Build the ToUnicode CMap of a font whose character codes are glyph indices.
+     *
+     * Only the glyphs used by the document are listed, as no other code can
+     * appear in a content stream.
+     *
+     * @param TFontData $font Font to process
+     */
+    protected function getToUnicodeCMap(array $font): string
+    {
+        $usedgid = $font['usedgid'];
+        \ksort($usedgid);
+
+        $out =
+            '/CIDInit /ProcSet findresource begin'
+            . "\n"
+            . '12 dict begin'
+            . "\n"
+            . 'begincmap'
+            . "\n"
+            . '/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def'
+            . "\n"
+            . '/CMapName /Adobe-Identity-UCS def'
+            . "\n"
+            . '/CMapType 2 def'
+            . "\n"
+            . '/WMode 0 def'
+            . "\n"
+            . '1 begincodespacerange'
+            . "\n"
+            . '<0000> <FFFF>'
+            . "\n"
+            . 'endcodespacerange'
+            . "\n";
+
+        // a bfchar section holds at most 100 entries
+        foreach (\array_chunk($usedgid, 100, true) as $chunk) {
+            $out .= \count($chunk) . ' beginbfchar' . "\n";
+            foreach ($chunk as $gid => $ord) {
+                $out .= \sprintf("<%04x> <%s>\n", $gid, $this->getUtf16beHex((int) $ord));
+            }
+
+            $out .= 'endbfchar' . "\n";
+        }
+
+        return $out . 'endcmap' . "\n" . 'CMapName currentdict /CMap defineresource pop' . "\n" . 'end' . "\n" . 'end';
+    }
+
+    /**
+     * Returns the hexadecimal UTF-16BE representation of a codepoint.
+     *
+     * Codepoints above the BMP are expanded to their surrogate pair.
+     *
+     * @param int $ord Unicode codepoint.
+     */
+    protected function getUtf16beHex(int $ord): string
+    {
+        if ($ord >= 0xD800 && $ord <= 0xDFFF) {
+            // a lone surrogate code unit is not a codepoint
+            return \sprintf('%04x', 0xFFFD);
+        }
+
+        if ($ord < 0x1_0000) {
+            return \sprintf('%04x', \max(0, $ord));
+        }
+
+        // a value above the last Unicode codepoint has no UTF-16 form
+        $ord = \min($ord, 0x10_FFFF) - 0x1_0000;
+        return \sprintf('%04x%04x', 0xD800 + ($ord >> 10), 0xDC00 + ($ord & 0x3FF));
+    }
+
+    /**
      * Get the PDF output string for a Core font.
      *
      * @param TFontData $font Font to process
-     *
-     * @return string
      */
     protected function getCore(array $font): string
     {
         $fontn = $font['n'];
-        $fontname = $font['name'];
+        $fontname = $this->enc->encodeNameObject($font['name']);
         $fonti = $font['i'];
         $fontfamily = $font['family'];
 
@@ -380,12 +441,10 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      * Get the PDF output string for a TrueType font.
      *
      * @param TFontData $font Font to process
-     *
-     * @return string
      */
     protected function getTrueType(array $font): string
     {
-        $fontname = $font['name'];
+        $fontname = $this->enc->encodeNameObject($font['name']);
         $fonttype = $font['type'];
         $fonti = $font['i'];
         $fontn = $font['n'];
@@ -427,12 +486,9 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
 
         // obj 2 - Widths
         $out .= ++$this->pon . ' 0 obj' . "\n" . '[';
+        $defaultwidth = self::normalizeWidth($fontdw);
         for ($idx = 32; $idx < 256; ++$idx) {
-            if (isset($fontcw[$idx])) {
-                $out .= (int) $fontcw[$idx] . ' ';
-            } else {
-                $out .= $fontdw . ' ';
-            }
+            $out .= (isset($fontcw[$idx]) ? self::normalizeWidth($fontcw[$idx]) : $defaultwidth) . ' ';
         }
 
         $out .= ']' . "\n" . 'endobj' . "\n";
@@ -453,15 +509,27 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     /**
      * Returns the formatted key/value PDF string
      *
-     * @param string $key Key name
-     * @param mixed  $val Value
+     * A value that is not a number or a non empty string is dropped. The key is escaped as a
+     * PDF name (ISO 32000-1 7.3.5), and is dropped when it escapes to an empty name.
+     *
+     * @param int|string $key Key name.
+     * @param mixed      $val Value
      */
-    protected function getKeyValOut(string $key, mixed $val): string
+    protected function getKeyValOut(int|string $key, mixed $val): string
     {
         if (\is_float($val)) {
             $val = \sprintf('%F', $val);
+        } elseif (\is_int($val)) {
+            $val = (string) $val;
+        } elseif (!\is_string($val) || $val === '') {
+            return '';
         }
 
-        return ' /' . $key . ' ' . (string) $val;
+        $name = $this->enc->encodeNameObject((string) $key);
+        if ($name === '') {
+            return '';
+        }
+
+        return ' /' . $name . ' ' . $val;
     }
 }

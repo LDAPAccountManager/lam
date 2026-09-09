@@ -25,6 +25,8 @@ use Com\Tecnick\Color\Exception as ColorException;
  *
  * Web Color class
  *
+ * Extension point: getColorObj(). Every other public method is final.
+ *
  * @since     2015-02-21
  * @category  Library
  * @package   Color
@@ -33,8 +35,22 @@ use Com\Tecnick\Color\Exception as ColorException;
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-class Web extends \Com\Tecnick\Color\Css
+class Web extends \Com\Tecnick\Color\Css implements ColorParserInterface
 {
+    /**
+     * WEBHEX decoded to RGB arrays, built on first use.
+     *
+     * @var array<string, array<string, float>>|null
+     */
+    private static ?array $webhexRgb = null;
+
+    /**
+     * WEBHEX decoded to CIE Lab arrays, built on first use.
+     *
+     * @var array<string, array<string, float>>|null
+     */
+    private static ?array $webhexLab = null;
+
     /**
      * Maps WEB safe color names with their hexadecimal representation (#RRGGBBAA).
      *
@@ -65,9 +81,9 @@ class Web extends \Com\Tecnick\Color\Css
         'darkblue' => '00008bff',
         'darkcyan' => '008b8bff',
         'darkgoldenrod' => 'b8860bff',
-        'dkgray' => 'a9a9a9ff',
         'darkgray' => 'a9a9a9ff',
         'darkgrey' => 'a9a9a9ff',
+        'dkgray' => 'a9a9a9ff',
         'darkgreen' => '006400ff',
         'darkkhaki' => 'bdb76bff',
         'darkmagenta' => '8b008bff',
@@ -113,9 +129,9 @@ class Web extends \Com\Tecnick\Color\Css
         'lightcoral' => 'f08080ff',
         'lightcyan' => 'e0ffffff',
         'lightgoldenrodyellow' => 'fafad2ff',
-        'ltgray' => 'd3d3d3ff',
         'lightgray' => 'd3d3d3ff',
         'lightgrey' => 'd3d3d3ff',
+        'ltgray' => 'd3d3d3ff',
         'lightgreen' => '90ee90ff',
         'lightpink' => 'ffb6c1ff',
         'lightsalmon' => 'ffa07aff',
@@ -133,7 +149,7 @@ class Web extends \Com\Tecnick\Color\Css
         'mediumaquamarine' => '66cdaaff',
         'mediumblue' => '0000cdff',
         'mediumorchid' => 'ba55d3ff',
-        'mediumpurple' => '9370d8ff',
+        'mediumpurple' => '9370dbff',
         'mediumseagreen' => '3cb371ff',
         'mediumslateblue' => '7b68eeff',
         'mediumspringgreen' => '00fa9aff',
@@ -154,7 +170,7 @@ class Web extends \Com\Tecnick\Color\Css
         'palegoldenrod' => 'eee8aaff',
         'palegreen' => '98fb98ff',
         'paleturquoise' => 'afeeeeff',
-        'palevioletred' => 'd87093ff',
+        'palevioletred' => 'db7093ff',
         'papayawhip' => 'ffefd5ff',
         'peachpuff' => 'ffdab9ff',
         'peru' => 'cd853fff',
@@ -162,6 +178,7 @@ class Web extends \Com\Tecnick\Color\Css
         'plum' => 'dda0ddff',
         'powderblue' => 'b0e0e6ff',
         'purple' => '800080ff',
+        'rebeccapurple' => '663399ff',
         'red' => 'ff0000ff',
         'rosybrown' => 'bc8f8fff',
         'royalblue' => '4169e1ff',
@@ -195,13 +212,16 @@ class Web extends \Com\Tecnick\Color\Css
     /**
      * Get the color hexadecimal hash code from name
      *
+     * Everything up to and including the first dot is discarded, so the Acrobat
+     * JavaScript spelling 'color.green' resolves to 'green'.
+     *
      * @param string $name Name of the color to search (e.g.: 'turquoise')
      *
      * @return string color hexadecimal code (e.g.: '40e0d0ff')
      *
      * @throws ColorException if the color is not found
      */
-    public function getHexFromName(string $name): string
+    final public function getHexFromName(string $name): string
     {
         $name = \strtolower($name);
         if (($dotpos = \strpos($name, '.')) !== false) {
@@ -226,7 +246,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @throws ColorException if the color is not found
      */
-    public function getNameFromHex(string $hex): string
+    final public function getNameFromHex(string $hex): string
     {
         $name = \array_search($this->extractHexCode($hex), self::WEBHEX, true);
         if (!\is_string($name)) {
@@ -245,10 +265,10 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @throws ColorException if the hash is not found or has an invalid format
      */
-    public function extractHexCode(string $hex): string
+    final public function extractHexCode(string $hex): string
     {
-        $match = [];
-        if (\preg_match('/^[#]?([0-9a-f]{3,8})$/', \strtolower($hex), $match) !== 1) {
+        $match = $this->tryMatchColor('/^[#]?([0-9a-f]{3,8})$/', \strtolower($hex));
+        if ($match === []) {
             throw new ColorException('unable to extract the color hash: ' . $hex);
         }
 
@@ -265,7 +285,8 @@ class Web extends \Com\Tecnick\Color\Css
             return $hash;
         }
 
-        throw new ColorException('unable to extract the color hash: ' . $hash);
+        // only 3, 4, 6 and 8 hexadecimal digits are valid color hashes
+        throw new ColorException('unsupported color hash length (' . \strlen($hash) . '): ' . $hash);
     }
 
     /**
@@ -286,11 +307,11 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $hex hexadecimal color hash (i.e. #RGB, #RGBA, #RRGGBB, #RRGGBBAA)
      *
-     * @throws ColorException if the color is not found
+     * @throws ColorException if the hash is malformed or has an unsupported length
      */
-    public function getRgbObjFromHex(string $hex): \Com\Tecnick\Color\Model\Rgb
+    final public function getRgbObjFromHex(string $hex): \Com\Tecnick\Color\Model\Rgb
     {
-        return new \Com\Tecnick\Color\Model\Rgb($this->getHexArray($this->extractHexCode($hex)));
+        return new \Com\Tecnick\Color\Model\Rgb(self::getHexArray($this->extractHexCode($hex)));
     }
 
     /**
@@ -302,9 +323,9 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @throws ColorException if the color is not found
      */
-    public function getRgbObjFromName(string $name): \Com\Tecnick\Color\Model\Rgb
+    final public function getRgbObjFromName(string $name): \Com\Tecnick\Color\Model\Rgb
     {
-        return new \Com\Tecnick\Color\Model\Rgb($this->getHexArray($this->getHexFromName($name)));
+        return new \Com\Tecnick\Color\Model\Rgb(self::getHexArray($this->getHexFromName($name)));
     }
 
     /**
@@ -314,7 +335,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @return array<string, float> with keys ('red', 'green', 'blue', 'alpha')
      */
-    private function getHexArray(string $hex): array
+    private static function getHexArray(string $hex): array
     {
         return [
             'red' => \hexdec(\substr($hex, 0, 2)) / 255,
@@ -325,33 +346,37 @@ class Web extends \Com\Tecnick\Color\Css
     }
 
     /**
-     * Get the normalized integer value from [0..$max] to [0..1]
+     * Get the WEBHEX table decoded to RGB arrays, keyed by color name.
+     *
+     * @return array<string, array<string, float>>
+     */
+    private static function getWebhexRgb(): array
+    {
+        if (self::$webhexRgb === null) {
+            $decoded = [];
+            foreach (self::WEBHEX as $name => $hex) {
+                $decoded[$name] = self::getHexArray($hex);
+            }
+
+            self::$webhexRgb = $decoded;
+        }
+
+        return self::$webhexRgb;
+    }
+
+    /**
+     * Get the normalized value from [0..$max] to [0..1]
+     *
+     * Delegates to ComponentNormalizer::normalize().
      *
      * @param mixed $value Value to convert
-     * @param int    $max   Max input value
+     * @param int   $max   Max input value (reference value), must be positive
      *
      * @return float value [0..1]
      */
-    public function normalizeValue(mixed $value, int $max): float
+    final public function normalizeValue(mixed $value, int $max): float
     {
-        if (\is_string($value) && str_contains($value, '%')) {
-            $percent = \str_replace('%', '', $value);
-            if (!\is_numeric($percent)) {
-                return 0.0;
-            }
-
-            return \max(0, \min(1, (float) $percent / 100));
-        }
-
-        if (\is_int($value) || \is_float($value)) {
-            return \max(0, \min(1, (float) $value / $max));
-        }
-
-        if (\is_string($value) && \is_numeric($value)) {
-            return \max(0, \min(1, (float) $value / $max));
-        }
-
-        return 0.0;
+        return $this->normalizer->normalize($value, $max);
     }
 
     /**
@@ -359,13 +384,16 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $color String containing web color definition
      *
-     * @throws ColorException in case of error
+     * @throws ColorException if the hash is malformed, the name is unknown, the
+     *                        color function is unsupported or its syntax is
+     *                        invalid, or the expression cannot be evaluated
      */
     public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
         $col = [];
         $color = \strtolower(\trim($color));
-        if ($color === '' || str_contains($color, 'transparent')) {
+        // 'color.transparent' is the Acrobat JavaScript spelling of 'transparent'
+        if ($color === '' || $color === 'transparent' || str_ends_with($color, '.transparent')) {
             return null;
         }
 
@@ -378,19 +406,25 @@ class Web extends \Com\Tecnick\Color\Css
         }
 
         $rex = '/^(t|g|rgba|rgb|hsla|hsl|cmyka|cmyk|lab)\s*[\(]/';
-        if (\preg_match($rex, $color, $col) === 1) {
+        $col = $this->tryMatchColor($rex, $color);
+        if ($col !== []) {
             return $this->getColorObjFromCss($col[1] ?? '', $color);
+        }
+
+        if (str_contains($color, '(')) {
+            // a color function this library does not implement
+            throw new ColorException('unsupported color syntax: ' . $color);
         }
 
         return $this->getRgbObjFromName($color);
     }
 
     /**
-     * Parse the input color string and return the corresponding color object.
+     * Parse the input color string, returning null instead of raising.
      *
      * @param string $color String containing web color definition
      */
-    public function tryGetColorObj(string $color): ?\Com\Tecnick\Color\Model
+    final public function tryGetColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
         try {
             return $this->getColorObj($color);
@@ -407,7 +441,7 @@ class Web extends \Com\Tecnick\Color\Css
      * @param array<string, float> $cola First color as RGB array
      * @param array<string, float> $colb Second color as RGB array
      */
-    public function getRgbSquareDistance(array $cola, array $colb): float
+    final public function getRgbSquareDistance(array $cola, array $colb): float
     {
         return (
             (($cola['red'] ?? 0.0) - ($colb['red'] ?? 0.0)) ** 2
@@ -419,17 +453,19 @@ class Web extends \Com\Tecnick\Color\Css
     /**
      * Get the name of the closest web color
      *
+     * Nearness is the Euclidean distance in sRGB, which is not perceptually
+     * uniform; getClosestWebColorByDeltaE() gives a perceptual match. A missing
+     * component counts as 0, so an empty array matches black. Ties resolve to
+     * the first matching color name.
+     *
      * @param array<string, float> $col Color as RGB array (keys: 'red', 'green', 'blue')
      */
-    public function getClosestWebColor(array $col): string
+    final public function getClosestWebColor(array $col): string
     {
         $color = '';
-        // Seed above the maximum possible squared distance in the RGB unit cube
-        // (1^2 + 1^2 + 1^2 = 3) and use a strict "<" so the nearest match is
-        // always returned and ties resolve to the first (canonical) color name.
         $mindist = \PHP_FLOAT_MAX;
-        foreach (self::WEBHEX as $name => $hex) {
-            $dist = $this->getRgbSquareDistance($col, $this->getHexArray($hex));
+        foreach (self::getWebhexRgb() as $name => $rgb) {
+            $dist = $this->getRgbSquareDistance($col, $rgb);
             if ($dist < $mindist) {
                 $mindist = $dist;
                 $color = $name;
@@ -444,7 +480,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $color String containing web color definition
      */
-    public function getClosestWebColorFromString(string $color): string
+    final public function getClosestWebColorFromString(string $color): string
     {
         $obj = $this->tryGetColorObj($color);
         if (!$obj instanceof \Com\Tecnick\Color\Model) {
@@ -452,5 +488,78 @@ class Web extends \Com\Tecnick\Color\Css
         }
 
         return $this->getClosestWebColor($obj->toRgbArray());
+    }
+
+    /**
+     * Get the WEBHEX table converted to CIE Lab arrays, keyed by color name.
+     *
+     * @return array<string, array<string, float>>
+     */
+    private static function getWebhexLab(): array
+    {
+        if (self::$webhexLab === null) {
+            $decoded = [];
+            foreach (self::getWebhexRgb() as $name => $rgb) {
+                $decoded[$name] = (new \Com\Tecnick\Color\Model\Rgb($rgb))->toLabArray();
+            }
+
+            self::$webhexLab = $decoded;
+        }
+
+        return self::$webhexLab;
+    }
+
+    /**
+     * Get the square of the CIE76 color difference between 2 Lab points.
+     *
+     * @param array<string, float> $cola First color as Lab array
+     * @param array<string, float> $colb Second color as Lab array
+     */
+    final public function getLabSquareDistance(array $cola, array $colb): float
+    {
+        return (
+            (($cola['lstar'] ?? 0.0) - ($colb['lstar'] ?? 0.0)) ** 2
+            + (($cola['astar'] ?? 0.0) - ($colb['astar'] ?? 0.0)) ** 2
+            + (($cola['bstar'] ?? 0.0) - ($colb['bstar'] ?? 0.0)) ** 2
+        );
+    }
+
+    /**
+     * Get the name of the perceptually closest web color.
+     *
+     * Nearness is the CIE76 color difference in CIE Lab. Ties resolve to the
+     * first matching color name.
+     *
+     * @param array<string, float> $col Color as Lab array (keys: 'lstar', 'astar', 'bstar')
+     */
+    final public function getClosestWebColorByDeltaE(array $col): string
+    {
+        $color = '';
+        $mindist = \PHP_FLOAT_MAX;
+        foreach (self::getWebhexLab() as $name => $lab) {
+            $dist = $this->getLabSquareDistance($col, $lab);
+            if ($dist < $mindist) {
+                $mindist = $dist;
+                $color = $name;
+            }
+        }
+
+        return $color;
+    }
+
+    /**
+     * Get the name of the perceptually closest web color from a color
+     * definition string.
+     *
+     * @param string $color String containing web color definition
+     */
+    final public function getClosestWebColorByDeltaEFromString(string $color): string
+    {
+        $obj = $this->tryGetColorObj($color);
+        if (!$obj instanceof \Com\Tecnick\Color\Model) {
+            return '';
+        }
+
+        return $this->getClosestWebColorByDeltaE($obj->toLabArray());
     }
 }

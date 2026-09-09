@@ -42,11 +42,34 @@ use Com\Tecnick\Pdf\Parser\Exception as PPException;
 class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
 {
     /**
+     * Default maximum size in bytes of a single decoded stream (32MB).
+     */
+    public const DEFAULT_MAX_STREAM_SIZE = 33_554_432;
+
+    /**
+     * Maximum number of indirect object resolutions that may be in flight at once.
+     */
+    protected const MAX_RESOLUTION_DEPTH = 64;
+
+    /**
+     * Maximum size in bytes of a single decoded stream, 0 means unlimited.
+     */
+    private int $maxStreamSize = self::DEFAULT_MAX_STREAM_SIZE;
+
+    /**
      * Cache of decoded object streams keyed by object stream reference.
      *
      * @var array<string, array<string, array<int, RawObjectArray>>>
      */
     private array $objstmCache = [];
+
+    /**
+     * References of the objects that are currently being resolved, used to break
+     * reference cycles (e.g. two streams whose /Length point at each other).
+     *
+     * @var array<string, bool>
+     */
+    private array $resolving = [];
 
     /**
      * Array of configuration parameters.
@@ -61,22 +84,25 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     /**
      * Initialize the PDF parser
      *
-     * @param array<string, bool> $cfg Array of configuration parameters:
-     *                                 'ignore_filter_errors' :
-     *                                 if true ignore filter decoding
-     *                                 errors;
-     *                                 'decode_streams':
-     *                                 if true, decode stream payloads while parsing
-     *                                 regular indirect objects.
+     * @param array<string, bool|int> $cfg Configuration parameters:
+     *                                     'ignore_filter_errors': if true, ignore filter decoding errors;
+     *                                     'decode_streams': if true, decode stream payloads while parsing
+     *                                     regular indirect objects;
+     *                                     'max_stream_size': maximum size in bytes of a single decoded
+     *                                     stream, 0 means unlimited.
      */
     public function __construct(array $cfg = [])
     {
+        if (\array_key_exists('max_stream_size', $cfg)) {
+            $this->maxStreamSize = \max(0, (int) $cfg['max_stream_size']);
+        }
+
         if (\array_key_exists('ignore_filter_errors', $cfg)) {
-            $this->cfg['ignore_filter_errors'] = $cfg['ignore_filter_errors'];
+            $this->cfg['ignore_filter_errors'] = (bool) $cfg['ignore_filter_errors'];
         }
 
         if (\array_key_exists('decode_streams', $cfg)) {
-            $this->cfg['decode_streams'] = $cfg['decode_streams'];
+            $this->cfg['decode_streams'] = (bool) $cfg['decode_streams'];
         }
     }
 
@@ -107,37 +133,51 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         $this->pdfdata = \substr($data, $trimpos);
         // reset per-document state so the same instance can be reused for multiple parses
         $this->mrkoff = [];
+        $this->xrefdone = [];
         $this->objstmCache = [];
+        $this->resolving = [];
+        $this->nesting = 0;
+        $this->streamDataStart = -1;
         $this->objects = [];
         $this->xref = self::XREF_EMPTY;
-        // get xref and trailer data
-        $this->xref = $this->getXrefData();
-        // parse all document objects
-        $decodeStreams = $this->cfg['decode_streams'] ?? true;
-        foreach ($this->xref['xref'] as $obj => $offset) {
-            if (\array_key_exists($obj, $this->objects)) {
-                continue;
-            }
 
-            if (\is_int($offset)) {
-                if ($offset <= 0) {
+        try {
+            // get xref and trailer data
+            $this->xref = $this->getXrefData();
+            // parse all document objects
+            $decodeStreams = $this->cfg['decode_streams'] ?? true;
+            foreach ($this->xref['xref'] as $obj => $offset) {
+                // an object resolved as a side effect of another one is cached without
+                // decoding its stream: keep it only when nothing is left to decode
+                if (
+                    \array_key_exists($obj, $this->objects)
+                    && !($decodeStreams && $this->hasUndecodedStream($this->objects[$obj]))
+                ) {
                     continue;
                 }
 
-                // decode objects with positive offset
-                $this->objects[$obj] = $this->getIndirectObject($obj, $offset, $decodeStreams);
-                continue;
-            }
+                if (\is_int($offset)) {
+                    if ($offset <= 0) {
+                        continue;
+                    }
 
-            if (\preg_match('/^\d+_\d+_\d+$/', $offset) === 1) {
-                $compressedObj = $this->getCompressedObject($obj, $offset);
-                if ($compressedObj !== null) {
-                    $this->objects[$obj] = $compressedObj;
+                    // decode objects with positive offset
+                    $this->objects[$obj] = $this->getIndirectObject($obj, $offset, $decodeStreams);
+                    continue;
+                }
+
+                if (\preg_match('/^\d+_\d+_\d+$/', $offset) === 1) {
+                    $compressedObj = $this->getCompressedObject($obj, $offset);
+                    if ($compressedObj !== null) {
+                        $this->objects[$obj] = $compressedObj;
+                    }
                 }
             }
+        } finally {
+            // never keep the document data on the instance
+            $this->pdfdata = '';
         }
 
-        $this->pdfdata = '';
         return [$this->xref, $this->objects];
     }
 
@@ -159,24 +199,47 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
             throw new PPException('Invalid object reference: ' . \serialize($obj));
         }
 
+        // an indirect reference to an undefined object shall be considered a reference to the null object
+        $nullobj = [['null', 'null', $offset]];
+
+        // an out-of-range offset cannot point at any object
+        if ($offset < 0 || $offset >= \strlen($this->pdfdata)) {
+            return $nullobj;
+        }
+
+        // break reference cycles (e.g. two streams whose /Length point at each other)
+        // and bound the depth of an acyclic chain of references
+        if (isset($this->resolving[$obj_ref]) || $this->resolutionDepthReached()) {
+            return $nullobj;
+        }
+
         /** @var array{0: string, 1: string} $obj */
         $objref = $obj[0] . ' ' . $obj[1] . ' obj';
         // ignore leading zeros
         $offset += \strspn($this->pdfdata, '0', $offset);
         $objPos = \strpos($this->pdfdata, $objref, $offset);
-        if ((int) $objPos !== (int) $offset) {
+        if ($objPos !== $offset) {
             ++$offset;
+            if ($offset >= \strlen($this->pdfdata)) {
+                return $nullobj;
+            }
+
             $objPos = \strpos($this->pdfdata, $objref, $offset);
-            if ((int) $objPos !== (int) $offset) {
-                // an indirect reference to an undefined object shall be considered a reference to the null object
+            if ($objPos !== $offset) {
                 return [['null', 'null', $offset]];
             }
         }
 
         // starting position of object content
         $offset += \strlen($objref);
-        // return raw object content
-        return $this->getRawIndirectObject($offset, $decoding);
+
+        $this->resolving[$obj_ref] = true;
+        try {
+            // return raw object content
+            return $this->getRawIndirectObject($offset, $decoding);
+        } finally {
+            unset($this->resolving[$obj_ref]);
+        }
     }
 
     /**
@@ -213,12 +276,19 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
             ) {
                 /** @var array<int, RawObjectArray> $sdic */
                 $sdic = $prevElement[1];
+                $length = $this->getDeclaredLength($sdic);
                 // re-slice the payload using the declared /Length when the first "endstream"
-                // marker turned out to be a false positive inside the binary data
-                $reslice = $this->resliceStreamByLength($sdic, $streamDataStart, $element[1]);
+                // marker is a false positive inside the binary data
+                $reslice = $this->resliceStreamByLength($length, $streamDataStart, $element[1]);
                 if ($reslice !== null) {
                     $element[1] = $reslice['stream'];
                     $offset = $reslice['offset'];
+                    // index 2 is the offset to the next object: keep it in step with the cursor
+                    $element[2] = $offset;
+                } elseif ($length === null) {
+                    // no length to slice by: the end-of-line before "endstream" is the only
+                    // part of the extracted bytes known not to belong to the payload
+                    $element[1] = $this->stripStreamEol($element[1]);
                 }
 
                 if ($decoding) {
@@ -226,39 +296,43 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
                 }
             }
 
+            if ($element[0] === 'endobj') {
+                // closing delimiter reached: consumed but not stored
+                break;
+            }
+
+            if ($element[0] === '' || $offset === $oldoffset) {
+                // end of data or a byte that cannot be tokenized: stop without storing it
+                break;
+            }
+
             $objdata[$idx] = $element;
             $prevElement = $element;
             ++$idx;
-        } while ($element[0] !== 'endobj' && (int) $offset !== (int) $oldoffset);
-
-        // remove closing delimiter
-        \array_pop($objdata);
+        } while (true);
 
         // return raw object content
         return $objdata;
     }
 
     /**
-     * Re-slice a stream payload using the declared /Length when the first "endstream"
-     * marker found by the tokenizer was a false positive inside the binary data.
+     * Re-slice a stream payload using the declared /Length when it disagrees with the
+     * payload the tokenizer extracted up to the first "endstream" marker.
      *
-     * @param array<int, RawObjectArray> $sdic        Stream's dictionary array.
-     * @param int                        $dataStart   Offset where the stream payload starts.
-     * @param string                     $extracted   Payload extracted up to the first "endstream".
+     * @param int|null $length    Declared /Length, or null when it cannot be determined.
+     * @param int      $dataStart Offset where the stream payload starts.
+     * @param string   $extracted Payload extracted up to the first "endstream".
      *
      * @return array{stream: string, offset: int}|null Corrected payload and next offset, or null.
-     *
-     * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
-    private function resliceStreamByLength(array $sdic, int $dataStart, string $extracted): ?array
+    private function resliceStreamByLength(?int $length, int $dataStart, string $extracted): ?array
     {
-        $length = $this->getDeclaredLength($sdic);
         if ($length === null || $length <= 0) {
             return null;
         }
 
-        // only act when the declared length reaches further than the extracted payload
-        if ($length <= \strlen($extracted)) {
+        // nothing to correct when the declaration matches what was extracted
+        if ($length === \strlen($extracted)) {
             return null;
         }
 
@@ -281,6 +355,27 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
+     * Remove the end-of-line marker that precedes "endstream" and that
+     * PDF 32000-1 7.3.8.1 keeps out of the stream data.
+     *
+     * @param string $stream Payload extracted up to the first "endstream".
+     *
+     * @return string Payload without its trailing end-of-line.
+     */
+    private function stripStreamEol(string $stream): string
+    {
+        if (\str_ends_with($stream, "\r\n")) {
+            return \substr($stream, 0, -2);
+        }
+
+        if (\str_ends_with($stream, "\n") || \str_ends_with($stream, "\r")) {
+            return \substr($stream, 0, -1);
+        }
+
+        return $stream;
+    }
+
+    /**
      * Resolve the declared /Length of a stream dictionary, following indirect references.
      *
      * @param array<int, RawObjectArray> $sdic Stream's dictionary array.
@@ -292,29 +387,40 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     private function getDeclaredLength(array $sdic): ?int
     {
         $count = \count($sdic);
-        for ($i = 0; $i < $count; ++$i) {
+        // only even positions of the flat key/value list are dictionary keys
+        for ($i = 0; $i < $count; $i += 2) {
             $key = $sdic[$i] ?? null;
             if (!\is_array($key) || $key[0] !== '/' || $key[1] !== 'Length') {
                 continue;
             }
 
-            $val = $sdic[$i + 1] ?? null;
-            if (!\is_array($val)) {
-                return null;
-            }
+            return $this->resolveLengthValue($sdic[$i + 1] ?? null);
+        }
 
-            if ($val[0] === 'numeric' && \is_scalar($val[1])) {
-                return (int) $val[1];
-            }
+        return null;
+    }
 
-            if ($val[0] === 'objref') {
-                $resolved = $this->getObjectVal($val);
-                if ($resolved[0] === 'numeric' && \is_scalar($resolved[1])) {
-                    return (int) $resolved[1];
-                }
-            }
-
+    /**
+     * Resolve a /Length value to its number, following an indirect reference.
+     *
+     * @param RawObjectArray|null $value Raw object found in the /Length value position.
+     *
+     * @return int|null The declared length, or null when it cannot be determined.
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
+     */
+    private function resolveLengthValue(?array $value): ?int
+    {
+        if ($value === null) {
             return null;
+        }
+
+        if ($value[0] === 'objref') {
+            $value = $this->getObjectVal($value);
+        }
+
+        if ($value[0] === 'numeric' && \is_scalar($value[1])) {
+            return (int) $value[1];
         }
 
         return null;
@@ -336,6 +442,11 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
             if (($this->objects[$obj[1]][0] ?? null) !== null) {
                 // this object has been already parsed
                 return $this->objects[$obj[1]][0];
+            }
+
+            if (isset($this->resolving[$obj[1]]) || $this->resolutionDepthReached()) {
+                // cycle or depth limit: leave the reference unresolved
+                return $obj;
             }
 
             if (isset($this->xref['xref'][$obj[1]])) {
@@ -374,8 +485,8 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     /**
      * Resolve one compressed object by object-stream locator.
      *
-     * @param string $objRef   Target object reference (e.g. "14_0").
-     * @param string $locator  Object-stream locator "streamObj_streamGen_index".
+     * @param string $objRef  Target object reference (e.g. "14_0").
+     * @param string $locator Object-stream locator "streamObj_streamGen_index".
      *
      * @return array<int, RawObjectArray>|null
      *
@@ -387,8 +498,11 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         $streamRef = $parts[0] . '_' . ($parts[1] ?? '');
         $cache = $this->objstmCache[$streamRef] ?? null;
         if (!\is_array($cache)) {
-            $cache = $this->parseObjectStream($streamRef);
-            $this->objstmCache[$streamRef] = $cache;
+            // seed the cache before parsing: an object stream whose own dictionary
+            // references an object stored inside itself must not re-enter this method
+            $this->objstmCache[$streamRef] = [];
+            $this->objstmCache[$streamRef] = $this->parseObjectStream($streamRef);
+            $cache = $this->objstmCache[$streamRef];
         }
 
         $obj = $cache[$objRef] ?? null;
@@ -416,7 +530,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         }
 
         $streamObj = $this->objects[$streamRef];
-        if (!$this->hasDecodedStreamPayload($streamObj)) {
+        if ($this->hasUndecodedStream($streamObj)) {
             $streamOffset = $this->xref['xref'][$streamRef] ?? null;
             if (!\is_int($streamOffset) || $streamOffset <= 0) {
                 return [];
@@ -445,9 +559,11 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * @param array<int, RawObjectArray> $streamObj
+     * Extract the dictionary and the decoded payload of an object stream.
      *
-     * @return array{0: array<int, RawObjectArray>|null, 1: string|null}
+     * @param array<int, RawObjectArray> $streamObj Parsed object stream.
+     *
+     * @return array{0: array<int, RawObjectArray>|null, 1: string|null} Dictionary and decoded payload.
      */
     private function extractObjectStreamEnvelope(array $streamObj): array
     {
@@ -471,16 +587,20 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * @param array<int, RawObjectArray> $dict
+     * Read the /N and /First entries of an object stream dictionary.
      *
-     * @return array{0: int, 1: int}
+     * @param array<int, RawObjectArray> $dict Object stream dictionary.
+     *
+     * @return array{0: int, 1: int} Number of embedded objects and offset of the first body.
      */
     private function readObjectStreamConfig(array $dict): array
     {
         $n = 0;
         $first = 0;
         $dictCount = \count($dict);
-        for ($idx = 0; $idx < $dictCount; ++$idx) {
+        // a dictionary is a flat list of key/value pairs: only even positions are keys,
+        // otherwise a value that happens to be the name /N or /First is taken for a key
+        for ($idx = 0; $idx < $dictCount; $idx += 2) {
             $key = $dict[$idx] ?? null;
             $val = $dict[$idx + 1] ?? null;
             if (!\is_array($key) || !\is_array($val)) {
@@ -505,11 +625,13 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
+     * Read the object number and offset pairs from the header of an object stream.
+     *
      * @param string $decodedData Decoded object stream payload.
      * @param int    $n           Number of embedded objects.
      * @param int    $first       Byte offset where object bodies begin.
      *
-     * @return array{objNums: array<int, int>, objOffsets: array<int, int>}|null
+     * @return array{objNums: array<int, int>, objOffsets: array<int, int>}|null Index, or null when invalid.
      */
     private function readObjectStreamIndex(string $decodedData, int $n, int $first): ?array
     {
@@ -539,12 +661,14 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
+     * Parse the bodies of the objects embedded in an object stream.
+     *
      * @param string          $decodedData Decoded object stream payload.
      * @param int             $first       Byte offset where object bodies begin.
      * @param array<int, int> $objNums     Embedded object numbers.
      * @param array<int, int> $objOffsets  Embedded object offsets from $first.
      *
-     * @return array<string, array<int, RawObjectArray>>
+     * @return array<string, array<int, RawObjectArray>> Objects keyed as "objNum_0".
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
@@ -576,18 +700,18 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Check whether a parsed object already includes decoded stream payload.
+     * Check whether a parsed object holds a stream whose payload was not decoded.
      *
-     * @param array<int, RawObjectArray> $streamObj
+     * @param array<int, RawObjectArray> $streamObj Parsed object.
      */
-    private function hasDecodedStreamPayload(array $streamObj): bool
+    private function hasUndecodedStream(array $streamObj): bool
     {
         foreach ($streamObj as $element) {
             if ($element[0] !== 'stream') {
                 continue;
             }
 
-            if (!\is_array($element[3] ?? null)) {
+            if (\is_array($element[3] ?? null)) {
                 continue;
             }
 
@@ -598,11 +722,18 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
+     * Check whether the maximum number of in-flight object resolutions has been reached.
+     */
+    private function resolutionDepthReached(): bool
+    {
+        return \count($this->resolving) >= static::MAX_RESOLUTION_DEPTH;
+    }
+
+    /**
      * Parse a raw object body into a parser token array.
      *
-     * The body is parsed in an isolated sub-parser instance (so indirect references it
-     * may contain are not resolved against the outer document), but without bootstrapping
-     * a full synthetic PDF: the object is decoded directly, skipping the xref machinery.
+     * The body is parsed in an isolated parser instance, so the indirect references it
+     * may contain are not resolved against the outer document.
      *
      * @param string $body Raw object body from an object stream.
      *
@@ -612,7 +743,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      */
     private function parseObjectBody(string $body): ?array
     {
-        $parser = new self($this->cfg);
+        $parser = new self($this->cfg + ['max_stream_size' => $this->maxStreamSize]);
         $obj = $parser->parseStandaloneObject($body);
         return $obj === [] ? null : $obj;
     }
@@ -629,20 +760,27 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     protected function parseStandaloneObject(string $body): array
     {
         $this->mrkoff = [];
+        $this->xrefdone = [];
         $this->objstmCache = [];
+        $this->resolving = [];
+        $this->nesting = 0;
+        $this->streamDataStart = -1;
         $this->objects = [];
         $this->xref = self::XREF_EMPTY;
         $this->pdfdata = "1 0 obj\n" . $body . "\nendobj\n";
-        $obj = $this->getIndirectObject('1_0', 0, $this->cfg['decode_streams'] ?? true);
-        $this->pdfdata = '';
-        return $obj;
+
+        try {
+            return $this->getIndirectObject('1_0', 0, $this->cfg['decode_streams'] ?? true);
+        } finally {
+            $this->pdfdata = '';
+        }
     }
 
     /**
      * Decode the specified stream.
      *
-     * @param array<int, RawObjectArray>  $sdic   Stream's dictionary array.
-     * @param string            $stream Stream to decode.
+     * @param array<int, RawObjectArray> $sdic   Stream's dictionary array.
+     * @param string                     $stream Stream to decode.
      *
      * @return array{
      *             0: string,
@@ -662,21 +800,23 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
 
         $filters = [];
         $params = [];
-        foreach ($sdic as $key => $val) {
-            if (!\is_string($val[1])) {
+        // a dictionary is a flat list of key/value pairs: only even positions are keys,
+        // otherwise a value that happens to be the name /Length is taken for a key
+        $count = \count($sdic);
+        for ($key = 0; $key < $count; $key += 2) {
+            $val = $sdic[$key] ?? null;
+            if (!\is_array($val) || $val[0] !== '/' || !\is_string($val[1])) {
                 continue;
             }
 
-            if ($val[0] === '/') {
-                $nextSdic = $sdic[$key + 1] ?? null;
-                if ($val[1] === 'Length' && \is_array($nextSdic) && $nextSdic[0] === 'numeric') {
-                    // get declared stream length
-                    $this->getDeclaredStreamLength($stream, $slength, $sdic, $key);
-                } elseif ($val[1] === 'Filter' && ($sdic[$key + 1] ?? null) !== null) {
-                    $filters = $this->getFilters($filters, $sdic, $key);
-                } elseif ($val[1] === 'DecodeParms' && ($sdic[$key + 1] ?? null) !== null) {
-                    $params = $this->getDecodeParms($sdic, $key);
-                }
+            $nextSdic = $sdic[$key + 1] ?? null;
+            if ($val[1] === 'Length' && \is_array($nextSdic)) {
+                // get declared stream length
+                $this->getDeclaredStreamLength($stream, $slength, $sdic, $key);
+            } elseif ($val[1] === 'Filter' && $nextSdic !== null) {
+                $filters = $this->getFilters($filters, $sdic, $key);
+            } elseif ($val[1] === 'DecodeParms' && $nextSdic !== null) {
+                $params = $this->getDecodeParms($sdic, $key);
             }
         }
 
@@ -684,31 +824,34 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Get declared stream length
+     * Truncate the stream to the declared /Length when it is shorter than the payload.
      *
-     * @param string            $stream  Stream
-     * @param int               $slength Stream length
-     * @param array<int, RawObjectArray>   $sdic Stream's dictionary array.
-     * @param int               $key     Index
+     * @param string                     $stream  Stream to truncate.
+     * @param int                        $slength Stream length.
+     * @param array<int, RawObjectArray> $sdic    Stream's dictionary array.
+     * @param int                        $key     Index of the /Length key.
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
     protected function getDeclaredStreamLength(string &$stream, int &$slength, array $sdic, int $key): void
     {
-        // get declared stream length
-        $declength = (int) ($sdic[$key + 1][1] ?? 0);
-        if ($declength < $slength) {
+        // get declared stream length, following an indirect reference
+        $declength = $this->resolveLengthValue($sdic[$key + 1] ?? null);
+        // ignore a non-positive declaration
+        if ($declength !== null && $declength > 0 && $declength < $slength) {
             $stream = \substr($stream, 0, $declength);
             $slength = $declength;
         }
     }
 
     /**
-     * Get Filters
+     * Add the filters declared in the /Filter entry to the filter chain.
      *
-     * @param array<string>     $filters Array of Filters
+     * @param array<string>              $filters Filters collected so far.
      * @param array<int, RawObjectArray> $sdic    Stream's dictionary array.
-     * @param int               $key     Index
+     * @param int                        $key     Index of the /Filter key.
      *
-     * @return array<string> Array of filters
+     * @return array<string> Filter chain.
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
@@ -755,15 +898,15 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Get DecodeParms
+     * Read the /DecodeParms entry of a stream dictionary.
      *
-     * @param array<int, RawObjectArray> $sdic    Stream's dictionary array.
-     * @param int               $key     Index
+     * @param array<int, RawObjectArray> $sdic Stream's dictionary array.
+     * @param int                        $key  Index of the /DecodeParms key.
      *
-     * @return array<string, mixed> Decode parameters
+     * @return array<array-key, mixed> A single decode parameters dictionary,
+     *                                 or a list holding one dictionary per filter.
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
-     * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
     protected function getDecodeParms(array $sdic, int $key): array
     {
@@ -773,45 +916,47 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
             return [];
         }
 
-        $elem = $nextElem;
-        $objval = $this->getObjectVal($elem);
+        $objval = $this->getObjectVal($nextElem);
+        if (!\is_array($objval[1])) {
+            return [];
+        }
+
+        return match ($objval[0]) {
+            // single DecodeParms dictionary
+            '<<' => $this->buildDecodeParms($objval[1]),
+            // array of DecodeParms, one per filter
+            '[' => $this->buildDecodeParmsList($objval[1]),
+            default => [],
+        };
+    }
+
+    /**
+     * Build the list of DecodeParms dictionaries parallel to the filter chain.
+     *
+     * @param array<int, RawObjectArray> $parmarr Raw DecodeParms array.
+     *
+     * @return array<int, array<string, mixed>> One dictionary per filter, empty where none applies.
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
+     */
+    private function buildDecodeParmsList(array $parmarr): array
+    {
         $params = [];
-
-        switch ($objval[0]) {
-            case '<<':
-                // single DecodeParms dictionary
-                if (\is_array($objval[1])) {
-                    $params = $this->buildDecodeParms($objval[1]);
-                }
-
-                break;
-            case '[':
-                // array of DecodeParms (one per filter)
-                if (\is_array($objval[1])) {
-                    foreach ($objval[1] as $parm) {
-                        if ($parm[0] === '<<') {
-                            if (\is_array($parm[1])) {
-                                $params = $this->buildDecodeParms($parm[1]);
-                                break;
-                            }
-                        } elseif ($parm[0] === 'null') {
-                            continue;
-                        }
-                    }
-                }
-
-                break;
+        foreach ($parmarr as $parm) {
+            // resolve indirect references
+            $parmval = $this->getObjectVal($parm);
+            $params[] = $parmval[0] === '<<' && \is_array($parmval[1]) ? $this->buildDecodeParms($parmval[1]) : [];
         }
 
         return $params;
     }
 
     /**
-     * Build DecodeParms associative array from raw dictionary
+     * Build a DecodeParms associative array from a raw dictionary.
      *
      * @param array<int, RawObjectArray> $parmdict Raw parameter dictionary.
      *
-     * @return array<string, mixed> Decoded parameters
+     * @return array<string, mixed> Decode parameters.
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
@@ -849,11 +994,11 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Extract parameter value from a raw object
+     * Extract a parameter value from a raw object.
      *
-     * @param RawObjectArray $val Raw object value
+     * @param RawObjectArray $val Raw object value.
      *
-     * @return int|string|bool|null The extracted parameter value, or null if unable to extract
+     * @return int|string|bool|null The extracted value, or null when the type is not supported.
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
@@ -865,18 +1010,19 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
             'numeric' => \is_string($val1) ? (int) $val1 : null,
             '/' => \is_string($val1) ? $val1 : null,
             'string' => \is_string($val1) ? $val1 : null,
-            'true' => true,
-            'false' => false,
+            // the tokenizer emits booleans as type 'boolean' with 'true'/'false' as value
+            'boolean' => $val1 === 'true',
             default => null,
         };
     }
 
     /**
-     * Decode the specified stream.
+     * Apply the decoding filters to a stream.
      *
-     * @param array<string> $filters Array of decoding filters to apply
-     * @param string        $stream  Stream to decode.
-     * @param array<string, mixed> $params DecodeParms dictionary (optional).
+     * @param array<string>           $filters Decoding filters to apply.
+     * @param string                  $stream  Stream to decode.
+     * @param array<array-key, mixed> $params  DecodeParms: a single dictionary applied to
+     *                                         every filter, or one dictionary per filter.
      *
      * @return array{
      *             0: string,
@@ -887,153 +1033,48 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      */
     protected function getDecodedStream(array $filters, string $stream, array $params = []): array
     {
-        // decode the stream
-        $errorfilters = [];
+        // decode the stream: the filter layer also reverses the predictor declared in DecodeParms
         try {
-            $filter = new Filter();
-            $stream = $filter->decodeAll($filters, $stream, $params);
+            return [(new Filter())->decodeAll($filters, $stream, $this->capDecodeParms($params, \count($filters))), []];
         } catch (\Com\Tecnick\Pdf\Filter\Exception $exception) {
-            if ($this->cfg['ignore_filter_errors'] ?? false) {
-                $errorfilters = $filters;
-            } else {
+            if (!($this->cfg['ignore_filter_errors'] ?? false)) {
                 throw new PPException($exception->getMessage());
             }
         }
 
-        // reverse the PNG/TIFF predictor declared in DecodeParms (the filter layer only
-        // inflates/decompresses and leaves predictor metadata in place)
-        if ($errorfilters === [] && $this->applyStreamPredictor) {
-            $stream = $this->applyPredictor($stream, $params);
-        }
-
-        return [$stream, $errorfilters];
+        return [$stream, $filters];
     }
 
     /**
-     * Reverse a PNG/TIFF predictor as described by the stream's DecodeParms.
+     * Force the decoded-size cap into the DecodeParms passed to the filter chain.
      *
-     * @param string               $data   Decompressed (still predicted) stream data.
-     * @param array<string, mixed> $params DecodeParms dictionary.
+     * The cap takes precedence over any MaxOutputSize declared by the document.
      *
-     * @return string The un-predicted data (unchanged when no predictor applies).
+     * @param array<array-key, mixed> $params      DecodeParms: a single dictionary applied to
+     *                                             every filter, or one dictionary per filter.
+     * @param int                     $filterCount Number of filters in the chain.
+     *
+     * @return array<array-key, mixed> DecodeParms with the cap applied.
      */
-    private function applyPredictor(string $data, array $params): string
+    private function capDecodeParms(array $params, int $filterCount): array
     {
-        $predictor = (int) ($params['Predictor'] ?? 1);
-        if ($predictor <= 1 || $data === '') {
-            return $data;
+        if ($this->maxStreamSize <= 0) {
+            return $params;
         }
 
-        $colors = \max(1, (int) ($params['Colors'] ?? 1));
-        $bpc = \max(1, (int) ($params['BitsPerComponent'] ?? 8));
-        $columns = \max(1, (int) ($params['Columns'] ?? 1));
-        $bpp = \max(1, (int) \ceil(($colors * $bpc) / 8));
-        $rowlen = (int) \ceil(($colors * $bpc * $columns) / 8);
-        if ($rowlen <= 0) {
-            return $data;
-        }
-
-        if ($predictor === 2) {
-            return $this->applyTiffPredictor($data, $rowlen, $bpp, $bpc);
-        }
-
-        // PNG predictors (10-15): each row is prefixed with a filter-type byte
-        return $this->applyPngPredictor($data, $rowlen, $bpp);
-    }
-
-    /**
-     * Reverse a TIFF Predictor 2 (horizontal differencing) over 8-bit samples.
-     *
-     * @param string $data   Predicted data.
-     * @param int    $rowlen Number of bytes per row.
-     * @param int    $bpp    Number of bytes per pixel/sample group.
-     * @param int    $bpc    Bits per component.
-     *
-     * @return string Un-predicted data.
-     */
-    private function applyTiffPredictor(string $data, int $rowlen, int $bpp, int $bpc): string
-    {
-        if ($bpc !== 8) {
-            // sub-byte TIFF prediction is not supported; leave the data unchanged
-            return $data;
-        }
-
-        /** @var array<int, int> $bytes */
-        $bytes = \array_values((array) \unpack('C*', $data));
-        $rows = \intdiv(\strlen($data), $rowlen);
-        for ($r = 0; $r < $rows; ++$r) {
-            $base = $r * $rowlen;
-            for ($i = $bpp; $i < $rowlen; ++$i) {
-                $sample = $bytes[$base + $i] ?? 0;
-                $left = $bytes[$base + $i - $bpp] ?? 0;
-                $bytes[$base + $i] = ($sample + $left) & 0xff;
-            }
-        }
-
-        return \pack('C*', ...$bytes);
-    }
-
-    /**
-     * Reverse the PNG predictors (filter types 0-4) declared per row.
-     *
-     * @param string $data   Predicted data (each row prefixed by its filter-type byte).
-     * @param int    $rowlen Number of bytes per row (excluding the filter-type byte).
-     * @param int    $bpp    Number of bytes per pixel (offset to the "left" byte).
-     *
-     * @return string Un-predicted data.
-     */
-    private function applyPngPredictor(string $data, int $rowlen, int $bpp): string
-    {
-        $stride = $rowlen + 1;
-        $len = \strlen($data);
-        $out = '';
-        $prev = \array_fill(0, \max(0, $rowlen), 0);
-        for ($pos = 0; ($pos + $stride) <= $len; $pos += $stride) {
-            $filterType = \ord($data[$pos]);
-            /** @var array<int, int> $cur */
-            $cur = \array_values((array) \unpack('C*', \substr($data, $pos + 1, $rowlen)));
-            for ($i = 0; $i < $rowlen; ++$i) {
-                $sample = $cur[$i] ?? 0;
-                $left = $i >= $bpp ? $cur[$i - $bpp] ?? 0 : 0;
-                $up = $prev[$i] ?? 0;
-                $upleft = $i >= $bpp ? $prev[$i - $bpp] ?? 0 : 0;
-                $cur[$i] = match ($filterType) {
-                    1 => ($sample + $left) & 0xff,
-                    2 => ($sample + $up) & 0xff,
-                    3 => ($sample + \intdiv($left + $up, 2)) & 0xff,
-                    4 => ($sample + $this->paethPredictor($left, $up, $upleft)) & 0xff,
-                    default => $sample & 0xff,
-                };
+        $cap = ['MaxOutputSize' => $this->maxStreamSize];
+        // a non-empty list is the per-filter form: every position needs its own cap,
+        // including the positions the document left out
+        if ($params !== [] && \array_is_list($params)) {
+            $capped = [];
+            $count = \max($filterCount, \count($params));
+            for ($idx = 0; $idx < $count; ++$idx) {
+                $capped[$idx] = \is_array($params[$idx] ?? null) ? $cap + $params[$idx] : $cap;
             }
 
-            $out .= \pack('C*', ...$cur);
-            $prev = $cur;
+            return $capped;
         }
 
-        return $out;
-    }
-
-    /**
-     * PNG Paeth predictor function.
-     *
-     * @param int $left   Byte to the left.
-     * @param int $up     Byte above.
-     * @param int $upleft Byte above-left.
-     */
-    private function paethPredictor(int $left, int $up, int $upleft): int
-    {
-        $estimate = $left + $up - $upleft;
-        $distLeft = \abs($estimate - $left);
-        $distUp = \abs($estimate - $up);
-        $distUpLeft = \abs($estimate - $upleft);
-        if ($distLeft <= $distUp && $distLeft <= $distUpLeft) {
-            return $left;
-        }
-
-        if ($distUp <= $distUpLeft) {
-            return $up;
-        }
-
-        return $upleft;
+        return $cap + $params;
     }
 }

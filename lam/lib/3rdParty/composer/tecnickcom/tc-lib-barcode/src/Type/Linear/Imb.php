@@ -26,26 +26,17 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * Imb Barcode type class
  * IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
  *
- * Intelligent Mail barcode is a 65-bar code for use on mail in the United States.
- * The fields are described as follows:
- *  * The Barcode Identifier shall be assigned by USPS to encode the presort identification that is currently
- *    printed in human readable form on the optional endorsement line (OEL) as well as for future USPS use.
- *    This shall be two digits, with the second digit in the range of 0–4. The allowable encoding ranges shall be
- *    00–04, 10–14, 20–24, 30–34, 40–44, 50–54, 60–64, 70–74, 80–84, and 90–94.
- *  * The Service Type Identifier shall be assigned by USPS for any combination of services requested on the mailpiece.
- *    The allowable encoding range shall be 000–999.
- *    Each 3-digit value shall correspond to a particular mail class with a particular combination of service(s).
- *    Each service program, such as OneCode Confirm and OneCode ACS, shall provide the list of Service Type Identifier
- *    values.
- *  * The Mailer or Customer Identifier shall be assigned by USPS as a unique, 6 or 9 digit number that identifies
- *    a business entity. The allowable encoding range for the 6 digit Mailer ID shall be 000000- 899999, while the
- *    allowable encoding range for the 9 digit Mailer ID shall be 900000000-999999999. The Serial or
- *    Sequence Number shall be assigned by the mailer for uniquely identifying and tracking mailpieces.
- *    The allowable encoding range shall be 000000000–999999999 when used with a 6 digit Mailer ID and 000000-999999
- *    when used with a 9 digit Mailer ID. e. The Delivery Point ZIP Code shall be assigned by the mailer for routing
- *    the mailpiece. This shall replace POSTNET for routing the mailpiece to its final delivery point.
- *    The length may be 0, 5, 9, or 11 digits. The allowable encoding ranges shall be no ZIP Code, 00000–99999,
- *    000000000–999999999, and 00000000000–99999999999. A hyphen '-' is required before the zip/delivery point.
+ * 65-bar code for use on mail in the United States.
+ * The payload is the concatenation of the tracking code and the routing code,
+ * separated by a hyphen:
+ *  * Barcode Identifier: 2 digits, the second one in the range 0 to 4.
+ *  * Service Type Identifier: 3 digits, 000 to 999.
+ *  * Mailer Identifier: 6 digits (000000 to 899999) or 9 digits (900000000 to 999999999).
+ *  * Serial Number: 9 digits with a 6 digit Mailer ID, 6 digits with a 9 digit one.
+ *  * Delivery Point ZIP Code: 0, 5, 9, or 11 digits, after the hyphen.
+ *
+ * Intelligent Mail is a registered trademark of the United States
+ * Postal Service.
  *
  * @since       2015-02-21
  * @category    Library
@@ -413,48 +404,6 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
     }
 
     /**
-     * @param numeric-string $left
-     * @param numeric-string $right
-     *
-     * @return numeric-string
-     */
-    protected function addNumeric(string $left, string $right): string
-    {
-        return \bcadd($left, $right);
-    }
-
-    /**
-     * @param numeric-string $left
-     * @param numeric-string $right
-     *
-     * @return numeric-string
-     */
-    protected function mulNumeric(string $left, string $right): string
-    {
-        return \bcmul($left, $right);
-    }
-
-    /**
-     * @param numeric-string $left
-     * @param numeric-string $right
-     */
-    protected function modNumeric(string $left, string $right): int
-    {
-        return (int) \bcmod($left, $right);
-    }
-
-    /**
-     * @param numeric-string $left
-     * @param numeric-string $right
-     *
-     * @return numeric-string
-     */
-    protected function divNumeric(string $left, string $right): string
-    {
-        return \bcdiv($left, $right);
-    }
-
-    /**
      * @param array<int, int> $table
      */
     protected function getTableCode(array $table, int $index): int
@@ -505,6 +454,13 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
     }
 
     /**
+     * Nof13 tables, keyed by "type:size".
+     *
+     * @var array<string, array<int, int>>
+     */
+    private static array $tables = [];
+
+    /**
      * Get the Nof13 tables
      *
      * @param int $type  Table type: 2 for 2of13 table, 5 for 5of13table
@@ -513,6 +469,19 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
      * @return array<int, int> requested table
      */
     protected function getTables(int $type, int $size): array
+    {
+        return self::$tables[$type . ':' . $size] ??= $this->buildTables($type, $size);
+    }
+
+    /**
+     * Build the Nof13 table for the given type and size
+     *
+     * @param int $type  Table type: 2 for 2of13 table, 5 for 5of13table
+     * @param int $size Table size (78 for n=2 and 1287 for n=5)
+     *
+     * @return array<int, int> requested table
+     */
+    private function buildTables(int $type, int $size): array
     {
         $table = [];
         $lli = 0; // LUT lower index
@@ -590,7 +559,7 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
         $this->bars = [];
         $code_arr = \explode('-', $this->code);
         $tracking_number = $code_arr[0];
-        if (!\preg_match('/^\d{2,20}$/', $tracking_number)) {
+        if (!\preg_match('/^\d{2,20}\z/', $tracking_number)) {
             throw new BarcodeException('Invalid tracking number');
         }
 
@@ -617,7 +586,7 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
         // calculate frame check sequence
         $fcs = $this->getFrameCheckSequence($binary_code_arr);
         // exclude first 2 bits from first byte
-        $first_byte = \sprintf('%2s', \dechex((int) (\hexdec($binary_code_arr[0]) << 2) >> 2));
+        $first_byte = \str_pad(\dechex((int) \hexdec($binary_code_arr[0]) & 0x3F), 2, '0', STR_PAD_LEFT);
         $binary_code_102bit = $first_byte . \substr($binary_code, 2);
         // convert binary data to codewords
         $codewords = [];

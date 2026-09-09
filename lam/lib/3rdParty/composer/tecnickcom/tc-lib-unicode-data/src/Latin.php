@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Data;
 /**
  * Com\Tecnick\Unicode\Data\Latin
  *
+ * Unicode to Latin1 character substitutions.
+ *
  * @since       2011-05-23
  * @category    Library
  * @package     UnicodeData

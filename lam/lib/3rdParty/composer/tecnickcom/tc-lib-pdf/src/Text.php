@@ -46,6 +46,7 @@ use Com\Tecnick\Unicode\TextDirection;
  * @phpstan-import-type PageData from \Com\Tecnick\Pdf\Page\Box
  * @phpstan-import-type TFontMetric from \Com\Tecnick\Pdf\Font\Stack
  * @phpstan-import-type TBBox from \Com\Tecnick\Pdf\Base
+ * @phpstan-import-type TFourFloat from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TStackUnitBBox from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TPdfUaStructElem from \Com\Tecnick\Pdf\Base
  * @phpstan-import-type TPdfUaStructKid from \Com\Tecnick\Pdf\Base
@@ -103,6 +104,27 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * Readable lower bound for text-cell auto-fit font size in points.
      */
     protected const TEXTCELL_MIN_FONTSIZE = 4.0;
+
+    /**
+     * Code points that never provide a line break opportunity:
+     * Unicode Line_Break GL (glue) and WJ (word joiner).
+     *
+     * @var array<int, bool>
+     */
+    protected const NO_BREAK_ORD = [
+        0x00A0 => true, // NO-BREAK SPACE
+        0x180E => true, // MONGOLIAN VOWEL SEPARATOR
+        0x2007 => true, // FIGURE SPACE
+        0x202F => true, // NARROW NO-BREAK SPACE
+        0x2060 => true, // WORD JOINER
+        0xFEFF => true, // ZERO WIDTH NO-BREAK SPACE
+    ];
+
+    /**
+     * PCRE character class fragment listing the NO_BREAK_ORD code points
+     * that "\s" matches under the "u" modifier.
+     */
+    protected const NO_BREAK_SPACE_CLASS = '\x{00A0}\x{180E}\x{2007}\x{202F}';
 
     /**
      * Unicode ligature codepoints that require /ActualText in PDF/UA mode,
@@ -176,6 +198,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
      * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
+     *                                 The margin and padding values are in points.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
      * @param float       $wordspacing Word spacing (use it only when justify == false).
@@ -268,9 +291,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             $cell_pheight - $cell['padding']['T'] - $cell['padding']['B'],
             $offset_points,
             $linespace_points,
-            // Stage 2: $baseRtl reverses the line order for an RTL paragraph so a
-            // multi-line RTL block (including every HTML fragment, which renders
-            // through getTextCell) stacks top-down exactly as addTextCell does.
+            // $baseRtl stacks the lines of an RTL paragraph top-down.
             $baseRtl,
         );
         $ordarr = $fit_state['ordarr'];
@@ -326,6 +347,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 $overline,
                 $clip,
                 $shadow,
+                $baseRtl,
             );
 
             if ($fontout_prefix !== '') {
@@ -379,6 +401,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
      * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
+     *                                 The margin and padding values are in points.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
      * @param float       $wordspacing Word spacing (use it only when justify == false).
@@ -485,6 +508,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
      * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
+     *                                 The margin and padding values are in points.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
      * @param float       $wordspacing Word spacing (use it only when justify == false).
@@ -578,7 +602,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $baseRtl = false;
         $this->prepareText($txt, $ordarr, $dim, $forcedir, $baseRtl);
         $txt_pwidth = $dim['totwidth'];
-        $actualText = $this->pdfuaMode !== '' ? $this->getActualTextForOrdarr($ordarr) : '';
+        $actualText = $this->isTaggedMode() ? $this->getActualTextForOrdarr($ordarr) : '';
 
         $ocell = $this->adjustMinCellPadding($cstyles, $cell);
         $cell = $ocell;
@@ -634,11 +658,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
 
                 $cell_pwidth = $cell_pntw;
                 if ($width <= 0) {
-                    // cellMaxWidth() expects the horizontal offset within the region (not the
-                    // absolute page position), so the region RX must not be included here.
-                    // Cap by the remaining text width ($dim['totwidth']): using the stale
-                    // $txt_pwidth (the previous region's width) would let the cell width only
-                    // shrink across regions and never expand back when a wider region follows.
+                    // cellMaxWidth() takes the horizontal offset within the region, so the
+                    // region RX is excluded. The width is capped by the remaining text
+                    // width ($dim['totwidth']) rather than the previous region's width.
                     $cell_pwidth = \min(
                         $this->cellMaxWidth($this->toPoints($posx), $cell),
                         $this->cellMinWidth($dim['totwidth'], $halign, $cell),
@@ -659,12 +681,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 if ($use_prefit_layout && $num_blocks === 0) {
                     $lines = $fit_lines;
                 } else {
-                    // $baseRtl reverses the line order for an RTL paragraph (Stage 1 fix).
-                    // Note: the RTL multi-region continuation below (pos-based slicing of the
-                    // remaining text) assumes ascending visual pos and is NOT direction-aware,
-                    // so RTL paragraphs that overflow into further regions/pages still flow
-                    // incorrectly. That pre-existing limitation is deferred to Stage 2; the
-                    // single-region case (the common one) renders correctly.
+                    // $baseRtl reverses the line order for an RTL paragraph. The
+                    // multi-region continuation below slices the remaining text by
+                    // ascending visual pos and is not direction-aware.
                     $lines = $this->splitLines($ordarr, $dim, $txt_pwidth, $this->toPoints($offset), $baseRtl);
                 }
                 $numlines = \count($lines);
@@ -674,10 +693,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 $vspace = $this->textMaxHeight(
                     $regionRh + $cell['margin']['B'] + $cell['padding']['B'] - ($cell_posy - $regionRy),
                 );
-                // Line pitch is the font height plus the caller-supplied extra
-                // line spacing. A caller may pass a negative $linespace; when it
-                // cancels the font height exactly the pitch is zero, so guard the
-                // division and treat a non-positive pitch as "everything fits".
+                // Line pitch is the font height plus the extra line spacing.
+                // A non-positive pitch (negative $linespace) means everything fits.
                 $linepitch = $fontheight + $linespace;
                 $region_max_lines = $linepitch > 0 ? (int) (($vspace + $linespace) / $linepitch) : $numlines;
                 $lastblock = $numlines <= $region_max_lines;
@@ -726,6 +743,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                     $overline,
                     $clip,
                     $shadow,
+                    $baseRtl,
                 );
 
                 if ($drawcell) {
@@ -743,7 +761,10 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                         }
                     }
 
-                    $out = $this->drawCell($cell_pntx, $cell_pnty, $cell_pwidth, $cell_pheight, $styles, $cell) . $out;
+                    // The cell background and borders are decorations: a tagged mode
+                    // marks them as artifacts (ISO 14289-1 clause 7.1).
+                    $celldraw = $this->drawCell($cell_pntx, $cell_pnty, $cell_pwidth, $cell_pheight, $styles, $cell);
+                    $out = $this->tagPdfUaArtifactContent($celldraw) . $out;
                 }
 
                 if ($fontout_prefix !== '' && $num_blocks === 0) {
@@ -777,9 +798,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                     $pid = $curpid;
                     $this->setPageContext($pid);
                 } elseif ((int) $this->page->getPage($pid)['currentRegion'] === $beforeRegion) {
-                    // No further region or page to flow into (e.g. automatic page break is
-                    // disabled and this is the last region): stop instead of repeatedly
-                    // overwriting the last region with the remaining text.
+                    // No further region or page to flow into: stop.
                     break;
                 }
             }
@@ -799,38 +818,40 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             $this->page->addContent($fontout_suffix, $pid);
         }
 
-        // Keep the current page on the final auto-broken page when the call
-        // started from the implicit current page. Explicit page-targeted calls
-        // still restore the prior page selection.
+        // An implicit-page call leaves the final auto-broken page current;
+        // an explicit page-targeted call restores the prior page selection.
         if (!$implicitCurrentPage && $pid !== $cpid) {
             $this->setCurrentPage($cpid);
         }
     }
 
     /**
-     * Suspend PDF/UA structure tagging and marked-content recording.
+     * Suspend structure tagging and marked-content recording.
      *
      * While suspended, beginStructElem()/endStructElem() and the marked-content
-     * helpers become no-ops (they key off the PDF/UA mode), so measurement passes
-     * (whose output is discarded) and replayed content (re-emitted as an Artifact)
-     * do not append phantom structure elements or advance the per-page MCID counter.
+     * helpers are no-ops, so no structure elements are appended and the per-page
+     * MCID counter does not advance.
      *
-     * The previous mode is returned and must be handed back to resumePdfUaTagging():
-     * keeping the saved state on the caller's stack lets suspensions nest safely.
+     * Returns the previous mode, to be passed back to resumePdfUaTagging().
+     * Suspensions nest.
      */
     public function suspendPdfUaTagging(): string
     {
         $previous = $this->pdfuaMode;
         $this->pdfuaMode = '';
+        ++$this->taggingSuspendDepth;
         return $previous;
     }
 
     /**
-     * Resume PDF/UA tagging, restoring the mode returned by suspendPdfUaTagging().
+     * Resume structure tagging, restoring the mode returned by suspendPdfUaTagging().
      */
     public function resumePdfUaTagging(string $previous): void
     {
         $this->pdfuaMode = $previous;
+        if ($this->taggingSuspendDepth > 0) {
+            --$this->taggingSuspendDepth;
+        }
     }
 
     /**
@@ -840,13 +861,12 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      *
      * @param string      $role PDF structure role, e.g. 'P', 'H1', 'H2', 'L', 'LI', 'Figure'.
      * @param int         $pid  Page index (from addPage / getPageId).
-     * @param string|null $alt  Optional alternate description written as /Alt in the structure element
-     *                          dictionary — primarily used for Figure elements to carry accessible alt-text.
+     * @param string|null $alt  Optional alternate description written as /Alt in the structure
+     *                          element dictionary, typically alt-text for Figure elements.
      * @param array<string, string> $attr Optional structure element attributes, serialized as
      *                                    a PDF dictionary in the /A entry.
-     * @param bool        $required When true, the element is kept in the structure tree even if it
-     *                              receives no marked content (e.g. an empty table cell that must hold
-     *                              its grid position for a regular table matrix).
+     * @param bool        $required When true, the element is kept in the structure tree even if
+     *                              it receives no marked content (e.g. an empty table cell).
      */
     public function beginStructElem(
         string $role,
@@ -855,7 +875,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         array $attr = [],
         bool $required = false,
     ): void {
-        if ($this->pdfuaMode === '') {
+        if (!$this->isTaggedMode()) {
             return;
         }
 
@@ -887,7 +907,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     public function endStructElem(): void
     {
-        if ($this->pdfuaMode === '' || $this->pdfuaStructStack === []) {
+        if (!$this->isTaggedMode() || $this->pdfuaStructStack === []) {
             return;
         }
 
@@ -900,8 +920,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         unset($this->pdfuaStructStack[$topIndex]);
 
         // Record elements that picked up marked-content or nested structure children.
-        // "Required" elements (e.g. table cells) are retained even when empty, so the
-        // table grid stays uniform and every row keeps its full column count.
+        // "Required" elements (e.g. table cells) are retained even when empty.
         if (
             $top['kids'] !== []
             || isset($top['annots']) && $top['annots'] !== []
@@ -933,16 +952,21 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param string $content Raw drawing/image operators to place inside the Figure.
      * @param int    $pid     Page identifier the content is added to.
      * @param string $alt     Optional alternate text written as the Figure /Alt entry.
+     * @param TFourFloat|array{} $bbox Optional bounding box of the content as
+     *                                 [llx, lly, urx, ury] in points, measured in default user
+     *                                 space with the origin at the bottom-left page corner.
+     *                                 Written as the /BBox Layout attribute, which PDF/UA
+     *                                 requires for figures contained on a single page.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
-    public function addTaggedFigureContent(string $content, int $pid, string $alt = ''): void
+    public function addTaggedFigureContent(string $content, int $pid, string $alt = '', array $bbox = []): void
     {
         if ($content === '') {
             return;
         }
 
-        $this->page->addContent($this->tagPdfUaFigureContent($content, $pid, $alt), $pid);
+        $this->page->addContent($this->tagPdfUaFigureContent($content, $pid, $alt, $bbox), $pid);
     }
 
     /**
@@ -959,7 +983,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     public function beginArtifact(string $type = '', string $subtype = ''): string
     {
-        if ($this->pdfuaMode === '') {
+        if (!$this->isTaggedMode()) {
             return '';
         }
 
@@ -989,7 +1013,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     public function endArtifact(): string
     {
-        if ($this->pdfuaMode === '') {
+        if (!$this->isTaggedMode()) {
             return '';
         }
 
@@ -1436,9 +1460,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 $best_layout = $mid_layout;
             }
         } else {
-            // Even at minimum stretch the layout still overflows.
-            // If the overflow is still a width overflow, apply best-effort compression.
-            // If only height overflows (compression cannot reduce line count), skip.
+            // The layout overflows even at minimum stretch: compress on width
+            // overflow, skip when only the height overflows.
             if (!$this->textCellLayoutWidthOverflows($probe_layout, $maxWidth)) {
                 return [
                     'fontchanged' => false,
@@ -1681,7 +1704,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     protected function tagPdfUaTextContent(string $content, int $pid, string $actualText = ''): string
     {
-        if ($this->pdfuaMode === '') {
+        if (!$this->isTaggedMode()) {
             return $content;
         }
 
@@ -1710,12 +1733,11 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             ++$etEnd;
         }
 
-        // Text-decoration lines (underline, line-through, overline) and link
-        // underlines are emitted as path-painting operators after the glyphs' final
-        // ET. When such a decoration follows the text, pull it inside the marked
-        // content so it is tagged as part of the text run rather than left as
-        // untagged content (PDF/UA-1 7.1). The decoration runs until the next text
-        // object or marked-content operator, or the end of this run's output.
+        // Text decorations (underline, line-through, overline) are path-painting
+        // operators emitted after the final ET. Pull them inside the marked content
+        // so they are tagged as part of the text run (PDF/UA-1 7.1). The decoration
+        // runs until the next text object or marked-content operator, or the end
+        // of this run's output.
         $tailEnd = \strlen($content);
         foreach (['BT', 'BDC', 'BMC', 'EMC'] as $boundary) {
             $pos = \strpos($content, $boundary, $etEnd);
@@ -1780,7 +1802,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     protected function registerPdfUaAnnotation(int $oid, int $pid): void
     {
-        if ($this->pdfuaMode === '' || $oid <= 0) {
+        if (!$this->isTaggedMode() || $oid <= 0) {
             return;
         }
 
@@ -1844,11 +1866,14 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * Wrap non-text content (such as images) with a PDF/UA Figure marked-content sequence.
      *
      * The generated MCID is logged as a standalone Figure structure element and can include
-     * an alternate description via the StructElem /Alt entry.
+     * an alternate description via the StructElem /Alt entry and a /BBox Layout attribute.
+     *
+     * @param TFourFloat|array{} $bbox Bounding box [llx, lly, urx, ury] in points, in default
+     *                                 user space with the origin at the bottom-left page corner.
      */
-    protected function tagPdfUaFigureContent(string $content, int $pid, string $alt = ''): string
+    protected function tagPdfUaFigureContent(string $content, int $pid, string $alt = '', array $bbox = []): string
     {
-        if ($this->pdfuaMode === '' || $content === '') {
+        if (!$this->isTaggedMode() || $content === '') {
             return $content;
         }
 
@@ -1870,9 +1895,15 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 $stackEntry['alt'] = $alt;
             }
 
+            // Grow the bracket box so it covers every piece of content it holds.
+            $bracketBBox = $this->mergePdfUaStructBBox($stackEntry['bbox'] ?? [], $bbox);
+            if ($bracketBBox !== []) {
+                $stackEntry['bbox'] = $bracketBBox;
+            }
+
             $this->pdfuaStructStack[$stackTop] = $stackEntry;
         } else {
-            // No open Figure bracket — create a new Figure struct elem entry.
+            // No open Figure bracket: create a new Figure struct elem entry.
             $entry = [
                 'role' => 'Figure',
                 'pid' => $pid,
@@ -1885,6 +1916,11 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             ];
             if ($alt !== '') {
                 $entry['alt'] = $alt;
+            }
+
+            $figureBBox = $this->mergePdfUaStructBBox([], $bbox);
+            if ($figureBBox !== []) {
+                $entry['bbox'] = $figureBBox;
             }
 
             $entryIndex = \count($this->pdfuaStructLog);
@@ -1907,11 +1943,100 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
+     * Record the page a structure element refers to, on the element currently open
+     * on the stack.
+     *
+     * The /Ref entry of the element is written as the structure element that owns
+     * the target page, as ISO 14289-2 clause 8.2.5.8 requires for a table of
+     * contents item.
+     *
+     * @param int $pid Page index of the referenced target.
+     */
+    protected function setPdfUaStructElemRef(int $pid): void
+    {
+        if (!$this->isTaggedMode() || $pid < 0) {
+            return;
+        }
+
+        $stackTop = \array_key_last($this->pdfuaStructStack);
+        if ($stackTop !== null && isset($this->pdfuaStructStack[$stackTop])) {
+            $entry = $this->pdfuaStructStack[$stackTop];
+            $entry['refpid'] = $pid;
+            $this->pdfuaStructStack[$stackTop] = $entry;
+        }
+    }
+
+    /**
+     * Record a bounding box on the structure element currently open on the stack.
+     *
+     * Used by block-level elements whose extent is only known once their content has
+     * been laid out, such as a table measured at its closing tag.
+     *
+     * @param TFourFloat|array{} $bbox Bounding box [llx, lly, urx, ury] in points, in default
+     *                                 user space with the origin at the bottom-left page corner.
+     * @param string $role When set, the box is applied only if the open element has this role.
+     */
+    protected function setPdfUaStructElemBBox(array $bbox, string $role = ''): void
+    {
+        if (!$this->isTaggedMode() || \count($bbox) !== 4) {
+            return;
+        }
+
+        $stackTop = \array_key_last($this->pdfuaStructStack);
+        if (
+            $stackTop !== null
+            && isset($this->pdfuaStructStack[$stackTop])
+            && ($role === '' || $this->pdfuaStructStack[$stackTop]['role'] === $role)
+        ) {
+            $entry = $this->pdfuaStructStack[$stackTop];
+            $merged = $this->mergePdfUaStructBBox($entry['bbox'] ?? [], $bbox);
+            if ($merged !== []) {
+                $entry['bbox'] = $merged;
+                $this->pdfuaStructStack[$stackTop] = $entry;
+            }
+        }
+    }
+
+    /**
+     * Merge a bounding box into the one already recorded for a structure element.
+     *
+     * ISO 32000-1 table 344 requires the /BBox Layout attribute on figures and tables
+     * contained on a single page. Boxes are combined into their union, so an element
+     * holding several drawings keeps a single enclosing box.
+     *
+     * @param array<int, float> $current Box already recorded for the element, if any.
+     * @param TFourFloat|array{} $bbox Box to merge, as [llx, lly, urx, ury] in points.
+     *
+     * @return TFourFloat|array{} The merged box, or an empty array when $bbox is unset.
+     */
+    protected function mergePdfUaStructBBox(array $current, array $bbox): array
+    {
+        if (\count($bbox) !== 4) {
+            return [];
+        }
+
+        [$blx, $bly, $bux, $buy] = $bbox;
+        $llx = \min($blx, $bux);
+        $lly = \min($bly, $buy);
+        $urx = \max($blx, $bux);
+        $ury = \max($bly, $buy);
+
+        if (\count($current) === 4) {
+            $llx = \min($llx, $current[0] ?? $llx);
+            $lly = \min($lly, $current[1] ?? $lly);
+            $urx = \max($urx, $current[2] ?? $urx);
+            $ury = \max($ury, $current[3] ?? $ury);
+        }
+
+        return [$llx, $lly, $urx, $ury];
+    }
+
+    /**
      * Wrap non-semantic content in an Artifact marked-content sequence.
      */
     protected function tagPdfUaArtifactContent(string $content, string $type = '', string $subtype = ''): string
     {
-        if ($this->pdfuaMode === '' || $content === '') {
+        if (!$this->isTaggedMode() || $content === '') {
             return $content;
         }
 
@@ -1954,6 +2079,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param bool        $overline    If true overline the text.
      * @param bool        $clip        If true activate clipping mode.
      * @param ?TextShadow $shadow      Text shadow parameters.
+     * @param bool        $baseRtl     True when the paragraph base direction is RTL.
      *
      * @return string PDF code to render the text.
      *
@@ -1983,6 +2109,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         bool $overline = false,
         bool $clip = false,
         ?array $shadow = null,
+        bool $baseRtl = false,
     ): string {
         if ($ordarr === [] || $lines === []) {
             return '';
@@ -2004,12 +2131,16 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $num_lines = \count($lines);
         $lastline = $num_lines - 1;
         $hasTextBBox = false;
+        $hasGlyphs = false;
         $minx = 0.0;
         $miny = 0.0;
         $maxx = 0.0;
         $maxy = 0.0;
 
-        $line_posx = $posx + $offset;
+        // The offset shortens the first line at the side that line starts from:
+        // the right one for an RTL paragraph, where the line box is trimmed
+        // instead of being moved.
+        $line_posx = $baseRtl ? $posx : $posx + $offset;
         $line_posy = $posy + $fontascent;
 
         $out = '';
@@ -2042,9 +2173,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                 $jwidth = $cell_width;
             }
 
-            // When custom inline word spacing is active (multi-fragment justified
-            // paragraph), the first line uses the pre-computed word spacing while
-            // wrapped continuation lines use per-line justification instead.
+            // With custom inline word spacing, the first line uses the pre-computed
+            // word spacing and wrapped lines use per-line justification.
             if ($wordspacing > 0 && $i > 0) {
                 $line_ws = 0;
                 if ($data['septype'] !== 'B' && ($i < $lastline || !$jlast)) {
@@ -2075,13 +2205,10 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             $offset = 0;
             $line_posx = $posx;
             $bbox = $this->getLastBBox();
-            if ($line_txt === '') {
-                // An empty line renders no glyphs and therefore pushes no
-                // bounding box, so getLastBBox() returns a stale box from
-                // previously rendered content. Synthesize a zero-width box at
-                // the current line position (matching outTextLine's geometry)
-                // so the next line advances by one line height instead of
-                // jumping to the stale location.
+            $glyphline = $line_txt !== '';
+            if (!$glyphline) {
+                // An empty line pushes no bounding box, so synthesize a zero-width
+                // box at the current line position using outTextLine's geometry.
                 $emptyfont = $this->font->getCurrentFont();
                 $bbox = [
                     'x' => $txt_posx,
@@ -2090,16 +2217,21 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
                     'h' => $this->toUnit($emptyfont['height']),
                 ];
             }
+            if ($glyphline || !$hasGlyphs) {
+                // A line without glyphs is measured horizontally only while no line with
+                // glyphs has been found, so that a first-line offset or a blank line
+                // never widens the text bounding box.
+                $reset = !$hasTextBBox || $glyphline && !$hasGlyphs;
+                $minx = $reset ? $bbox['x'] : \min($minx, $bbox['x']);
+                $maxx = $reset ? $bbox['x'] + $bbox['w'] : \max($maxx, $bbox['x'] + $bbox['w']);
+                $hasGlyphs = $hasGlyphs || $glyphline;
+            }
             if (!$hasTextBBox) {
                 $hasTextBBox = true;
-                $minx = $bbox['x'];
                 $miny = $bbox['y'];
-                $maxx = $bbox['x'] + $bbox['w'];
                 $maxy = $bbox['y'] + $bbox['h'];
             } else {
-                $minx = \min($minx, $bbox['x']);
                 $miny = \min($miny, $bbox['y']);
-                $maxx = \max($maxx, $bbox['x'] + $bbox['w']);
                 $maxy = \max($maxy, $bbox['y'] + $bbox['h']);
             }
             $line_posy = $bbox['y'] + $bbox['h'] + $fontascent + $linespace;
@@ -2168,7 +2300,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $ordarr = [];
         $dim = self::DIM_DEFAULT;
         $this->prepareText($txt, $ordarr, $dim, $forcedir);
-        $totWidth = $dim['totwidth'];
+        // $posx is in user units while the measured width is in points.
+        $totWidth = $this->toUnit($dim['totwidth']);
 
         switch ($txtanchor) {
             case 'M':
@@ -2318,13 +2451,10 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Determine the paragraph base direction (RTL or LTR) from the LOGICAL
-     * (pre-Bidi) codepoints, mirroring the resolution the Bidi algorithm itself
-     * uses: an explicit $forcedir wins, otherwise the first strong character
-     * (UBA rules P2/P3) decides, otherwise fall back to the document default.
-     *
-     * This must run on the logical array: once Bidi has reordered the codepoints
-     * into visual order a first-strong test would inspect the wrong end.
+     * Determine the paragraph base direction (RTL or LTR) from the logical
+     * (pre-Bidi) codepoints: an explicit $forcedir wins, otherwise the first
+     * strong character (UBA rules P2/P3) decides, otherwise the document
+     * default applies.
      *
      * @param array<int, int> $logicalOrdArr Codepoints in logical (reading) order.
      * @param string          $forcedir      'R' forces RTL, 'L' forces LTR, '' = auto.
@@ -2342,7 +2472,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
 
         // P2/P3: the first strong character (L, R or AL) sets the base direction.
         foreach ($logicalOrdArr as $ord) {
-            $type = UnicodeType::UNI[$ord] ?? null;
+            $type = UnicodeType::getType($ord);
             if ($type === 'L') {
                 return false;
             }
@@ -2391,13 +2521,20 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $ordarr = \array_values($this->uniconv->strToOrdArr($txt));
 
         if ($this->isunicode && !$this->font->isCurrentByteFont()) {
-            // Resolve the base direction from the LOGICAL codepoints before Bidi
-            // reorders $ordarr into visual order. splitLines() only ever sees the
-            // visual array, so it must be told the direction via this flag.
+            // Resolve the base direction from the logical codepoints before Bidi
+            // reorders $ordarr into visual order; splitLines() only sees the
+            // visual array and receives the direction through this flag.
             $baseRtl = $this->isOrdArrBaseRtl($ordarr, $forcedir);
             $bidi = new Bidi($txt, null, $ordarr, $forcedir);
             /** @var array<int, int> $bidiarr */
             $bidiarr = \array_values($bidi->getOrdArray());
+            if ($baseRtl && $bidiarr === $ordarr) {
+                // An RTL paragraph whose content is a single left-to-right run is left
+                // in logical order by the reordering, so the line breaking runs forward
+                // over it like an LTR paragraph.
+                $baseRtl = false;
+            }
+
             $ordarr = $this->replaceUnicodeChars($bidiarr);
         }
 
@@ -2410,6 +2547,37 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         }
 
         $dim = $this->font->getOrdArrDims($ordarr);
+    }
+
+    /**
+     * Drop the line break opportunities that fall on a non-breaking code point.
+     *
+     * The font layer derives them from the Bidi class, which groups FIGURE SPACE
+     * with the ordinary spaces and WORD JOINER with the zero width space.
+     *
+     * @param TTextDims $dim Array of dimensions.
+     *
+     * @return TTextDims Array of dimensions with the break opportunities filtered.
+     */
+    protected function removeNoBreakSplits(array $dim): array
+    {
+        $split = [];
+        foreach ($dim['split'] as $data) {
+            if (isset(self::NO_BREAK_ORD[$data['ord']])) {
+                continue;
+            }
+
+            $split[] = $data;
+        }
+
+        if (\count($split) === \count($dim['split'])) {
+            return $dim;
+        }
+
+        $dim['split'] = $split;
+        $dim['words'] = \count($split);
+
+        return $dim;
     }
 
     /**
@@ -2441,14 +2609,10 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         }
 
         if ($rtl) {
-            // For an RTL base direction $ordarr is in visual (reversed) order, so a plain
-            // forward greedy walk would fill the visual-first chunk (the logically-LAST
-            // words) first and stack the lines bottom-up. Reverse the array back to logical
-            // reading order, break it forward (top line filled first, ragged line last),
-            // then translate each line's position back into the visual array's coordinates
-            // so outTextLines() slices the right glyphs. A simple array_reverse() of the
-            // forward-computed lines is NOT enough: it would leave the short ragged chunk on
-            // the top line with the wrong length.
+            // For an RTL base direction $ordarr is in visual (reversed) order. Reverse
+            // it back to logical reading order, break it forward (top line filled first,
+            // ragged line last), then translate each line position back into the visual
+            // array coordinates used by outTextLines().
             $logicalOrdArr = \array_reverse($ordarr);
             $logicalDim = $this->font->getOrdArrDims($logicalOrdArr);
             $lines = $this->splitLines($logicalOrdArr, $logicalDim, $pwidth, $poffset);
@@ -2465,6 +2629,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         }
 
         $line_width = $pwidth - $poffset;
+
+        $dim = $this->removeNoBreakSplits($dim);
 
         $dimTotWidth = $dim['totwidth'];
         $dimChars = $dim['chars'];
@@ -2514,19 +2680,44 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
 
             $dataTotWidth = $data['totwidth'];
             $curwidth = $dataTotWidth - $prev_totwidth;
+            // Breaking at a soft hyphen renders a hyphen, so its width belongs to the line.
+            if ($data['ord'] === UnicodeConstant::SOFT_HYPHEN) {
+                $curwidth += $soft_hyphen_width;
+            }
+
             $overline = $curwidth > ($line_width + self::LINE_FIT_EPSILON);
+
+            // The previous word can end the current line only when it is on it,
+            // otherwise moving back would not advance the line start.
+            $prevdata = $split[$word - 1] ?? null;
+            if ($prevdata !== null && (int) $prevdata['pos'] < $posstart) {
+                $prevdata = null;
+            }
+
+            if ($overline && $prevdata === null && $curwidth <= ($pwidth + self::LINE_FIT_EPSILON)) {
+                // The current line is the one shortened by $poffset and has no word to
+                // leave behind, while the current word fits a full line: close the line
+                // empty so that the word is laid out at the full width.
+                $lines[] = [
+                    'pos' => $posstart,
+                    'chars' => 0,
+                    'spaces' => 0,
+                    'septype' => 'B',
+                    'totwidth' => 0.0,
+                    'totspacewidth' => 0.0,
+                    'words' => 0,
+                ];
+                $line_width = $pwidth;
+                $overline = false;
+            }
 
             if ($data['septype'] === 'B' || $overline) {
                 // the current word is a line break or does not fit in the current line
-                if ($overline && $word > 0) {
+                if ($overline && $prevdata !== null) {
                     // the current word does not fit in the current line
-                    $prevword = $word - 1;
-                    // avoid looping forever when moving back would not advance the line start
-                    if (isset($split[$prevword]) && (int) $split[$prevword]['pos'] >= $posstart) {
-                        $data = $split[$prevword];
-                        $dataTotWidth = $data['totwidth'];
-                        --$word;
-                    }
+                    $data = $prevdata;
+                    $dataTotWidth = $data['totwidth'];
+                    --$word;
                 }
 
                 $posend = (int) $data['pos'];
@@ -2640,7 +2831,16 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
 
         $width = $width > 0 ? $width : 0;
         $curfont = $this->font->getCurrentFont();
-        /** @var array{ascent: float, height: float, spacing: float, stretching: float, ut: float} $curfont */
+        /**
+         * @var array{
+         *     ascent: float,
+         *     height: float,
+         *     outraw: string,
+         *     spacing: float,
+         *     stretching: float,
+         *     ut: float,
+         * } $curfont
+         */
         $this->bbox[] = [
             'x' => $posx,
             'y' => $posy - $this->toUnit($curfont['ascent']),
@@ -2660,6 +2860,15 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $out = $this->getOutTextStateOperatorTz($out, $curfont['stretching']);
         $out = $this->getOutTextStateOperatorTL($out, $this->toPoints($leading));
         $out = $this->getOutTextStateOperatorTs($out, $this->toPoints($rise));
+        // A GID encoded font carries its own glyph indices as character codes, so the
+        // text object must select the font the string was encoded with: a font selected
+        // earlier on the page would resolve those codes to the wrong glyphs.
+        // The codes of any other font are independent of it, so the font selection is
+        // left to the page.
+        if ($this->font->isCurrentGidEncoded()) {
+            $out = $curfont['outraw'] . ' ' . $out;
+        }
+
         $out = $this->getOutTextObject($out);
 
         $bbox = $this->getLastBBox();
@@ -2765,9 +2974,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
 
     /**
      * Remove special characters from the text string:
-     *     - 'CARRIAGE RETURN' (U+000D)
-     *     - 'NO-BREAK SPACE' (U+00A0)
-     *     - 'SHY' (U+00AD) SOFT HYPHEN
+     *     - 'CARRIAGE RETURN' (U+000D) is replaced by a space
+     *     - 'SHY' (U+00AD) SOFT HYPHEN is removed
      *
      * @param string $txt Text string to be processed.
      *
@@ -2776,7 +2984,6 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     protected function cleanupText(string $txt): string
     {
         $txt = \str_replace("\r", ' ', $txt);
-        $txt = \str_replace($this->uniconv->chr(UnicodeConstant::NO_BREAK_SPACE), ' ', $txt);
         return \str_replace($this->uniconv->chr(UnicodeConstant::SOFT_HYPHEN), '', $txt);
     }
 
@@ -2822,11 +3029,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             return $txt;
         }
 
-        $unistr = \implode('', $this->uniconv->ordArrToChrArr($ordarr));
-        $txt = $this->uniconv->toUTF16BE($unistr);
-        $txt = $this->encrypt->escapeString($txt);
-
         if ($pwidth <= 0) {
+            $txt = $this->encrypt->escapeString($this->getOutCompositeStr($ordarr));
             $totWidth = $dim['totwidth'];
             $this->bbox[$bboxid]['w'] = $this->toUnit($totWidth);
             return $this->getOutTextShowing($txt, 'Tj');
@@ -2848,9 +3052,96 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         // render time, so divide by the stretching ratio to fill exactly to $pwidth.
         $spacewidth = (($pwidth - $totWidth + $totSpaceWidth) / $spaces) / $stretching;
         $spacewidth = (-1000 * $spacewidth) / $fontsize;
-        $txt = \str_replace(\chr(0) . \chr(32), \sprintf(') %F (', $spacewidth), $txt);
+
+        // Each space is dropped and replaced by the equivalent TJ adjustment. The split
+        // is done on the codepoints: searching the encoded string for the character code
+        // of the space would also match the halves of two adjacent codes.
+        $chunks = [];
+        $chunk = [];
+        foreach ($ordarr as $ord) {
+            if ($ord === 32) {
+                $chunks[] = $chunk;
+                $chunk = [];
+                continue;
+            }
+
+            $chunk[] = $ord;
+        }
+
+        $chunks[] = $chunk;
+
+        $parts = [];
+        foreach ($chunks as $chunk) {
+            $parts[] = $this->encrypt->escapeString($this->getOutCompositeStr($chunk));
+        }
+
+        $txt = \implode(\sprintf(') %F (', $spacewidth), $parts);
 
         return $this->getOutTextShowing($txt, 'TJ');
+    }
+
+    /**
+     * Returns the character codes of the given codepoints for the current composite font.
+     *
+     * The codes are the glyph indices of the font (CID == GID) when it is GID encoded,
+     * and the UTF-16BE representation of the codepoints otherwise, as expected by the
+     * predefined CMap of a CID-0 font.
+     *
+     * @param array<int, int> $ordarr Array of UTF-8 codepoints (integer values).
+     *
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     * @throws \Com\Tecnick\Unicode\Exception
+     */
+    protected function getOutCompositeStr(array $ordarr): string
+    {
+        if ($this->font->isCurrentGidEncoded()) {
+            return $this->font->ordArrToGidStr($this->getMappedOrdArr($ordarr));
+        }
+
+        return $this->uniconv->toUTF16BE(\implode('', $this->uniconv->ordArrToChrArr($ordarr)));
+    }
+
+    /**
+     * Returns the given codepoints without the ones the current font has no glyph
+     * for, when the active conformance mode forbids a .notdef reference.
+     *
+     * The codepoint is dropped from the text showing operator rather than written
+     * as glyph 0: the reference itself is what the conformance rules forbid, and no
+     * metadata can repair it. The characters are reported through getWarnings().
+     *
+     * @param array<int, int> $ordarr Array of UTF-8 codepoints (integer values).
+     *
+     * @return array<int, int>
+     *
+     * @throws \Com\Tecnick\Pdf\Font\Exception
+     */
+    protected function getMappedOrdArr(array $ordarr): array
+    {
+        if (!$this->forbidsUnmappedGlyphs()) {
+            return $ordarr;
+        }
+
+        $mapped = [];
+        $dropped = [];
+        foreach ($ordarr as $ord) {
+            if ($this->font->getGidForOrd($ord) === 0) {
+                $dropped[] = \sprintf('U+%04X', $ord);
+                continue;
+            }
+
+            $mapped[] = $ord;
+        }
+
+        if ($dropped !== []) {
+            $this->addWarning(
+                'The active conformance mode forbids a glyph with no Unicode mapping: the current font has'
+                . ' no glyph for the character(s) '
+                . \implode(', ', \array_unique($dropped))
+                . ', which were dropped from the text',
+            );
+        }
+
+        return $mapped;
     }
 
     /**
@@ -3139,11 +3430,11 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Removes soft hyphens from an array of Unicode code points.
+     * Converts a trailing SHY to a visible HYPHEN and removes the other SHY and ZWSP.
      *
      * @param array<int, int> $ordarr The array of Unicode code points.
      *
-     * @return array<int, int> The filtered array with soft hyphens removed.
+     * @return array<int, int> The filtered array.
      */
     protected function removeOrdArrSoftHyphens(array $ordarr): array
     {
@@ -3157,7 +3448,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             static fn($ord) => $ord !== UnicodeConstant::SOFT_HYPHEN && $ord !== UnicodeConstant::ZERO_WIDTH_SPACE,
         ));
         if ($keeplast) {
-            $retarr[] = UnicodeConstant::SOFT_HYPHEN;
+            $retarr[] = UnicodeConstant::HYPHEN;
         }
         return $retarr;
     }
@@ -3178,8 +3469,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         $word = [];
 
         foreach ($ordarr as $ord) {
-            $unitype = UnicodeType::UNI[$ord] ?? '';
-            switch ($unitype) {
+            switch (UnicodeType::getType($ord)) {
                 case 'L':
                     $word[] = $ord;
                     break;
@@ -3222,7 +3512,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     {
         $txtarr = [];
         foreach ($ordarr as $ord) {
-            switch (UnicodeType::UNI[$ord] ?? '') {
+            switch (UnicodeType::getType($ord)) {
                 case 'ES':
                 case 'ET':
                 case 'CS':
@@ -3378,11 +3668,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      */
     protected function setPageContext(int $pid = -1): void
     {
-        // The graph component must know the dimensions of the target page before the
-        // page context is generated. defaultPageContent() may draw graphics whose Y
-        // coordinates are flipped against the page height; without this, a custom
-        // override that does not call setCurrentPage() would render off-page on the
-        // first page (the graph would still hold a zero/stale height).
+        // The graph component needs the target page dimensions before the page
+        // context is generated: defaultPageContent() may draw graphics whose Y
+        // coordinates are flipped against the page height.
         $ctxpage = $this->page->getPage($pid);
         $this->graph->setPageWidth($ctxpage['width']);
         $this->graph->setPageHeight($ctxpage['height']);
@@ -3391,9 +3679,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
             $this->page->addContent($this->font->getOutCurrentFont(), $pid);
         }
 
-        // The fill (non-stroking) colour resets to the default on a new page, so re-apply the
-        // current one. Otherwise text flowing onto an automatically added page would revert to
-        // black. Only a non-default colour needs to be re-emitted.
+        // The fill (non-stroking) colour resets to the default on a new page:
+        // re-emit the current one when it is not the default.
         $fillColor = $this->graph->getLastStyleProperty('fillColor', 'black');
         if (\is_string($fillColor) && $fillColor !== '' && $fillColor !== 'black') {
             $this->page->addContent($this->graph->getStyleCmd(['fillColor' => $fillColor]), $pid);

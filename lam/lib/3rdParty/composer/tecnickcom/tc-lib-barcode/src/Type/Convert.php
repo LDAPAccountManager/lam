@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Com\Tecnick\Barcode\Type;
 
 use Com\Tecnick\Barcode\Exception as BarcodeException;
+use Com\Tecnick\Barcode\Math;
 use Com\Tecnick\Color\Model\Rgb as Color;
 
 /**
@@ -151,8 +152,18 @@ abstract class Convert
 
         $this->bars = [];
         foreach ($rows as $posy => $row) {
-            if (!\is_array($row)) {
-                $row = \str_split($row, 1);
+            // the modules are compared as strings while scanning the runs below
+            $row = \is_array($row) ? \array_map(\strval(...), $row) : \str_split($row, 1);
+
+            if (\count($row) !== $this->ncols) {
+                throw new BarcodeException(
+                    'All the rows must have the same length: row '
+                    . $posy
+                    . ' has '
+                    . \count($row)
+                    . ' columns instead of '
+                    . $this->ncols,
+                );
             }
 
             $prevcol = '';
@@ -168,7 +179,7 @@ abstract class Convert
                 }
 
                 ++$bar_width;
-                $prevcol = (string) ($row[$posx] ?? '0');
+                $prevcol = $row[$posx] ?? '0';
             }
         }
     }
@@ -196,7 +207,67 @@ abstract class Convert
             throw new BarcodeException('Invalid input string');
         }
 
-        return \explode(',', $code);
+        $rows = \explode(',', $code);
+        foreach ($rows as $posy => $row) {
+            // only the characters 0 and 1 are valid modules
+            if (\strspn($row, '01') !== \strlen($row)) {
+                throw new BarcodeException(
+                    'The rows must only contain the characters 0 and 1: row ' . $posy . ' is "' . $row . '"',
+                );
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Add two non-negative decimal integers.
+     *
+     * @param numeric-string $left  First operand
+     * @param numeric-string $right Second operand
+     *
+     * @return numeric-string
+     */
+    protected function addNumeric(string $left, string $right): string
+    {
+        return Math::add($left, $right);
+    }
+
+    /**
+     * Multiply two non-negative decimal integers.
+     *
+     * @param numeric-string $left  First operand
+     * @param numeric-string $right Second operand
+     *
+     * @return numeric-string
+     */
+    protected function mulNumeric(string $left, string $right): string
+    {
+        return Math::mul($left, $right);
+    }
+
+    /**
+     * Integer division of two non-negative decimal integers.
+     *
+     * @param numeric-string $left  Dividend
+     * @param numeric-string $right Divisor
+     *
+     * @return numeric-string
+     */
+    protected function divNumeric(string $left, string $right): string
+    {
+        return Math::div($left, $right);
+    }
+
+    /**
+     * Remainder of the integer division of two non-negative decimal integers.
+     *
+     * @param numeric-string $left  Dividend
+     * @param numeric-string $right Divisor
+     */
+    protected function modNumeric(string $left, string $right): int
+    {
+        return (int) Math::mod($left, $right);
     }
 
     /**
@@ -208,19 +279,20 @@ abstract class Convert
      */
     protected function convertDecToHex(string $number): string
     {
-        if (!\preg_match('/^[0-9]+$/', $number)) {
+        if (!\preg_match('/^[0-9]+\z/', $number)) {
+            return '00';
+        }
+
+        $number = \ltrim($number, '0');
+        if ($number === '') {
             return '00';
         }
 
         /** @var numeric-string $number */
-        if ($number === '0') {
-            return '00';
-        }
-
         $hex = [];
-        while ($number > 0) {
-            $hex[] = \strtoupper(\dechex((int) \bcmod($number, '16')));
-            $number = \bcdiv($number, '16', 0);
+        while ($number !== '0') {
+            $hex[] = \strtoupper(\dechex($this->modNumeric($number, '16')));
+            $number = $this->divNumeric($number, '16');
         }
 
         $hex = \array_reverse($hex);
@@ -232,7 +304,7 @@ abstract class Convert
      *
      * @param string $hex Hexadecimal number to convert (as string)
      *
-     * @return string hexadecimal representation
+     * @return numeric-string decimal representation
      */
     protected function convertHexToDec(string $hex): string
     {
@@ -240,8 +312,8 @@ abstract class Convert
         $bitval = '1';
         $len = \strlen($hex);
         for ($pos = $len - 1; $pos >= 0; --$pos) {
-            $dec = \bcadd($dec, \bcmul((string) \hexdec($hex[$pos]), $bitval));
-            $bitval = \bcmul($bitval, '16');
+            $dec = $this->addNumeric($dec, $this->mulNumeric((string) \hexdec($hex[$pos]), $bitval));
+            $bitval = $this->mulNumeric($bitval, '16');
         }
 
         return $dec;
@@ -285,7 +357,8 @@ abstract class Convert
     protected function getRotatedBarArray(): array
     {
         $grid = $this->getGridArray();
-        if ($grid === []) {
+        if (\count($grid) < 2) {
+            // array_map(null, ...) is the identity on a single row
             return [];
         }
 

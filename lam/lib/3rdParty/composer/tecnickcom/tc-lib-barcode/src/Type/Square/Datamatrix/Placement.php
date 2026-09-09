@@ -59,6 +59,11 @@ abstract class Placement
             $row += 4 - (($ncol + 4) % 8);
         }
 
+        if ($row >= $nrow) {
+            // symbol character placement algorithm extension of ISO/IEC 21471
+            $row -= $nrow;
+        }
+
         $marr[($row * $ncol) + $col] = (10 * $chr) + $bit;
         return $marr;
     }

@@ -31,6 +31,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
+ * @phpstan-import-type PageDataBox from \Com\Tecnick\Pdf\Page\Box
  * @phpstan-import-type RegionData from \Com\Tecnick\Pdf\Page\Box
  * @phpstan-import-type PageData from \Com\Tecnick\Pdf\Page\Box
  * @phpstan-import-type PageInputData from \Com\Tecnick\Pdf\Page\Box
@@ -40,6 +41,11 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  */
 abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
 {
+    /**
+     * Maximum number of horizontal slices buildWritableRegions() may cut the content area into.
+     */
+    public const MAX_BANDS = 1000;
+
     /**
      * Stored no-write areas per page, used to (re)build the writable regions.
      * Keyed by page ID.
@@ -67,7 +73,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      *                   - PT : page top or header top measured distance from the top page edge
      *                   - HB : header bottom measured from the top page edge
      *                   - CT : content top measured from the top page edge
-     *                   - CB : content bottom (page breaking point) measured from the top page edge
+     *                   - CB : content bottom (page breaking point) measured from the bottom page edge
      *                   - FT : footer top measured from the bottom page edge
      *                   - PB : page bottom (footer bottom) measured from the bottom page edge
      *     num         : if set overwrites the page number.
@@ -84,7 +90,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      *     width       : page width.
      *     zoom        : preferred zoom (magnification) factor: 1.0 = 100%.
      *
-     * NOTE: if $data is null, then the last page format will be cloned.
+     * NOTE: if $data is empty and the stack is not, the last page is cloned.
      *
      * @return PageData Page data with additional Page ID property 'pid'.
      *
@@ -92,27 +98,21 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      */
     public function add(array $data = []): array
     {
-        $cloneLastPage = $data === [] && $this->pmaxid >= 0;
-        if ($cloneLastPage) {
-            // clone last page data
-            $data = $this->getPage($this->pmaxid);
-            unset($data['time'], $data['content'], $data['annotrefs'], $data['pagenum']);
-            if (!empty($this->nowrite[$this->pmaxid]['areas'])) {
-                // No-write regions are page-specific: a cloned page (e.g. created when the text
-                // flow reaches the bottom of a no-write page with automatic page break enabled)
-                // starts with the default full-content region instead of inheriting the bands.
-                unset($data['region'], $data['columns']);
-                $this->sanitizeRegions($data);
-            }
-        }
-
-        if (!$cloneLastPage) {
+        if ($data === [] && $this->pmaxid >= 0) {
+            $data = $this->cloneLastPageData();
+        } else {
             $this->sanitizeNewPageData($data);
         }
 
         $this->sanitizeCommonPageData($data);
+        // 'pagenum' holds the caller-supplied page number override (0 = none), while
+        // 'num' is the value getPdfPages() derives from the position in the group.
+        $data['pagenum'] = (int) ($data['num'] ?? 0);
+        $data['num'] = $data['pagenum'];
         $data['content_mark'] = [0];
         $data['currentRegion'] = 0;
+        // The PDF object number is assigned by getPageRootObj().
+        $data['n'] ??= 0;
         $data['pid'] = ++$this->pmaxid;
         $this->pid = $data['pid'];
         $data['group'] ??= 0;
@@ -126,7 +126,48 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     }
 
     /**
-     * @param PageInputData $data
+     * Return the data of the last page, adjusted to serve as its successor.
+     *
+     * @return PageInputData Cloned page data.
+     *
+     * @throws PageException
+     */
+    protected function cloneLastPageData(): array
+    {
+        $data = $this->getPage($this->pmaxid);
+        // 'num' and 'pagenum' are per-page: the clone gets its own number.
+        unset($data['time'], $data['content'], $data['annotrefs'], $data['num'], $data['pagenum']);
+
+        $gutterShift = $this->mirrorBookletMargins($data);
+
+        if (!empty($this->nowrite[$this->pmaxid]['areas'])) {
+            // No-write areas are page-specific: the clone starts with the default
+            // full-content region instead of inheriting the bands.
+            unset($data['region'], $data['columns']);
+            $this->sanitizeRegions($data);
+            return $data;
+        }
+
+        if ($gutterShift !== null) {
+            // Regions are positioned from the left margin, so they follow the mirrored
+            // gutter. 'columns' is dropped so that sanitizeRegions() renormalizes the
+            // translated list instead of rebuilding it as that many equal columns.
+            $this->shiftRegions($data, $gutterShift);
+            unset($data['columns']);
+            $this->sanitizeRegions($data);
+            return $data;
+        }
+
+        $this->resetRegionCursors($data);
+
+        return $data;
+    }
+
+    /**
+     * Sanitize the data of a new page: group, rotation, zoom, format, boxes,
+     * transitions, margins and regions.
+     *
+     * @param PageInputData $data Page data.
      *
      * @throws PageException
      */
@@ -143,7 +184,10 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     }
 
     /**
-     * @param PageInputData $data
+     * Sanitize the data set on every page, new or cloned: time, content,
+     * annotation references and page number.
+     *
+     * @param PageInputData $data Page data.
      */
     protected function sanitizeCommonPageData(array &$data): void
     {
@@ -154,9 +198,59 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     }
 
     /**
+     * Mirror the left and right page margins of a cloned booklet page.
+     *
+     * A cloned page is the immediate successor of its source, so its gutter is the
+     * mirror image of the source one.
+     *
+     * @param PageInputData $data Page data.
+     *
+     * @return ?float Horizontal shift applied to the gutter, or null if the margins were kept.
+     */
+    private function mirrorBookletMargins(array &$data): ?float
+    {
+        if (empty($data['margin']['booklet'])) {
+            return null;
+        }
+
+        $left = $data['margin']['PL'] ?? 0.0;
+        $right = $data['margin']['PR'] ?? 0.0;
+        $data['margin']['PL'] = $right;
+        $data['margin']['PR'] = $left;
+
+        return $right - $left;
+    }
+
+    /**
+     * Translate every region horizontally by the given amount.
+     *
+     * @param PageInputData $data  Page data.
+     * @param float         $shift Horizontal shift in user units.
+     */
+    private function shiftRegions(array &$data, float $shift): void
+    {
+        foreach (\array_keys($data['region'] ?? []) as $key) {
+            $data['region'][$key]['RX'] = ($data['region'][$key]['RX'] ?? 0.0) + $shift;
+        }
+    }
+
+    /**
+     * Move the write cursor of every region back to the region origin.
+     *
+     * @param PageInputData $data Page data.
+     */
+    private function resetRegionCursors(array &$data): void
+    {
+        foreach (\array_keys($data['region'] ?? []) as $key) {
+            $data['region'][$key]['x'] = $data['region'][$key]['RX'] ?? 0.0;
+            $data['region'][$key]['y'] = $data['region'][$key]['RY'] ?? 0.0;
+        }
+    }
+
+    /**
      * Set the current page number (move to the specified page).
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Page data.
      *
@@ -172,7 +266,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Returns the specified page data.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Page data.
      *
@@ -192,8 +286,14 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Overrides the page height and returns the current value in points.
      *
-     * @param float $pheight new page height in internal points.
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * The MediaBox and the orientation are updated to match. The other boxes keep
+     * their declared coordinates and are intersected with the MediaBox on output,
+     * so passing the returned value back restores the original geometry. The format
+     * name, the margins and the regions are not recomputed: reassign them with
+     * setNoWriteRegions() or a new add() if the writable area must follow.
+     *
+     * @param float $pheight new page height in internal points (must be positive).
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return float original page height in points.
      *
@@ -201,6 +301,10 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      */
     public function setPagePHeight(float $pheight, int $pid = -1): float
     {
+        if ($pheight <= 0.0) {
+            throw new PageException('The page height must be a positive value.');
+        }
+
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
             throw new PageException('The page with index ' . $pid . ' does not exist.');
@@ -209,14 +313,22 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         $ret = $this->page[$pid]['pheight'];
         $this->page[$pid]['pheight'] = $pheight;
         $this->page[$pid]['height'] = $pheight / $this->kunit;
+        $this->page[$pid]['box'] = $this->resizeBoxes($this->page[$pid]['box'], null, $pheight);
+        $this->page[$pid]['orientation'] = $this->getPageOrientation($this->page[$pid]['pwidth'], $pheight);
         return $ret;
     }
 
     /**
      * Overrides the page width and returns the current value in points.
      *
-     * @param float $pwidth new page width in internal points.
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * The MediaBox and the orientation are updated to match. The other boxes keep
+     * their declared coordinates and are intersected with the MediaBox on output,
+     * so passing the returned value back restores the original geometry. The format
+     * name, the margins and the regions are not recomputed: reassign them with
+     * setNoWriteRegions() or a new add() if the writable area must follow.
+     *
+     * @param float $pwidth new page width in internal points (must be positive).
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return float original page width in points.
      *
@@ -224,6 +336,10 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      */
     public function setPagePWidth(float $pwidth, int $pid = -1): float
     {
+        if ($pwidth <= 0.0) {
+            throw new PageException('The page width must be a positive value.');
+        }
+
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
             throw new PageException('The page with index ' . $pid . ' does not exist.');
@@ -232,13 +348,48 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         $ret = $this->page[$pid]['pwidth'];
         $this->page[$pid]['pwidth'] = $pwidth;
         $this->page[$pid]['width'] = $pwidth / $this->kunit;
+        $this->page[$pid]['box'] = $this->resizeBoxes($this->page[$pid]['box'], $pwidth, null);
+        $this->page[$pid]['orientation'] = $this->getPageOrientation($pwidth, $this->page[$pid]['pheight']);
         return $ret;
     }
 
     /**
-     * Check if the specified page ID exist.
+     * Resize the MediaBox to the given dimensions.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * The other boxes keep their declared coordinates: they are intersected with
+     * the MediaBox when the page is written, so resizing the page back to its
+     * previous dimensions also restores them.
+     *
+     * @param array<string, PageDataBox> $box     Page boxes.
+     * @param ?float                     $pwidth  New page width in points, or null to keep it.
+     * @param ?float                     $pheight New page height in points, or null to keep it.
+     *
+     * @return array<string, PageDataBox> Resized page boxes.
+     */
+    private function resizeBoxes(array $box, ?float $pwidth, ?float $pheight): array
+    {
+        $media = $box['MediaBox'] ?? null;
+        if ($media === null) {
+            return $box;
+        }
+
+        if ($pwidth !== null) {
+            $media['urx'] = $media['llx'] + $pwidth;
+        }
+
+        if ($pheight !== null) {
+            $media['ury'] = $media['lly'] + $pheight;
+        }
+
+        $box['MediaBox'] = $media;
+
+        return $box;
+    }
+
+    /**
+     * Resolve the page index and check that the page exists.
+     *
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return int Page ID.
      *
@@ -261,7 +412,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * Select the specified page region.
      *
      * @param int $idr ID of the region.
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return RegionData Selected region data.
      *
@@ -283,7 +434,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Returns the current region data.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return RegionData Region.
      *
@@ -306,7 +457,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * Returns the next page data.
      * Creates a new page if required and page break is enabled.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Page data.
      *
@@ -332,7 +483,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * If there are no more regions available, then the first region on the next page is selected.
      * A new page is added if required.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Current page data.
      *
@@ -351,15 +502,25 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
             return $this->getPage($pid);
         }
 
-        return $this->getNextPage($pid);
+        $next = $this->getNextPage($pid);
+        if ($next['pid'] !== $pid) {
+            // A different page is entered from its first region. getNextPage() returns
+            // the same page when it is the last one and the automatic page break is
+            // disabled, in which case the selected region is kept.
+            $this->page[$next['pid']]['currentRegion'] = 0;
+        }
+
+        return $this->getPage($next['pid']);
     }
 
     /**
      * Move to the next page region if required.
      *
+     * Only a vertical overflow past the region bottom triggers the break.
+     *
      * @param float  $height Height of the block to add.
      * @param ?float $ypos   Starting Y position or NULL for current position.
-     * @param int    $pid    Page index. Omit or set it to -1 for the current page ID.
+     * @param int    $pid    Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Page data.
      *
@@ -367,7 +528,8 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      */
     public function checkRegionBreak(float $height = 0.0, ?float $ypos = null, int $pid = -1): array
     {
-        if ($this->isYOutRegion($ypos, $height, $pid)) {
+        $ypos ??= $this->getY($pid);
+        if ($this->isRegionOverflow($ypos + $height, $pid)) {
             return $this->getNextRegion($pid);
         }
 
@@ -375,9 +537,23 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     }
 
     /**
+     * Check if the specified vertical position is past the bottom of the region.
+     *
+     * @param float $pos Vertical position.
+     * @param int   $pid Page index. Omit or set it to -1 for the current page.
+     *
+     * @throws PageException
+     */
+    private function isRegionOverflow(float $pos, int $pid = -1): bool
+    {
+        $region = $this->getRegion($pid);
+        return $pos > ($region['RT'] + self::EPS);
+    }
+
+    /**
      * Return the auto-page-break status.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @return bool True if the auto page break is enabled, false otherwise.
      *
@@ -397,7 +573,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * Enable or disable automatic page break.
      *
      * @param bool $isenabled Set this to true to enable automatic page break.
-     * @param int  $pid       page index. Omit or set it to -1 for the current page ID.
+     * @param int  $pid       Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -416,7 +592,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      *
      * @param float  $pos Position.
      * @param 'RX'|'RY' $min ID of the min region value to check.
-     * @param int    $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int    $pid Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -439,14 +615,14 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      *
      * @param ?float $posy   Y position or NULL for current position.
      * @param float  $height Additional height to add.
-     * @param int    $pid    page index. Omit or set it to -1 for the current page ID.
+     * @param int    $pid    Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
     public function isYOutRegion(?float $posy = null, float $height = 0.0, int $pid = -1): bool
     {
         if ($posy === null) {
-            $posy = $this->getY();
+            $posy = $this->getY($pid);
         }
 
         return $this->isOutRegion($posy + $height, 'RY', $pid);
@@ -457,14 +633,14 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      *
      * @param ?float $posx  X position or NULL for current position.
      * @param float  $width Additional width to add.
-     * @param int    $pid   page index. Omit or set it to -1 for the current page ID.
+     * @param int    $pid   Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
     public function isXOutRegion(?float $posx = null, float $width = 0.0, int $pid = -1): bool
     {
         if ($posx === null) {
-            $posx = $this->getX();
+            $posx = $this->getX($pid);
         }
 
         return $this->isOutRegion($posx + $width, 'RX', $pid);
@@ -473,7 +649,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Return the absolute horizontal cursor position for the current region.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -486,7 +662,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Return the absolute vertical cursor position for the current region.
      *
-     * @param int $pid page index. Omit or set it to -1 for the current page ID.
+     * @param int $pid Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -500,7 +676,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * Set the absolute horizontal cursor position for the current region.
      *
      * @param float $xpos X position relative to the page coordinates.
-     * @param int   $pid  page index. Omit or set it to -1 for the current page ID.
+     * @param int   $pid  Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -524,7 +700,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
      * Set the absolute vertical cursor position for the current region.
      *
      * @param float $ypos Y position relative to the page coordinates.
-     * @param int   $pid  page index. Omit or set it to -1 for the current page ID.
+     * @param int   $pid  Page index. Omit or set it to -1 for the current page.
      *
      * @throws PageException
      */
@@ -547,28 +723,27 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     /**
      * Build the ordered list of writable rectangular regions that avoid the given no-write areas.
      *
-     * This approximates the legacy TCPDF no-write page regions: the content area is sliced into
-     * horizontal bands of height $bandHeight, and for each band the widest rectangle that does
-     * not overlap any no-write area is returned. Vertically-contiguous bands that share the same
-     * horizontal extent are merged, so the area above and below an obstacle collapses to a single
-     * tall region and only the obstacle span is finely banded. The result is a stack of
-     * axis-aligned rectangles ordered top-to-bottom, suitable as the 'region' value of add() or
-     * as the input of setNoWriteRegions().
+     * The content area is sliced into horizontal bands of height $bandHeight, and for each band
+     * the widest rectangle that does not overlap any no-write area is kept. Vertically-contiguous
+     * bands with the same horizontal extent are merged, so the area above and below an obstacle
+     * collapses to a single tall region and only the obstacle span is finely banded. The result
+     * is a stack of axis-aligned rectangles ordered top-to-bottom, suitable as the 'region' value
+     * of add() or as the input of setNoWriteRegions().
      *
      * Each no-write area can be defined in one of two ways (page coordinates, user units):
-     *  - side-anchored segment (legacy form), where the obstacle spans from a page side to a
-     *    vertical, possibly slanted, segment:
+     *  - side-anchored segment, where the obstacle spans from a page side to a vertical,
+     *    possibly slanted, segment:
      *      'xt','yt' : segment top point, 'xb','yb' : segment bottom point,
      *      'side'    : 'L' to block from the left page edge to the segment, 'R' for the right.
      *  - free rectangle (floating obstacle, e.g. an image):
      *      'x','y' : top-left corner, 'w' : width, 'h' : height.
      *
-     * NOTE: the text engine fills one region before moving to the next, so when a floating area
-     * splits a band into two writable columns only the widest one is kept; text does not wrap on
-     * both sides of a floating obstacle.
+     * NOTE: only the widest of the writable columns a floating area splits a band into is kept,
+     * so text does not wrap on both sides of a floating obstacle.
      *
      * @param array<int, NoWriteArea> $noWriteAreas No-write areas (page coordinates, user units).
-     * @param float                   $bandHeight   Height of each horizontal slice (must be > 0).
+     * @param float                   $bandHeight   Height of each horizontal slice (must be > 0 and
+     *                                              yield at most MAX_BANDS slices).
      * @param int                     $pid          Page index. Omit or set it to -1 for the current page.
      *
      * @return array<int, array{RX: float, RY: float, RW: float, RH: float}> Ordered writable regions.
@@ -588,18 +763,26 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         $cx1 = $cx0 + $page['ContentWidth'];
         $cy1 = $cy0 + $page['ContentHeight'];
 
+        if ($page['ContentHeight'] > ($bandHeight * self::MAX_BANDS)) {
+            throw new PageException(
+                'The band height is too small: it would slice the content area into more than '
+                . self::MAX_BANDS
+                . ' bands.',
+            );
+        }
+
         $norm = $this->normalizeNoWriteAreas($noWriteAreas, $cx0, $cx1);
 
         return $this->bandWritableRegions($norm, $cx0, $cy0, $cx1, $cy1, $bandHeight);
     }
 
     /**
-     * Set the no-write page regions, replacing any previously stored areas for the page.
-     * The writable regions are (re)built and assigned to the page. Mirrors the legacy
-     * setPageRegions() behaviour using rectangular regions.
+     * Set the no-write page areas, replacing any previously stored areas for the page.
+     * The writable regions are (re)built and assigned to the page.
      *
      * @param array<int, NoWriteArea> $noWriteAreas No-write areas (page coordinates, user units).
-     * @param float                   $bandHeight   Height of each horizontal slice (must be > 0).
+     * @param float                   $bandHeight   Height of each horizontal slice (must be > 0 and
+     *                                              yield at most MAX_BANDS slices).
      * @param int                     $pid          Page index. Omit or set it to -1 for the current page.
      *
      * @return PageData Page data.

@@ -26,6 +26,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * KlantIndex Barcode type class
  * KIX (Klant index - Customer index)
  *
+ * KIX is a trademark of PostNL.
+ *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode

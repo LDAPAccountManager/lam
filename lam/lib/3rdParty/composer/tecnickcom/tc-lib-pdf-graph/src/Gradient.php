@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\Graph;
 
 use Com\Tecnick\Color\ColorModelType;
+use Com\Tecnick\Color\Model as ColorModel;
 use Com\Tecnick\Pdf\Graph\Exception as GraphException;
 
 /**
@@ -52,12 +53,12 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
     /**
      * Draws a basic rectangle
      *
-     * @param float        $posx   Abscissa of upper-left corner.
-     * @param float        $posy   Ordinate of upper-left corner.
-     * @param float        $width  Width.
-     * @param float        $height Height.
-     * @param string|PathPaintOp $mode Mode of rendering (or PathPaintOp enum case). @see getPathPaintOp()
-     * @param StyleDataOpt $style  Style.
+     * @param float              $posx   Abscissa of upper-left corner.
+     * @param float              $posy   Ordinate of upper-left corner.
+     * @param float              $width  Width.
+     * @param float              $height Height.
+     * @param string|PathPaintOp $mode   Mode of rendering. @see getPathPaintOp()
+     * @param StyleDataOpt       $style  Style.
      *
      * @return string PDF command
      */
@@ -96,32 +97,7 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         string $colorend,
         array $coords = [0, 0, 1, 0],
     ): string {
-        return (
-            $this->getStartTransform()
-            . $this->getClippingRect($posx, $posy, $width, $height)
-            . $this->getGradientTransform($posx, $posy, $width, $height)
-            . $this->getGradient(
-                2,
-                $coords,
-                [
-                    [
-                        'color' => $colorstart,
-                        'exponent' => 1.0,
-                        'offset' => 0.0,
-                        'opacity' => 1.0,
-                    ],
-                    [
-                        'color' => $colorend,
-                        'exponent' => 1.0,
-                        'offset' => 1.0,
-                        'opacity' => 1.0,
-                    ],
-                ],
-                '',
-                false,
-            )
-            . $this->getStopTransform()
-        );
+        return $this->getTwoStopGradient(2, $posx, $posy, $width, $height, $colorstart, $colorend, $coords);
     }
 
     /**
@@ -153,17 +129,47 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         string $colorend,
         array $coords = [0.5, 0.5, 0.5, 0.5, 1],
     ): string {
+        return $this->getTwoStopGradient(3, $posx, $posy, $width, $height, $colorstart, $colorend, $coords);
+    }
+
+    /**
+     * Get a two-stop colour gradient command clipped to a rectangular area.
+     *
+     * @param int          $type       Shading type: 2 = axial, 3 = radial.
+     * @param float        $posx       Abscissa of the top left corner of the rectangle.
+     * @param float        $posy       Ordinate of the top left corner of the rectangle.
+     * @param float        $width      Width of the rectangle.
+     * @param float        $height     Height of the rectangle.
+     * @param string       $colorstart Starting color.
+     * @param string       $colorend   Ending color.
+     * @param array<float> $coords     Gradient coordinates.
+     *
+     * @return string PDF command
+     *
+     * @throws \Com\Tecnick\Pdf\Graph\Exception
+     *
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
+     */
+    private function getTwoStopGradient(
+        int $type,
+        float $posx,
+        float $posy,
+        float $width,
+        float $height,
+        string $colorstart,
+        string $colorend,
+        array $coords,
+    ): string {
         return (
             $this->getStartTransform()
             . $this->getClippingRect($posx, $posy, $width, $height)
             . $this->getGradientTransform($posx, $posy, $width, $height)
             . $this->getGradient(
-                3,
+                $type,
                 $coords,
                 [
                     [
                         'color' => $colorstart,
-                        'exponent' => 1.0,
                         'offset' => 0.0,
                         'opacity' => 1.0,
                     ],
@@ -189,6 +195,8 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
      * @param float $width  Width of the rectangle.
      * @param float $height Height of the rectangle.
      * @param bool  $eoclip If true, set clipping path using even-odd rule.
+     *
+     * @return string PDF command
      */
     public function getClippingRect(float $posx, float $posy, float $width, float $height, bool $eoclip = false): string
     {
@@ -203,6 +211,8 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
      * @param float $posy   Ordinate of the top left corner of the rectangle.
      * @param float $width  Width of the rectangle.
      * @param float $height Height of the rectangle.
+     *
+     * @return string PDF command
      */
     public function getGradientTransform(float $posx, float $posy, float $width, float $height): string
     {
@@ -219,28 +229,28 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
 
     /**
      * Get a color gradient PDF command.
+     * When a stop is not fully opaque the command also selects the soft-mask ExtGState
+     * of the gradient, so the caller is responsible for wrapping it between "q" and "Q".
      *
-     * @param int               $type      Type of gradient (Not all types are currently supported):
-     *                                     1 = Function-based shading; 2 = Axial shading; 3 = Radial
-     *                                     shading; 4 = Free-form Gouraud-shaded triangle mesh; 5 =
-     *                                     Lattice-form Gouraud-shaded triangle mesh; 6 = Coons
-     *                                     patch mesh; 7 Tensor-product patch mesh
-     * @param array<float>      $coords    Array of coordinates.
+     * @param int          $type      Type of gradient: 2 = Axial shading; 3 = Radial shading.
+     * @param array<float> $coords    Array of coordinates:
+     *                                (x0, y0, x1, y1) for type 2,
+     *                                (fx, fy, cx, cy, r) for type 3.
      * @param array<int, array{
      *            'color': string,
      *            'exponent'?: float,
      *            'opacity'?: float,
      *            'offset'?: float,
-     *        }>  $stops     Array gradient color components:
-     *                          color = color; offset = (0 to 1)
-     *                          represents a location along the
-     *                          gradient vector; exponent =
-     *                          exponent of the exponential
-     *                          interpolation function (default
-     *                          = 1).
-     * @param string            $bgcolor   Background color
-     * @param bool              $antialias Flag indicating whether to filter the
-     *                                     shading function to prevent aliasing artifacts.
+     *        }>          $stops     Gradient color stops (at least two entries):
+     *                                color = color;
+     *                                offset = (0 to 1) location along the gradient vector;
+     *                                opacity = (0 to 1) stop opacity;
+     *                                exponent = exponent of the exponential interpolation function
+     *                                (default = 1) used between the previous stop and this one,
+     *                                so the value set on the first stop is unused.
+     * @param string       $bgcolor   Background color.
+     * @param bool         $antialias Flag indicating whether to filter the
+     *                                shading function to prevent aliasing artifacts.
      *
      * @return string PDF command
      *
@@ -253,29 +263,48 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         string $bgcolor,
         bool $antialias = false,
     ): string {
-        if ($this->pdfa) {
-            return '';
+        $mincoords = match ($type) {
+            2 => 4,
+            3 => 5,
+            default => throw new GraphException('Unsupported gradient type: ' . $type),
+        };
+
+        if (\count($coords) < $mincoords) {
+            throw new GraphException('A type ' . $type . ' gradient requires ' . $mincoords . ' coordinates');
         }
 
-        if (!isset($stops[0]['color'])) {
-            throw new GraphException('Invalid gradient stops');
+        $stops = \array_values($stops);
+        if (\count($stops) < 2) {
+            throw new GraphException('A gradient requires at least two color stops');
         }
 
+        foreach ($stops as $stop) {
+            if (!$this->pdfColor->getColorObject($stop['color']) instanceof ColorModel) {
+                throw new GraphException('Invalid color: ' . $stop['color']);
+            }
+        }
+
+        // the shading color space is the one of the first stop
         $model = $this->pdfColor->getColorObject($stops[0]['color']);
-        if (!$model instanceof \Com\Tecnick\Color\Model) {
-            throw new GraphException('Invalid color');
+        if (!$model instanceof ColorModel) {
+            throw new GraphException('Invalid color: ' . $stops[0]['color']);
         }
 
-        $colspace = match ($model->getTypeEnum()) {
+        $background = $this->pdfColor->getColorObject($bgcolor);
+        if ($bgcolor !== '' && !$background instanceof ColorModel) {
+            throw new GraphException('Invalid background color: ' . $bgcolor);
+        }
+
+        $colspace = match (ColorModelType::tryFrom($model->getType())) {
             ColorModelType::Cmyk => 'DeviceCMYK',
             ColorModelType::Gray => 'DeviceGray',
             default => 'DeviceRGB',
         };
 
-        $ngr = 1 + \count($this->gradients);
+        $ngr = $this->getNextGradientKey();
         $this->gradients[$ngr] = $this->getGradientStops([
             'antialias' => $antialias,
-            'background' => $this->pdfColor->getColorObject($bgcolor),
+            'background' => $background,
             'colors' => [],
             'colspace' => $colspace,
             'coords' => $coords,
@@ -299,7 +328,8 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
     }
 
     /**
-     * Returns the last gradient ID to be used with XObjects.
+     * Returns the key of the last registered gradient, to be used with XObjects.
+     * This is the key accepted by getOutGradientResourcesByKeys(), not the PDF object number.
      *
      * @return ?int
      */
@@ -309,25 +339,40 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
     }
 
     /**
+     * Returns the next free key of the gradients array.
+     */
+    private function getNextGradientKey(): int
+    {
+        $lastkey = \array_key_last($this->gradients);
+        return $lastkey === null ? 1 : $lastkey + 1;
+    }
+
+    /**
      * Process the gradient stops.
      *
-     * @param GradientData      $grad Array containing gradient info
+     * @param GradientData $grad Array containing gradient info
      * @param array<int, array{
-     *                'color': string,
-     *                'exponent'?: float,
-     *                'opacity'?: float,
-     *                'offset'?: float,
-     *             }> $stops Array gradient color components:
-     *         color = color;
-     *         offset = (0 to 1) represents a location along the gradient vector;
-     *         exponent = exponent of the exponential interpolation function (default = 1).
+     *            'color': string,
+     *            'exponent'?: float,
+     *            'opacity'?: float,
+     *            'offset'?: float,
+     *        }>          $stops Gradient color stops:
+     *                            color = color;
+     *                            offset = (0 to 1) location along the gradient vector;
+     *                            opacity = (0 to 1) stop opacity;
+     *                            exponent = exponent of the exponential interpolation function
+     *                            (default = 1) used between the previous stop and this one,
+     *                            so the value set on the first stop is unused.
      *
      * @return GradientData Gradient array.
      */
     protected function getGradientStops(array $grad, array $stops): array
     {
+        // the offset interpolation requires contiguous keys starting at zero
+        $stops = \array_values($stops);
         $num_stops = \count($stops);
         $last_stop_id = $num_stops - 1;
+        $prevoffset = 0.0;
 
         foreach ($stops as $key => $stop) {
             $grad['colors'][$key] = ['color' => $stop['color']];
@@ -337,27 +382,31 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
                 $grad['colors'][$key]['exponent'] = $stop['exponent'];
             }
 
+            // A stop opacity is painted through a soft mask, so it is dropped when the
+            // conformance mode forbids transparency: the shading stays, fully opaque.
             $grad['colors'][$key]['opacity'] = 1.0;
-            if (array_key_exists('opacity', $stop)) {
-                $grad['colors'][$key]['opacity'] = $stop['opacity'];
-                $grad['transparency'] = $grad['transparency'] || $stop['opacity'] < 1.0;
+            if (array_key_exists('opacity', $stop) && !$this->notransparency) {
+                // the opacity is a DeviceGray component of the soft mask shading
+                $opacity = \max(0.0, \min(1.0, $stop['opacity']));
+                $grad['colors'][$key]['opacity'] = $opacity;
+                $grad['transparency'] = $grad['transparency'] || $opacity < 1.0;
             }
 
             // offset represents a location along the gradient vector
             $offset = array_key_exists('offset', $stop) ? $stop['offset'] : null;
-            if ($offset === null && $key === 0) {
-                $offset = 0.0;
-            } elseif ($offset === null && $key === $last_stop_id) {
-                $offset = 1.0;
-            } elseif ($offset === null && $key > 0 && array_key_exists('offset', $grad['colors'][$key - 1] ?? [])) {
-                $prevoffset = $grad['colors'][$key - 1]['offset'] ?? 0.0;
-                $offsetstep = (1.0 - $prevoffset) / ($num_stops - $key);
-                $offset = $prevoffset + $offsetstep;
+            if ($offset === null) {
+                $offset = match ($key) {
+                    0 => 0.0,
+                    $last_stop_id => 1.0,
+                    default => $prevoffset + ((1.0 - $prevoffset) / ($num_stops - $key)),
+                };
             }
 
-            if ($offset !== null) {
-                $grad['colors'][$key]['offset'] = $offset;
-            }
+            // the offsets are the /Bounds of the stitching function:
+            // they stay within the [0, 1] domain and never decrease
+            $offset = \max($prevoffset, \min(1.0, $offset));
+            $grad['colors'][$key]['offset'] = $offset;
+            $prevoffset = $offset;
         }
 
         return $grad;
@@ -374,15 +423,11 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
      * @param string       $collr      Lower-Right corner color.
      * @param string       $colur      Upper-Right corner color.
      * @param string       $colul      Upper-Left corner color.
-     * @param array<float> $coords     Coordinates
-     * @param float        $coords_min Minimum value used by the coordinates.
-     *                                 If a coordinate's value is smaller
-     *                                 than this it will be cut to
-     *                                 coords_min.
-     * @param float        $coords_max Maximum value used by the coordinates.
-     *                                 If a coordinate's value is greater
-     *                                 than this it will be cut to
-     *                                 coords_max.
+     * @param array<float> $coords     Coordinates of the 12 Bezier control points of the patch.
+     * @param float        $coords_min Minimum value used by the coordinates:
+     *                                 smaller values are cut to coords_min.
+     * @param float        $coords_max Maximum value used by the coordinates:
+     *                                 greater values are cut to coords_max.
      * @param bool         $antialias  Flag indicating whether to filter the
      *                                 shading function to prevent aliasing artifacts.
      *
@@ -432,68 +477,38 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         float $coords_max = 1.0,
         bool $antialias = false,
     ): string {
-        if ($this->pdfa) {
-            return '';
-        }
-
-        // simple array -> convert to multi patch array
-
+        // convert the simple array to a multi patch array
         $patch_array = [
             0 => [
                 'f' => 0,
                 'points' => $coords,
-                'colors' => [
-                    0 => [
-                        'red' => 1,
-                        'green' => 1,
-                        'blue' => 0,
-                        'alpha' => 1,
-                    ],
-                    1 => [
-                        'red' => 0,
-                        'green' => 0,
-                        'blue' => 1,
-                        'alpha' => 1,
-                    ],
-                    2 => [
-                        'red' => 0,
-                        'green' => 1,
-                        'blue' => 0,
-                        'alpha' => 1,
-                    ],
-                    3 => [
-                        'red' => 1,
-                        'green' => 0,
-                        'blue' => 0,
-                        'alpha' => 1,
-                    ],
-                ],
+                'colors' => [],
             ],
         ];
 
         $colllobj = $this->pdfColor->getColorObject($colll);
-        if (!$colllobj instanceof \Com\Tecnick\Color\Model) {
+        if (!$colllobj instanceof ColorModel) {
             throw new GraphException('Invalid Lower-Left corner color');
         }
 
         $patch_array[0]['colors'][0] = $colllobj->toRgbArray();
 
         $collrobj = $this->pdfColor->getColorObject($collr);
-        if (!$collrobj instanceof \Com\Tecnick\Color\Model) {
+        if (!$collrobj instanceof ColorModel) {
             throw new GraphException('Invalid Lower-Right corner color');
         }
 
         $patch_array[0]['colors'][1] = $collrobj->toRgbArray();
 
         $colurobj = $this->pdfColor->getColorObject($colur);
-        if (!$colurobj instanceof \Com\Tecnick\Color\Model) {
+        if (!$colurobj instanceof ColorModel) {
             throw new GraphException('Invalid Upper-Right corner color');
         }
 
         $patch_array[0]['colors'][2] = $colurobj->toRgbArray();
 
         $colulobj = $this->pdfColor->getColorObject($colul);
-        if (!$colulobj instanceof \Com\Tecnick\Color\Model) {
+        if (!$colulobj instanceof ColorModel) {
             throw new GraphException('Invalid Upper-Left corner color');
         }
 
@@ -522,71 +537,25 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
      *            'f': int,
      *            'points': array<float>,
      *            'colors': array<int, array<string, float>>,
-     *        }> $patch_array     For one patch mesh:
-     *                                 array(float x1,
-     *                                 float y1, ....
-     *                                 float x12, float
-     *                                 y12): 12 pairs of
-     *                                 coordinates
-     *                                 (normally from 0 to
-     *                                 1) which specify
-     *                                 the Bezier control
-     *                                 points that define
-     *                                 the patch. First
-     *                                 pair is the lower
-     *                                 left edge point,
-     *                                 next is its right
-     *                                 control point
-     *                                 (control point 2).
-     *                                 Then the other
-     *                                 points are defined
-     *                                 in the order:
-     *                                 control point 1,
-     *                                 edge point, control
-     *                                 point 2 going
-     *                                 counter-clockwise
-     *                                 around the patch.
-     *                                 Last (x12, y12) is
-     *                                 the first edge
-     *                                 point's left
-     *                                 control point
-     *                                 (control point 1).
-     *                                 For two or more
-     *                                 patch meshes:
-     *                                 array[number of
-     *                                 patches] - arrays
-     *                                 with the following
-     *                                 keys for each
-     *                                 patch: f: where to
-     *                                 put that patch (0 =
-     *                                 first patch, 1, 2,
-     *                                 3 = right, top and
-     *                                 left) points: 12
-     *                                 pairs of
-     *                                 coordinates of the
-     *                                 Bezier control
-     *                                 points as above for
-     *                                 the first patch, 8
-     *                                 pairs of
-     *                                 coordinates for the
-     *                                 following patches,
-     *                                 ignoring the
-     *                                 coordinates already
-     *                                 defined by the
-     *                                 precedent patch
-     *                                 colors: must be 4
-     *                                 colors for the
-     *                                 first patch, 2
-     *                                 colors for the
-     *                                 following patches
-     * @param float        $coords_min Minimum value used by the coordinates.
-     *                                 If a coordinate's value is smaller
-     *                                 than this it will be cut to
-     *                                 coords_min.
-     * @param float        $coords_max Maximum value used by the coordinates.
-     *                                 If a coordinate's value is greater
-     *                                 than this it will be cut to
-     *                                 coords_max.
+     *        }>          $patch_array One entry for each patch:
+     *                                 f = position of the patch
+     *                                 (0 = first patch; 1, 2, 3 = right, top and left);
+     *                                 points = pairs of coordinates (normally from 0 to 1)
+     *                                 of the Bezier control points that define the patch:
+     *                                 12 pairs for the first patch, 8 pairs for the following
+     *                                 ones, ignoring the coordinates already defined by the
+     *                                 preceding patch. The first pair is the lower left edge
+     *                                 point, the next is its right control point (control
+     *                                 point 2), then the other points follow counter-clockwise
+     *                                 around the patch in the order: control point 1, edge
+     *                                 point, control point 2. The last pair is the left control
+     *                                 point (control point 1) of the first edge point;
+     *                                 colors = 4 colors for the first patch,
+     *                                 2 colors for the following ones.
+     * @param float        $coords_min Minimum value used by the coordinates:
+     *                                 smaller values are cut to coords_min.
+     * @param float        $coords_max Maximum value used by the coordinates:
+     *                                 greater values are cut to coords_max.
      * @param bool         $antialias  Flag indicating whether to filter the
      *                                 shading function to prevent aliasing artifacts.
      *
@@ -608,15 +577,11 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         float $coords_max = 1.0,
         bool $antialias = false,
     ): string {
-        if ($this->pdfa) {
-            return '';
-        }
-
         if ($coords_max <= $coords_min) {
             throw new GraphException('coords_max must be greater than coords_min');
         }
 
-        $ngr = 1 + \count($this->gradients);
+        $ngr = $this->getNextGradientKey();
         $this->gradients[$ngr] = [
             'antialias' => $antialias,
             'colors' => [],
@@ -631,14 +596,15 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         ];
 
         $bpcd = 65_535; // 16 bits per coordinate
+        $span = $coords_max - $coords_min;
+        $stream = '';
 
         foreach ($patch_array as $par) {
-            $this->gradients[$ngr]['stream'] .= \chr($par['f'] & 0xFF); // start with the edge flag as 8 bit
+            $stream .= \chr($par['f'] & 0xFF); // start with the edge flag as 8 bit
             foreach ($par['points'] as $point) {
                 // each point as 16 bit
-                $point = \floor(\max(0, \min($bpcd, (($point - $coords_min) / ($coords_max - $coords_min)) * $bpcd)));
-                $this->gradients[$ngr]['stream'] .=
-                    \chr((int) \floor($point / 256) & 0xFF) . \chr((int) \floor($point % 256) & 0xFF);
+                $val = (int) \max(0, \min($bpcd, (($point - $coords_min) / $span) * $bpcd));
+                $stream .= \chr(\intdiv($val, 256)) . \chr($val % 256);
             }
 
             foreach ($par['colors'] as $color) {
@@ -646,12 +612,14 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
                 $red = $color['red'] ?? 0.0;
                 $green = $color['green'] ?? 0.0;
                 $blue = $color['blue'] ?? 0.0;
-                $this->gradients[$ngr]['stream'] .=
+                $stream .=
                     \chr((int) \floor($red * 255) & 0xFF)
                     . \chr((int) \floor($green * 255) & 0xFF)
                     . \chr((int) \floor($blue * 255) & 0xFF);
             }
         }
+
+        $this->gradients[$ngr]['stream'] = $stream;
 
         return (
             $this->getStartTransform()
@@ -668,15 +636,13 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
     /**
      * Paints registration bars with color transitions
      *
-     * @param float                     $posx     Abscissa of the top left corner of the rectangle.
-     * @param float                     $posy     Ordinate of the top left corner of the rectangle.
-     * @param float                     $width    Width of the rectangle.
-     * @param float                     $height   Height of the rectangle.
-     * @param bool                      $vertical If true prints bar vertically, otherwise horizontally.
-     * @param array<int, array<string>> $colors   Array of colors to print,
-     *                                            each entry is a color
-     *                                            string or an array of two
-     *                                            transition colors;
+     * @param float                            $posx     Abscissa of the top left corner of the rectangle.
+     * @param float                            $posy     Ordinate of the top left corner of the rectangle.
+     * @param float                            $width    Width of the rectangle.
+     * @param float                            $height   Height of the rectangle.
+     * @param bool                             $vertical If true prints bar vertically, otherwise horizontally.
+     * @param array<int, string|array<string>> $colors   Array of colors to print: each entry is a color
+     *                                                   string or an array of two transition colors.
      *
      * @return string PDF command
      *
@@ -735,21 +701,20 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
 
         $out = '';
         foreach ($colors as $color) {
-            if ($color !== [] && isset($color[0]) && $color[0] !== '') {
+            // a single color string is a bar with no transition
+            $color = \is_string($color) ? [$color, $color] : $color;
+            if (isset($color[0]) && $color[0] !== '') {
                 if (!isset($color[1])) {
                     $color[1] = $color[0];
                 }
 
-                if ($color[0] === $color[1] || $this->pdfa) {
+                if ($color[0] === $color[1]) {
                     // colored rectangle
-                    $out .= $this->getStartTransform();
-
-                    $colobj = $this->pdfColor->getColorObject($color[0]);
-                    if ($colobj instanceof \Com\Tecnick\Color\Model) {
-                        $out .= $colobj->getPdfColor();
-                    }
-
-                    $out .= $this->getBasicRect($xbr, $ybr, $wbr, $hbr, 'F') . $this->getStopTransform();
+                    $out .=
+                        $this->getStartTransform()
+                        . $this->getDeviceColorCmd($color[0])
+                        . $this->getBasicRect($xbr, $ybr, $wbr, $hbr, 'F')
+                        . $this->getStopTransform();
                 } else {
                     // color gradient
                     $out .= $this->getLinearGradient($xbr, $ybr, $wbr, $hbr, $color[0], $color[1], $coords);
@@ -791,46 +756,23 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
 
         $out = '';
         foreach ($crops as $crop) {
-            $draw = true;
-            $posx1 = $posx;
-            $posy1 = $posy;
-            $posx2 = $posx;
-            $posy2 = $posy;
-            switch ($crop) {
-                case 'T':
-                    $posx1 = $posx;
-                    $posy1 = $posy - $height;
-                    $posx2 = $posx;
-                    $posy2 = $posy - $dvh;
-                    break;
-                case 'B':
-                    $posx1 = $posx;
-                    $posy1 = $posy + $dvh;
-                    $posx2 = $posx;
-                    $posy2 = $posy + $height;
-                    break;
-                case 'L':
-                    $posx1 = $posx - $width;
-                    $posy1 = $posy;
-                    $posx2 = $posx - $dhw;
-                    $posy2 = $posy;
-                    break;
-                case 'R':
-                    $posx1 = $posx + $dhw;
-                    $posy1 = $posy;
-                    $posx2 = $posx + $width;
-                    $posy2 = $posy;
-                    break;
-                default:
-                    $draw = false;
-                    break;
-            }
+            // offsets from the crop-mark center to the segment endpoints
+            $delta = match ($crop) {
+                'T' => [0.0, -$height, 0.0, -$dvh],
+                'B' => [0.0, $dvh, 0.0, $height],
+                'L' => [-$width, 0.0, -$dhw, 0.0],
+                'R' => [$dhw, 0.0, $width, 0.0],
+                default => null,
+            };
 
-            if (!$draw) {
+            if ($delta === null) {
                 continue;
             }
 
-            $out .= $this->getRawPoint($posx1, $posy1) . $this->getRawLine($posx2, $posy2) . $this->getPathPaintOp('S');
+            $out .=
+                $this->getRawPoint($posx + $delta[0], $posy + $delta[1])
+                . $this->getRawLine($posx + $delta[2], $posy + $delta[3])
+                . $this->getPathPaintOp('S');
         }
 
         if ($out === '') {
@@ -844,29 +786,14 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
      * Get overprint mode for stroking (OP) and non-stroking (op) painting operations.
      * (Check the "Entries in a Graphics State Parameter Dictionary" on PDF 32000-1:2008).
      *
-     * @param bool $stroking    If true apply overprint for stroking operations.
+     * @param bool      $stroking    If true apply overprint for stroking operations.
      * @param bool|null $nonstroking If true apply overprint for painting operations other than stroking.
-     * @param int  $mode        Overprint mode:
-     *                          0 = each source
-     *                          colour
-     *                          component value
-     *                          replaces the
-     *                          value
-     *                          previously
-     *                          painted for the
-     *                          corresponding
-     *                          device
-     *                          colorant; 1 = a
-     *                          tint value of
-     *                          0.0 for a
-     *                          source colour
-     *                          component shall
-     *                          leave the
-     *                          corresponding
-     *                          component of
-     *                          the previously
-     *                          painted colour
-     *                          unchanged.
+     * @param int       $mode        Overprint mode:
+     *                               0 = each source colour component value replaces the value
+     *                               previously painted for the corresponding device colorant;
+     *                               1 = a tint value of 0.0 for a source colour component leaves
+     *                               the corresponding component of the previously painted colour
+     *                               unchanged.
      *
      * @return string PDF command
      */
@@ -886,21 +813,15 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
     /**
      * Set alpha for stroking (CA) and non-stroking (ca) operations.
      *
-     * @param float        $stroking    Alpha value for stroking operations:
-     *                                  real value from 0 (transparent) to 1 (opaque).
-     * @param string|BlendMode $bmv     Blend mode (or BlendMode enum case), one of the following:
-     *                                  Normal, Multiply, Screen,
-     *                                  Overlay, Darken, Lighten,
-     *                                  ColorDodge, ColorBurn, HardLight,
-     *                                  SoftLight, Difference, Exclusion,
-     *                                  Hue, Saturation, Color,
-     *                                  Luminosity.
-     * @param float|string $nonstroking Alpha value for non-stroking operations:
-     *                                  real value from 0 (transparent) to 1
-     *                                  (opaque).
-     * @param bool         $ais         Alpha-Is-Shape flag: if true the soft-mask
-     *                                  alpha values are interpreted as shape
-     *                                  (passed through to the /AIS ExtGState key).
+     * @param float            $stroking    Alpha value for stroking operations:
+     *                                      real value from 0 (transparent) to 1 (opaque).
+     * @param string|BlendMode $bmv         Blend mode, one of the following: Normal, Multiply,
+     *                                      Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
+     *                                      HardLight, SoftLight, Difference, Exclusion, Hue,
+     *                                      Saturation, Color, Luminosity.
+     * @param float|string     $nonstroking Alpha value for non-stroking operations:
+     *                                      real value from 0 (transparent) to 1 (opaque).
+     * @param bool             $ais         Alpha-Is-Shape flag set on the /AIS ExtGState key.
      *
      * @return string PDF command
      */
@@ -921,8 +842,8 @@ abstract class Gradient extends \Com\Tecnick\Pdf\Graph\Raw
         }
 
         return $this->getExtGState([
-            'CA' => $stroking,
-            'ca' => $nonstroking,
+            'CA' => \max(0.0, \min(1.0, $stroking)),
+            'ca' => \max(0.0, \min(1.0, $nonstroking)),
             'BM' => '/' . $bmv,
             'AIS' => $ais,
         ]);

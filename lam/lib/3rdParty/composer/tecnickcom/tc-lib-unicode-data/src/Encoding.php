@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Data;
 /**
  * Com\Tecnick\Unicode\Data\Encoding
  *
+ * Font encoding maps: character code to glyph name for each supported encoding.
+ *
  * @since       2011-05-23
  * @category    Library
  * @package     UnicodeData

@@ -1,0 +1,16 @@
+# The suite covers every line of src/. A drop is a regression, not a warning:
+# the PR checklist asks contributors to confirm it, and this is what checks it.
+coverage:
+  status:
+    project:
+      default:
+        target: 100%
+        threshold: 0%
+    patch:
+      default:
+        target: 100%
+        threshold: 0%
+
+comment:
+  layout: "reach, diff, flags, files"
+  require_changes: true

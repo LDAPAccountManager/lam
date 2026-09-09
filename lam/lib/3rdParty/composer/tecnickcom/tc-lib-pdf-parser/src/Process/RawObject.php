@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Parser\Process;
 
+use Com\Tecnick\Pdf\Parser\Exception as PPException;
+
 /**
  * Com\Tecnick\Pdf\Parser\Process\RawObject
  *
@@ -76,23 +78,37 @@ namespace Com\Tecnick\Pdf\Parser\Process;
 abstract class RawObject
 {
     /**
+     * Maximum nesting depth allowed for array and dictionary objects.
+     */
+    protected const MAX_NESTING_DEPTH = 256;
+
+    /**
+     * Characters allowed inside a hexadecimal string object.
+     */
+    protected const HEXCHARS = "0123456789ABCDEFabcdef\x09\x0a\x0c\x0d\x20";
+
+    /**
+     * White-space and delimiter characters that terminate a name object
+     * (PDF 32000-1 Table 1 and Table 2).
+     */
+    protected const NAME_DELIMITERS = "\x00\x09\x0a\x0c\x0d\x20\x25\x28\x29\x2f\x3c\x3e\x5b\x5d\x7b\x7d";
+
+    /**
      * Raw content of the PDF document.
      */
     protected string $pdfdata = '';
 
     /**
-     * Offset where the data of the most recently tokenized stream begins
-     * (i.e. just after the "stream" keyword and its end-of-line marker).
+     * Current nesting depth of array and dictionary objects.
      */
-    protected int $streamDataStart = 0;
+    protected int $nesting = 0;
 
     /**
-     * Whether to apply the PNG/TIFF predictor from DecodeParms when decoding a stream.
-     *
-     * This is temporarily disabled while the xref machinery decodes a cross-reference
-     * stream, because that path un-predicts the rows itself.
+     * Offset where the data of the most recently tokenized stream begins
+     * (i.e. just after the "stream" keyword and its end-of-line marker),
+     * or -1 when no stream payload has been located.
      */
-    protected bool $applyStreamPredictor = true;
+    protected int $streamDataStart = -1;
 
     /**
      * Array of PDF objects.
@@ -129,33 +145,37 @@ abstract class RawObject
      * @param int $offset Object offset.
      *
      * @return RawObjectArray Array containing: object type, raw value and offset to next object
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
     protected function getRawObject(int $offset = 0): array
     {
-        // skip initial white space chars:
+        $pdflen = \strlen($this->pdfdata);
+        // skip white space chars and comments:
         // \x00 null (NUL)
         // \x09 horizontal tab (HT)
         // \x0A line feed (LF)
         // \x0C form feed (FF)
         // \x0D carriage return (CR)
         // \x20 space (SP)
-        $offset += \strspn($this->pdfdata, "\x00\x09\x0a\x0c\x0d\x20", $offset);
-        // stop if we reached the end of the (possibly truncated/malformed) data
-        if ($offset >= \strlen($this->pdfdata)) {
-            return ['', '', $offset];
+        // \x25 percent sign (comment up to the end of the line)
+        while (true) {
+            $offset += \strspn($this->pdfdata, "\x00\x09\x0a\x0c\x0d\x20", $offset);
+            // stop if we reached the end of the (possibly truncated/malformed) data
+            if ($offset >= $pdflen) {
+                return ['', '', $offset];
+            }
+
+            if ($this->pdfdata[$offset] !== '%') {
+                break;
+            }
+
+            // the '%' itself is never an EOL char, so this always advances
+            $offset += \strcspn($this->pdfdata, "\r\n", $offset);
         }
 
         // get first char
         $char = $this->pdfdata[$offset];
-        if ($char === '%') { // \x25 PERCENT SIGN
-            // skip comment and search for next token
-            $next = \strcspn($this->pdfdata, "\r\n", $offset);
-            if ($next > 0) {
-                $offset += $next;
-                return $this->getRawObject($offset);
-            }
-        }
-
         $objtype = '';
         $objval = '';
         // map symbols with corresponding processing methods
@@ -174,27 +194,42 @@ abstract class RawObject
      * Process name object
      * \x2F SOLIDUS
      *
-     * @param string        $char    Symbol to process
-     * @param-out int       $offset  Offset after processing
-     * @param-out string    $objtype Object type after processing
-     * @param-out string    $objval  Object content after processing
+     * @param string     $char    Symbol to process
+     * @param-out int    $offset  Offset after processing
+     * @param-out string $objtype Object type after processing
+     * @param-out string $objval  Object content after processing
      */
     protected function processSolidus(string $char, int &$offset, string &$objtype, string|array &$objval): void
     {
         $objtype = $char;
         ++$offset;
-        $matches = [];
-        if (
-            \preg_match(
-                '/^([^\x00\x09\x0a\x0c\x0d\x20\s\x28\x29\x3c\x3e\x5b\x5d\x7b\x7d\x2f\x25]+)/',
-                \substr($this->pdfdata, $offset, 256),
-                $matches,
-            ) === 1
-            && ($matches[1] ?? null) !== null
-        ) {
-            $objval = $matches[1]; // unescaped value
-            $offset += \strlen($objval);
+        // a name runs up to the first white space or delimiter character
+        $namelen = \strcspn($this->pdfdata, self::NAME_DELIMITERS, $offset);
+        if ($namelen > 0) {
+            $raw = \substr($this->pdfdata, $offset, $namelen);
+            // the offset advances over the raw bytes, the value keeps the decoded form
+            $offset += $namelen;
+            // decode the #xx hex escapes allowed in name objects (PDF 32000-1 7.3.5)
+            $objval = \str_contains($raw, '#') ? $this->decodeNameEscapes($raw) : $raw;
         }
+    }
+
+    /**
+     * Decode the #xx hexadecimal escapes of a name object.
+     *
+     * @param string $name Raw name bytes.
+     *
+     * @return string Decoded name.
+     */
+    protected function decodeNameEscapes(string $name): string
+    {
+        $decoded = \preg_replace_callback(
+            '/#([0-9A-Fa-f]{2})/',
+            static fn(array $match): string => \chr((int) \hexdec($match[1] ?? '0')),
+            $name,
+        );
+
+        return \is_string($decoded) ? $decoded : $name;
     }
 
     /**
@@ -210,34 +245,41 @@ abstract class RawObject
     {
         $objtype = $char;
         ++$offset;
-        $strpos = $offset;
-        if ($char === '(') {
-            $open_bracket = 1;
-            $pdflen = \strlen($this->pdfdata);
-            while ($open_bracket > 0 && $strpos < $pdflen) {
-                $chr = $this->pdfdata[$strpos];
-                switch ($chr) {
-                    case '\\':
-                        // REVERSE SOLIDUS (5Ch) (Backslash)
-                        // skip next character
-                        ++$strpos;
-                        break;
-                    case '(':
-                        // LEFT PARENTHESIS (28h)
-                        ++$open_bracket;
-                        break;
-                    case ')':
-                        // RIGHT PARENTHESIS (29h)
-                        --$open_bracket;
-                        break;
-                }
+        if ($char !== '(') {
+            return;
+        }
 
-                ++$strpos;
+        $open_bracket = 1;
+        $pdflen = \strlen($this->pdfdata);
+        $strpos = $offset;
+        while ($open_bracket > 0 && $strpos < $pdflen) {
+            $chr = $this->pdfdata[$strpos];
+            switch ($chr) {
+                case '\\':
+                    // REVERSE SOLIDUS (5Ch) (Backslash)
+                    // skip next character
+                    ++$strpos;
+                    break;
+                case '(':
+                    // LEFT PARENTHESIS (28h)
+                    ++$open_bracket;
+                    break;
+                case ')':
+                    // RIGHT PARENTHESIS (29h)
+                    --$open_bracket;
+                    break;
             }
 
-            $objval = \substr($this->pdfdata, $offset, $strpos - $offset - 1);
-            $offset = $strpos;
+            ++$strpos;
         }
+
+        // an escape on the last byte pushes the cursor past the end of the data
+        $strpos = \min($strpos, $pdflen);
+        // the closing delimiter is consumed but is not part of the value;
+        // an unterminated string has no delimiter to strip
+        $end = $open_bracket === 0 ? $strpos - 1 : $strpos;
+        $objval = \substr($this->pdfdata, $offset, $end - $offset);
+        $offset = $strpos;
     }
 
     /**
@@ -248,6 +290,8 @@ abstract class RawObject
      * @param-out int          $offset  Offset after processing
      * @param-out string       $objtype Object type after processing
      * @param-out string|array $objval  Object content after processing
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
     protected function processBracket(string $char, int &$offset, string &$objtype, string|array &$objval): void
     {
@@ -256,18 +300,57 @@ abstract class RawObject
         ++$offset;
         if ($char === '[') {
             // get array content
-            $objval = [];
-            do {
-                $oldoffset = $offset;
-                $element = $this->getRawObject($offset);
-                $offset = $element[2];
-                $objval[] = $element;
-            } while ($element[0] !== ']' && (int) $offset !== (int) $oldoffset);
-
-            if (\count($objval) > 0) {
-                // remove closing delimiter
-                \array_pop($objval);
+            $elements = [];
+            $this->enterNesting();
+            try {
+                $this->collectElements($offset, $elements, ']');
+            } finally {
+                --$this->nesting;
             }
+
+            $objval = $elements;
+        }
+    }
+
+    /**
+     * Collect the elements of an array or dictionary up to its closing delimiter.
+     *
+     * Neither the closing delimiter nor an unparsable token is stored. An array or a
+     * dictionary cannot span an indirect object, so "endobj" also ends the collection
+     * and is left unconsumed for the caller.
+     *
+     * @param int                        $offset  Offset to read from
+     * @param array<int, RawObjectArray> $objval  Collected elements
+     * @param string                     $closing Closing delimiter type
+     *
+     * @param-out int                        $offset Offset after processing
+     * @param-out array<int, RawObjectArray> $objval Collected elements
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
+     */
+    protected function collectElements(int &$offset, array &$objval, string $closing): void
+    {
+        while (true) {
+            $oldoffset = $offset;
+            $element = $this->getRawObject($offset);
+            $offset = $element[2];
+            if ($element[0] === $closing) {
+                // closing delimiter reached: consumed but not stored
+                return;
+            }
+
+            if ($element[0] === 'endobj') {
+                // the container is unterminated: give the keyword back to the caller
+                $offset = $oldoffset;
+                return;
+            }
+
+            if ($element[0] === '' || $offset === $oldoffset) {
+                // end of data or a byte that cannot be tokenized: stop without storing it
+                return;
+            }
+
+            $objval[] = $element;
         }
     }
 
@@ -278,6 +361,8 @@ abstract class RawObject
      * @param-out int          $offset  Offset after processing
      * @param-out string       $objtype Object type after processing
      * @param-out string|array $objval  Object content after processing
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
     protected function processAngular(string $char, int &$offset, string &$objtype, string|array &$objval): void
     {
@@ -287,42 +372,62 @@ abstract class RawObject
             $offset += 2;
             if ($char === '<') {
                 // get array content
-                $objval = [];
-                do {
-                    $oldoffset = $offset;
-                    $element = $this->getRawObject($offset);
-                    $offset = $element[2];
-                    $objval[] = $element;
-                } while ($element[0] !== '>>' && (int) $offset !== (int) $oldoffset);
-
-                if (\count($objval) > 0) {
-                    // remove closing delimiter
-                    \array_pop($objval);
+                $elements = [];
+                $this->enterNesting();
+                try {
+                    $this->collectElements($offset, $elements, '>>');
+                } finally {
+                    --$this->nesting;
                 }
+
+                $objval = $elements;
             }
         } else {
-            // hexadecimal string object
             $objtype = $char;
             ++$offset;
-            $matches = [];
-            if (
-                $char === '<'
-                && \preg_match('/^([0-9A-Fa-f\x09\x0a\x0c\x0d\x20]+)>/iU', \substr($this->pdfdata, $offset), $matches)
-                    === 1
-                && ($matches[0] ?? null) !== null
-                && ($matches[1] ?? null) !== null
-            ) {
-                // remove white space characters
-                $objval = \strtr($matches[1], "\x09\x0a\x0c\x0d\x20", '');
-                $offset += \strlen($matches[0]);
-            } elseif (($endpos = \strpos($this->pdfdata, '>', $offset)) !== false) {
-                $offset = $endpos + 1;
+            if ($char !== '<') {
+                // an unbalanced '>' is a single byte: it must not swallow the '>>' that
+                // terminates the enclosing dictionary
+                return;
             }
+
+            // hexadecimal string object
+            $endpos = $offset < \strlen($this->pdfdata) ? \strpos($this->pdfdata, '>', $offset) : false;
+            if ($endpos === false) {
+                return;
+            }
+
+            // the payload is valid only when every byte up to '>' is a hex digit or white space
+            $raw = \substr($this->pdfdata, $offset, $endpos - $offset);
+            if ($raw !== '' && \strspn($raw, self::HEXCHARS) === \strlen($raw)) {
+                // remove white space characters
+                $objval = \str_replace(["\x09", "\x0a", "\x0c", "\x0d", "\x20"], '', $raw);
+                if ((\strlen($objval) % 2) === 1) {
+                    // a missing final digit is a zero (PDF 32000-1 7.3.4.3)
+                    $objval .= '0';
+                }
+            }
+
+            $offset = $endpos + 1;
         }
     }
 
     /**
-     * Process default
+     * Enter a nested array or dictionary, enforcing the maximum nesting depth.
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\Exception
+     */
+    protected function enterNesting(): void
+    {
+        if ($this->nesting >= static::MAX_NESTING_DEPTH) {
+            throw new PPException('Maximum object nesting depth exceeded: ' . static::MAX_NESTING_DEPTH);
+        }
+
+        ++$this->nesting;
+    }
+
+    /**
+     * Process the keyword objects: endobj, null, true, false, stream and endstream
      *
      * @param-out int            $offset  Offset after processing
      * @param-out string         $objtype Object type after processing
@@ -360,9 +465,13 @@ abstract class RawObject
             // start stream object
             $objtype = 'stream';
             $offset += 6;
+            // no payload located yet: drop the offset of the previous stream
+            $this->streamDataStart = -1;
             $matches = [];
+            // PDF 32000-1 7.3.8.1 requires CRLF or LF right after the keyword, never a bare CR;
+            // horizontal white space before the marker is tolerated
             if (
-                \preg_match('/^([\r]?[\n])/isU', \substr($this->pdfdata, $offset), $matches) === 1
+                \preg_match('/\G[\x20\x09]*([\r]?[\n])/', $this->pdfdata, $matches, 0, $offset) === 1
                 && ($matches[0] ?? null) !== null
             ) {
                 $offset += \strlen($matches[0]);
@@ -371,15 +480,16 @@ abstract class RawObject
                 if (
                     \preg_match(
                         '/(endstream)[\x09\x0a\x0c\x0d\x20]/isU',
-                        \substr($this->pdfdata, $offset),
+                        $this->pdfdata,
                         $matches,
                         PREG_OFFSET_CAPTURE,
+                        $offset,
                     ) === 1
                     && ($matches[0] ?? null) !== null
                     && ($matches[1] ?? null) !== null
                 ) {
-                    $objval = \substr($this->pdfdata, $offset, (int) $matches[0][1]);
-                    $offset += (int) $matches[1][1];
+                    $objval = \substr($this->pdfdata, $offset, (int) $matches[0][1] - $offset);
+                    $offset = (int) $matches[1][1];
                 }
             }
 
@@ -395,7 +505,7 @@ abstract class RawObject
     }
 
     /**
-     * Process default
+     * Process indirect references, object start markers and numeric objects
      *
      * @param-out int            $offset  Offset after processing
      * @param-out string         $objtype Object type after processing

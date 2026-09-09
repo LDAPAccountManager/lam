@@ -79,12 +79,13 @@ class AESnopad
         string $mode = 'aes-256-cbc',
     ): string {
         $this->checkCipher($mode);
+        $this->checkKeyLength($key, $mode);
 
         $enc = \openssl_encrypt(
             $this->pad($data, self::BLOCKSIZE),
             $mode,
-            $this->pad($key, 2 * self::BLOCKSIZE),
-            OPENSSL_RAW_DATA,
+            $key,
+            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
             $ivect,
         );
 
@@ -92,17 +93,15 @@ class AESnopad
             throw new EncException('encryption error: ' . (string) \openssl_error_string());
         }
 
-        return \substr($enc, 0, -16);
+        return $enc;
     }
 
     /**
      * Decrypt data that was produced by encrypt().
      *
-     * encrypt() zero-pads the plaintext to 16-byte alignment, encrypts with PKCS7
-     * (which appends one extra 16-byte block), then strips that trailing block.
-     * This method decrypts with OPENSSL_ZERO_PADDING so no PKCS7 validation is
-     * applied, recovering the zero-padded plaintext. When the original plaintext
-     * length is known, the caller should strip any trailing zero bytes.
+     * encrypt() zero-pads the plaintext to 16-byte alignment and applies no block
+     * padding, so this method decrypts with OPENSSL_ZERO_PADDING and returns the
+     * zero-padded plaintext. The caller strips any trailing zero bytes.
      *
      * @param string $data  Encrypted data (produced by encrypt()).
      * @param string $key   Encryption key.
@@ -120,14 +119,9 @@ class AESnopad
         string $mode = 'aes-256-cbc',
     ): string {
         $this->checkCipher($mode);
+        $this->checkKeyLength($key, $mode);
 
-        $dec = \openssl_decrypt(
-            $data,
-            $mode,
-            $this->pad($key, 2 * self::BLOCKSIZE),
-            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
-            $ivect,
-        );
+        $dec = \openssl_decrypt($data, $mode, $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $ivect);
 
         if ($dec === false) {
             throw new EncException('decryption error: ' . (string) \openssl_error_string());
@@ -137,11 +131,10 @@ class AESnopad
     }
 
     /**
-     * Pad the input string to the specified length
-     * (RFC 2898, PKCS #5: Password-Based Cryptography Specification Version 2.0)
+     * Zero-pad the input string up to the next multiple of $length.
      *
      * @param string $data   Data to pad
-     * @param int    $length Padding length
+     * @param int    $length Block length
      *
      * @return string Padded string
      */
@@ -170,6 +163,26 @@ class AESnopad
 
         if (!\in_array($cipher, \openssl_get_cipher_methods(), strict: true)) {
             throw new EncException('unavailable cipher: ' . $cipher);
+        }
+    }
+
+    /**
+     * Check that the key length matches the one required by the cipher.
+     *
+     * OpenSSL zero-extends a short key and truncates a long one.
+     *
+     * @param string $key    Encryption key.
+     * @param string $cipher openSSL cipher name.
+     *
+     * @throws EncException in case of error.
+     */
+    public function checkKeyLength(string $key, string $cipher): void
+    {
+        $expected = $cipher === 'aes-128-cbc' ? self::BLOCKSIZE : 2 * self::BLOCKSIZE;
+        if (\strlen($key) !== $expected) {
+            throw new EncException(
+                'invalid key length for ' . $cipher . ': expected ' . $expected . ' bytes, got ' . \strlen($key),
+            );
         }
     }
 }

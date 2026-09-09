@@ -24,8 +24,7 @@ use Com\Tecnick\Color\Exception as ColorException;
  * Com\Tecnick\Color\ColorModelType
  *
  * Backed enum for the color model type.
- * The backing value of each case is the canonical string returned by
- * Com\Tecnick\Color\Model::getType() (GRAY, RGB, HSL, CMYK, LAB).
+ * Each backing value is the string returned by Model::getType().
  *
  * @since     2026-07-17
  * @category  Library
@@ -48,13 +47,12 @@ enum ColorModelType: string
     case Lab = 'LAB';
 
     /**
-     * Resolve a loose color model type value to the matching enum case.
+     * Resolve a color model type value to the matching enum case.
      *
-     * Accepts the canonical string returned by Model::getType() (case-insensitive)
-     * or an enum instance (returned unchanged). Unknown values throw, matching the
-     * closed set enforced by the Model subclasses.
+     * Accepts the type string (case-insensitive) or an enum case, which is
+     * returned unchanged.
      *
-     * @param string|self $value Canonical color model type or enum case.
+     * @param string|self $value Color model type or enum case.
      *
      * @throws ColorException if the value does not match a known color model type.
      */

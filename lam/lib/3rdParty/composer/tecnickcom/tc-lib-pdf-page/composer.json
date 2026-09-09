@@ -1,63 +1,72 @@
 {
-    "name": "tecnickcom/tc-lib-pdf-page",
-    "description": "PHP library containing PDF page formats and definitions",
-    "type": "library",
-    "homepage": "https://tcpdf.org",
-    "license": "LGPL-3.0-or-later",
-    "keywords": [
-        "tc-lib-pdf-page",
-        "PDF",
-        "page",
-        "format"
-    ],
-    "authors": [
-        {
-            "name": "Nicola Asuni",
-            "email": "info@tecnick.com",
-            "role": "lead"
-        }
-    ],
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/tecnickcom"
-        }
-    ],
-    "require": {
-        "php": ">=8.2",
-        "ext-zlib": "*",
-        "tecnickcom/tc-lib-color": "^2.13",
-        "tecnickcom/tc-lib-pdf-encrypt": "^2.9"
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require-dev": {
-        "pdepend/pdepend": "^2.16",
-        "phpunit/phpunit": "^11.5 || ^12.5 || ^13.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "Com\\Tecnick\\Pdf\\Page\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Test\\": "test"
-        }
-    },
-    "support": {
-        "issues": "https://github.com/tecnickcom/tc-lib-pdf-page/issues",
-        "source": "https://github.com/tecnickcom/tc-lib-pdf-page"
-    },
-    "scripts": {
-        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
-        "analyse": ["@analyse:src", "@analyse:test"],
-        "analyse:src": "mago --config mago.src.toml analyze src",
-        "analyse:test": "mago --config mago.test.toml analyze test",
-        "cs-check": ["@cs-check:src", "@cs-check:test"],
-        "cs-check:src": "mago --config mago.src.toml lint src",
-        "cs-check:test": "mago --config mago.test.toml lint test",
-        "cs-fix": "mago fmt src test",
-        "qa": ["@cs-check", "@analyse", "@test"]
+  "name": "tecnickcom/tc-lib-pdf-page",
+  "description": "PHP library containing PDF page formats and definitions",
+  "type": "library",
+  "homepage": "https://tcpdf.org",
+  "license": "LGPL-3.0-or-later",
+  "keywords": [
+    "tc-lib-pdf-page",
+    "PDF",
+    "page",
+    "format"
+  ],
+  "authors": [
+    {
+      "name": "Nicola Asuni",
+      "email": "info@tecnick.com",
+      "role": "lead"
     }
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/tecnickcom"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "ext-zlib": "*",
+    "tecnickcom/tc-lib-color": "^3.0",
+    "tecnickcom/tc-lib-pdf-encrypt": "^2.11"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require-dev": {
+    "carthage-software/mago": "1.47.6",
+    "pdepend/pdepend": "^2.16",
+    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Com\\Tecnick\\Pdf\\Page\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "test"
+    }
+  },
+  "support": {
+    "issues": "https://github.com/tecnickcom/tc-lib-pdf-page/issues",
+    "source": "https://github.com/tecnickcom/tc-lib-pdf-page"
+  },
+  "scripts": {
+    "test": "@php vendor/bin/phpunit --stderr --no-coverage --display-skipped test",
+    "test:coverage": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr --display-skipped --coverage-clover=target/coverage/coverage.xml --coverage-html=target/coverage test",
+    "analyse": ["@analyse:src", "@analyse:test"],
+    "analyse:src": "vendor/bin/mago --config mago.src.toml analyze -m warning src resources/autoload.php",
+    "analyse:test": "vendor/bin/mago --config mago.test.toml analyze -m warning test",
+    "cs-check": ["@cs-check:src", "@cs-check:test"],
+    "cs-check:src": "vendor/bin/mago --config mago.src.toml lint -m warning src resources/autoload.php",
+    "cs-check:test": "vendor/bin/mago --config mago.test.toml lint -m warning test",
+    "fmt-check": ["@fmt-check:src", "@fmt-check:test"],
+    "fmt-check:src": "vendor/bin/mago --config mago.src.toml fmt --check src resources/autoload.php",
+    "fmt-check:test": "vendor/bin/mago --config mago.test.toml fmt --check test",
+    "cs-fix": ["@cs-fix:src", "@cs-fix:test"],
+    "cs-fix:src": "vendor/bin/mago --config mago.src.toml fmt src resources/autoload.php",
+    "cs-fix:test": "vendor/bin/mago --config mago.test.toml fmt test",
+    "report": "mkdir -p target/report && vendor/bin/pdepend --jdepend-xml=target/report/dependencies.xml --summary-xml=target/report/metrics.xml --jdepend-chart=target/report/dependencies.svg --overview-pyramid=target/report/overview-pyramid.svg --ignore=vendor ./src",
+    "check-deps": ["@composer validate --strict --no-check-lock", "@composer audit"],
+    "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"]
+  }
 }

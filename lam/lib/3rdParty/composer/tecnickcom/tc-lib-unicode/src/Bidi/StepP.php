@@ -24,6 +24,8 @@ use Com\Tecnick\Unicode\Data\Type as UniType;
 /**
  * Com\Tecnick\Unicode\Bidi\StepP
  *
+ * P steps of the Bidirectional Algorithm: paragraph embedding level (P2 and P3).
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode
@@ -59,11 +61,11 @@ class StepP
         $isolate = 0;
         foreach ($this->ordarr as $ord) {
             $isolate = $this->getIsolateLevel($ord, $isolate);
-            $type = UniType::UNI[$ord] ?? null;
-            if ($isolate !== 0 || $type === null) {
+            if ($isolate !== 0) {
                 continue;
             }
 
+            $type = UniType::getType($ord);
             if ($type === 'L') {
                 return 0;
             }

@@ -36,11 +36,13 @@ use Com\Tecnick\Unicode\Data\Encoding;
  * @phpstan-import-type TFontData from \Com\Tecnick\Pdf\Font\Load
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
  */
-class Core
+class Core implements ProcessorInterface
 {
     /**
-     * Adobe Glyph List subset covering all Core14 AFM glyph names.
-     * Maps AFM glyph names to Unicode codepoints.
+     * Adobe Glyph List subset mapping AFM glyph names to Unicode codepoints.
+     *
+     * It covers the glyph names of the Latin text Core14 fonts, and is only consulted for a
+     * font whose codes are those of a text encoding (see isFontSpecific()).
      *
      * @var array<string, int>
      */
@@ -363,10 +365,35 @@ class Core
     ];
 
     /**
-     * WinAnsi (cp1252) glyph-name → byte index (inverse of ENCMAP['cp1252']).
+     * Lower-cased AFM 'EncodingScheme' values whose character codes are those of a Latin
+     * text encoding, so that the metrics are addressed by glyph name through WinAnsi.
+     *
+     * Anything else is taken to be the font's own encoding (see isFontSpecific()). The empty
+     * string is listed because the row is optional.
+     *
+     * @var array<string, bool>
+     */
+    private const TEXT_ENCODING_SCHEMES = [
+        '' => true,
+        'adobestandardencoding' => true,
+        'extendedroman' => true,
+        'isolatin1encoding' => true,
+        'macromanencoding' => true,
+        'macroman' => true,
+        'pdfdocencoding' => true,
+        'standardencoding' => true,
+        'winansiencoding' => true,
+        'winroman' => true,
+    ];
+
+    /**
+     * WinAnsi (cp1252) glyph name to byte indexes, the inverse of Encoding::MAP['cp1252'].
      * Built once on first use.
      *
-     * @var array<string, int>|null
+     * A name may be assigned more than one byte (ISO 32000-1 Annex D.2), so every byte it is
+     * assigned is listed.
+     *
+     * @var array<string, array<int, int>>|null
      */
     private static ?array $winAnsiByName = null;
 
@@ -376,6 +403,13 @@ class Core
      * @var array<int, int>
      */
     private array $cwu = [];
+
+    /**
+     * Unicode-keyed glyph bounding boxes accumulated during AFM parsing.
+     *
+     * @var array<int, array<int, int>>
+     */
+    private array $cbboxu = [];
 
     /**
      * File helper used to load font definition files.
@@ -408,12 +442,33 @@ class Core
         return $this->fdt;
     }
 
-    protected function setFlags(): void
+    /**
+     * Returns true when the character codes of the AFM are the font's own, rather than
+     * those of a Latin text encoding.
+     *
+     * The two Core14 symbol fonts are recognised by name; every other font is classified by
+     * its declared EncodingScheme. The flags passed to the importer do not take part.
+     */
+    private function isFontSpecific(): bool
     {
         if ($this->fdt['FontName'] === 'Symbol' || $this->fdt['FontName'] === 'ZapfDingbats') {
-            $this->fdt['Flags'] |= 4;
+            return true;
+        }
+
+        return !isset(self::TEXT_ENCODING_SCHEMES[\strtolower($this->fdt['EncodingScheme'])]);
+    }
+
+    /**
+     * Set the PDF font descriptor flags
+     */
+    protected function setFlags(): void
+    {
+        // ISO 32000-1 Table 123: bit 3 (Symbolic, 4) and bit 6 (Nonsymbolic, 32) shall not
+        // both be set nor both be clear, so each branch clears the bit it contradicts
+        if ($this->isFontSpecific()) {
+            $this->fdt['Flags'] = ($this->fdt['Flags'] & ~32) | 4;
         } else {
-            $this->fdt['Flags'] |= 32;
+            $this->fdt['Flags'] = ($this->fdt['Flags'] & ~4) | 32;
         }
 
         if ($this->fdt['IsFixedPitch']) {
@@ -423,6 +478,29 @@ class Core
         if ((int) $this->fdt['ItalicAngle'] !== 0) {
             $this->fdt['Flags'] = (int) $this->fdt['Flags'] | 64;
         }
+    }
+
+    /**
+     * Returns the Unicode codepoint of a glyph name, or null when it is not a name of the
+     * Adobe Glyph List subset this class carries.
+     *
+     * @param string $name Glyph name.
+     */
+    protected static function getGlyphUnicode(string $name): ?int
+    {
+        return self::GLYPH_UNICODE[$name] ?? null;
+    }
+
+    /**
+     * Returns the vertical stem width to assume for a font that declares no StdVW.
+     *
+     * It is estimated from the declared weight: 'Weight' carries the AFM row and 'weight'
+     * the Type1 /Weight entry of the FontInfo dictionary.
+     */
+    protected function getDefaultStemV(): int
+    {
+        $weight = \strtolower($this->fdt['weight'] === '' ? $this->fdt['Weight'] : $this->fdt['weight']);
+        return $weight === 'bold' || $weight === 'black' ? 123 : 70;
     }
 
     /**
@@ -440,38 +518,69 @@ class Core
         $this->fdt['MaxWidth'] = (int) $this->fdt['MissingWidth'];
         $this->fdt['AvgWidth'] = 0;
         $this->fdt['cw'] = [];
+        // only the widths of the emitted single-byte range are averaged
+        $numWidths = 0;
         for ($cid = 0; $cid <= 255; ++$cid) {
-            if (isset($cwidths[$cid])) {
-                if ($cwidths[$cid] > $this->fdt['MaxWidth']) {
-                    $this->fdt['MaxWidth'] = $cwidths[$cid];
-                }
-
-                $this->fdt['AvgWidth'] += $cwidths[$cid];
-                $this->fdt['cw'][$cid] = $cwidths[$cid];
-            } else {
-                $this->fdt['cw'][$cid] = (int) $this->fdt['MissingWidth'];
+            if (!isset($cwidths[$cid])) {
+                // only the codes the font defines are recorded
+                continue;
             }
+
+            if ($cwidths[$cid] > $this->fdt['MaxWidth']) {
+                $this->fdt['MaxWidth'] = $cwidths[$cid];
+            }
+
+            $this->fdt['AvgWidth'] += $cwidths[$cid];
+            $this->fdt['cw'][$cid] = $cwidths[$cid];
+            ++$numWidths;
         }
 
-        $numWidths = \count($cwidths);
         $this->fdt['AvgWidth'] = $numWidths > 0 ? (int) \round($this->fdt['AvgWidth'] / $numWidths) : 0;
     }
 
     /**
-     * Build (once) the WinAnsi glyph-name → byte-index reverse map.
+     * Returns the bytes a PDF content stream may use to select a glyph, in ascending
+     * order, or an empty array when the glyph is not reachable through a single-byte code.
      *
-     * @return array<string, int>
+     * A font-specific font is emitted without an /Encoding entry, so the AFM 'C' column
+     * holds the code. Every other font is emitted as WinAnsiEncoding, where the glyph name
+     * selects the byte.
+     *
+     * @param string $name    Glyph name (the AFM 'N' value).
+     * @param string $rawcode Character code declared by the AFM 'C' column ('-1' when the
+     *                        glyph is not encoded).
+     *
+     * @return array<int, int>
+     */
+    private function getMetricCodes(string $name, string $rawcode): array
+    {
+        if ($this->isFontSpecific()) {
+            // a value that is not a number declares no code rather than the code zero
+            if (\preg_match('/^[+-]?[0-9]++$/', $rawcode) !== 1) {
+                return [];
+            }
+
+            $code = (int) $rawcode;
+            return $code >= 0 && $code <= 255 ? [$code] : [];
+        }
+
+        return self::getWinAnsiByName()[$name] ?? [];
+    }
+
+    /**
+     * Build (once) the WinAnsi glyph name to byte indexes reverse map.
+     *
+     * @return array<string, array<int, int>>
      */
     private static function getWinAnsiByName(): array
     {
         if (self::$winAnsiByName === null) {
             self::$winAnsiByName = [];
-            // Iterate high-to-low so the lowest byte wins for duplicate names
-            // (e.g. 'space' appears at bytes 32 and 160 — we want 32).
-            for ($cid = 255; $cid >= 0; --$cid) {
+            // every byte the encoding assigns to the name is listed, in ascending order
+            for ($cid = 0; $cid <= 255; ++$cid) {
                 $name = Encoding::MAP['cp1252'][$cid];
                 if ($name !== '.notdef') {
-                    self::$winAnsiByName[$name] = $cid;
+                    self::$winAnsiByName[$name][] = $cid;
                 }
             }
         }
@@ -486,23 +595,110 @@ class Core
     {
         $cwd = [];
         $this->cwu = [];
+        $this->cbboxu = [];
         $this->fdt['cbbox'] = [];
         $lines = \explode("\n", \str_replace("\r", '', $this->font));
+        // the code space of the metrics is read first, so that it applies to every row
+        // whatever its position in the file
+        $this->readCodeSpaceFields($lines);
         // process each row
         foreach ($lines as $line) {
-            $col = \explode(' ', \rtrim($line));
-            if (\count($col) > 1) {
+            // the ';' terminating each key/value group needs no surrounding whitespace, so
+            // it is isolated into its own token before splitting on any run of whitespace
+            $col = \preg_split('/\s+/', \trim(\str_replace(';', ' ; ', $line)), -1, PREG_SPLIT_NO_EMPTY);
+            if ($col !== false && \count($col) > 1) {
                 $this->processMetricRow($col, $cwd);
             }
         }
 
         $this->fdt['Leading'] = 0;
         $this->fdt['cwu'] = $this->cwu;
+        $this->fdt['cbboxu'] = $this->cbboxu;
         $this->setCharWidths($cwd);
     }
 
     /**
-     * Extract Metrics
+     * Read the fields that decide the code space of the character metrics.
+     *
+     * @param array<int, string> $lines Rows of the AFM file.
+     */
+    private function readCodeSpaceFields(array $lines): void
+    {
+        foreach ($lines as $line) {
+            $col = \preg_split('/\s+/', \trim($line), -1, PREG_SPLIT_NO_EMPTY);
+            if ($col === false || \count($col) < 2) {
+                continue;
+            }
+
+            if ($col[0] === 'FontName' || $col[0] === 'EncodingScheme') {
+                // the value may hold several words, as in the row loop
+                $this->fdt[$col[0]] = \implode(' ', \array_slice($col, 1));
+            }
+        }
+    }
+
+    /**
+     * Split an AFM CharMetrics row into its key/value pairs.
+     *
+     * A row is a list of ';'-terminated groups, each starting with the key name
+     * ('C', 'WX', 'N', 'B', 'L', ...) followed by its values.
+     *
+     * @param array<int, string> $col Row tokens, already stripped of empty ones.
+     *
+     * @return array<string, array<int, string>> Values indexed by key name.
+     */
+    private static function splitCharMetrics(array $col): array
+    {
+        $fields = [];
+        $field = '';
+        $values = [];
+        foreach ($col as $item) {
+            if ($item === ';') {
+                if ($field !== '') {
+                    $fields[$field] = $values;
+                }
+
+                $field = '';
+                $values = [];
+                continue;
+            }
+
+            if ($field === '') {
+                $field = $item;
+                continue;
+            }
+
+            $values[] = $item;
+        }
+
+        if ($field !== '') {
+            $fields[$field] = $values;
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Returns the character code a CharMetrics row declares, as a decimal string.
+     *
+     * 'C' carries a decimal value and 'CH' a hexadecimal one between angle brackets
+     * ('CH <20> ; WX 250 ; N space ;'). An unparsable value is reported as no value.
+     *
+     * @param array<string, array<int, string>> $fields Key/value groups of the row.
+     */
+    private static function rawCharCode(array $fields): string
+    {
+        $decimal = $fields['C'][0] ?? null;
+        if ($decimal !== null) {
+            return $decimal;
+        }
+
+        $hex = \trim($fields['CH'][0] ?? '', '<>');
+        return \preg_match('/^[0-9a-fA-F]++$/', $hex) === 1 ? (string) \hexdec($hex) : '';
+    }
+
+    /**
+     * Process a single AFM metric row
      *
      * @param array<int, string> $col Array containing row elements to process
      * @param array<int, int>    $cwd Array containing cid widths
@@ -516,34 +712,44 @@ class Core
                 $this->fdt['IsFixedPitch'] = $col[1] === 'true';
                 break;
             case 'FontBBox':
+                // the four corners feed the derived Ascender and Descender
+                if (!isset($col[1], $col[2], $col[3], $col[4])) {
+                    throw new FontException('the AFM FontBBox row must declare four values');
+                }
+
                 $this->fdt['FontBBox'] = [(int) $col[1], (int) $col[2], (int) $col[3], (int) $col[4]];
                 break;
             case 'C':
-                $name = $col[7] ?? '';
+            case 'CH':
+                // the ';'-separated groups of a CharMetrics row may come in any order, so
+                // they are read by key instead of by column position
+                $fields = self::splitCharMetrics($col);
+                $name = $fields['N'][0] ?? '';
                 if ($name === '' || $name === '.notdef') {
                     break;
                 }
 
-                $width = (int) $col[4];
-                // Map glyph name to the WinAnsi byte actually used in the PDF stream.
-                $winAnsi = self::getWinAnsiByName();
-                $winansiCid = $winAnsi[$name] ?? null;
-                if ($winansiCid !== null) {
-                    $cwd[$winansiCid] = $width;
-                    if (isset($col[14]) && $col[14] !== '') {
-                        $this->fdt['cbbox'][$winansiCid] = [
-                            (int) $col[10],
-                            (int) $col[11],
-                            (int) $col[12],
-                            (int) $col[13],
-                        ];
+                $width = (int) ($fields['WX'][0] ?? 0);
+                $rawbbox = $fields['B'] ?? [];
+                $bbox = \count($rawbbox) === 4
+                    ? [(int) $rawbbox[0], (int) $rawbbox[1], (int) $rawbbox[2], (int) $rawbbox[3]]
+                    : null;
+                foreach ($this->getMetricCodes($name, self::rawCharCode($fields)) as $code) {
+                    $cwd[$code] = $width;
+                    if ($bbox !== null) {
+                        $this->fdt['cbbox'][$code] = $bbox;
                     }
                 }
 
-                // Also store under the Unicode codepoint for Stack::getCharWidth().
-                $unicode = self::GLYPH_UNICODE[$name] ?? null;
+                // the metrics are also stored under the Unicode codepoint, as the encoding
+                // byte of a glyph is not its codepoint; the codes of a font-specific font
+                // are its own, so no codepoint is derived for it
+                $unicode = $this->isFontSpecific() ? null : self::getGlyphUnicode($name);
                 if ($unicode !== null) {
                     $this->cwu[$unicode] = $width;
+                    if ($bbox !== null) {
+                        $this->cbboxu[$unicode] = $bbox;
+                    }
                 }
 
                 break;
@@ -554,9 +760,12 @@ class Core
             case 'CharacterSet':
             case 'Version':
             case 'EncodingScheme':
-                $this->fdt[$col[0]] = $col[1];
+                // these values may hold several words (e.g. 'FullName Helvetica Bold')
+                $this->fdt[$col[0]] = \implode(' ', \array_slice($col, 1));
                 break;
             case 'ItalicAngle':
+                $this->fdt['ItalicAngle'] = self::roundedValue($col[1]);
+                break;
             case 'UnderlinePosition':
             case 'UnderlineThickness':
             case 'CapHeight':
@@ -571,6 +780,17 @@ class Core
     }
 
     /**
+     * Returns a real number of a font file rounded to the nearest integer, half away from
+     * zero.
+     *
+     * @param string $value Raw value read from the font file.
+     */
+    protected static function roundedValue(string $value): int
+    {
+        return (int) \round(\is_numeric($value) ? (float) $value : 0.0);
+    }
+
+    /**
      * Map values to the correct key name
      *
      * @throws FontException
@@ -578,29 +798,49 @@ class Core
     protected function remapValues(): void
     {
         // rename properties
-        $this->fdt['name'] = $this->fdt['FullName'];
+        // FontName is the PostScript name ('Helvetica-Bold'), the one a PDF /BaseFont
+        // expects; FullName is a human-readable variant ('Helvetica Bold') used as fallback
+        $this->fdt['name'] = $this->fdt['FontName'] === '' ? $this->fdt['FullName'] : $this->fdt['FontName'];
         $this->fdt['underlinePosition'] = $this->fdt['UnderlinePosition'];
         $this->fdt['underlineThickness'] = $this->fdt['UnderlineThickness'];
         $this->fdt['italicAngle'] = $this->fdt['ItalicAngle'];
         $this->fdt['Ascent'] = $this->fdt['Ascender'];
         $this->fdt['Descent'] = $this->fdt['Descender'];
-        $this->fdt['StemV'] = $this->fdt['StdVW'];
-        $this->fdt['StemH'] = $this->fdt['StdHW'];
+        // /StemV is a required font descriptor entry (ISO 32000-1 Table 122)
+        $this->fdt['StemV'] = $this->fdt['StdVW'] !== 0 ? $this->fdt['StdVW'] : $this->getDefaultStemV();
+        $this->fdt['StemH'] = $this->fdt['StdHW'] !== 0 ? $this->fdt['StdHW'] : 30;
 
         $name = \preg_replace('/[^a-zA-Z0-9_\-]/', '', $this->fdt['name']);
         if ($name === null) {
             throw new FontException('Invalid font name');
         }
 
+        if ($name === '') {
+            throw new FontException('Error getting font name.');
+        }
+
         $this->fdt['name'] = $name;
         $this->fdt['bbox'] = \implode(' ', $this->fdt['FontBBox']);
     }
 
+    /**
+     * Derive the metrics that are not listed in the AFM file
+     */
     protected function setMissingValues(): void
     {
-        $this->fdt['Descender'] = $this->fdt['FontBBox'][1];
+        // Ascender and Descender are derived from the bounding box
+        if (\count($this->fdt['FontBBox']) !== 4) {
+            throw new FontException('the AFM file must declare a FontBBox with four values');
+        }
 
-        $this->fdt['Ascender'] = $this->fdt['FontBBox'][3];
+        // the bounding box only applies when the AFM declares no value
+        if ($this->fdt['Descender'] === 0) {
+            $this->fdt['Descender'] = $this->fdt['FontBBox'][1];
+        }
+
+        if ($this->fdt['Ascender'] === 0) {
+            $this->fdt['Ascender'] = $this->fdt['FontBBox'][3];
+        }
 
         if ($this->fdt['CapHeight'] === 0) {
             $this->fdt['CapHeight'] = $this->fdt['Ascender'];

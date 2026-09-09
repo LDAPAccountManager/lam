@@ -26,6 +26,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * PharmaTwoTracks Barcode type class
  * PHARMACODE TWO-TRACKS
  *
+ * PHARMA-CODE is a trademark of Laetus GmbH.
+ *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode
@@ -44,14 +46,38 @@ class PharmaTwoTracks extends \Com\Tecnick\Barcode\Type\Linear
     protected const FORMAT = 'PHARMA2T';
 
     /**
+     * Lowest encodable value (2 tracks).
+     *
+     * @var int
+     */
+    protected const MIN_VALUE = 4;
+
+    /**
+     * Highest encodable value (16 tracks).
+     *
+     * @var int
+     */
+    protected const MAX_VALUE = 64_570_080;
+
+    /**
      * Set the bars array.
      *
      * @throws BarcodeException in case of error
      */
     protected function setBars(): void
     {
-        if (!\ctype_digit($this->code) || (int) $this->code < 1) {
-            throw new BarcodeException('Invalid barcode value: the code must be a positive integer');
+        if (
+            !\ctype_digit($this->code)
+            || \strlen(\ltrim($this->code, '0')) > \strlen((string) $this::MAX_VALUE)
+            || (int) $this->code < $this::MIN_VALUE
+            || (int) $this->code > $this::MAX_VALUE
+        ) {
+            throw new BarcodeException(
+                'Invalid barcode value: the code must be an integer between '
+                . $this::MIN_VALUE
+                . ' and '
+                . $this::MAX_VALUE,
+            );
         }
 
         $seq = '';

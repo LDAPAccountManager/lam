@@ -33,7 +33,7 @@ use Com\Tecnick\Barcode\Type\Square\Aztec\Encode;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
  * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -66,6 +66,7 @@ class Aztec extends \Com\Tecnick\Barcode\Type\Square
 
     /**
      * Extended Channel Interpretation (ECI) code to be added at the beginning of the stream.
+     * A value of -1 omits the FLG sequence altogether; 0 selects FNC1.
      * See Data:ECI for the list of supported codes.
      * NOTE: Even if special FNC1 or ECI flag characters could be inserted
      *       at any points in the stream, this will only be added at the beginning of the stream.
@@ -74,11 +75,12 @@ class Aztec extends \Com\Tecnick\Barcode\Type\Square
 
     /**
      * Set extra (optional) parameters:
-     *     1: ECC     : Error correction code percentage of error check words.
-     *                  A minimum of 23% + 3 words is recommended by ISO/IEC 24778:2008a.
-     *     2: HINT    : Encoding mode: A=Automatic, B=Binary.
-     *     3: LAYERS  : Custom number of layers (0 = auto).
-     *     4: ECI     : Extended Channel Interpretation (ECI) code. Use -1 for FNC1. See $this->eci.
+     *     1: ECC   : Error correction code percentage of error check words (1-100, default 33).
+     *                A minimum of 23% + 3 words is recommended by ISO/IEC 24778:2008a.
+     *     2: HINT  : Encoding mode: A=Automatic, B=Binary.
+     *     3: RANGE : A=Automatic selection between Compact and Full Range, F=force Full Range.
+     *     4: ECI   : Extended Channel Interpretation (ECI) code, or -1 to omit the FLG sequence.
+     *                See Data::ECI for the list of supported codes.
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      * @SuppressWarnings("PHPMD.NPathComplexity")
@@ -122,18 +124,28 @@ class Aztec extends \Com\Tecnick\Barcode\Type\Square
     }
 
     /**
+     * Get the character sequence to encode.
+     * Subclasses that build the payload from the input code override this.
+     */
+    protected function getEncodedPayload(): string
+    {
+        return $this->code;
+    }
+
+    /**
      * Get the bars array
      *
      * @throws BarcodeException in case of error
      */
     protected function setBars(): void
     {
-        if (\strlen($this->code) === 0) {
+        $code = $this->getEncodedPayload();
+        if (\strlen($code) === 0) {
             throw new BarcodeException('Empty input');
         }
 
         try {
-            $encode = new Encode($this->code, $this->ecc, $this->eci, $this->hint, $this->mode);
+            $encode = new Encode($code, $this->ecc, $this->eci, $this->hint, $this->mode);
             $grid = $encode->getGrid();
             $this->processBinarySequence($grid);
         } catch (BarcodeException $barcodeException) {

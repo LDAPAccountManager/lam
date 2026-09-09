@@ -23,6 +23,8 @@ use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 /**
  * Com\Tecnick\Unicode\Bidi\StepW
  *
+ * W steps of the Bidirectional Algorithm: resolving weak types (W1 to W7).
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode
@@ -33,6 +35,28 @@ use Com\Tecnick\Unicode\Data\Constant as UniConstant;
  */
 class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
 {
+    /**
+     * Last strong type (R, L or AL) seen by W2, or '' before the first one.
+     */
+    private string $w2strong = '';
+
+    /**
+     * Last strong type (R or L) seen by W7, initialized to sos.
+     */
+    private string $w7strong = '';
+
+    /**
+     * Index of the first character after the run of European terminators whose
+     * W5b outcome is cached in $w5run, or -1 when no run is cached.
+     */
+    private int $w5end = -1;
+
+    /**
+     * True when the run of European terminators cached by $w5end is followed by
+     * a European number.
+     */
+    private bool $w5run = false;
+
     /**
      * Returns the sequence item at the given index.
      *
@@ -108,24 +132,18 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function processW2(int $idx): void
     {
-        $item = $this->getItem($idx);
-        if ($item['type'] !== 'EN') {
+        if ($idx === 0) {
+            $this->w2strong = '';
+        }
+
+        $type = $this->getItem($idx)['type'];
+        if ($type === 'AL' || $type === 'R' || $type === 'L') {
+            $this->w2strong = $type;
             return;
         }
 
-        $jdx = $idx - 1;
-        while ($jdx >= 0) {
-            $prevItem = $this->getItem($jdx);
-            if ($prevItem['type'] === 'AL') {
-                $this->setItemType($idx, 'AN');
-                break;
-            }
-
-            if (\in_array($prevItem['type'], ['R', 'L'], true)) {
-                break;
-            }
-
-            --$jdx;
+        if ($type === 'EN' && $this->w2strong === 'AL') {
+            $this->setItemType($idx, 'AN');
         }
     }
 
@@ -150,7 +168,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
     protected function processW4(int $idx): void
     {
         $item = $this->getItem($idx);
-        if (!\in_array($item['type'], ['ES', 'CS'], true)) {
+        if ($item['type'] !== 'ES' && $item['type'] !== 'CS') {
             return;
         }
 
@@ -160,10 +178,15 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
             return;
         }
 
-        $prevItem = $this->getItem($bdx);
-        $nextItem = $this->getItem($fdx);
-        if ($prevItem['type'] === $nextItem['type'] && \in_array($prevItem['type'], ['EN', 'AN'], true)) {
-            $this->setItemType($idx, $prevItem['type']);
+        $prev = $this->getItem($bdx)['type'];
+        if ($prev !== $this->getItem($fdx)['type']) {
+            return;
+        }
+
+        // A European separator only joins two European numbers, while a common separator
+        // joins two numbers of the same type (EN,EN or AN,AN).
+        if ($prev === 'EN' || $prev === 'AN' && $item['type'] === 'CS') {
+            $this->setItemType($idx, $prev);
         }
     }
 
@@ -174,6 +197,11 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function processW5(int $idx): void
     {
+        if ($idx === 0) {
+            $this->w5end = -1;
+            $this->w5run = false;
+        }
+
         if ($this->getItem($idx)['type'] !== 'ET') {
             return;
         }
@@ -183,23 +211,23 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
     }
 
     /**
-     * W5a
+     * W5a. A European terminator preceded by a European number becomes a European number.
+     * The terminators are processed in increasing order, so a whole run following a
+     * European number is converted one character at a time.
      *
      * @param int $idx Current character position
      */
     protected function processW5a(int $idx): void
     {
-        for ($jdx = $idx - 1; $jdx >= 0; --$jdx) {
-            if ($this->getItem($jdx)['type'] !== 'EN') {
-                break;
-            }
-
+        if ($idx > 0 && $this->getItem($idx - 1)['type'] === 'EN') {
             $this->setItemType($idx, 'EN');
         }
     }
 
     /**
-     * W5b
+     * W5b. A run of European terminators followed by a European number becomes European
+     * numbers. The run is scanned once and its outcome is reused for the terminators
+     * that belong to it.
      *
      * @param int $idx Current character position
      */
@@ -209,16 +237,18 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
             return;
         }
 
-        for ($jdx = $idx + 1; $jdx < $this->seq['length']; ++$jdx) {
-            $nextItem = $this->getItem($jdx);
-            if ($nextItem['type'] === 'EN') {
-                $this->setItemType($idx, 'EN');
-                continue;
+        if ($idx >= $this->w5end) {
+            $jdx = $idx + 1;
+            while ($jdx < $this->seq['length'] && $this->getItem($jdx)['type'] === 'ET') {
+                ++$jdx;
             }
 
-            if ($nextItem['type'] !== 'ET') {
-                break;
-            }
+            $this->w5end = $jdx;
+            $this->w5run = $jdx < $this->seq['length'] && $this->getItem($jdx)['type'] === 'EN';
+        }
+
+        if ($this->w5run) {
+            $this->setItemType($idx, 'EN');
         }
     }
 
@@ -242,23 +272,20 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      */
     protected function processW7(int $idx): void
     {
-        if ($this->getItem($idx)['type'] !== 'EN') {
+        // sos is the strong type in effect before the first character of the sequence.
+        if ($idx === 0) {
+            $this->w7strong = $this->seq['sos'];
+        }
+
+        $type = $this->getItem($idx)['type'];
+        if ($type === 'L' || $type === 'R') {
+            $this->w7strong = $type;
             return;
         }
 
-        for ($jdx = $idx - 1; $jdx >= 0; --$jdx) {
-            $prevItem = $this->getItem($jdx);
-            if ($prevItem['type'] === 'L') {
-                $this->setItemType($idx, 'L');
-                break;
-            }
-
-            if ($prevItem['type'] === 'R') {
-                break;
-            }
-        }
-
-        if ($this->seq['sos'] === 'L' && $jdx < 0) {
+        // A European number changed to L is itself the preceding strong type of the next one,
+        // so the carried type stays L.
+        if ($type === 'EN' && $this->w7strong === 'L') {
             $this->setItemType($idx, 'L');
         }
     }

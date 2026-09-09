@@ -37,6 +37,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  */
 enum BarcodeType: string
 {
+    case AUSPOST = 'AUSPOST';
+
     case C128 = 'C128';
 
     case C128A = 'C128A';
@@ -44,6 +46,12 @@ enum BarcodeType: string
     case C128B = 'C128B';
 
     case C128C = 'C128C';
+
+    case C16K = 'C16K';
+
+    case C32 = 'C32';
+
+    case C49 = 'C49';
 
     case C39 = 'C39';
 
@@ -59,6 +67,20 @@ enum BarcodeType: string
 
     case CODE11 = 'CODE11';
 
+    case DATABAR = 'DATABAR';
+
+    case DATABAREXP = 'DATABAREXP';
+
+    case DATABAREXPSTACK = 'DATABAREXPSTACK';
+
+    case DATABARLIMITED = 'DATABARLIMITED';
+
+    case DATABARSTACK = 'DATABARSTACK';
+
+    case DATABARSTACKOMNI = 'DATABARSTACKOMNI';
+
+    case DATABARTRUNC = 'DATABARTRUNC';
+
     case EAN13 = 'EAN13';
 
     case EAN2 = 'EAN2';
@@ -67,17 +89,37 @@ enum BarcodeType: string
 
     case EAN8 = 'EAN8';
 
+    case GS114 = 'GS114';
+
+    case GS1128 = 'GS1128';
+
+    case HIBC128 = 'HIBC128';
+
+    case HIBC39 = 'HIBC39';
+
     case I25 = 'I25';
 
     case I25Plus = 'I25+';
+
+    case IDENTCODE = 'IDENTCODE';
 
     case IMB = 'IMB';
 
     case IMBPRE = 'IMBPRE';
 
+    case ITF14 = 'ITF14';
+
+    case JPPOST = 'JPPOST';
+
     case KIX = 'KIX';
 
+    case LEITCODE = 'LEITCODE';
+
+    case LOGMARS = 'LOGMARS';
+
     case LRAW = 'LRAW';
+
+    case MAILMARK = 'MAILMARK';
 
     case MSI = 'MSI';
 
@@ -89,7 +131,11 @@ enum BarcodeType: string
 
     case PLANET = 'PLANET';
 
+    case PLESSEY = 'PLESSEY';
+
     case POSTNET = 'POSTNET';
+
+    case PZN = 'PZN';
 
     case RMS4CC = 'RMS4CC';
 
@@ -97,15 +143,41 @@ enum BarcodeType: string
 
     case S25Plus = 'S25+';
 
+    case S25DATALOGIC = 'S25DATALOGIC';
+
+    case S25IATA = 'S25IATA';
+
+    case S25MATRIX = 'S25MATRIX';
+
+    case SSCC18 = 'SSCC18';
+
+    case TELEPEN = 'TELEPEN';
+
     case UPCA = 'UPCA';
 
     case UPCE = 'UPCE';
 
     case AZTEC = 'AZTEC';
 
+    case AZTECRUNE = 'AZTECRUNE';
+
     case DATAMATRIX = 'DATAMATRIX';
 
+    case DMRE = 'DMRE';
+
+    case HANXIN = 'HANXIN';
+
+    case HIBCAZ = 'HIBCAZ';
+
+    case HIBCDM = 'HIBCDM';
+
+    case HIBCQR = 'HIBCQR';
+
+    case MICROQR = 'MICROQR';
+
     case PDF417 = 'PDF417';
+
+    case PDF417C = 'PDF417C';
 
     case QRCODE = 'QRCODE';
 

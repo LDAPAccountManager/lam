@@ -23,11 +23,9 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
 /**
  * Com\Tecnick\Pdf\Filter\Type\Jpx
  *
- * JPXDecode filter (PDF 32000-2008 §7.4.9).
- * Decompresses JPEG 2000 (JP2/JPX) encoded image data using the Imagick
- * extension (ext-imagick). If Imagick is not available a PPException is thrown.
- *
- * Suggested PHP extension: ext-imagick
+ * JPXDecode filter (PDF 32000-1:2008 §7.4.9).
+ * Decompresses JPEG 2000 (JP2/JPX) image data with the Imagick extension
+ * (ext-imagick) and returns it as a PNG image.
  *
  * @since     2011-05-23
  * @category  Library
@@ -42,12 +40,10 @@ class Jpx implements \Com\Tecnick\Pdf\Filter\Type\Template
     /**
      * Decode the data.
      *
-     * Requires the Imagick PHP extension.
+     * @param string               $data   Data to decode.
+     * @param array<string, mixed> $params Optional DecodeParms dictionary.
      *
-     * @param string              $data   Data to decode.
-     * @param array<string, mixed> $params Optional filter parameters.
-     *
-     * @return string Decoded data string.
+     * @return string Decoded PNG image bytes.
      *
      * @throws PPException if the Imagick extension is not loaded or decoding fails.
      */
@@ -57,6 +53,7 @@ class Jpx implements \Com\Tecnick\Pdf\Filter\Type\Template
             return '';
         }
 
+        // unqualified so the namespace fallback resolves it, allowing substitution in tests
         if (!extension_loaded('imagick')) {
             throw new PPException('JPXDecode requires the Imagick PHP extension (ext-imagick)');
         }
@@ -68,7 +65,7 @@ class Jpx implements \Com\Tecnick\Pdf\Filter\Type\Template
 
             return $imagick->getImageBlob();
         } catch (\ImagickException $e) {
-            throw new PPException('JPXDecode: Imagick failed to decode the stream: ' . $e->getMessage());
+            throw new PPException('JPXDecode: Imagick failed to decode the stream: ' . $e->getMessage(), 0, $e);
         }
     }
 

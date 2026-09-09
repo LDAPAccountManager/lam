@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Data;
 /**
  * Com\Tecnick\Unicode\Data\Identity
  *
+ * CMap stream for the Identity-H encoding.
+ *
  * @since       2011-05-23
  * @category    Library
  * @package     UnicodeData

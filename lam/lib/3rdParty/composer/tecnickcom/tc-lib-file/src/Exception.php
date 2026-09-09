@@ -21,7 +21,7 @@ namespace Com\Tecnick\File;
 /**
  * Com\Tecnick\File\Exception
  *
- * Custom Exception class
+ * Library exception type
  *
  * @since     2015-07-28
  * @category  Library

@@ -2,7 +2,8 @@
   "name": "tecnickcom/tc-lib-pdf-font",
   "description": "Import TTF font files to be converted for tc-lib-pdf",
   "type": "library",
-  "homepage": "http://www.tecnick.com",
+  "homepage": "https://tcpdf.org",
+  "license": "LGPL-3.0-or-later",
   "keywords": [
     "tc-lib-pdf-font-data",
     "PDF",
@@ -20,26 +21,19 @@
     }
   ],
   "require": {
-    "tecnickcom/tc-font-mirror": "^2.2"
+    "tecnickcom/tc-font-mirror": "^2.4"
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  },
-  "require-dev": {},
   "repositories": [
     {
       "type": "package",
       "package": {
         "name": "tecnickcom/tc-font-mirror",
-        "version": "2.2.0",
+        "version": "2.4.0",
         "dist": {
           "type": "zip",
-          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.2.0.zip",
-          "reference": "main"
+          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.4.0.zip"
         },
         "autoload": {
           "classmap": [
@@ -54,9 +48,6 @@
     "source": "https://github.com/tecnickcom/tc-lib-pdf-font"
   },
   "scripts": {
-    "test": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --stderr test",
-    "cs-check": "./vendor/bin/phpcs --standard=phpcs.xml",
-    "cs-fix": "./vendor/bin/phpcbf --ignore=\"./vendor/\" --standard=psr12 src test",
-    "analyse": "./vendor/phpstan.phar analyse"
+    "build": "@php bulk_convert.php"
   }
 }

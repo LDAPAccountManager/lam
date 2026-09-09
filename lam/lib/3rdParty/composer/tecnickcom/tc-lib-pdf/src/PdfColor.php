@@ -46,6 +46,58 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
     protected array $labSpotKeys = [];
 
     /**
+     * True when a DeviceCMYK color operator was emitted.
+     */
+    protected bool $deviceCmykEmitted = false;
+
+    /**
+     * Names of the emitted spot colors whose Separation alternate space is DeviceCMYK.
+     *
+     * @var array<string, true>
+     */
+    protected array $cmykSpotColors = [];
+
+    /**
+     * Return true when a DeviceCMYK color operator was emitted.
+     */
+    public function hasEmittedDeviceCmyk(): bool
+    {
+        return $this->deviceCmykEmitted;
+    }
+
+    /**
+     * Return the names of the emitted spot colors whose Separation alternate
+     * space is DeviceCMYK.
+     *
+     * @return array<int, string>
+     */
+    public function getEmittedCmykSpotColors(): array
+    {
+        return \array_keys($this->cmykSpotColors);
+    }
+
+    /**
+     * Record the given spot color when its Separation alternate space is DeviceCMYK.
+     *
+     * @param string $color Name of a spot color that resolves to a Separation resource.
+     */
+    protected function trackCmykSpotColor(string $color): void
+    {
+        try {
+            $spot = $this->getSpotColor($color);
+        } catch (\Com\Tecnick\Color\Exception $colorException) {
+            unset($colorException);
+            return;
+        }
+
+        if ($spot['space'] !== 'DeviceCMYK') {
+            return;
+        }
+
+        $this->cmykSpotColors[$spot['name']] = true;
+    }
+
+    /**
      * Parse CSS spot(name[, tint]) and return [name, tint] when valid.
      *
      * @return array{0: string, 1: float}|null
@@ -161,13 +213,14 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
      * When DeviceCMYK forcing is enabled, process colors are emitted as CMYK operators
      * to avoid DeviceRGB output in restrictive PDF/X modes.
      *
-     * @param string $color  Color name, hex value, or spot() CSS function.
-     * @param bool   $stroke If true return the stroking color operator, otherwise the non-stroking one.
-     * @param float  $tint   Tint value in the range 0-1 applied to spot colors.
+     * @param string $color     Color name, hex value, or spot() CSS function.
+     * @param bool   $stroke    If true return the stroking color operator, otherwise the non-stroking one.
+     * @param float  $tint      Tint value in the range 0-1 applied to spot colors.
+     * @param bool   $allowSpot True to resolve (and register) spot colors, false to force a device color.
      *
      * @return string PDF color operator string.
      */
-    public function getPdfColor(string $color, bool $stroke = false, float $tint = 1): string
+    public function getPdfColor(string $color, bool $stroke = false, float $tint = 1, bool $allowSpot = true): string
     {
         $spotFromCss = $this->parseSpotCssFunction($color);
         $explicitSpot = $spotFromCss !== null;
@@ -177,45 +230,51 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
         }
 
         if (!$this->forceDeviceCmyk) {
-            // Use a Separation (spot) color only when it is explicitly requested
-            // through the spot() CSS function or when the name refers to a spot
-            // color that has already been registered by the caller. Bare color
-            // names (e.g. "black", "red") must resolve to process colors;
-            // otherwise the underlying color library would emit them as
-            // DeviceCMYK Separations, which breaks PDF/A conformance when the
-            // document has an RGB OutputIntent.
-            if ($explicitSpot || $this->isRegisteredSpotColor($color)) {
-                return parent::getPdfColor($color, $stroke, $tint);
+            // A Separation (spot) color is used only when explicitly requested
+            // through the spot() CSS function, or when the name refers to a spot
+            // color already registered by the caller. Bare color names
+            // (e.g. "black", "red") resolve to process colors.
+            if ($allowSpot && ($explicitSpot || $this->isRegisteredSpotColor($color))) {
+                $this->trackCmykSpotColor($color);
+                return parent::getPdfColor($color, $stroke, $tint, true);
             }
 
-            $labColor = $this->getLabProcessColor($color);
-            if ($labColor instanceof \Com\Tecnick\Color\Model\Lab) {
-                return $this->getPdfLabProcessColor($labColor, $stroke);
+            // A Lab process color is emitted through a Separation resource, so it
+            // is available only when spot colors are allowed.
+            if ($allowSpot) {
+                $labColor = $this->getLabProcessColor($color);
+                if ($labColor instanceof \Com\Tecnick\Color\Model\Lab) {
+                    return $this->getPdfLabProcessColor($labColor, $stroke);
+                }
             }
 
             return $this->getPdfProcessColor($color, $stroke);
         }
 
         // Preserve spot color behavior under PDF/X restrictions.
-        try {
-            $col = $this->getSpotColor($color);
-            $tint = \sprintf('cs %F scn', \max(0, \min(1, $tint)));
-            if ($stroke) {
-                $tint = \strtoupper($tint);
-            }
+        if ($allowSpot) {
+            try {
+                $col = $this->getSpotColor($color);
+                $this->trackCmykSpotColor($color);
+                $tint = \sprintf('cs %F scn', \max(0, \min(1, $tint)));
+                if ($stroke) {
+                    $tint = \strtoupper($tint);
+                }
 
-            return \sprintf('/CS%d %s' . "\n", $col['i'], $tint);
-        } catch (\Com\Tecnick\Color\Exception $colorException) {
-            // Spot-color lookup may fail for process colors; fall back to CMYK conversion below.
-            unset($colorException);
+                return \sprintf('/CS%d %s' . "\n", $col['i'], $tint);
+            } catch (\Com\Tecnick\Color\Exception $colorException) {
+                // Spot-color lookup may fail for process colors; fall back to CMYK conversion below.
+                unset($colorException);
+            }
         }
 
-        $model = $this->getColorObject($color);
+        $model = $this->getColorObject($color, $allowSpot);
         if (!$model instanceof \Com\Tecnick\Color\Model) {
             return '';
         }
 
         $cmyk = new \Com\Tecnick\Color\Model\Cmyk($model->toCmykArray());
+        $this->deviceCmykEmitted = true;
         return $cmyk->getPdfColor($stroke);
     }
 
@@ -241,15 +300,14 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
      */
     protected function getPdfProcessColor(string $color, bool $stroke): string
     {
-        try {
-            $model = $this->getColorObj($color);
-        } catch (\Com\Tecnick\Color\Exception $colorException) {
-            unset($colorException);
-            return '';
-        }
+        $model = $this->tryGetColorObj($color);
 
         if (!$model instanceof \Com\Tecnick\Color\Model) {
             return '';
+        }
+
+        if ($model instanceof \Com\Tecnick\Color\Model\Cmyk) {
+            $this->deviceCmykEmitted = true;
         }
 
         return $model->getPdfColor($stroke);
@@ -262,15 +320,7 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
     {
         $model = $this->tryGetColorObj($color);
 
-        if (!$model instanceof \Com\Tecnick\Color\Model) {
-            return null;
-        }
-
-        if ($model->getType() !== 'LAB') {
-            return null;
-        }
-
-        return new \Com\Tecnick\Color\Model\Lab($model->toLabArray());
+        return $model instanceof \Com\Tecnick\Color\Model\Lab ? $model : null;
     }
 
     /**
@@ -284,12 +334,20 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
 
         if ($spotKey === '') {
             $spotName = 'LAB_' . \substr(\sha1($cacheKey), 0, 16);
-            $spotKey = $this->addSpotLabColor(
-                $spotName,
-                $lab['lstar'] ?? 0.0,
-                $lab['astar'] ?? 0.0,
-                $lab['bstar'] ?? 0.0,
-            );
+
+            try {
+                $spotKey = $this->addSpotLabColor(
+                    $spotName,
+                    $lab['lstar'] ?? 0.0,
+                    $lab['astar'] ?? 0.0,
+                    $lab['bstar'] ?? 0.0,
+                );
+            } catch (\Com\Tecnick\Color\Exception $colorException) {
+                // Registration may fail; fall back to a device color.
+                unset($colorException);
+                return $labColor->getPdfColor($stroke);
+            }
+
             $this->labSpotKeys[$cacheKey] = $spotKey;
         }
 

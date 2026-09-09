@@ -26,6 +26,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * RoyalMailFourCc Barcode type class
  * RMS4CC (Royal Mail 4-state Customer Bar Code)
  *
+ * Royal Mail is a registered trademark of Royal Mail Group Ltd.
+ *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode

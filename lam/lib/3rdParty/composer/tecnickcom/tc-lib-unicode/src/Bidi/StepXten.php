@@ -23,6 +23,9 @@ use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 /**
  * Com\Tecnick\Unicode\Bidi\StepXten
  *
+ * Rule X10 of the Bidirectional Algorithm: isolating run sequences and their
+ * start-of-sequence and end-of-sequence types.
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode
@@ -123,8 +126,8 @@ class StepXten
 
         $parentRun['item'] = \array_merge($parentRun['item'], $isorun['item']);
         $parentRun['length'] += $isorun['length'];
-        // The merged sequence now ends where the appended (child) run ends; 'end' is an
-        // absolute position in the paragraph, so it is replaced, not accumulated.
+        // 'end' is an absolute position in the paragraph, so it is replaced by the end of
+        // the appended run, not accumulated.
         $parentRun['end'] = $isorun['end'];
         $this->ilrs[$parent] = $parentRun;
 

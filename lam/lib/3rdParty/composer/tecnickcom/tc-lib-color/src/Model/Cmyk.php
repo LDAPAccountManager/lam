@@ -35,38 +35,45 @@ class Cmyk extends \Com\Tecnick\Color\Model
 {
     /**
      * Color Model type
-     *
-     * @var string
      */
-    protected $type = 'CMYK';
+    protected string $type = 'CMYK';
 
     /**
      * Value of the Cyan color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_cyan = 0.0;
 
     /**
      * Value of the Magenta color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_magenta = 0.0;
 
     /**
      * Value of the Yellow color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_yellow = 0.0;
 
     /**
      * Value of the Key (Black) color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_key = 0.0;
+
+    /**
+     * Initialize a new CMYK color object.
+     *
+     * @param array<string, int|float|string> $components Color components, each clamped to [0..1].
+     *
+     * @throws \Com\Tecnick\Color\UnknownComponentException if a component name is not defined by this model
+     */
+    public function __construct(array $components)
+    {
+        self::checkComponents($components, ['cyan', 'magenta', 'yellow', 'key', 'alpha']);
+        $this->cmp_cyan = self::component($components, 'cyan');
+        $this->cmp_magenta = self::component($components, 'magenta');
+        $this->cmp_yellow = self::component($components, 'yellow');
+        $this->cmp_key = self::component($components, 'key');
+        $this->cmp_alpha = self::component($components, 'alpha', 1.0);
+    }
 
     /**
      * Get an array with all color components.
@@ -88,9 +95,8 @@ class Cmyk extends \Com\Tecnick\Color\Model
      * Get an array with all color components for
      * the PDF appearance characteristics dictionary.
      *
-     * The numbers that shall be in the range 0.0 to 1.0.
-     * The number of array elements determines the colour space
-     * in which the colour shall be defined:
+     * The values are in the range 0.0 to 1.0 and the number of array elements
+     * determines the color space:
      * 4 = DeviceCMYK
      *
      * @return array<float> DeviceCMYK color components ('C', 'M', 'Y', 'K')
@@ -126,6 +132,8 @@ class Cmyk extends \Com\Tecnick\Color\Model
 
     /**
      * Get the CSS representation of the color: cmyk(C, M, Y, K) or cmyka(C, M, Y, K, A)
+     *
+     * Components are emitted as percentages with up to 4 decimals.
      */
     public function getCssColor(): string
     {
@@ -133,19 +141,19 @@ class Cmyk extends \Com\Tecnick\Color\Model
         $alpha = '';
         if ($this->cmp_alpha < 1.0) {
             $colorType = 'cmyka';
-            $alpha = ',' . $this->cmp_alpha;
+            $alpha = ',' . $this->getCssValue($this->cmp_alpha, 1);
         }
 
         return (
             $colorType
             . '('
-            . $this->getNormalizedValue($this->cmp_cyan, 100)
+            . $this->getCssValue($this->cmp_cyan, 100)
             . '%,'
-            . $this->getNormalizedValue($this->cmp_magenta, 100)
+            . $this->getCssValue($this->cmp_magenta, 100)
             . '%,'
-            . $this->getNormalizedValue($this->cmp_yellow, 100)
+            . $this->getCssValue($this->cmp_yellow, 100)
             . '%,'
-            . $this->getNormalizedValue($this->cmp_key, 100)
+            . $this->getCssValue($this->cmp_key, 100)
             . '%'
             . $alpha
             . ')'
@@ -196,8 +204,7 @@ class Cmyk extends \Com\Tecnick\Color\Model
      */
     public function toGrayArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toGrayArray();
+        return self::rgbToGray($this->toRgbArray());
     }
 
     /**
@@ -208,9 +215,9 @@ class Cmyk extends \Com\Tecnick\Color\Model
     public function toRgbArray(): array
     {
         return [
-            'red' => \max(0, \min(1, 1 - (($this->cmp_cyan * (1 - $this->cmp_key)) + $this->cmp_key))),
-            'green' => \max(0, \min(1, 1 - (($this->cmp_magenta * (1 - $this->cmp_key)) + $this->cmp_key))),
-            'blue' => \max(0, \min(1, 1 - (($this->cmp_yellow * (1 - $this->cmp_key)) + $this->cmp_key))),
+            'red' => \max(0.0, \min(1.0, 1 - (($this->cmp_cyan * (1 - $this->cmp_key)) + $this->cmp_key))),
+            'green' => \max(0.0, \min(1.0, 1 - (($this->cmp_magenta * (1 - $this->cmp_key)) + $this->cmp_key))),
+            'blue' => \max(0.0, \min(1.0, 1 - (($this->cmp_yellow * (1 - $this->cmp_key)) + $this->cmp_key))),
             'alpha' => $this->cmp_alpha,
         ];
     }
@@ -222,8 +229,7 @@ class Cmyk extends \Com\Tecnick\Color\Model
      */
     public function toHslArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toHslArray();
+        return self::rgbToHsl($this->toRgbArray());
     }
 
     /**
@@ -249,19 +255,21 @@ class Cmyk extends \Com\Tecnick\Color\Model
      */
     public function toLabArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toLabArray();
+        return self::rgbToLab($this->toRgbArray());
     }
 
     /**
-     * Invert the color
+     * Invert the color.
+     *
+     * Inversion is the RGB complement (1 - component), computed through RGB.
      */
-    public function invertColor(): self
+    public function invertColor(): static
     {
-        $this->cmp_cyan = 1 - $this->cmp_cyan;
-        $this->cmp_magenta = 1 - $this->cmp_magenta;
-        $this->cmp_yellow = 1 - $this->cmp_yellow;
-        $this->cmp_key = 1 - $this->cmp_key;
+        $cmyk = self::rgbToCmyk(self::invertRgb($this->toRgbArray()));
+        $this->cmp_cyan = $cmyk['cyan'] ?? 0.0;
+        $this->cmp_magenta = $cmyk['magenta'] ?? 0.0;
+        $this->cmp_yellow = $cmyk['yellow'] ?? 0.0;
+        $this->cmp_key = $cmyk['key'] ?? 0.0;
         return $this;
     }
 }

@@ -22,8 +22,7 @@ namespace Com\Tecnick\Barcode\Type\Square\Datamatrix;
  * Com\Tecnick\Barcode\Type\Square\Datamatrix\DatamatrixEncoding
  *
  * Backed enum for the Data Matrix default encoding scheme. The backing value of
- * each case is a public key of Data::ENCOPTS (the internal encoding
- * states are intentionally not exposed here).
+ * each case is a public key of Data::ENCOPTS.
  *
  * @since       2026-07-17
  * @category    Library
@@ -48,11 +47,18 @@ enum DatamatrixEncoding: string
     case BASE256 = 'BASE256';
 
     /**
+     * Alternative spellings accepted by fromLoose().
+     *
+     * @var array<string, string>
+     */
+    private const ALIASES = ['EDIFACT' => 'EDF'];
+
+    /**
      * Resolve a loose Data Matrix encoding value to the matching enum case.
      *
-     * Accepts the canonical scheme name or an enum instance (returned
-     * unchanged). Unknown values fall back to ASCII, matching the lenient
-     * behavior of Datamatrix.
+     * Accepts the canonical scheme name, one of the ALIASES, or an enum instance
+     * (returned unchanged). Unknown values fall back to ASCII, matching the
+     * lenient behavior of Datamatrix.
      *
      * @param string|self $value Encoding scheme name or enum case.
      */
@@ -62,6 +68,6 @@ enum DatamatrixEncoding: string
             return $value;
         }
 
-        return self::tryFrom($value) ?? self::ASCII;
+        return self::tryFrom(self::ALIASES[$value] ?? $value) ?? self::ASCII;
     }
 }

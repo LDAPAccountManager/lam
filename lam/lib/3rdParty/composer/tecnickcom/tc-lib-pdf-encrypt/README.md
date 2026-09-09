@@ -1,6 +1,6 @@
 # tc-lib-pdf-encrypt
 
-> PDF encryption primitives for password protection and permission control.
+> PHP library to encrypt and decrypt PDF data.
 
 [![Latest Stable Version](https://poser.pugx.org/tecnickcom/tc-lib-pdf-encrypt/version)](https://packagist.org/packages/tecnickcom/tc-lib-pdf-encrypt)
 [![Build](https://github.com/tecnickcom/tc-lib-pdf-encrypt/actions/workflows/check.yml/badge.svg)](https://github.com/tecnickcom/tc-lib-pdf-encrypt/actions/workflows/check.yml)
@@ -16,9 +16,7 @@
 
 ## Overview
 
-`tc-lib-pdf-encrypt` implements core encryption routines used by PDF generation and processing stacks, including password handling and permission flags.
-
-The package encapsulates PDF security mechanics behind a focused API so consuming libraries can apply encryption policies without reimplementing cryptographic details. It is built for interoperability with standard PDF readers and for clear separation between document logic and security concerns.
+`tc-lib-pdf-encrypt` implements the encryption and decryption routines of the PDF format: password and certificate handling, key derivation, permission flags and the encryption dictionary.
 
 | | |
 |---|---|
@@ -33,9 +31,14 @@ The package encapsulates PDF security mechanics behind a focused API so consumin
 ## Security Notice
 
 > **RC4 modes (0 and 1) are cryptographically broken and deprecated.**
-> RC4-40 (mode 0) and RC4-128 (mode 1) are no longer considered secure.
-> Both modes emit an `E_USER_DEPRECATED` notice at runtime.
+> RC4-40 (mode 0) and RC4-128 (mode 1) both emit an `E_USER_DEPRECATED` notice at runtime.
 > **Use AES-128 (mode 2), AES-256 R5 (mode 3), or AES-256 R6 / PDF 2.0 (mode 4) for all new documents.**
+>
+> Mode 0 is the constructor default: pass `mode` explicitly.
+>
+> RC4 is also two orders of magnitude slower, because OpenSSL 3 no longer offers
+> the cipher and the bundled implementation runs in PHP. Measured on one 1 MiB
+> stream: RC4-128 3 MiB/s, AES-128 940 MiB/s, AES-256 1000 MiB/s.
 
 | Mode | Algorithm | Security |
 |------|-----------|----------|
@@ -50,23 +53,44 @@ The package encapsulates PDF security mechanics behind a focused API so consumin
 ## Features
 
 ### Encryption
-- RC4 and AES variants for PDF object/string encryption (modes 0–4; see Security Notice above)
+- RC4 and AES variants for PDF object/string encryption (modes 0 to 4; see Security Notice above)
 - AES-256 R6 (PDF 2.0 / ISO 32000-2, mode 4) support with Algorithm 2.B (ISO 32000-2 §7.6.4.3.4) key derivation
 - User and owner password workflows
 - Permission flag handling for document operations
-- Optional metadata encryption control (`$encryptMetadata`)
-- Optional embedded-file stream encryption (`$encryptEmbeddedFiles`, `/EFF` dictionary entry)
+- Optional metadata encryption control (`$encryptMetadata`, requires mode 2, 3 or 4)
+- Embedded-file crypt filter selection (`$encryptEmbeddedFiles`, `/EFF` dictionary entry, V 4 and V 5
+  only). False writes `/EFF /Identity`, and the caller must then write those streams without calling
+  `encryptString()` on them. Reader support varies: qpdf 12 reports the entry under
+  `--show-encryption` but still applies `/StmF` when it extracts an attachment.
 - Public-key (certificate) encryption for multiple recipients
 
 ### Decryption
 - Password authentication for all encryption modes (RC4-40, RC4-128, AES-128, AES-256 R5/R6)
 - Public-key (PKCS#7 / S/MIME) decryption for recipient private keys
-- Per-object key derivation for AES-128 streams
+- Per-object key derivation for RC4 and AES-128 streams, with object generation numbers
+- `Decrypt::fromEncryptionDictionary()` maps `/V`, `/R` and `/CFM` to the algorithm, and
+  recognises the public-key handler, which carries no `/R`, from `/Filter` or `/Recipients`
 - Round-trip `decryptString()` companion to `encryptString()`
+- `/Perms` verification for AES-256: a document whose permission bits were
+  rewritten fails authentication
+- `getAuthenticatedRole()` reports whether the user or the owner password matched.
+  The owner password is tried first, so a document that uses one string for both
+  is reported as the owner
+- `getRecipientPermissions()` returns the permission bits of the matching recipient
+  in public-key mode, where the document carries no `/P` entry
+
+### Interoperability
+Encryption dictionaries are verified against [qpdf](https://qpdf.sourceforge.io/)
+fixtures and against vectors computed from ISO 32000, in both directions, for
+every revision from R2 to R6.
+
+Passwords are used as supplied. ISO 32000-2 calls for SASLprep (RFC 4013) on
+R5/R6 passwords and ISO 32000-1 expects PDFDocEncoding for R2 to R4; neither is
+applied, so non-ASCII passwords may not match other implementations. ASCII
+passwords are unaffected.
 
 ### Integration
-- Designed for direct use by PDF writer and reader components
-- Helpers for PDF date formatting and hex/string transforms
+- Helpers for PDF date formatting and hexadecimal/string conversion
 - Exception-driven error handling
 
 ---
@@ -74,7 +98,7 @@ The package encapsulates PDF security mechanics behind a focused API so consumin
 ## Requirements
 
 - PHP 8.2 or later
-- Extensions: `hash`, `openssl`
+- Extensions: `ctype`, `hash`, `openssl`, `pcre`
 - Composer
 
 ---
@@ -101,6 +125,7 @@ $encrypt = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
     enabled: true,
     file_id: md5('unique-file-id'),
     mode: 4,
+    // permissions lists what to BLOCK: this document cannot be printed or copied
     permissions: ['print', 'copy'],
     user_pass: 'userpassword',
     owner_pass: 'ownerpassword',
@@ -108,6 +133,10 @@ $encrypt = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
 
 $cipher = $encrypt->encryptString('secret payload', $objectNumber = 1);
 echo bin2hex($cipher);
+
+// The first element of the trailer /ID array must carry this value:
+// revisions 2 to 4 derive the key from it.
+echo $encrypt->getFileId();
 ```
 
 ### Decrypting a string
@@ -121,16 +150,43 @@ require_once __DIR__ . '/vendor/autoload.php';
 $decrypt = new \Com\Tecnick\Pdf\Encrypt\Decrypt($encrypt->getEncryptionData());
 
 if ($decrypt->authenticate('userpassword')) {
-    // For AES modes the PKCS#7 padding is stripped automatically, so the
-    // exact original plaintext is returned. RC4 modes are symmetric.
-    $plain = $decrypt->decryptString($cipher, $objectNumber = 1);
+    echo $decrypt->getAuthenticatedRole(); // 'user', 'owner' or 'recipient'
+
+    // For AES modes the PKCS#7 padding is stripped, so the exact original
+    // plaintext is returned; RC4 modes are symmetric. Throws when called
+    // without a successful authenticate() or on malformed data.
+    $plain = $decrypt->decryptString($cipher, $objectNumber = 1, $generationNumber = 0);
     echo $plain;
 }
 ```
 
-### OpenSSL 3 Note
+### Decrypting a document written elsewhere
 
-On OpenSSL 3 systems, legacy providers may be disabled by default. Enable legacy support when required by your runtime policy.
+Pass the raw dictionary entries and let the library derive the mode from `/V`,
+`/R` and `/CFM`:
+
+```php
+$decrypt = \Com\Tecnick\Pdf\Encrypt\Decrypt::fromEncryptionDictionary([
+    'V' => 5,
+    'R' => 6,
+    'O' => $oBytes,      // raw binary, not hexadecimal
+    'U' => $uBytes,
+    'OE' => $oeBytes,
+    'UE' => $ueBytes,
+    'Perms' => $permsBytes,
+    'P' => -3904,
+    'fileid' => $firstTrailerIdElement,
+]);
+```
+
+`/Length` may be omitted when `/V` implies it. Every required entry is checked
+for presence and type, so a malformed dictionary raises
+`Com\Tecnick\Pdf\Encrypt\Exception`.
+
+### OpenSSL Note
+
+RC4 is applied by the bundled implementation rather than OpenSSL, so no legacy
+provider is required on OpenSSL 3. AES uses OpenSSL.
 
 ---
 

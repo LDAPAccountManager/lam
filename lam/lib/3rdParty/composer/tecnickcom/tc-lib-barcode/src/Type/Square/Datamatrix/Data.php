@@ -129,7 +129,10 @@ class Data
     ];
 
     /**
-     * Table of Data Matrix ECC 200 Symbol Attributes:
+     * Table of Data Matrix ECC 200 Symbol Attributes.
+     * The shape key S holds the square sizes and R the rectangular sizes of
+     * ISO/IEC 16022; the key E holds the Data Matrix Rectangular Extension
+     * sizes of ISO/IEC 21471.
      * <ul><li>SHAPE<ul>
      * <li>total matrix rows (including finder pattern)</li>
      * <li>total matrix cols (including finder pattern)</li>
@@ -604,7 +607,7 @@ class Data
                 0x006,
                 0x006,
                 0x024,
-                0x618,
+                0x616,
                 0x26c,
                 0x00a,
                 0x09c,
@@ -683,10 +686,10 @@ class Data
                 0x001,
                 0x002,
                 0x002,
-                0x00c,
+                0x016,
                 0x012,
                 0x001,
-                0x00c,
+                0x016,
                 0x012,
             ],
             // 16x36
@@ -726,6 +729,352 @@ class Data
                 0x001,
                 0x031,
                 0x01c,
+            ],
+        ],
+        'E' => [
+            // Data Matrix Rectangular Extension form, ordered by data codeword
+            // capacity so that the smallest symbol that fits is the first match
+            // 8x48
+            [
+                0x008,
+                0x030,
+                0x006,
+                0x02c,
+                0x008,
+                0x018,
+                0x006,
+                0x016,
+                0x001,
+                0x002,
+                0x002,
+                0x012,
+                0x00f,
+                0x001,
+                0x012,
+                0x00f,
+            ],
+            // 8x64
+            [
+                0x008,
+                0x040,
+                0x006,
+                0x038,
+                0x008,
+                0x010,
+                0x006,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x018,
+                0x012,
+                0x001,
+                0x018,
+                0x012,
+            ],
+            // 8x80
+            [
+                0x008,
+                0x050,
+                0x006,
+                0x048,
+                0x008,
+                0x014,
+                0x006,
+                0x012,
+                0x001,
+                0x004,
+                0x004,
+                0x020,
+                0x016,
+                0x001,
+                0x020,
+                0x016,
+            ],
+            // 8x96
+            [
+                0x008,
+                0x060,
+                0x006,
+                0x058,
+                0x008,
+                0x018,
+                0x006,
+                0x016,
+                0x001,
+                0x004,
+                0x004,
+                0x026,
+                0x01c,
+                0x001,
+                0x026,
+                0x01c,
+            ],
+            // 12x64
+            [
+                0x00c,
+                0x040,
+                0x00a,
+                0x038,
+                0x00c,
+                0x010,
+                0x00a,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x02b,
+                0x01b,
+                0x001,
+                0x02b,
+                0x01b,
+            ],
+            // 20x36
+            [
+                0x014,
+                0x024,
+                0x012,
+                0x020,
+                0x014,
+                0x012,
+                0x012,
+                0x010,
+                0x001,
+                0x002,
+                0x002,
+                0x02c,
+                0x01c,
+                0x001,
+                0x02c,
+                0x01c,
+            ],
+            // 8x120
+            [
+                0x008,
+                0x078,
+                0x006,
+                0x06c,
+                0x008,
+                0x014,
+                0x006,
+                0x012,
+                0x001,
+                0x006,
+                0x006,
+                0x031,
+                0x020,
+                0x001,
+                0x031,
+                0x020,
+            ],
+            // 20x44
+            [
+                0x014,
+                0x02c,
+                0x012,
+                0x028,
+                0x014,
+                0x016,
+                0x012,
+                0x014,
+                0x001,
+                0x002,
+                0x002,
+                0x038,
+                0x022,
+                0x001,
+                0x038,
+                0x022,
+            ],
+            // 16x64
+            [
+                0x010,
+                0x040,
+                0x00e,
+                0x038,
+                0x010,
+                0x010,
+                0x00e,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x03e,
+                0x024,
+                0x001,
+                0x03e,
+                0x024,
+            ],
+            // 8x144
+            [
+                0x008,
+                0x090,
+                0x006,
+                0x084,
+                0x008,
+                0x018,
+                0x006,
+                0x016,
+                0x001,
+                0x006,
+                0x006,
+                0x03f,
+                0x024,
+                0x001,
+                0x03f,
+                0x024,
+            ],
+            // 12x88
+            [
+                0x00c,
+                0x058,
+                0x00a,
+                0x050,
+                0x00c,
+                0x016,
+                0x00a,
+                0x014,
+                0x001,
+                0x004,
+                0x004,
+                0x040,
+                0x024,
+                0x001,
+                0x040,
+                0x024,
+            ],
+            // 26x40
+            [
+                0x01a,
+                0x028,
+                0x018,
+                0x024,
+                0x01a,
+                0x014,
+                0x018,
+                0x012,
+                0x001,
+                0x002,
+                0x002,
+                0x046,
+                0x026,
+                0x001,
+                0x046,
+                0x026,
+            ],
+            // 22x48
+            [
+                0x016,
+                0x030,
+                0x014,
+                0x02c,
+                0x016,
+                0x018,
+                0x014,
+                0x016,
+                0x001,
+                0x002,
+                0x002,
+                0x048,
+                0x026,
+                0x001,
+                0x048,
+                0x026,
+            ],
+            // 24x48
+            [
+                0x018,
+                0x030,
+                0x016,
+                0x02c,
+                0x018,
+                0x018,
+                0x016,
+                0x016,
+                0x001,
+                0x002,
+                0x002,
+                0x050,
+                0x029,
+                0x001,
+                0x050,
+                0x029,
+            ],
+            // 20x64
+            [
+                0x014,
+                0x040,
+                0x012,
+                0x038,
+                0x014,
+                0x010,
+                0x012,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x054,
+                0x02a,
+                0x001,
+                0x054,
+                0x02a,
+            ],
+            // 26x48
+            [
+                0x01a,
+                0x030,
+                0x018,
+                0x02c,
+                0x01a,
+                0x018,
+                0x018,
+                0x016,
+                0x001,
+                0x002,
+                0x002,
+                0x05a,
+                0x02a,
+                0x001,
+                0x05a,
+                0x02a,
+            ],
+            // 24x64
+            [
+                0x018,
+                0x040,
+                0x016,
+                0x038,
+                0x018,
+                0x010,
+                0x016,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x06c,
+                0x02e,
+                0x001,
+                0x06c,
+                0x02e,
+            ],
+            // 26x64
+            [
+                0x01a,
+                0x040,
+                0x018,
+                0x038,
+                0x01a,
+                0x010,
+                0x018,
+                0x00e,
+                0x001,
+                0x004,
+                0x004,
+                0x076,
+                0x032,
+                0x001,
+                0x076,
+                0x032,
             ],
         ],
     ];
@@ -1020,17 +1369,50 @@ class Data
      *
      * @param string $shape Shape.
      * @param int    $ncw   Number of codewords.
+     * @param string $size  Symbol size as rows by columns, empty for the smallest one that fits.
      *
      * @return array{int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int}
      *
      * @throws BarcodeException in case of error
      */
-    public static function getPaddingSize(string $shape, int $ncw): array
+    public static function getPaddingSize(string $shape, int $ncw, string $size = ''): array
     {
+        if ($size !== '') {
+            return self::getNamedSize($shape, $ncw, $size);
+        }
+
         foreach (self::getSymbAttr($shape) as $params) {
             if ($params[11] >= $ncw) {
                 return $params;
             }
+        }
+
+        throw new BarcodeException('Unable to find the correct size');
+    }
+
+    /**
+     * Get the attributes of the named symbol size.
+     *
+     * @param string $shape Shape.
+     * @param int    $ncw   Number of codewords.
+     * @param string $size  Symbol size as rows by columns.
+     *
+     * @return array{int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int}
+     *
+     * @throws BarcodeException in case of error
+     */
+    private static function getNamedSize(string $shape, int $ncw, string $size): array
+    {
+        foreach (self::getSymbAttr($shape) as $params) {
+            if ($size !== $params[0] . 'x' . $params[1]) {
+                continue;
+            }
+
+            if ($params[11] < $ncw) {
+                throw new BarcodeException('the input is too large to fit the barcode');
+            }
+
+            return $params;
         }
 
         throw new BarcodeException('Unable to find the correct size');

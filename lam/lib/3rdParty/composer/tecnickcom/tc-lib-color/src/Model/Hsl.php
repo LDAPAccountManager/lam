@@ -35,31 +35,42 @@ class Hsl extends \Com\Tecnick\Color\Model
 {
     /**
      * Color Model type
-     *
-     * @var string
      */
-    protected $type = 'HSL';
+    protected string $type = 'HSL';
 
     /**
      * Value of the Hue color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_hue = 0.0;
 
     /**
      * Value of the Saturation color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_saturation = 0.0;
 
     /**
      * Value of the Lightness color component [0..1]
-     *
-     * @var float
      */
     protected float $cmp_lightness = 0.0;
+
+    /**
+     * Initialize a new HSL color object.
+     *
+     * Saturation, lightness and alpha are clamped to [0..1]. Hue is a fraction
+     * of a full turn and wraps into [0..1) instead.
+     *
+     * @param array<string, int|float|string> $components Color components.
+     *
+     * @throws \Com\Tecnick\Color\UnknownComponentException if a component name is not defined by this model
+     */
+    public function __construct(array $components)
+    {
+        self::checkComponents($components, ['hue', 'saturation', 'lightness', 'alpha']);
+        $this->cmp_hue = self::hueComponent($components, 'hue');
+        $this->cmp_saturation = self::component($components, 'saturation');
+        $this->cmp_lightness = self::component($components, 'lightness');
+        $this->cmp_alpha = self::component($components, 'alpha', 1.0);
+    }
 
     /**
      * Get an array with all color components.
@@ -80,9 +91,8 @@ class Hsl extends \Com\Tecnick\Color\Model
      * Get an array with all color components for
      * the PDF appearance characteristics dictionary.
      *
-     * The numbers that shall be in the range 0.0 to 1.0.
-     * The number of array elements determines the colour space
-     * in which the colour shall be defined:
+     * The values are in the range 0.0 to 1.0 and the number of array elements
+     * determines the color space:
      * 3 = DeviceRGB
      *
      * @return array<float> DeviceRGB color components ('R', 'G', 'B')
@@ -100,9 +110,9 @@ class Hsl extends \Com\Tecnick\Color\Model
     /**
      * Get an array with color components values normalized.
      *
-     * NOTE: the $max argument is intentionally not applied here. Hue is an angle
-     * and is always returned in degrees [0..360], while saturation, lightness and
-     * alpha are fraction components kept in the [0..1] range.
+     * NOTE: the $max argument is not applied here. Hue is returned in degrees
+     * [0..360], while saturation, lightness and alpha are fraction components
+     * kept in the [0..1] range.
      *
      * @param int $max Unused; kept for interface compatibility.
      *
@@ -120,6 +130,9 @@ class Hsl extends \Com\Tecnick\Color\Model
 
     /**
      * Get the CSS representation of the color: hsl(H, S, L) or hsla(H, S, L, A)
+     *
+     * Hue is in degrees, saturation and lightness are percentages, all emitted
+     * with up to 4 decimals.
      */
     public function getCssColor(): string
     {
@@ -127,17 +140,17 @@ class Hsl extends \Com\Tecnick\Color\Model
         $alpha = '';
         if ($this->cmp_alpha < 1.0) {
             $colorType = 'hsla';
-            $alpha = ',' . $this->cmp_alpha;
+            $alpha = ',' . $this->getCssValue($this->cmp_alpha, 1);
         }
 
         return (
             $colorType
             . '('
-            . $this->getNormalizedValue($this->cmp_hue, 360)
+            . $this->getCssValue($this->cmp_hue, 360)
             . ','
-            . $this->getNormalizedValue($this->cmp_saturation, 100)
+            . $this->getCssValue($this->cmp_saturation, 100)
             . '%,'
-            . $this->getNormalizedValue($this->cmp_lightness, 100)
+            . $this->getCssValue($this->cmp_lightness, 100)
             . '%'
             . $alpha
             . ')'
@@ -163,8 +176,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function getComponentsString(): string
     {
-        $rgb = $this->toRgbArray();
-        return \sprintf('%F %F %F', $rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0);
+        return self::rgbComponentsString($this->toRgbArray());
     }
 
     /**
@@ -175,12 +187,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function getPdfColor(bool $stroke = false): string
     {
-        $mode = 'rg';
-        if ($stroke) {
-            $mode = \strtoupper($mode);
-        }
-
-        return $this->getComponentsString() . ' ' . $mode . "\n";
+        return self::rgbPdfColor($this->toRgbArray(), $stroke);
     }
 
     /**
@@ -190,8 +197,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function toGrayArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toGrayArray();
+        return self::rgbToGray($this->toRgbArray());
     }
 
     /**
@@ -242,18 +248,18 @@ class Hsl extends \Com\Tecnick\Color\Model
         }
 
         if ((6 * $hue) < 1) {
-            return \max(0, \min(1, $vala + (($valb - $vala) * 6 * $hue)));
+            return \max(0.0, \min(1.0, $vala + (($valb - $vala) * 6 * $hue)));
         }
 
         if ((2 * $hue) < 1) {
-            return \max(0, \min(1, $valb));
+            return \max(0.0, \min(1.0, $valb));
         }
 
         if ((3 * $hue) < 2) {
-            return \max(0, \min(1, $vala + (($valb - $vala) * ((2 / 3) - $hue) * 6)));
+            return \max(0.0, \min(1.0, $vala + (($valb - $vala) * ((2 / 3) - $hue) * 6)));
         }
 
-        return \max(0, \min(1, $vala));
+        return \max(0.0, \min(1.0, $vala));
     }
 
     /**
@@ -278,8 +284,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function toCmykArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toCmykArray();
+        return self::rgbToCmyk($this->toRgbArray());
     }
 
     /**
@@ -289,16 +294,20 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function toLabArray(): array
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toLabArray();
+        return self::rgbToLab($this->toRgbArray());
     }
 
     /**
-     * Invert the color
+     * Invert the color.
+     *
+     * Inversion is the RGB complement (1 - component), computed through RGB.
      */
-    public function invertColor(): self
+    public function invertColor(): static
     {
-        $this->cmp_hue = $this->cmp_hue >= 0.5 ? $this->cmp_hue - 0.5 : $this->cmp_hue + 0.5;
+        $hsl = self::rgbToHsl(self::invertRgb($this->toRgbArray()));
+        $this->cmp_hue = $hsl['hue'] ?? 0.0;
+        $this->cmp_saturation = $hsl['saturation'] ?? 0.0;
+        $this->cmp_lightness = $hsl['lightness'] ?? 0.0;
         return $this;
     }
 }

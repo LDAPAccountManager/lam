@@ -24,6 +24,9 @@ use Com\Tecnick\Unicode\Data\Mirror as UniMirror;
 /**
  * Com\Tecnick\Unicode\Bidi\StepL
  *
+ * L steps of the Bidirectional Algorithm: reordering the resolved levels (L1, L2
+ * and L4).
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode
@@ -156,6 +159,19 @@ class StepL
     }
 
     /**
+     * Append a run of characters to the reordered line in reverse order.
+     *
+     * @param array<int, CharData> $ordered  Reordered line, appended to in place
+     * @param array<int, CharData> $reversed Run of characters to reverse
+     */
+    private function appendReversed(array &$ordered, array $reversed): void
+    {
+        foreach (\array_reverse($reversed) as $chardatum) {
+            $ordered[] = $chardatum;
+        }
+    }
+
+    /**
      * L2. From the highest level found in the text to the lowest odd level on each line,
      *     including intermediate levels not actually present in the text,
      *     reverse any contiguous sequence of characters that are at that level or higher.
@@ -174,7 +190,7 @@ class StepL
                 }
 
                 if ($reversed !== []) {
-                    $ordered = \array_merge($ordered, \array_reverse($reversed));
+                    $this->appendReversed($ordered, $reversed);
                     $reversed = [];
                 }
 
@@ -182,7 +198,7 @@ class StepL
             }
 
             if ($reversed !== []) {
-                $ordered = \array_merge($ordered, \array_reverse($reversed));
+                $this->appendReversed($ordered, $reversed);
             }
 
             $this->chardata = $ordered;
@@ -194,9 +210,9 @@ class StepL
      *     (a) the resolved directionality of that character is R, and
      *     (b) the Bidi_Mirrored property value of that character is true.
      *
-     * The resolved directionality is R exactly when the embedding level is odd, which also covers
-     * neutral mirrored characters (brackets, guillemets) resolved into an RTL run — not only
-     * strong-R types. Each eligible character is mirrored exactly once, after reordering (L2).
+     * The resolved directionality is R exactly when the embedding level is odd, which also
+     * covers the neutral mirrored characters (brackets, guillemets) resolved into a
+     * right-to-left run.
      */
     protected function processL4(): void
     {

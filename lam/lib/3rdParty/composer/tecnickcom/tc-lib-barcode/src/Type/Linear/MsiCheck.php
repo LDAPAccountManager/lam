@@ -106,11 +106,38 @@ class MsiCheck extends \Com\Tecnick\Barcode\Type\Linear
     }
 
     /**
+     * Check that every character of the code can be encoded
+     *
+     * @throws BarcodeException in case of an unsupported character
+     */
+    protected function validateCode(string $code): void
+    {
+        $clen = \strlen($code);
+        for ($pos = 0; $pos < $clen; ++$pos) {
+            $digit = $code[$pos];
+            if (!\array_key_exists($digit, $this::CHBAR)) {
+                throw new BarcodeException('Invalid character: ' . (\ord($digit) & 0xFF));
+            }
+        }
+    }
+
+    /**
      * Format code
+     *
+     * @throws BarcodeException in case of an unsupported character, or if the modulo 11
+     *                          check digit is 10, which no single MSI character can encode
      */
     protected function formatCode(): void
     {
-        $this->extcode = $this->code . (string) $this->getChecksum($this->code);
+        $this->validateCode($this->code);
+        $check = $this->getChecksum($this->code);
+        if ($check > 9) {
+            throw new BarcodeException(
+                'The modulo 11 check digit of this code is 10, which cannot be encoded as a single MSI character',
+            );
+        }
+
+        $this->extcode = $this->code . (string) $check;
     }
 
     /**

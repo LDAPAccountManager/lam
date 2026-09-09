@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Barcode\Type\Linear;
 
+use Com\Tecnick\Barcode\Exception as BarcodeException;
+
 /**
  * Com\Tecnick\Barcode\Type\Linear\CodeThreeNineCheck
  *
@@ -43,9 +45,12 @@ class CodeThreeNineCheck extends \Com\Tecnick\Barcode\Type\Linear\CodeThreeNineE
 
     /**
      * Format code
+     *
+     * @throws BarcodeException in case of error
      */
     protected function formatCode(): void
     {
+        $this->validateNoStartStop($this->code);
         $code = \strtoupper($this->code);
         $this->extcode = '*' . $code . $this->getChecksum($code) . '*';
     }

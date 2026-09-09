@@ -21,7 +21,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
 /**
  * Com\Tecnick\Pdf\Encrypt\Data
  *
- * Encrypt common data
+ * Encryption constants and settings.
  *
  * @since     2008-01-02
  * @category  Library
@@ -43,6 +43,33 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
             . "\x4E\x56\xFF\xFA\x01\x08\x2E\x2E\x00\xB6"
             . "\xD0\x68\x3E\x80\x2F\x0C\xA9\xFE\x64\x53"
             . "\x69\x7A";
+
+    /**
+     * Default P value: every permission granted.
+     *
+     * 0xFFFFFFFC as a signed 32-bit integer. Bits 1 and 2 are clear, bits 7, 8 and
+     * 13 to 32 are the reserved bits that Table 22 requires to be 1, and bits 3 to 6
+     * and 9 to 12 are the granted permissions.
+     *
+     * @var int
+     */
+    protected const PERMDEFAULT = -4;
+
+    /**
+     * Permission set applied when the caller does not choose one.
+     *
+     * @var array<string>
+     */
+    public const DEFAULTPERMS = [
+        'print',
+        'modify',
+        'copy',
+        'annot-forms',
+        'fill-forms',
+        'extract',
+        'assemble',
+        'print-high',
+    ];
 
     /**
      * Map permission modes and bits.
@@ -100,6 +127,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
      *
      * @var array<int, array{
      *          'V': int,
+     *          'R': int,
      *          'Length': int,
      *          'CF': array{
      *              'CFM': string,
@@ -114,6 +142,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
         0 => [
             // RC4 40 bit
             'V' => 1,
+            'R' => 2,
             'Length' => 40,
             'CF' => [
                 'CFM' => 'V2',
@@ -125,6 +154,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
         1 => [
             // RC4 128 bit
             'V' => 2,
+            'R' => 3,
             'Length' => 128,
             'CF' => [
                 'CFM' => 'V2',
@@ -136,6 +166,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
         2 => [
             // AES 128 bit
             'V' => 4,
+            'R' => 4,
             'Length' => 128,
             'CF' => [
                 'CFM' => 'AESV2',
@@ -148,6 +179,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
         3 => [
             // AES 256 bit (R5, Acrobat 9 / PDF 1.7 extension)
             'V' => 5,
+            'R' => 5,
             'Length' => 256,
             'CF' => [
                 'CFM' => 'AESV3',
@@ -159,7 +191,8 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
         ],
         4 => [
             // AES 256 bit R6 (PDF 2.0 / ISO 32000-2)
-            'V' => 6,
+            'V' => 5,
+            'R' => 6,
             'Length' => 256,
             'CF' => [
                 'CFM' => 'AESV3',

@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Data;
 /**
  * Com\Tecnick\Unicode\Data\Constant
  *
+ * Code points of the bidirectional formatting characters and of some common separators.
+ *
  * @since       2011-05-23
  * @category    Library
  * @package     UnicodeData
@@ -32,13 +34,7 @@ namespace Com\Tecnick\Unicode\Data;
 class Constant
 {
     /*
-     * Explicit Directional Embeddings
-     * -------------------------------
-     * The following characters signal that a piece of text is to be treated as embedded.
-     * For example, an English quotation in the middle of an Arabic sentence could be marked
-     * as being embedded left-to-right text. If there were a Hebrew phrase in the middle of
-     * the English quotation, that phrase could be marked as being embedded right-to-left text.
-     * Embeddings can be nested one inside another, and in isolates and overrides.
+     * Explicit directional embeddings.
      */
 
     /**
@@ -54,16 +50,11 @@ class Constant
     public const RLE = 0x202B;
 
     /*
-     * Explicit Directional Overrides
-     * ------------------------------
-     * The following characters allow the bidirectional character types to be overridden when
-     * required for special cases, such as for part numbers. They are to be avoided wherever possible,
-     * because of security concerns. For more information, see [UTR36].
-     * Directional overrides can be nested one inside another, and in embeddings and isolates.
+     * Explicit directional overrides.
      */
 
     /**
-     * (U+202D) for LEFT-TO-RIGHT OVERRIDE
+     * (U+202D) LEFT-TO-RIGHT OVERRIDE
      * Force following characters to be treated as strong left-to-right characters
      */
     public const LRO = 0x202D;
@@ -75,8 +66,7 @@ class Constant
     public const RLO = 0x202E;
 
     /*
-     * Terminating Explicit Directional Embeddings and Overrides
-     * ---------------------------------------------------------
+     * Terminator of the explicit directional embeddings and overrides.
      */
 
     /**
@@ -86,20 +76,7 @@ class Constant
     public const PDF = 0x202C;
 
     /*
-     * Explicit Directional Isolates
-     * -----------------------------
-     * The following characters signal that a piece of text is to be treated as directionally isolated
-     * from its surroundings. They are very similar to the explicit embedding formatting characters.
-     * However, while an embedding roughly has the effect of a strong character on the ordering of the
-     * surrounding text, an isolate has the effect of a neutral like U+FFFC OBJECT REPLACEMENT CHARACTER,
-     * and is assigned the corresponding display position in the surrounding text.
-     * Furthermore, the text inside the isolate has no effect on the ordering of the text outside it, and vice versa.
-     *
-     * In addition to allowing the embedding of strongly directional text without unduly affecting the bidirectional
-     * order of its surroundings, one of the isolate formatting characters also offers an extra feature:
-     * embedding text while inferring its direction heuristically from its constituent characters.
-     *
-     * Isolates can be nested one inside another, and in embeddings and overrides.
+     * Explicit directional isolates.
      */
 
     /**
@@ -122,11 +99,7 @@ class Constant
     public const FSI = 0x2068;
 
     /*
-     * Terminating Explicit Directional Isolates
-     * -----------------------------------------
-     * The following character terminates the scope of the last LRI, RLI, or FSI whose scope
-     * has not yet been terminated, as well as the scopes of any subsequent LREs, RLEs, LROs, or RLOs
-     * whose scopes have not yet been terminated.
+     * Terminator of the explicit directional isolates.
      */
 
     /**
@@ -136,12 +109,7 @@ class Constant
     public const PDI = 0x2069;
 
     /*
-     * Implicit Directional Marks
-     * --------------------------
-     * These characters are very light-weight formatting.
-     * They act exactly like right-to-left or left-to-right characters,
-     * except that they do not display or have any other semantic effect.
-     * Their use is more convenient than using explicit embeddings or overrides because their scope is much more local.
+     * Implicit directional marks.
      */
 
     /**
@@ -163,8 +131,7 @@ class Constant
     public const ALM = 0x061C;
 
     /*
-     * Other useful characters
-     * -----------------------
+     * Other characters.
      */
 
     /**

@@ -19,17 +19,23 @@ declare(strict_types=1);
 namespace Com\Tecnick\Barcode\Type\Square;
 
 use Com\Tecnick\Barcode\Exception as BarcodeException;
-use Com\Tecnick\Barcode\Type\Square\QrCode\ByteStream;
 use Com\Tecnick\Barcode\Type\Square\QrCode\Data;
-use Com\Tecnick\Barcode\Type\Square\QrCode\Encoder;
+use Com\Tecnick\Barcode\Type\Square\QrCode\Encode;
 use Com\Tecnick\Barcode\Type\Square\QrCode\QrEccLevel;
 use Com\Tecnick\Barcode\Type\Square\QrCode\QrEncodingMode;
-use Com\Tecnick\Barcode\Type\Square\QrCode\Split;
 
 /**
  * Com\Tecnick\Barcode\Type\Square\QrCode
  *
  * QrCode Barcode type class
+ * QR Code (ISO/IEC 18004)
+ *
+ * Matrix symbology with three finder patterns and forty symbol versions.
+ *     Symbol sizes:                21x21 to 177x177 modules, in steps of four
+ *     Error correction levels:     L, M, Q and H
+ *     Maximum data characters:     7089 digits, 4296 alphanumeric or 2953 bytes
+ *
+ * QR Code is a registered trademark of DENSO WAVE INCORPORATED.
  *
  * @since       2015-02-21
  * @category    Library
@@ -49,22 +55,22 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
     protected const FORMAT = 'QRCODE';
 
     /**
-     * QR code version.
-     * The Size of QRcode is defined as version. Version is an integer value from 1 to 40.
-     * Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases.
-     * So version 40 is 177*177 matrix.
+     * QR Code version, from 1 to 40, or 0 to select the smallest symbol able to
+     * carry the data. Version 1 is a 21x21 matrix and each version adds 4
+     * modules per side, up to the 177x177 matrix of version 40.
      */
     protected int $version = 0;
 
     /**
-     * Error correction level
+     * Error correction level, from 0 to 3, that is L, M, Q and H.
      */
     protected int $level = 0;
 
     /**
-     * Encoding mode
+     * Whether the kanji mode may be used, which is the case when the requested
+     * encoding mode is KJ.
      */
-    protected int $hint = 2;
+    protected bool $kanji = false;
 
     /**
      * Boolean flag, if false the input string will be converted to uppercase.
@@ -79,8 +85,8 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
     protected int $random_mask = -1;
 
     /**
-     * If true, estimates the best mask (spec default, but slower);
-     * set to false for a significant performance boost but (probably) lower quality code.
+     * If true, evaluates every mask and selects the best one, as required by the
+     * specification; if false, the default mask is applied.
      */
     protected bool $best_mask = true;
 
@@ -89,44 +95,25 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
      */
     protected int $default_mask = 2;
 
-    /**
-     * ByteStream class object
-     */
-    protected ByteStream $bsObj;
-
     protected function getEccLevel(string $level): int
     {
-        return match ($level) {
-            'L' => 0,
-            'M' => 1,
-            'Q' => 2,
-            'H' => 3,
-            default => 0,
-        };
-    }
-
-    protected function getHintMode(string $mode): int
-    {
-        return match ($mode) {
-            'NL' => -1,
-            'NM' => 0,
-            'AN' => 1,
-            '8B' => 2,
-            'KJ' => 3,
-            'ST' => 4,
-            default => 2,
-        };
+        return Data::ECC_LEVELS[$level] ?? 0;
     }
 
     /**
      * Set extra (optional) parameters:
      *     1: LEVEL - error correction level: L, M, Q, H
-     *     2: HINT - encoding mode: NL=variable, NM=numeric, AN=alphanumeric, 8B=8bit, KJ=KANJI, ST=STRUCTURED
+     *     2: HINT - encoding mode: NL, NM, AN, 8B, KJ or ST
      *     3: VERSION - integer value from 1 to 40
      *     4: CASE SENSITIVE - if 0 the input string will be converted to uppercase
      *     5: RANDOM MASK - false or number of masks to be checked
      *     6: BEST MASK - true to find the best mask (slow)
      *     7: DEFAULT MASK - mask to use when the best mask option is false
+     *
+     * The encoding mode selects the modes the encoder may use. The numeric, the
+     * alphanumeric and the byte modes are always available and are mixed as
+     * section 7.4.7 of ISO/IEC 18004 allows; KJ adds the kanji mode. Every other
+     * token leaves that set unchanged, the structured append of ST included.
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      * @SuppressWarnings("PHPMD.NPathComplexity")
@@ -143,14 +130,10 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
         // hint
         $encMode = QrEncodingMode::fromLoose(\strval($this->params[1] ?? ''));
         $this->params[1] = $encMode->value;
-        $this->hint = $this->getHintMode($encMode->value);
+        $this->kanji = $encMode->value === 'KJ';
 
         // version
-        if (
-            ($this->params[2] ?? null) === null
-            || $this->params[2] < 0
-            || $this->params[2] > Data::QRSPEC_VERSION_MAX
-        ) {
+        if (($this->params[2] ?? null) === null || $this->params[2] < 0 || $this->params[2] > Data::VERSION_MAX) {
             $this->params[2] = 0;
         }
 
@@ -176,11 +159,25 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
         $this->best_mask = (bool) $this->params[5];
 
         // default mask
-        if (($this->params[6] ?? null) === null) {
+        if (
+            ($this->params[6] ?? null) === null
+            || $this->params[6] === ''
+            || $this->params[6] < 0
+            || $this->params[6] > 7
+        ) {
             $this->params[6] = 2;
         }
 
         $this->default_mask = (int) $this->params[6];
+    }
+
+    /**
+     * Get the character sequence to encode.
+     * Subclasses that build the payload from the input code override this.
+     */
+    protected function getEncodedPayload(): string
+    {
+        return $this->code;
     }
 
     /**
@@ -191,60 +188,31 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
      */
     protected function setBars(): void
     {
-        if (\strlen($this->code) === 0) {
+        $code = $this->getEncodedPayload();
+        if (\strlen($code) === 0) {
             throw new BarcodeException('Empty input');
         }
 
-        $this->bsObj = new ByteStream($this->hint, $this->version, $this->level);
-        // generate the qrcode
-        $this->processBinarySequence($this->binarize($this->encodeString($this->code)));
-    }
-
-    /**
-     * Convert the frame in binary form
-     *
-     * @param array<int, string> $frame Array to binarize
-     *
-     * @return array<int, string> frame in binary form
-     */
-    protected function binarize(array $frame): array
-    {
-        $len = \count($frame);
-        // the frame is square (width = height)
-        foreach ($frame as &$frameLine) {
-            for ($idx = 0; $idx < $len; ++$idx) {
-                $frameLine[$idx] = (\ord($frameLine[$idx]) & 1) !== 0 ? '1' : '0';
-            }
-        }
-
-        return $frame;
-    }
-
-    /**
-     * Encode the input string
-     *
-     * @param string $data input string to encode
-     *
-     * @return array<int, string> Encoded data
-     *
-     * @throws BarcodeException in case of split/encoding errors
-     * @throws \Random\RandomException in case of random generation error
-     */
-    protected function encodeString(string $data): array
-    {
         if (!$this->case_sensitive) {
-            $data = $this->toUpper($data);
+            $code = $this->toUpper($code);
         }
 
-        $split = new Split($this->bsObj, $this->hint, $this->version);
-        $datacode = $this->bsObj->getByteStream($split->getSplittedString($data));
-        $this->version = $this->bsObj->version;
-        $encoder = new Encoder($this->version, $this->level, $this->random_mask, $this->best_mask, $this->default_mask);
-        return $encoder->encodeMask(-1, $datacode);
+        $encode = new Encode(
+            $code,
+            $this->level,
+            $this->version,
+            $this->kanji,
+            $this->random_mask,
+            $this->best_mask,
+            $this->default_mask,
+        );
+        $this->version = $encode->getVersion();
+        $this->processBinarySequence($encode->getGrid());
     }
 
     /**
-     * Convert input string into upper case mode
+     * Convert input string into upper case mode, leaving the two byte characters
+     * of the kanji mode alone.
      *
      * @param string $data Data
      */
@@ -254,13 +222,12 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
         $pos = 0;
 
         while ($pos < $len) {
-            $mode = $this->bsObj->getEncodingMode($data, $pos);
-            if ($mode === $this->getHintMode('KJ')) {
+            if ($this->kanji && $this->isKanjiAt($data, $pos)) {
                 $pos += 2;
                 continue;
             }
 
-            if (\ord($data[$pos]) >= \ord('a') && \ord($data[$pos]) <= \ord('z')) {
+            if ($data[$pos] >= 'a' && $data[$pos] <= 'z') {
                 $data[$pos] = \chr((\ord($data[$pos]) - 32) & 0xFF);
             }
 
@@ -268,5 +235,30 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
         }
 
         return $data;
+    }
+
+    /**
+     * Returns whether the byte pair at the given offset is a character of the
+     * two Shift JIS ranges the kanji mode encodes.
+     *
+     * @param string $data Data
+     * @param int    $pos  Byte offset.
+     */
+    protected function isKanjiAt(string $data, int $pos): bool
+    {
+        $high = $data[$pos] ?? '';
+        $low = $data[$pos + 1] ?? '';
+        if ($high === '' || $low === '') {
+            return false;
+        }
+
+        $value = (\ord($high) << 8) | \ord($low);
+        foreach (Data::KANJI_RANGES as $range) {
+            if ($value >= $range[0] && $value <= $range[1]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

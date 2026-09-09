@@ -114,6 +114,31 @@ class EanTwo extends \Com\Tecnick\Barcode\Type\Linear
     ];
 
     /**
+     * Check that the input code is a digit string that fits the fixed length of this symbology.
+     * Shorter codes are left-padded with zeros by formatCode().
+     *
+     * @throws BarcodeException if the code is not numeric or is too long
+     */
+    protected function validateCode(): void
+    {
+        if (!\ctype_digit($this->code)) {
+            throw new BarcodeException('Input code must be a number');
+        }
+
+        if (\strlen($this->code) > $this->code_length) {
+            throw new BarcodeException(
+                'The code is too long: '
+                . \strlen($this->code)
+                . ' digits (maximum '
+                . $this->code_length
+                . ' for '
+                . $this::FORMAT
+                . ')',
+            );
+        }
+    }
+
+    /**
      * Calculate checksum
      *
      * @param string $code Code to represent.
@@ -140,6 +165,7 @@ class EanTwo extends \Com\Tecnick\Barcode\Type\Linear
      */
     protected function setBars(): void
     {
+        $this->validateCode();
         $this->formatCode();
         $chk = $this->getChecksum($this->extcode);
         $parity = $this->getParityPattern($chk);

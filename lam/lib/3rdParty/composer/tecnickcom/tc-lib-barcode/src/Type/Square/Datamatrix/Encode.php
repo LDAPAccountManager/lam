@@ -44,11 +44,15 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
     /**
      * Initialize a new encode object
      *
-     * @param string $shape Datamatrix shape key (S=square, R=rectangular)
+     * @param string $shape     Datamatrix shape key (S=square, R=rectangular)
+     * @param bool   $gsonemode True to encode the FNC1 and GS characters as the FNC1 codeword
+     * @param string $size      Requested symbol size as rows by columns, empty for the smallest that fits
      */
-    public function __construct(string $shape = 'S')
+    public function __construct(string $shape = 'S', bool $gsonemode = false, string $size = '')
     {
         $this->shape = $shape;
+        $this->gsonemode = $gsonemode;
+        $this->size = $size;
     }
 
     /**
@@ -113,6 +117,38 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
     }
 
     /**
+     * Number of ASCII codewords needed to encode the data from the given position to the end.
+     * A digit pair takes one codeword and an extended character takes two (upper shift plus value).
+     *
+     * @param string $data        Data string
+     * @param int    $pos         Current position
+     * @param int    $data_length Data length
+     */
+    protected function getAsciiCodewordCount(string $data, int $pos, int $data_length): int
+    {
+        $count = 0;
+        while ($pos < $data_length) {
+            $chr = \ord($data[$pos]);
+            ++$pos;
+            ++$count;
+            if ($this->isCharMode($chr, Data::ENC_ASCII_EXT)) {
+                ++$count;
+                continue;
+            }
+
+            if (
+                $this->isCharMode($chr, Data::ENC_ASCII_NUM)
+                && $pos < $data_length
+                && $this->isCharMode(\ord($data[$pos]), Data::ENC_ASCII_NUM)
+            ) {
+                ++$pos;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
      * Encode EDF4
      *
      * @param int    $epos         Current position
@@ -123,6 +159,7 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
      * @param int    $field_length Field length
      * @param int    $enc          Current encoding
      * @param array<int, int>  $temp_cw      Temporary codewords array
+     * @param string $data         Data string
      *
      * @return bool true to break the loop
      *
@@ -137,10 +174,11 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
         int &$field_length,
         int &$enc,
         array &$temp_cw,
+        string $data,
     ): bool {
         if ($epos === $data_length) {
             $enc = Data::ENC_ASCII;
-            $params = Data::getPaddingSize($this->shape, $cdw_num + $field_length);
+            $params = Data::getPaddingSize($this->shape, $cdw_num + $field_length, $this->size);
             if (($params[11] - $cdw_num) > 2) {
                 $cdw[] = $this->getSwitchEncodingCodeword($enc);
                 ++$cdw_num;
@@ -152,7 +190,11 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
         if ($field_length < 4) {
             $enc = Data::ENC_ASCII;
             $this->last_enc = $enc;
-            $params = Data::getPaddingSize($this->shape, $cdw_num + $field_length + ($data_length - $epos));
+            $params = Data::getPaddingSize(
+                $this->shape,
+                $cdw_num + $field_length + $this->getAsciiCodewordCount($data, $epos, $data_length),
+                $this->size,
+            );
             if (($params[11] - $cdw_num) <= 2) {
                 return true;
             }
@@ -229,7 +271,7 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
 
             if (
                 ($field_length === 4 || $epos === $data_length || !$this->isCharMode($chr, Data::ENC_EDF))
-                && $this->encodeEDFfour($epos, $cdw, $cdw_num, $pos, $data_length, $field_length, $enc, $temp_cw)
+                && $this->encodeEDFfour($epos, $cdw, $cdw_num, $pos, $data_length, $field_length, $enc, $temp_cw, $data)
             ) {
                 break;
             }
@@ -259,20 +301,35 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
         // initialize temporary array with 0 length
         $temp_cw = [];
         $field_length = 0;
+        $switched = false;
         while ($pos < $data_length && $field_length <= 1555) {
-            $newenc = $this->lookAheadTest($data, $pos, $enc);
-            if ($newenc !== $enc) {
-                // 1. If the look-ahead test (starting at step J)
-                // indicates another mode, switch to that mode.
-                $enc = $newenc;
-                break; // exit from B256 mode
+            if ($this->isGsOneChar(\ord($data[$pos]))) {
+                // FNC1 has no Base 256 representation: end the self-terminating field
+                // and let the caller write the codeword
+                $enc = Data::ENC_ASCII;
+                break;
             }
 
-            // 2. Otherwise, process the next character in Base 256 encodation.
-            $chr = \ord($data[$pos]);
+            // 1. Process the next character in Base 256 encodation.
+            // A field length of zero means "up to the end of the symbol", so the
+            // character is consumed before the look-ahead test can end the field.
+            $temp_cw[] = \ord($data[$pos]);
             ++$pos;
-            $temp_cw[] = $chr;
             ++$field_length;
+
+            // 2. If the look-ahead test (starting at step J)
+            // indicates another mode, switch to that mode.
+            $newenc = $this->lookAheadTest($data, $pos, $enc);
+            if ($newenc !== $enc) {
+                $enc = $newenc;
+                $switched = true;
+                break; // exit from B256 mode
+            }
+        }
+
+        if ($field_length === 0) {
+            // a zero length field means "up to the end of the symbol"
+            return;
         }
 
         // set field length
@@ -290,6 +347,13 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
         // add B256 field
         foreach ($temp_cw as $cht) {
             $cdw[] = $this->get255StateCodeword($cht, $cdw_num + 1);
+            ++$cdw_num;
+        }
+
+        if ($switched && $enc !== Data::ENC_ASCII) {
+            // the B256 field returns the decoder to ASCII, so the mode selected by the
+            // look-ahead test needs its own latch codeword
+            $cdw[] = $this->getSwitchEncodingCodeword($enc);
             ++$cdw_num;
         }
     }

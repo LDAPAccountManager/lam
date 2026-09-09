@@ -21,10 +21,9 @@ namespace Com\Tecnick\Pdf\Sign;
 /**
  * Com\Tecnick\Pdf\Sign\DigestAlgorithm
  *
- * Backed enum for the supported message-digest algorithms. Unifies the two
- * previously identical closed sets: Config::DIGEST_ALGORITHMS (CMS builder) and
- * Timestamp\Config::HASH_ALGORITHMS (RFC 3161 message imprint). The backing
- * value is the lowercase algorithm name accepted by both.
+ * Backed enum for the supported message-digest algorithms. It is the single
+ * closed set for both the CMS builder and the RFC 3161 message imprint. The
+ * backing value is the lowercase algorithm name accepted by both.
  *
  * @since     2026-07-17
  * @category  Library
@@ -60,5 +59,57 @@ enum DigestAlgorithm: string
         }
 
         return self::tryFrom($value) ?? throw new Exception('Invalid digest algorithm: ' . $value);
+    }
+
+    /**
+     * The backing value of every case, in declaration order.
+     *
+     * @return list<string>
+     */
+    public static function values(): array
+    {
+        return \array_map(static fn(self $case): string => $case->value, self::cases());
+    }
+
+    /**
+     * Resolve a digest AlgorithmIdentifier OID to the matching enum case.
+     *
+     * @return self|null Null when the OID names no supported algorithm.
+     */
+    public static function tryFromOid(string $oid): ?self
+    {
+        foreach (self::cases() as $case) {
+            if ($case->oid() === $oid) {
+                return $case;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Length in bytes of a raw digest produced by this algorithm.
+     */
+    public function digestLength(): int
+    {
+        return match ($this) {
+            self::Sha256 => 32,
+            self::Sha384 => 48,
+            self::Sha512 => 64,
+        };
+    }
+
+    /**
+     * OID of this algorithm's AlgorithmIdentifier (NIST, RFC 5754 section 2).
+     *
+     * Read by the CMS builder, the CMS reader, and the RFC 3161 request.
+     */
+    public function oid(): string
+    {
+        return match ($this) {
+            self::Sha256 => '2.16.840.1.101.3.4.2.1',
+            self::Sha384 => '2.16.840.1.101.3.4.2.2',
+            self::Sha512 => '2.16.840.1.101.3.4.2.3',
+        };
     }
 }

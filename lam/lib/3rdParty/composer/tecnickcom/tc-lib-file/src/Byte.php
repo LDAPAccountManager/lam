@@ -23,7 +23,11 @@ use RangeException;
 /**
  * Com\Tecnick\File\Byte
  *
- * Function to read byte-level data
+ * Big-endian byte-level reads from a binary string
+ *
+ * The 32-bit readers (getULong(), getLong(), getFixed()) assume a 64-bit PHP
+ * build: on a 32-bit build the intermediate left shift overflows the platform
+ * integer.
  *
  * @since     2015-07-28
  * @category  Library
@@ -43,15 +47,6 @@ readonly class Byte
     /**
      * Initialize a new string to be processed.
      *
-     * Values are read in place via \ord() + bitwise math: no per-read unpack()
-     * call and no byte-table copy, so memory stays at the size of the string.
-     *
-     * The read methods are deliberately inlined (each repeats the bounds check
-     * and the \ord()/shift sequence) rather than sharing private helpers: every
-     * userland call in PHP carries real frame-setup overhead and is not inlined
-     * by the engine in the interpreter, so the duplication is a measurable speed
-     * win on the hot read path.
-     *
      * @param string $str String (binary) from where to extract values
      */
     public function __construct(
@@ -64,10 +59,15 @@ readonly class Byte
     }
 
     /**
+     * Get the length of the binary string in bytes.
+     */
+    public function getLength(): int
+    {
+        return $this->length;
+    }
+
+    /**
      * Throw for a read that failed its bounds check.
-     *
-     * Kept as a separate method so the cold error path does not bloat the
-     * inlined read methods; it is never reached on a successful read.
      *
      * @param int $offset Read start position.
      * @param int $length Number of bytes requested.

@@ -32,40 +32,8 @@ namespace Com\Tecnick\Pdf\Page;
 abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
 {
     /**
-     * Map layouts with their canonical names
-     *
-     * @var array<string, string>
-     */
-    protected const LAYOUT = [
-        'singlepage' => 'SinglePage', // Display one page at a time
-        'default' => 'SinglePage',
-        'single' => 'SinglePage',
-        'onecolumn' => 'OneColumn', // Display the pages in one column
-        'continuous' => 'OneColumn',
-        'twocolumnleft' => 'TwoColumnLeft', // Display the pages in two columns, with odd-numbered pages on the left
-        'two' => 'TwoColumnLeft',
-        'twocolumnright' => 'TwoColumnRight', // Display the pages in two columns, with odd-numbered pages on the right
-        'twopageleft' => 'TwoPageLeft', // Display the pages two at a time, with odd-numbered pages on the left
-        'twopageright' => 'TwoPageRight', // Display the pages two at a time, with odd-numbered pages on the right
-    ];
-
-    /**
-     * Map display modes with their canonical names
-     *
-     * @var array<string, string>
-     */
-    protected const DISPLAY = [
-        'usenone' => 'UseNone', // Neither document outline nor thumbnail images visible
-        'useoutlines' => 'UseOutlines', // Document outline visible
-        'usethumbs' => 'UseThumbs', // Thumbnail images visible
-        'fullscreen' => 'FullScreen', // Full-screen mode, with no menu bar or window controls
-        'useoc' => 'UseOC', // (PDF 1.5) Optional content group panel visible
-        'useattachments' => 'UseAttachments', // (PDF 1.6) Attachments panel visible
-        '' => 'UseAttachments', // (PDF 1.6) Attachments panel visible
-    ];
-
-    /**
      * Get the canonical page layout name.
+     * Accepted names, aliases and the fallback are defined by PageLayout::fromLoose().
      *
      * @param string|PageLayout $name Page layout name or PageLayout enum case.
      *
@@ -73,16 +41,12 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
      */
     public function getLayout(string|PageLayout $name = ''): string
     {
-        if ($name instanceof PageLayout) {
-            return $name->value;
-        }
-
-        $name = \strtolower($name);
-        return self::LAYOUT[$name] ?? 'SinglePage';
+        return PageLayout::fromLoose($name)->value;
     }
 
     /**
      * Get the canonical page display mode.
+     * Accepted names and the fallback are defined by PageDisplayMode::fromLoose().
      *
      * @param string|PageDisplayMode $mode Display mode name or PageDisplayMode enum case.
      *
@@ -90,11 +54,6 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
      */
     public function getDisplay(string|PageDisplayMode $mode = ''): string
     {
-        if ($mode instanceof PageDisplayMode) {
-            return $mode->value;
-        }
-
-        $mode = \strtolower($mode);
-        return self::DISPLAY[$mode] ?? 'UseNone';
+        return PageDisplayMode::fromLoose($mode)->value;
     }
 }

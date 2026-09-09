@@ -19,9 +19,9 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\CSS;
 
 /**
- * CSS Specificity tuple calculator and comparator
+ * Com\Tecnick\Pdf\CSS\Specificity
  *
- * Implements CSS 2.1 specificity (a,b,c) tuple scoring:
+ * CSS 2.1 specificity (a,b,c) tuple calculator and comparator:
  * - a = number of ID selectors
  * - b = number of class selectors, attribute selectors, and pseudo-classes
  * - c = number of type selectors and pseudo-elements
@@ -176,12 +176,11 @@ class Specificity
     }
 
     /**
-     * Legacy string representation for backward compatibility.
-     * Format: inline-style flag followed by the id, class, and type counts
-     * (e.g. "0123" = inline-style 0, 1 id, 2 classes, 3 types).
+     * String representation of the specificity.
      *
-     * Note: This is maintained for backward compatibility with existing code,
-     * but internally we use numeric tuple comparison.
+     * Format: inline-style flag followed by the id, class and type counts
+     * (e.g. "0123" = inline-style 0, 1 id, 2 classes, 3 types). Internal
+     * comparisons use the numeric tuple instead.
      *
      * @param int $inlineStyle 0 for rule, 1 for inline
      * @return string

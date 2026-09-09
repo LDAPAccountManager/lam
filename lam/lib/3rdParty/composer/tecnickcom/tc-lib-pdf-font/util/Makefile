@@ -13,6 +13,9 @@
 # Download and convert fonts for tc-lib-pdf-font.
 # ----------------------------------------------------------------------------------------------------------------------
 
+SHELL=/bin/bash
+.SHELLFLAGS=-e -o pipefail -c
+
 # Folder containing the font to install (package)
 PKGFONTDIR=.
 
@@ -61,6 +64,9 @@ CURRENTDIR=$(CURDIR)/
 # RPM Packaging path (where RPMs will be stored)
 PATHRPMPKG=$(CURRENTDIR)/../target/RPM_FONTS/$(PKGFONTDIR)
 
+# RPM local database path (avoid host rpmdb permission issues)
+RPMDBPATH=$(PATHRPMPKG)/.rpmdb
+
 # DEB Packaging path (where DEBs will be stored)
 PATHDEBPKG=$(CURRENTDIR)/../target/DEB_FONTS/$(PKGFONTDIR)
 
@@ -68,7 +74,7 @@ PATHDEBPKG=$(CURRENTDIR)/../target/DEB_FONTS/$(PKGFONTDIR)
 PATHBZ2PKG=$(CURRENTDIR)/../target/BZ2_FONTS/$(PKGFONTDIR)
 
 
-# Composer executable (disable APC to as a work-around of a bug)
+# Composer executable (APC disabled to work around a bug)
 COMPOSER=$(shell which php) -d "apc.enable_cli=0" $(shell which composer)
 
 # sed argument for in-place substitutions
@@ -76,9 +82,6 @@ SEDINPLACE=-i
 ifeq ($(shell uname -s),Darwin)
 	SEDINPLACE=-i ''
 endif
-
-# Mago version
-MAGOVERSION=1.43.0
 
 # --- MAKE TARGETS ---
 
@@ -122,7 +125,7 @@ update:
 install: uninstall
 	mkdir -p "$(PATHINSTFONT)"
 	cp -rf "../target/fonts/$(PKGFONTDIR)/"*".json" "$(PATHINSTFONT)"
-	cp -rf "../target/fonts/$(PKGFONTDIR)/"*".z" "$(PATHINSTFONT)" | true
+	cp -rf "../target/fonts/$(PKGFONTDIR)/"*".z" "$(PATHINSTFONT)" || true
 	find "$(PATHINSTFONT)" -type d -exec chmod 755 {} \;
 	find "$(PATHINSTFONT)" -type f -exec chmod 644 {} \;
 	mkdir -p "$(PATHINSTDOC)"
@@ -144,8 +147,11 @@ uninstall:
 rpm:
 	@test $(words $(CURDIR)) -eq 1 || { echo "ERROR: rpmbuild does not support spaces in the project path: $(CURDIR)"; exit 1; }
 	rm -rf "$(PATHRPMPKG)"
-	rpmbuild --define \
-	"_topdir $(PATHRPMPKG)" \
+	mkdir -p "$(RPMDBPATH)" "$(PATHRPMPKG)/tmp"
+	rpmbuild \
+	--define "_topdir $(PATHRPMPKG)" \
+	--define "_dbpath $(RPMDBPATH)" \
+	--define "_tmppath $(PATHRPMPKG)/tmp" \
 	--define "_vendor $(VENDOR)" \
 	--define "_owner $(OWNER)" \
 	--define "_project $(PROJECT)" \
@@ -162,11 +168,12 @@ rpm:
 ## Build the DEB package for Debian-like Linux distributions
 .PHONY: deb
 deb:
-	echo "resources/fonts/control/$(DEBCOPYRIGHT)"
 	rm -rf "$(PATHDEBPKG)"
-	make install DESTDIR="$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" PKGFONTDIR="$(PKGFONTDIR)"
+	$(MAKE) install DESTDIR="$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" PKGFONTDIR="$(PKGFONTDIR)"
 	tar -zcvf "$(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz" -C "$(PATHDEBPKG)/" "$(PKGNAME)-$(VERSION)"
 	cp -rf ../resources/fonts/debian "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -name '*.bak' -delete
+	chmod 755 "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/rules"
 	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
 	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
 	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
@@ -187,5 +194,5 @@ deb:
 .PHONY: bz2
 bz2:
 	rm -rf "$(PATHBZ2PKG)"
-	make install DESTDIR="$(PATHBZ2PKG)" PKGFONTDIR="$(PKGFONTDIR)"
+	$(MAKE) install DESTDIR="$(PATHBZ2PKG)" PKGFONTDIR="$(PKGFONTDIR)"
 	tar -jcvf "$(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2" -C "$(PATHBZ2PKG)" "$(DATADIR)"

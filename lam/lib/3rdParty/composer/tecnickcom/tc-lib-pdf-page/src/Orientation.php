@@ -43,9 +43,9 @@ enum Orientation: string
     /**
      * Resolve a loose orientation value to the matching enum case.
      *
-     * Accepts an enum instance (returned unchanged) or a string. Matching the
-     * legacy behavior of getPageOrientedSize(), only the exact values 'P' and
-     * 'L' select an orientation; anything else means auto (never throws).
+     * Accepts an enum instance (returned unchanged) or a string. As in
+     * getPageOrientedSize(), only the exact values 'P' and 'L' select an
+     * orientation; anything else means auto (never throws).
      *
      * @param string|self $value Orientation identifier or enum case.
      */

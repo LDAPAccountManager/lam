@@ -26,14 +26,11 @@ use Com\Tecnick\Unicode\Substitution\Thai as ThaiHandler;
 /**
  * Com\Tecnick\Unicode\Substitution
  *
- * Top-level entry point for context-sensitive Unicode character substitution.
+ * Context-sensitive Unicode character substitution.
  *
- * Detects which scripts are present in the codepoint array in a single pass,
- * then applies the matching per-script handler(s) in sequence:
- * Thai → Devanagari → Hangul.
- *
- * Codepoints belonging to unsupported or unrecognised scripts are passed
- * through unmodified. The method never discards input it cannot classify.
+ * Detects which scripts are present in the codepoint array in a single pass, then
+ * applies the matching per-script handlers in sequence: Thai, Devanagari, Hangul.
+ * Codepoints of unsupported scripts are passed through unmodified.
  *
  * @since     2026-04-30
  * @category  Library
@@ -47,9 +44,7 @@ final class Substitution
 {
     /**
      * Applies script-specific character substitutions to the codepoint array.
-     *
-     * Performs one pass to detect active scripts, then one pass per active
-     * handler. Empty input is returned as-is.
+     * Empty input is returned unchanged.
      *
      * @param array<int, int> $ordarr Array of Unicode codepoints.
      *

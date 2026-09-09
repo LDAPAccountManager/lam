@@ -21,7 +21,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
 /**
  * Com\Tecnick\Pdf\Encrypt\Output
  *
- * PHP class for output encrypt PDF object
+ * Generates the PDF encryption dictionary.
  *
  * @since     2008-01-02
  * @category  Library
@@ -47,6 +47,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
  *     'OKS': string,
  *     'OVS': string,
  *     'P': int,
+ *     'R': int,
  *     'Recipients': array<string>,
  *     'StmF': string,
  *     'StrF': string,
@@ -65,7 +66,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
  *     'perms': string,
  *     'protection': int,
  *     'pubkey': bool,
- *     'pubkeys'?: array{array{'c':string, 'p':array<string>}},
+ *     'pubkeys'?: list<array{'c':string, 'p'?:array<string>}>,
  *     'user_password': string,
  *     }
  */
@@ -92,6 +93,7 @@ abstract class Output
         'OKS' => '',
         'OVS' => '',
         'P' => 0,
+        'R' => 0,
         'Recipients' => [],
         'StmF' => '',
         'StrF' => '',
@@ -115,6 +117,28 @@ abstract class Output
     ];
 
     /**
+     * Placeholder shown by __debugInfo() in place of secret material.
+     *
+     * @var string
+     */
+    private const REDACTED = '[redacted]';
+
+    /**
+     * Redact the file encryption key and the passwords when the object is dumped.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $data = $this->encryptdata;
+        $data['key'] = $data['key'] === '' ? '' : self::REDACTED;
+        $data['user_password'] = $data['user_password'] === '' ? '' : self::REDACTED;
+        $data['owner_password'] = $data['owner_password'] === '' ? '' : self::REDACTED;
+
+        return ['encryptdata' => $data];
+    }
+
+    /**
      * Escape a string: add "\" before "\", "(" and ")".
      *
      * @param string $str String to escape.
@@ -130,12 +154,43 @@ abstract class Output
     }
 
     /**
+     * Format a binary value as a PDF hexadecimal string.
+     *
+     * Hexadecimal strings carry arbitrary bytes without escaping.
+     *
+     * @param string $raw Raw binary value.
+     */
+    protected function getHexString(string $raw): string
+    {
+        return '<' . \bin2hex($raw) . '>';
+    }
+
+    /**
+     * Normalize the permission value to the signed 32-bit integer that /P requires.
+     *
+     * @param int $protection 32bit encryption permission value.
+     */
+    protected function getSignedPermissions(int $protection): int
+    {
+        $masked = $protection & 0xFFFF_FFFF;
+        return ($masked & 0x8000_0000) !== 0 ? $masked - 0x1_0000_0000 : $masked;
+    }
+
+    /**
      * Get the PDF encryption block
      *
      * @param int $pon Current PDF object number
+     *
+     * @throws \Com\Tecnick\Pdf\Encrypt\Exception When encryption is not enabled.
      */
     public function getPdfEncryptionObj(int &$pon): string
     {
+        if (!$this->encryptdata['encrypted']) {
+            throw new \Com\Tecnick\Pdf\Encrypt\Exception(
+                'encryption is not enabled: there is no encryption dictionary to output',
+            );
+        }
+
         $this->setMissingValues();
         $this->encryptdata['objid'] = ++$pon;
         $out =
@@ -209,7 +264,7 @@ abstract class Output
         // that is required to access encryption keys used by this filter.
         $out .= '/AuthEvent /' . $this->encryptdata['CF']['AuthEvent'] . "\n";
         if ($this->encryptdata['CF']['Length'] !== 0) {
-            // The bit length of the encryption key.
+            // The length of the encryption key, in bytes.
             $out .= '/Length ' . $this->encryptdata['CF']['Length'] . "\n";
         }
 
@@ -235,53 +290,35 @@ abstract class Output
             return $out;
         }
 
-        $out .= '/R ';
-        if ($this->encryptdata['V'] >= 5) { // AES-256 R5 or R6
-            $revision = $this->encryptdata['V'] >= 6 ? '6' : '5';
+        $out .= '/R ' . $this->encryptdata['R'] . "\n";
+        if ($this->encryptdata['R'] >= 5) { // AES-256 R5 or R6
             $out .=
-                $revision
+                '/OE '
+                . $this->getHexString($this->encryptdata['OE'])
                 . "\n"
-                . '/OE ('
-                . $this->escapeString($this->encryptdata['OE'])
-                . ')'
+                . '/UE '
+                . $this->getHexString($this->encryptdata['UE'])
                 . "\n"
-                . '/UE ('
-                . $this->escapeString($this->encryptdata['UE'])
-                . ')'
-                . "\n"
-                . '/Perms ('
-                . $this->escapeString($this->encryptdata['perms'])
-                . ')'
+                . '/Perms '
+                . $this->getHexString($this->encryptdata['perms'])
                 . "\n";
         }
 
-        if ($this->encryptdata['V'] === 4) { // AES-128
-            $out .= '4' . "\n";
-        }
-
-        if ($this->encryptdata['V'] < 2) { // RC4-40
-            $out .= '2' . "\n";
-        }
-
-        if ($this->encryptdata['V'] >= 2 && $this->encryptdata['V'] < 4) { // RC4-128
-            $out .= '3' . "\n";
-        }
-
         $out .=
-            '/O ('
-            . $this->escapeString($this->encryptdata['O'])
-            . ')'
+            '/O '
+            . $this->getHexString($this->encryptdata['O'])
             . "\n"
-            . '/U ('
-            . $this->escapeString($this->encryptdata['U'])
-            . ')'
+            . '/U '
+            . $this->getHexString($this->encryptdata['U'])
             . "\n"
             . '/P '
-            . $this->encryptdata['P']
-            . "\n"
-            . '/EncryptMetadata '
-            . $this->getBooleanString($this->encryptdata['EncryptMetadata'])
+            . $this->getSignedPermissions($this->encryptdata['P'])
             . "\n";
+
+        if ($this->encryptdata['V'] >= 4) {
+            // ISO 32000-1 Table 21 defines EncryptMetadata for V 4 and V 5 only.
+            $out .= '/EncryptMetadata ' . $this->getBooleanString($this->encryptdata['EncryptMetadata']) . "\n";
+        }
 
         return $out;
     }

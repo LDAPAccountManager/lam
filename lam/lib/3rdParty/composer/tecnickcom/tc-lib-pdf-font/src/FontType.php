@@ -43,10 +43,13 @@ enum FontType: string
     /** Adobe Font Metrics (one of the 14 Core fonts). */
     case Core = 'Core';
 
+    /** TrueType with a single-byte encoding. */
     case TrueType = 'TrueType';
 
+    /** TrueType with a Unicode encoding. */
     case TrueTypeUnicode = 'TrueTypeUnicode';
 
+    /** Adobe Type 1. */
     case Type1 = 'Type1';
 
     /** CID-0 Japanese. */
@@ -64,9 +67,8 @@ enum FontType: string
     /**
      * Resolve a loose font type value to the matching enum case.
      *
-     * Accepts the canonical type name (or the empty string for autodetection)
-     * or an enum instance (returned unchanged). Unknown values throw, matching
-     * the closed set validated by Import::getFontType().
+     * Accepts the canonical type name, the empty string for autodetection,
+     * or an enum instance, which is returned unchanged.
      *
      * @param string|self $value Font type name or enum case.
      *

@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Sign\Cms;
 
+use Com\Tecnick\Pdf\Sign\DigestAlgorithm;
 use Com\Tecnick\Pdf\Sign\Exception;
 use OpenSSLAsymmetricKey;
 
@@ -32,6 +33,12 @@ use OpenSSLAsymmetricKey;
  * openssl_sign(), and encodes the ContentInfo. RSA and ECDSA keys are
  * supported with SHA-256/384/512.
  *
+ * sign() covers the case where the private key is available in this process.
+ * When it is not, or when the content is too large to hold as a string, the two
+ * halves are available on their own: signaturePayload() returns the bytes a signer
+ * has to sign for a given SigningRequest, and buildFromSignature() turns those plus the
+ * signature into the CMS. sign() is implemented over both.
+ *
  * @since     2026-07-15
  * @category  Library
  * @package   PdfSign
@@ -42,38 +49,27 @@ use OpenSSLAsymmetricKey;
  */
 final class Builder
 {
-    private const OID_SIGNED_DATA = '1.2.840.113549.1.7.2';
-
-    private const OID_DATA = '1.2.840.113549.1.7.1';
-
-    private const OID_CONTENT_TYPE = '1.2.840.113549.1.9.3';
-
-    private const OID_MESSAGE_DIGEST = '1.2.840.113549.1.9.4';
-
-    private const OID_SIGNING_TIME = '1.2.840.113549.1.9.5';
-
-    private const OID_SIGNING_CERTIFICATE_V2 = '1.2.840.113549.1.9.16.2.47';
-
-    private const OID_SIGNATURE_TIMESTAMP = '1.2.840.113549.1.9.16.2.14';
-
-    private const OID_RSA_ENCRYPTION = '1.2.840.113549.1.1.1';
-
     /**
-     * Digest name to [digest OID, openssl algo constant, ecdsa-with-* OID].
+     * Digest name to [openssl algo constant, ecdsa-with-* OID].
      *
-     * @var array<string, array{string, int, string}>
+     * The digest's own OID is carried by DigestAlgorithm.
+     *
+     * @var array<string, array{int, string}>
      */
-    private const DIGESTS = [
-        'sha256' => ['2.16.840.1.101.3.4.2.1', OPENSSL_ALGO_SHA256, '1.2.840.10045.4.3.2'],
-        'sha384' => ['2.16.840.1.101.3.4.2.2', OPENSSL_ALGO_SHA384, '1.2.840.10045.4.3.3'],
-        'sha512' => ['2.16.840.1.101.3.4.2.3', OPENSSL_ALGO_SHA512, '1.2.840.10045.4.3.4'],
+    private const SIGNATURES = [
+        'sha256' => [OPENSSL_ALGO_SHA256, '1.2.840.10045.4.3.2'],
+        'sha384' => [OPENSSL_ALGO_SHA384, '1.2.840.10045.4.3.3'],
+        'sha512' => [OPENSSL_ALGO_SHA512, '1.2.840.10045.4.3.4'],
     ];
 
     private Asn1 $asn1;
 
-    public function __construct(?Asn1 $asn1 = null)
+    private Certificate $certificate;
+
+    public function __construct(?Asn1 $asn1 = null, ?Certificate $certificate = null)
     {
         $this->asn1 = $asn1 ?? new Asn1();
+        $this->certificate = $certificate ?? new Certificate($this->asn1);
     }
 
     /**
@@ -82,8 +78,9 @@ final class Builder
      * @param string               $data            Detached content bytes (the signed data).
      * @param string               $signerCertDer   DER of the signing certificate.
      * @param OpenSSLAsymmetricKey  $privateKey      Signing private key (RSA or EC).
-     * @param list<string>         $chainCertsDer   Additional certificates (DER) to embed.
-     * @param string               $digestAlgorithm One of the DIGESTS keys.
+     * @param list<string>         $chainCertsDer   Additional certificates to embed, each as
+     *                            PEM or as DER. Every entry is parsed.
+     * @param string|DigestAlgorithm $digestAlgorithm Digest algorithm name or enum case.
      * @param int                  $signingTime     Unix timestamp for the signing-time attribute.
      * @param (callable(string): string)|null $signatureTimestamp Optional provider that receives the
      *                            raw SignerInfo signature bytes and returns a DER-encoded RFC 3161
@@ -93,6 +90,9 @@ final class Builder
      *                            attribute. The legacy (ISO 32000-1) profile includes it; PAdES-BASELINE
      *                            forbids it (ETSI EN 319 142-1) and carries the time in the /M signature
      *                            dictionary entry instead.
+     * @param array<array-key, string> $extraSignedAttributes Additional signed attributes as
+     *                            OID => DER-encoded attribute value, for a profile that requires one
+     *                            such as the CAdES signature-policy-identifier.
      *
      * @return string DER-encoded CMS ContentInfo.
      *
@@ -103,31 +103,108 @@ final class Builder
         string $signerCertDer,
         OpenSSLAsymmetricKey $privateKey,
         array $chainCertsDer,
-        string $digestAlgorithm,
+        string|DigestAlgorithm $digestAlgorithm,
         int $signingTime,
         ?callable $signatureTimestamp = null,
         bool $includeSigningTime = true,
+        array $extraSignedAttributes = [],
     ): string {
-        [$digestOid, $opensslAlgo, $ecdsaOid] = $this->algorithms($digestAlgorithm);
-        [$signatureOid, $signatureHasNullParams] = $this->signatureAlgorithm($privateKey, $ecdsaOid);
+        $digest = DigestAlgorithm::fromLoose($digestAlgorithm)->value;
+        [, $opensslAlgo] = $this->algorithms($digest);
 
-        $messageDigest = \hash($digestAlgorithm, $data, true);
-        $certHash = \hash($digestAlgorithm, $signerCertDer, true);
-
-        $signedAttributes = $this->signedAttributes(
-            $messageDigest,
-            $certHash,
-            $digestAlgorithm,
-            $digestOid,
+        $request = new SigningRequest(
+            \hash($digest, $data, true),
+            $signerCertDer,
+            $digest,
             $signingTime,
             $includeSigningTime,
+            $extraSignedAttributes,
         );
-        $signedAttributesForSigning = $this->asn1->encodeSet($signedAttributes);
 
         $signature = '';
-        if (!\openssl_sign($signedAttributesForSigning, $signature, $privateKey, $opensslAlgo)) {
+        $signed = \openssl_sign($this->signaturePayload($request), $signature, $privateKey, $opensslAlgo);
+        if (!$signed) {
+            // The failure is reported as an Exception, so the OpenSSL queue entries
+            // are discarded rather than left for the host.
+            Certificate::clearOpenSslErrors();
             throw new Exception('Unable to sign the CMS signed attributes');
         }
+
+        return $this->buildFromSignature($request, $signature, $chainCertsDer, $signatureTimestamp);
+    }
+
+    /**
+     * Produce the bytes a signer has to sign.
+     *
+     * The first half of sign() on its own, for a signer whose private key this
+     * process cannot reach: a hardware token, a smart card, or a remote signing
+     * service. It also serves a signer that holds the key but not the content,
+     * since the request carries the message digest rather than the content.
+     *
+     * The result is the DER SET OF signed attributes defined by RFC 5652 section
+     * 5.4, which is what the signature covers. It is a pure function of the request,
+     * so buildFromSignature() derives the same bytes again rather than taking them
+     * from the caller.
+     *
+     * @param SigningRequest $request Validated inputs for the signed attributes.
+     *
+     * @return string DER SET OF signed attributes, ready to be signed.
+     *
+     * @throws Exception If the digest is unsupported or encoding fails.
+     */
+    public function signaturePayload(SigningRequest $request): string
+    {
+        return $this->asn1->encodeSet($this->signedAttributesContent($request));
+    }
+
+    /**
+     * Produce the CMS from a request and the signature over its signaturePayload().
+     *
+     * The second half of sign(), for a signature produced elsewhere. The
+     * signature AlgorithmIdentifier is read from the signing certificate rather
+     * than from a private key, since there may be none in this process.
+     *
+     * The signature is verified against the certificate before anything is emitted,
+     * so a signature over the wrong bytes, from the wrong key, or in the wrong
+     * encoding fails at the call.
+     *
+     * @param SigningRequest $request         The same request passed to signaturePayload().
+     * @param string         $signature       Signature over $this->signaturePayload($request).
+     * @param list<string>   $chainCertsDer   Additional certificates to embed, each as PEM or as DER.
+     * @param (callable(string): string)|null $signatureTimestamp Optional provider that receives the
+     *                            raw SignerInfo signature bytes and returns a DER-encoded RFC 3161
+     *                            timestamp token (ContentInfo). When supplied, the token is embedded as
+     *                            the id-aa-signatureTimeStampToken unsigned attribute (PAdES B-T).
+     * @param string|SignatureEncoding $signatureEncoding Encoding of $signature. An ECDSA signature
+     *                            returned as the fixed-width r || s concatenation is converted to the
+     *                            DER form CMS requires when this is P1363.
+     *
+     * @return string DER-encoded CMS ContentInfo.
+     *
+     * @throws Exception If the digest or certificate key type is unsupported, if the signature is
+     *                   empty, malformed, or does not verify, or if encoding fails.
+     */
+    public function buildFromSignature(
+        SigningRequest $request,
+        string $signature,
+        array $chainCertsDer = [],
+        ?callable $signatureTimestamp = null,
+        string|SignatureEncoding $signatureEncoding = SignatureEncoding::Der,
+    ): string {
+        [$digestOid, $opensslAlgo, $ecdsaOid] = $this->algorithms($request->digestAlgorithm);
+
+        // Loaded once for both the identifier and the verification.
+        $publicKey = $this->certificatePublicKey($request->signerCertPem());
+        [$signatureOid, $signatureHasNullParams] = $this->signatureAlgorithm($publicKey, $ecdsaOid);
+
+        $signedAttributes = $this->signedAttributesContent($request);
+        $signature = $this->verifiedSignature(
+            $this->asn1->encodeSet($signedAttributes),
+            $signature,
+            $publicKey,
+            $opensslAlgo,
+            $signatureEncoding,
+        );
 
         $unsignedAttributes = $signatureTimestamp === null
             ? ''
@@ -135,7 +212,7 @@ final class Builder
 
         $signerInfo = $this->asn1->encodeSequence(
             $this->asn1->encodeInteger(1)
-            . $this->issuerAndSerialNumber($signerCertDer)
+            . $this->issuerAndSerialNumber($request->signerCertDer)
             . $this->algorithmIdentifier($digestOid, false)
             . $this->asn1->encodeContext(0, $signedAttributes)
             . $this->algorithmIdentifier($signatureOid, $signatureHasNullParams)
@@ -143,19 +220,117 @@ final class Builder
             . $unsignedAttributes,
         );
 
-        $certificates = $this->asn1->encodeContext(0, $signerCertDer . \implode('', $chainCertsDer));
+        $certificates = $this->asn1->encodeContext(0, $this->certificateSet($request->signerCertDer, $chainCertsDer));
 
         $signedData = $this->asn1->encodeSequence(
             $this->asn1->encodeInteger(1)
                 . $this->asn1->encodeSet($this->algorithmIdentifier($digestOid, false))
-                . $this->asn1->encodeSequence($this->asn1->encodeObjectIdentifier(self::OID_DATA))
+                . $this->asn1->encodeSequence($this->asn1->encodeObjectIdentifier(Oid::DATA))
                 . $certificates
                 . $this->asn1->encodeSet($signerInfo),
         );
 
         return $this->asn1->encodeSequence(
-            $this->asn1->encodeObjectIdentifier(self::OID_SIGNED_DATA) . $this->asn1->encodeContext(0, $signedData),
+            $this->asn1->encodeObjectIdentifier(Oid::SIGNED_DATA) . $this->asn1->encodeContext(0, $signedData),
         );
+    }
+
+    /**
+     * Build the signed attributes content for a request (without the SET tag).
+     *
+     * @throws Exception If the digest is unsupported or encoding fails.
+     */
+    private function signedAttributesContent(SigningRequest $request): string
+    {
+        [$digestOid] = $this->algorithms($request->digestAlgorithm);
+
+        return $this->signedAttributes(
+            $request->messageDigest,
+            \hash($request->digestAlgorithm, $request->signerCertDer, true),
+            $request->digestAlgorithm,
+            $digestOid,
+            $request->signingTime,
+            $request->includeSigningTime,
+            $request->extraSignedAttributes,
+        );
+    }
+
+    /**
+     * Normalise a signature to DER and verify it against the signing certificate.
+     *
+     * @param string $signaturePayload  DER SET OF signed attributes the signature must cover.
+     * @param string $signature       Signature bytes as supplied by the caller.
+     * @param OpenSSLAsymmetricKey $publicKey Public key of the signing certificate.
+     * @param int    $opensslAlgo     openssl algorithm constant for the digest.
+     * @param string|SignatureEncoding $signatureEncoding Encoding of $signature.
+     *
+     * @return string Signature bytes as CMS carries them.
+     *
+     * @throws Exception If the signature is empty, malformed, or does not verify.
+     */
+    private function verifiedSignature(
+        string $signaturePayload,
+        string $signature,
+        OpenSSLAsymmetricKey $publicKey,
+        int $opensslAlgo,
+        string|SignatureEncoding $signatureEncoding,
+    ): string {
+        if ($signature === '') {
+            throw new Exception('The signature is empty');
+        }
+
+        if (SignatureEncoding::fromLoose($signatureEncoding) === SignatureEncoding::P1363) {
+            $signature = $this->p1363ToDer($signature);
+        }
+
+        $verified = \openssl_verify($signaturePayload, $signature, $publicKey, $opensslAlgo);
+
+        // A refused signature is reported as an Exception, so the OpenSSL queue
+        // entries are discarded rather than left for the host.
+        Certificate::clearOpenSslErrors();
+
+        if ($verified !== 1) {
+            throw new Exception('The signature does not verify against the signing certificate');
+        }
+
+        return $signature;
+    }
+
+    /**
+     * Convert a fixed-width ECDSA signature r || s to the DER SEQUENCE CMS carries.
+     *
+     * @throws Exception If the length is not a whole number of two equal halves.
+     */
+    private function p1363ToDer(string $signature): string
+    {
+        $length = \strlen($signature);
+        if ($length < 2 || ($length % 2) !== 0) {
+            throw new Exception('Invalid P1363 signature length: ' . $length);
+        }
+
+        $half = \intdiv($length, 2);
+
+        return $this->asn1->encodeSequence(
+            $this->asn1->encodeIntegerBytes(\substr($signature, 0, $half))
+                . $this->asn1->encodeIntegerBytes(\substr($signature, $half)),
+        );
+    }
+
+    /**
+     * Load the public key of the signing certificate.
+     *
+     * @throws Exception If the certificate cannot be read.
+     */
+    private function certificatePublicKey(string $signerCertPem): OpenSSLAsymmetricKey
+    {
+        $publicKey = \openssl_pkey_get_public($signerCertPem);
+        if ($publicKey === false) {
+            // Unreachable: SigningRequest makes the same call on construction.
+            Certificate::clearOpenSslErrors();
+            throw new Exception('Unreadable signer certificate');
+        }
+
+        return $publicKey;
     }
 
     /**
@@ -167,27 +342,41 @@ final class Builder
      */
     private function algorithms(string $digestAlgorithm): array
     {
-        if (!isset(self::DIGESTS[$digestAlgorithm])) {
+        // Unreachable through the public API, which resolves the name through
+        // DigestAlgorithm first; this fires only if SIGNATURES drifts from its cases.
+        $algorithm = DigestAlgorithm::tryFrom($digestAlgorithm);
+        if ($algorithm === null || !isset(self::SIGNATURES[$digestAlgorithm])) {
             throw new Exception('Unsupported digest algorithm: ' . $digestAlgorithm);
         }
 
-        return self::DIGESTS[$digestAlgorithm];
+        [$opensslAlgo, $ecdsaOid] = self::SIGNATURES[$digestAlgorithm];
+
+        return [$algorithm->oid(), $opensslAlgo, $ecdsaOid];
     }
 
     /**
-     * Resolve the signature AlgorithmIdentifier for the signing key.
+     * Resolve the signature AlgorithmIdentifier for the signer's key.
+     *
+     * Read from the certificate rather than from the private key, since
+     * buildFromSignature() has a certificate where it may have no key. For a
+     * matching pair the result is the same.
+     *
+     * An RSA signature is identified by rsaEncryption with NULL parameters, which
+     * RFC 3370 section 3.2 defines as the PKCS #1 v1.5 signature value identifier
+     * whatever the digest; SignerInfo carries the digest in its own field. The OID
+     * is SignatureVerifier's.
      *
      * @return array{string, bool} [signature OID, whether NULL parameters are emitted]
      *
      * @throws Exception If the key type is unsupported.
      */
-    private function signatureAlgorithm(OpenSSLAsymmetricKey $privateKey, string $ecdsaOid): array
+    private function signatureAlgorithm(OpenSSLAsymmetricKey $publicKey, string $ecdsaOid): array
     {
-        $details = \openssl_pkey_get_details($privateKey);
+        $details = \openssl_pkey_get_details($publicKey);
         $type = $details !== false ? $details['type'] ?? -1 : -1;
 
         if ($type === OPENSSL_KEYTYPE_RSA) {
-            return [self::OID_RSA_ENCRYPTION, true];
+            return [SignatureVerifier::OID_RSA_ENCRYPTION, true];
         }
 
         if ($type === OPENSSL_KEYTYPE_EC) {
@@ -200,6 +389,8 @@ final class Builder
     /**
      * Build the sorted DER SET OF signed attributes content (without the tag).
      *
+     * @param array<string, string> $extraSignedAttributes Additional attributes as OID => DER value.
+     *
      * @throws Exception If encoding fails.
      */
     private function signedAttributes(
@@ -209,11 +400,12 @@ final class Builder
         string $digestOid,
         int $signingTime,
         bool $includeSigningTime,
+        array $extraSignedAttributes = [],
     ): string {
         $attributes = [
-            $this->attribute(self::OID_CONTENT_TYPE, $this->asn1->encodeObjectIdentifier(self::OID_DATA)),
-            $this->attribute(self::OID_MESSAGE_DIGEST, $this->asn1->encodeOctetString($messageDigest)),
-            $this->attribute(self::OID_SIGNING_CERTIFICATE_V2, $this->signingCertificateV2(
+            $this->attribute(Oid::CONTENT_TYPE, $this->asn1->encodeObjectIdentifier(Oid::DATA)),
+            $this->attribute(Oid::MESSAGE_DIGEST, $this->asn1->encodeOctetString($messageDigest)),
+            $this->attribute(Oid::SIGNING_CERTIFICATE_V2, $this->signingCertificateV2(
                 $certHash,
                 $digestAlgorithm,
                 $digestOid,
@@ -221,21 +413,74 @@ final class Builder
         ];
 
         // The CMS signing-time attribute belongs to the legacy (ISO 32000-1) profile.
-        // PAdES-BASELINE forbids it (ETSI EN 319 142-1): the signing time is carried by
-        // the /M entry of the PDF signature dictionary, so validators demote a signature
-        // that carries signing-time from PAdES-BASELINE-B to the older PAdES-BES format.
+        // PAdES-BASELINE forbids it (ETSI EN 319 142-1) and carries the signing time
+        // in the /M entry of the PDF signature dictionary instead.
         if ($includeSigningTime) {
-            $attributes[] = $this->attribute(self::OID_SIGNING_TIME, $this->encodeTime($signingTime));
+            $attributes[] = $this->attribute(Oid::SIGNING_TIME, $this->encodeTime($signingTime));
         }
 
-        // DER requires the members of a SET OF to be sorted by their encoding,
-        // compared as octet strings padded with trailing zero octets.
-        \usort($attributes, static function (string $one, string $two): int {
+        // Attribute types the builder controls are reserved by SigningRequest, so an
+        // extra attribute cannot duplicate one of them.
+        foreach ($extraSignedAttributes as $oid => $value) {
+            $attributes[] = $this->attribute($oid, $value);
+        }
+
+        return \implode('', $this->sortSetOf($attributes));
+    }
+
+    /**
+     * Build the CertificateSet content: the signer certificate and the chain.
+     *
+     * CertificateSet is a SET OF (RFC 5652 section 10.2.3), so its members follow the
+     * same DER ordering rule as the signed attributes rather than the order the
+     * caller supplied, and a member appears once: a chain that already carries the
+     * leaf is deduplicated against the signer certificate.
+     *
+     * Each entry may be given as PEM or as DER, and is parsed as a certificate.
+     *
+     * @param list<string> $chainCertsDer Additional certificates, PEM or DER.
+     *
+     * @throws Exception If a chain entry is not a certificate.
+     */
+    private function certificateSet(string $signerCertDer, array $chainCertsDer): string
+    {
+        $certificates = [$signerCertDer];
+        /** @var mixed $cert */
+        foreach ($chainCertsDer as $index => $cert) {
+            // An entry that is not a string would reach toDer() as a TypeError rather
+            // than an Exception.
+            if (!\is_string($cert)) {
+                throw new Exception('Invalid chain certificate ' . $index);
+            }
+
+            try {
+                $certificates[] = Certificate::toDer($cert);
+            } catch (Exception $e) {
+                throw new Exception('Invalid chain certificate ' . $index, 0, $e);
+            }
+        }
+
+        return \implode('', $this->sortSetOf(Certificate::deduplicate($certificates)));
+    }
+
+    /**
+     * Sort the members of a SET OF into DER order.
+     *
+     * X.690 section 11.6: members are ordered by their encodings, compared as
+     * octet strings padded with trailing zero octets.
+     *
+     * @param list<string> $members
+     *
+     * @return list<string>
+     */
+    private function sortSetOf(array $members): array
+    {
+        \usort($members, static function (string $one, string $two): int {
             $length = \max(\strlen($one), \strlen($two));
             return \strcmp(\str_pad($one, $length, "\x00"), \str_pad($two, $length, "\x00"));
         });
 
-        return \implode('', $attributes);
+        return $members;
     }
 
     /**
@@ -255,11 +500,20 @@ final class Builder
     {
         /** @var mixed $token */
         $token = $provider($signature);
-        if (!\is_string($token) || $token === '') {
+        if (!\is_string($token)) {
             throw new Exception('Invalid signature timestamp token');
         }
 
-        return $this->asn1->encodeContext(1, $this->attribute(self::OID_SIGNATURE_TIMESTAMP, $token));
+        // Held to the strict reading Timestamp\Client applies before returning a
+        // token, so a token from a provider of the host's own is bounded the same
+        // way: the SignedData head, the CertificateSet, the crls [1], and the tail.
+        try {
+            $this->certificate->fromSignedData($token, true);
+        } catch (Exception $e) {
+            throw new Exception('The signature timestamp token is not a CMS SignedData', 0, $e);
+        }
+
+        return $this->asn1->encodeContext(1, $this->attribute(Oid::SIGNATURE_TIMESTAMP, $token));
     }
 
     /**
@@ -327,21 +581,8 @@ final class Builder
      */
     private function issuerAndSerialNumber(string $certDer): string
     {
-        $certOff = 0;
-        $certTlv = $this->asn1->readTlv($certDer, $certOff);
-        $tbsOff = 0;
-        $tbsTlv = $this->asn1->readTlv($certTlv['value'], $tbsOff);
-        $tbs = $tbsTlv['value'];
+        $fields = $this->certificate->fields($certDer);
 
-        $off = 0;
-        if ($off < \strlen($tbs) && (\ord($tbs[$off]) & 0xE0) === 0xA0) {
-            $this->asn1->readTlv($tbs, $off); // version [0]
-        }
-
-        $serial = $this->asn1->readTlv($tbs, $off); // serialNumber
-        $this->asn1->readTlv($tbs, $off); // signature AlgorithmIdentifier
-        $issuer = $this->asn1->readTlv($tbs, $off); // issuer Name
-
-        return $this->asn1->encodeSequence($issuer['raw'] . $serial['raw']);
+        return $this->asn1->encodeSequence($fields['issuer'] . $fields['serial']);
     }
 }

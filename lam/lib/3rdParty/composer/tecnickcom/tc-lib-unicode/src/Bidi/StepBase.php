@@ -21,6 +21,8 @@ namespace Com\Tecnick\Unicode\Bidi;
 /**
  * Com\Tecnick\Unicode\Bidi\StepBase
  *
+ * Base class of the steps that process one isolating run sequence.
+ *
  * @since     2015-07-13
  * @category  Library
  * @package   Unicode

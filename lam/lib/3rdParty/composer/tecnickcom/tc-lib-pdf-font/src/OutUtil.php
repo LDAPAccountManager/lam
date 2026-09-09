@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Font;
 
-use Com\Tecnick\File\Dir;
 use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
@@ -48,37 +47,68 @@ abstract class OutUtil
      */
     protected function getFontFullPath(string $fontdir, string $file): string
     {
-        $dirobj = new Dir();
-        $kpathfonts = \defined('K_PATH_FONTS') ? (string) \constant('K_PATH_FONTS') : '';
-        // directories where to search for the font definition file
-        // ('.' searches the current working directory)
-        $dirs = \array_unique([
-            '.',
-            $fontdir,
-            $kpathfonts,
-            $dirobj->findParentDir('fonts', __DIR__),
-        ]);
-        foreach ($dirs as $dir) {
-            if (\is_readable($dir . DIRECTORY_SEPARATOR . $file)) {
-                return $dir . DIRECTORY_SEPARATOR . $file;
-            }
+        $path = FontPaths::findFontFile($fontdir, $file);
+        if ($path === '') {
+            throw new FontException('Unable to locate the file: ' . $file);
         }
 
-        throw new FontException('Unable to locate the file: ' . $file);
+        return $path;
     }
 
     /**
      * Outputs font widths
      *
-     * @param TFontData $font Font to process
-     * @param int    $cidoffset Offset for CID values
+     * @param TFontData $font      Font to process
+     * @param int       $cidoffset Offset for CID values
      *
      * @return string PDF command string for font widths
      */
     protected function getCharWidths(array $font, int $cidoffset = 0): string
     {
         \ksort($font['cw']);
-        $range = $this->getWidthRanges($font, $cidoffset);
+        return $this->formatWidthRanges($this->getWidthRanges($font, $cidoffset));
+    }
+
+    /**
+     * Outputs the font widths of a CID keyed font whose character codes are glyph indices.
+     *
+     * Only the glyphs used by the document are listed, as no other code can
+     * appear in a content stream.
+     *
+     * @param TFontData $font Font to process
+     *
+     * @return string PDF command string for font widths
+     */
+    protected function getGidWidths(array $font): string
+    {
+        $widths = [];
+        foreach ($font['usedgid'] as $gid => $ord) {
+            $widths[(int) $gid] = self::normalizeWidth($font['cw'][$ord] ?? $font['dw']);
+        }
+
+        \ksort($widths);
+        return $this->formatWidthRanges($this->buildWidthRanges($widths, self::normalizeWidth($font['dw'])));
+    }
+
+    /**
+     * Returns a glyph width as the integer the /W and /Widths arrays are made of.
+     *
+     * @param mixed $width Raw width read from the font definition.
+     */
+    protected static function normalizeWidth(mixed $width): int
+    {
+        return (int) \round(\is_numeric($width) ? (float) $width : 0.0);
+    }
+
+    /**
+     * Format the width ranges as a PDF /W array
+     *
+     * @param array<int, array<int, int>> $range Width ranges
+     *
+     * @return string PDF command string for font widths
+     */
+    protected function formatWidthRanges(array $range): string
+    {
         // output data
         $wdt = '';
         foreach ($range as $kdx => $wds) {
@@ -95,14 +125,43 @@ abstract class OutUtil
     }
 
     /**
-     * get width ranges of characters
+     * Get the width ranges of the characters
      *
-     * @param TFontData $font Font to process
-     * @param int    $cidoffset Offset for CID values
+     * @param TFontData $font      Font to process
+     * @param int       $cidoffset Offset for CID values
      *
      * @return array<int, array<int, int>>
      */
     protected function getWidthRanges(array $font, int $cidoffset = 0): array
+    {
+        $widths = [];
+        foreach ($font['cw'] as $cid => $width) {
+            $cid -= $cidoffset;
+            if ($cid < 0) {
+                // a character code below the offset has no CID
+                continue;
+            }
+
+            if ($font['subset'] && !isset($font['subsetchars'][$cid])) {
+                // ignore the unused characters (font subsetting)
+                continue;
+            }
+
+            $widths[$cid] = self::normalizeWidth($width);
+        }
+
+        return $this->buildWidthRanges($widths, self::normalizeWidth($font['dw']));
+    }
+
+    /**
+     * Build the width ranges of a CID to width map
+     *
+     * @param array<int, int> $widths Character widths indexed by CID.
+     * @param int             $dwt    Default width.
+     *
+     * @return array<int, array<int, int>>
+     */
+    protected function buildWidthRanges(array $widths, int $dwt): array
     {
         $range = [];
         $rangeid = 0;
@@ -110,53 +169,50 @@ abstract class OutUtil
         $prevwidth = -1;
         $interval = false;
         // for each character
-        foreach ($font['cw'] as $cid => $width) {
-            $cid -= $cidoffset;
-            if ($font['subset'] && !isset($font['subsetchars'][$cid])) {
-                // ignore the unused characters (font subsetting)
+        foreach ($widths as $cid => $width) {
+            if ($width === $dwt) {
+                // the default width applies
                 continue;
             }
 
-            if ($width !== $font['dw']) {
-                if ($cid === ($prevcid + 1)) {
-                    // consecutive CID
-                    if ($width === $prevwidth) {
-                        if ($width === $range[$rangeid][0]) {
-                            $range[$rangeid][] = $width;
-                        } else {
-                            \array_pop($range[$rangeid]);
-                            // new range
-                            $rangeid = $prevcid;
-                            $range[$rangeid] = [];
-                            $range[$rangeid][] = $prevwidth;
-                            $range[$rangeid][] = $width;
-                        }
-
-                        $interval = true;
-                        $range[$rangeid][-1] = -1;
+            if ($cid === ($prevcid + 1)) {
+                // consecutive CID
+                if ($width === $prevwidth) {
+                    if ($width === $range[$rangeid][0]) {
+                        $range[$rangeid][] = $width;
                     } else {
-                        if ($interval) {
-                            // new range
-                            $rangeid = $cid;
-                            $range[$rangeid] = [];
-                            $range[$rangeid][] = $width;
-                        } else {
-                            $range[$rangeid][] = $width;
-                        }
-
-                        $interval = false;
+                        \array_pop($range[$rangeid]);
+                        // new range
+                        $rangeid = $prevcid;
+                        $range[$rangeid] = [];
+                        $range[$rangeid][] = $prevwidth;
+                        $range[$rangeid][] = $width;
                     }
+
+                    $interval = true;
+                    $range[$rangeid][-1] = -1;
                 } else {
-                    // new range
-                    $rangeid = $cid;
-                    $range[$rangeid] = [];
-                    $range[$rangeid][] = $width;
+                    if ($interval) {
+                        // new range
+                        $rangeid = $cid;
+                        $range[$rangeid] = [];
+                        $range[$rangeid][] = $width;
+                    } else {
+                        $range[$rangeid][] = $width;
+                    }
+
                     $interval = false;
                 }
-
-                $prevcid = $cid;
-                $prevwidth = $width;
+            } else {
+                // new range
+                $rangeid = $cid;
+                $range[$rangeid] = [];
+                $range[$rangeid][] = $width;
+                $interval = false;
             }
+
+            $prevcid = $cid;
+            $prevwidth = $width;
         }
 
         /** @var array<int, array<int, int>> $range */

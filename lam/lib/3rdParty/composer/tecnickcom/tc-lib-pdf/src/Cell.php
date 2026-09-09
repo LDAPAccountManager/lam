@@ -85,6 +85,9 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
     /**
      * Set the default cell margin in user units.
      *
+     * The values are converted and stored in internal points, so the margin of a
+     * cell definition array passed to the text methods must be already in points.
+     *
      * @param float $top    Top.
      * @param float $right  Right.
      * @param float $bottom Bottom.
@@ -100,6 +103,9 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
 
     /**
      * Set the default cell padding in user units.
+     *
+     * The values are converted and stored in internal points, so the padding of a
+     * cell definition array passed to the text methods must be already in points.
      *
      * @param float $top    Top.
      * @param float $right  Right.
@@ -124,11 +130,8 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      */
     public function setDefaultCellBorderPos(float $borderpos): void
     {
-        if (
-            $borderpos === self::BORDERPOS_DEFAULT
-            || $borderpos === self::BORDERPOS_EXTERNAL
-            || $borderpos === self::BORDERPOS_INTERNAL
-        ) {
+        $allowed = [self::BORDERPOS_DEFAULT, self::BORDERPOS_EXTERNAL, self::BORDERPOS_INTERNAL];
+        if (\in_array($borderpos, $allowed, true)) {
             $this->defcell['borderpos'] = $borderpos;
             return;
         }
@@ -141,6 +144,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *
      * @param array<int|string, StyleDataOpt> $styles Optional to overwrite the styles (see: getCurrentStyleArray).
      * @param ?TCellDef                $cell   Optional to overwrite cell parameters for padding, margin etc.
+     *                                         The margin and padding values are in points.
      *
      * @return TCellDef
      */
@@ -197,6 +201,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *                          - L=center-on-font-baseline;
      *                          - D=center-on-font-descent.
      * @param ?TCellDef $cell  Optional to overwrite cell parameters for padding, margin etc.
+     *                         The margin and padding values are in points.
      *
      * @throws \Com\Tecnick\Pdf\Font\Exception
      */
@@ -215,14 +220,16 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
             $pheight = $fontHeight;
         }
 
+        // The text is laid out inside the padding box, so both paddings always add up.
+        $padding = $cell['padding']['T'] + $cell['padding']['B'];
+
         return match ($align) {
-            'T', 'B' => $pheight + $cell['padding']['T'] + $cell['padding']['B'],
-            'L' => $pheight - $fontHeight
-                + (2 * \max($cell['padding']['T'] + $fontAscent, $cell['padding']['B'] - $fontDescent)),
-            'A', 'D' => $pheight - $fontHeight
-                + (2 * ($fontHeight + \max($cell['padding']['T'], $cell['padding']['B']))),
-            // default on 'C' case
-            default => $pheight + (2 * \max($cell['padding']['T'], $cell['padding']['B'])),
+            // The font-relative alignments shift the text by half the font height
+            // in either direction, so the box grows by the full font height.
+            'L' => $pheight - $fontHeight + $padding + (2 * \max($fontAscent, -$fontDescent)),
+            'A', 'D' => $pheight + $fontHeight + $padding,
+            // default on 'T', 'B' and 'C' cases
+            default => $pheight + $padding,
         };
     }
 
@@ -231,7 +238,14 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *
      * @param float     $txtwidth Text width in internal points.
      * @param string    $align    Cell horizontal alignment: L=left; C=center; R=right; J=Justify.
+     *                            The text is laid out inside the padding box for every
+     *                            alignment, so this value does not affect the result.
      * @param ?TCellDef $cell     Optional to overwrite cell parameters for padding, margin etc.
+     *                            The margin and padding values are in points.
+     *
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
+     *
+     * @mago-expect analysis:unused-parameter
      */
     protected function cellMinWidth(float $txtwidth, string $align = 'L', ?array $cell = null): float
     {
@@ -239,14 +253,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
             $cell = $this->defcell;
         }
 
-        if ($align === '' || $align === 'J') { // Justify
-            $align = $this->rtl ? 'R' : 'L';
-        }
-
-        return match ($align) {
-            'C' => \ceil($txtwidth + (2 * \max($cell['padding']['L'], $cell['padding']['R']))),
-            default => \ceil($txtwidth + $cell['padding']['L'] + $cell['padding']['R']),
-        };
+        return \ceil($txtwidth + $cell['padding']['L'] + $cell['padding']['R']);
     }
 
     /**
@@ -256,6 +263,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $pheight Cell height in internal points.
      * @param string    $align   Cell vertical alignment: T=top; C=center; B=bottom.
      * @param ?TCellDef $cell    Optional to overwrite cell parameters for padding, margin etc.
+     *                           The margin and padding values are in points.
      */
     protected function cellVPos(float $pnty, float $pheight, string $align = 'T', ?array $cell = null): float
     {
@@ -278,6 +286,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $pwidth Cell width in internal points.
      * @param string    $align  Cell horizontal alignment: L=left; C=center; R=right; J=Justify.
      * @param ?TCellDef $cell   Optional to overwrite cell parameters for padding, margin etc.
+     *                          The margin and padding values are in points.
      */
     protected function cellHPos(float $pntx, float $pwidth, string $align = 'L', ?array $cell = null): float
     {
@@ -310,6 +319,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *                           - L=center-on-font-baseline;
      *                           - D=center-on-font-descent.
      * @param ?TCellDef $cell    Optional to overwrite cell parameters for padding, margin etc.
+     *                           The margin and padding values are in points.
      *
      * @throws \Com\Tecnick\Pdf\Font\Exception
      */
@@ -331,14 +341,18 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
             $txtpheight = $fontHeight;
         }
 
+        // The text is aligned inside the padding box, not inside the whole cell.
+        $padT = $cell['padding']['T'];
+        $freespace = $cellpheight - $padT - $cell['padding']['B'] - $txtpheight;
+
         return match ($align) {
-            'T' => $cell['padding']['T'],
+            'T' => $padT,
             'B' => $cellpheight - $txtpheight - $cell['padding']['B'],
-            'L' => (($cellpheight - $txtpheight + $fontHeight) / 2) - $fontAscent,
-            'A' => ($cellpheight - $txtpheight + $fontHeight) / 2,
-            'D' => (($cellpheight - $txtpheight + $fontHeight) / 2) - $fontHeight,
+            'L' => $padT + (($freespace + $fontHeight) / 2) - $fontAscent,
+            'A' => $padT + (($freespace + $fontHeight) / 2),
+            'D' => $padT + (($freespace + $fontHeight) / 2) - $fontHeight,
             // default on 'C' case
-            default => ($cellpheight - $txtpheight) / 2,
+            default => $padT + ($freespace / 2),
         };
     }
 
@@ -349,6 +363,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $txtpwidth Text width in internal points.
      * @param string    $align     Text horizontal alignment inside the cell: L=left; C=center; R=right; J=Justify.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      */
     protected function cellTextHAlign(float $pwidth, float $txtpwidth, string $align = 'L', ?array $cell = null): float
     {
@@ -360,11 +375,14 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
             $align = $this->rtl ? 'R' : 'L';
         }
 
+        // The text is aligned inside the padding box, not inside the whole cell.
+        $padL = $cell['padding']['L'];
+
         return match ($align) {
-            'C' => ($pwidth - $txtpwidth) / 2,
+            'C' => $padL + (($pwidth - $padL - $cell['padding']['R'] - $txtpwidth) / 2),
             'R' => $pwidth - $cell['padding']['R'] - $txtpwidth,
             // default on 'L' case
-            default => $cell['padding']['L'],
+            default => $padL,
         };
     }
 
@@ -382,6 +400,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *                           - L=center-on-font-baseline;
      *                           - D=center-on-font-descent.
      * @param ?TCellDef $cell    Optional to overwrite cell parameters for padding, margin etc.
+     *                           The margin and padding values are in points.
      *
      * @throws \Com\Tecnick\Pdf\Font\Exception
      */
@@ -403,6 +422,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $txtpwidth Text width in internal points.
      * @param string    $align     Text horizontal alignment inside the cell: L=left; C=center; R=right.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      */
     protected function cellHPosFromText(
         float $txtx,
@@ -428,6 +448,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *                           - L=center-on-font-baseline;
      *                           - D=center-on-font-descent.
      * @param ?TCellDef $cell    Optional to overwrite cell parameters for padding, margin etc.
+     *                           The margin and padding values are in points.
      *
      * @throws \Com\Tecnick\Pdf\Font\Exception
      */
@@ -449,6 +470,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $txtpwidth Text width in internal points.
      * @param string    $align     Text horizontal alignment inside the cell: L=left; C=center; R=right.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      */
     protected function textHPosFromCell(
         float $pntx,
@@ -465,6 +487,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *
      * @param float     $pntx      Cell left X coordinate in internal points.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      *
      * @return float
      *
@@ -485,6 +508,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *
      * @param float     $pwidth    Cell width in internal points.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      *
      * @return float The maximum width available for text within the cell.
      */
@@ -509,6 +533,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      *                           - L=center-on-font-baseline;
      *                           - D=center-on-font-descent.
      * @param ?TCellDef $cell      Optional to overwrite cell parameters for padding, margin etc.
+     *                             The margin and padding values are in points.
      *
      * @return float The maximum width available for text within the cell.
      *
@@ -526,17 +551,17 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
         $fontDescent = $curfont['descent'];
         $cph = $pheight - $cell['margin']['T'] - $cell['margin']['B'];
 
-        // Use a match expression to determine the maximum text height based on alignment.
+        // The text is laid out inside the padding box, so both paddings always add up.
+        $padding = $cell['padding']['T'] + $cell['padding']['B'];
+
+        // Inverse of cellMinHeight().
         return match ($align) {
-            // Top or Bottom
-            'T', 'B' => $cph - $cell['padding']['T'] - $cell['padding']['B'],
             // Center on font Baseline
-            'L' => $cph + $fontHeight
-                - (2 * \max($cell['padding']['T'] + $fontAscent, $cell['padding']['B'] - $fontDescent)),
+            'L' => $cph + $fontHeight - $padding - (2 * \max($fontAscent, -$fontDescent)),
             // Center on font Ascent or Descent
-            'A', 'D' => $cph + $fontHeight - (2 * ($fontHeight + \max($cell['padding']['T'], $cell['padding']['B']))),
-            // Default to Center 'C' case
-            default => $cph - (2 * \max($cell['padding']['T'], $cell['padding']['B'])),
+            'A', 'D' => $cph - $fontHeight - $padding,
+            // Default to Top, Bottom and Center cases
+            default => $cph - $padding,
         };
     }
 
@@ -559,6 +584,7 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
      * @param float     $pheight  Cell height in internal points.
      * @param array<int|string, StyleDataOpt> $styles Optional to overwrite the styles (see: getCurrentStyleArray).
      * @param ?TCellDef $cell     Optional to overwrite cell parameters for padding, margin etc.
+     *                            The margin and padding values are in points.
      *
      * @return string
      *
@@ -669,11 +695,9 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
     /**
      * Returns the PDF code to stroke the (possibly partial) cell border.
      *
-     * Consecutive visible sides that share an identical style are stroked as a
-     * single continuous path so their shared corners are joined (mitered)
-     * instead of being drawn as independent, butt-capped segments that would
-     * leave the corners open. Sides with differing styles are kept separate so
-     * multi-colour borders keep their own line caps.
+     * Consecutive visible sides sharing an identical style are stroked as a
+     * single continuous path, so their shared corners are mitered. Sides with
+     * differing styles are stroked separately and keep their own line caps.
      *
      * @param float $rectx Border rectangle left X coordinate (user units).
      * @param float $recty Border rectangle top Y coordinate (user units).
@@ -752,9 +776,8 @@ abstract class Cell extends \Com\Tecnick\Pdf\Base
             }
 
             // Walk the maximal run of consecutive same-styled visible sides and
-            // stroke it as a single continuous (poly)line so the shared corners
-            // are joined instead of being drawn as independent, butt-capped
-            // segments.
+            // stroke it as a single continuous polyline, so the shared corners
+            // are joined.
             $seg = $segOf($start);
             $poly = [$seg[0], $seg[1], $seg[2], $seg[3]];
             $cur = $start;

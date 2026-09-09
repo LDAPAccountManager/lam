@@ -23,13 +23,12 @@ namespace Com\Tecnick\Pdf\Font;
  *
  * Optional cache contract for reusing TrueType font subset programs.
  *
- * Implementations are injected into Output and consulted before the
- * (computational and memory intensive) subsetting is performed. The cached
- * value is the raw subset font program string, i.e. the output of
- * Subset::getSubsetFont() before any compression or encryption.
+ * Implementations are injected into Output and consulted before the subsetting
+ * is performed. The cached value is the raw subset font program returned by
+ * Subset::getSubsetFont(), before any compression or encryption.
  *
- * The library never evicts entries; backends own their own expiration and
- * size limits.
+ * The library never evicts entries: expiration and size limits are up to the
+ * implementation.
  *
  * @since     2026-06-16
  * @category  Library

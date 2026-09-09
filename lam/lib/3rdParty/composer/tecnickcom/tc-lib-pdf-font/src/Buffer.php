@@ -45,6 +45,23 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
 abstract class Buffer
 {
     /**
+     * Size in bytes of a CIDToGIDMap table: 65536 big-endian 16-bit glyph indices.
+     */
+    protected const CTG_TABLE_SIZE = 131_072; // (256 * 256 * 2)
+
+    /**
+     * Number of CIDToGIDMap tables kept in memory.
+     *
+     * Each table is CTG_TABLE_SIZE bytes, so the cache is bounded to one megabyte.
+     */
+    protected const CTG_CACHE_SIZE = 8;
+
+    /**
+     * Highest glyph index an sfnt program can address, as a 16-bit value.
+     */
+    protected const MAX_GID = 0xFFFF;
+
+    /**
      * Array containing all fonts data
      *
      * @var array<string, TFontData>
@@ -57,8 +74,7 @@ abstract class Buffer
     protected int $numfonts = 0;
 
     /**
-     * Cache mapping a (font family, style) pair to its resolved font key, so repeated
-     * lookups of an already-loaded font skip constructing a throwaway Font object.
+     * Resolved font key for each (font family, style) pair.
      *
      * @var array<string, array<string, string>>
      */
@@ -77,19 +93,6 @@ abstract class Buffer
     protected int $numdiffs = 0;
 
     /**
-     * Array containing font definitions grouped by file
-     *
-     * @var array<string, array{
-     *          'dir': string,
-     *          'keys': array<string>,
-     *          'length1': int,
-     *          'length2': int,
-     *          'subset': bool,
-     *      }>
-     */
-    protected array $file = [];
-
-    /**
      * Optional file helper forwarded to font loaders.
      *
      * @var ObjFile|null
@@ -97,27 +100,29 @@ abstract class Buffer
     protected ?ObjFile $fileHelper;
 
     /**
+     * Uncompressed CIDToGIDMap tables indexed by font directory and file name.
+     *
+     * Each table is a string of 65536 big-endian 16-bit glyph indices addressed by
+     * Unicode codepoint, as stored in the '.ctg.z' artifact of the font.
+     *
+     * Ordered from the least to the most recently used.
+     *
+     * @var array<string, string>
+     */
+    protected array $ctgtable = [];
+
+    /**
      * Initialize fonts buffer
      *
      * @param float   $kunit   Unit of measure conversion ratio.
-     * @param bool    $subset  If true embed only a subset of the fonts
-     *                         (stores only the information related to
-     *                         the used characters); If false embed
-     *                         full font; This option is valid only for
-     *                         TrueTypeUnicode fonts and is disabled
-     *                         for PDF/A. If you want to enable users to
-     *                         modify the document, set this parameter
-     *                         to false. If you subset the font, the
-     *                         person who receives your PDF would need
-     *                         to have your same font in order to make
-     *                         changes to your PDF. The file size of the
-     *                         PDF would also be smaller because you are
-     *                         embedding only a subset. NOTE: This
-     *                         option is computational and memory
-     *                         intensive.
+     * @param bool    $subset  If true, embed only the characters used by the document.
+     *                         Valid only for TrueTypeUnicode fonts.
+     *                         Subsetting is computational and memory intensive.
      * @param bool    $unicode True if we are in Unicode mode, False otherwise.
      * @param bool    $pdfa    True if we are in PDF/A mode, False otherwise.
      * @param ObjFile|null $fileHelper Optional file helper for font loading.
+     *
+     * @throws FontException if the unit ratio is not a positive number.
      */
     public function __construct(
         protected float $kunit,
@@ -126,6 +131,11 @@ abstract class Buffer
         protected bool $pdfa = false,
         ?ObjFile $fileHelper = null,
     ) {
+        if ($kunit <= 0 || !\is_finite($kunit)) {
+            // every font metric is divided by this ratio
+            throw new FontException('The unit of measure conversion ratio must be a finite number greater than zero');
+        }
+
         $this->fileHelper = $fileHelper;
     }
 
@@ -148,7 +158,7 @@ abstract class Buffer
     }
 
     /**
-     * Returns the fonts buffer
+     * Returns the encoding differences buffer
      *
      * @return array<int, string>
      */
@@ -203,6 +213,100 @@ abstract class Buffer
     }
 
     /**
+     * Returns the CIDToGIDMap table of the given font.
+     *
+     * The table is read once per definition file and shared by every font
+     * instance backed by it.
+     *
+     * @param TFontData $font Font data.
+     *
+     * @return string Table of 65536 big-endian 16-bit glyph indices.
+     *
+     * @throws FontException in case of error
+     */
+    protected function getCtgTable(array $font): string
+    {
+        $ctg = \strtolower($font['ctg']);
+        // the directory is part of the key: two fonts may ship a different table under the same name
+        $cachekey = $font['dir'] . '|' . $ctg;
+        if (isset($this->ctgtable[$cachekey])) {
+            $table = $this->ctgtable[$cachekey];
+            // move the entry to the most recent end
+            unset($this->ctgtable[$cachekey]);
+            $this->ctgtable[$cachekey] = $table;
+            return $table;
+        }
+
+        $ctgfile = FontPaths::findFontFile($font['dir'], $ctg);
+        if ($ctgfile === '') {
+            throw new FontException('Unable to locate the file: ' . $ctg);
+        }
+
+        $fileHelper = $this->fileHelper ?? new ObjFile(allowedPaths: FontPaths::buildAllowedPaths());
+        $content = $fileHelper->getLocalFileData($ctgfile);
+        if ($content === false) {
+            throw new FontException('Unable to read font file: ' . $ctgfile);
+        }
+
+        if (\str_ends_with($ctgfile, '.z')) {
+            $content = Zlib::uncompress($content, self::CTG_TABLE_SIZE);
+            if ($content === false) {
+                throw new FontException('Unable to uncompress font file: ' . $ctgfile);
+            }
+        }
+
+        // a short artifact is padded with notdef entries and a long one is truncated
+        $content = \strlen($content) < self::CTG_TABLE_SIZE
+            ? \str_pad($content, self::CTG_TABLE_SIZE, "\x00")
+            : \substr($content, 0, self::CTG_TABLE_SIZE);
+
+        $this->ctgtable[$cachekey] = $content;
+        $this->evictOldestCtgTables();
+        return $content;
+    }
+
+    /**
+     * Drop the least recently used CIDToGIDMap tables beyond the size of the cache.
+     */
+    protected function evictOldestCtgTables(): void
+    {
+        $excess = \count($this->ctgtable) - self::CTG_CACHE_SIZE;
+        if ($excess <= 0) {
+            return;
+        }
+
+        foreach (\array_slice(\array_keys($this->ctgtable), 0, $excess) as $oldest) {
+            unset($this->ctgtable[$oldest]);
+        }
+    }
+
+    /**
+     * Record a glyph index used by the document and the codepoint it was encoded from.
+     *
+     * The first codepoint mapped to a glyph is the one stored for it.
+     *
+     * @param string $key The font key
+     * @param int    $gid The glyph index, in the 0..65535 range
+     * @param int    $ord The Unicode codepoint the glyph was selected for
+     *
+     * @throws FontException if the font is not loaded, or the glyph index is out of range
+     */
+    public function addUsedGid(string $key, int $gid, int $ord): void
+    {
+        if (!isset($this->font[$key])) {
+            throw new FontException('The font ' . $key . ' has not been loaded');
+        }
+
+        if ($gid < 0 || $gid > self::MAX_GID) {
+            throw new FontException('The glyph index ' . $gid . ' is outside the 0..65535 range');
+        }
+
+        if (!isset($this->font[$key]['usedgid'][$gid])) {
+            $this->font[$key]['usedgid'][$gid] = $ord;
+        }
+    }
+
+    /**
      * Add a new font to the fonts buffer
      *
      * The definition file (and the font file itself when embedding) must be present either in the current directory
@@ -221,23 +325,10 @@ abstract class Buffer
      *                       O: overline
      * @param string $ifile  The font definition file (or empty for autodetect).
      *                       By default, the name is built from the family and style, in lower case with no spaces.
-     * @param ?bool  $subset If true embed only a subset of the font
-     *                       (stores only the information related to
-     *                       the used characters); If false embed
-     *                       full font; This option is valid only
-     *                       for TrueTypeUnicode fonts and is
-     *                       disabled for PDF/A. If you want to
-     *                       enable users to modify the document,
-     *                       set this parameter to false. If you
-     *                       subset the font, the person who
-     *                       receives your PDF would need to have
-     *                       your same font in order to make changes
-     *                       to your PDF. The file size of the PDF
-     *                       would also be smaller because you are
-     *                       embedding only a subset. Set this to
-     *                       null to use the default value. NOTE:
-     *                       This option is computational and memory
-     *                       intensive.
+     * @param ?bool  $subset If true, embed only the characters used by the document.
+     *                       Valid only for TrueTypeUnicode fonts.
+     *                       Set to null to use the default value.
+     *                       Subsetting is computational and memory intensive.
      *
      * @return string Font key
      *
@@ -254,12 +345,12 @@ abstract class Buffer
             $subset = $this->subset;
         }
 
-        // The font key depends only on (family, style, unicode, pdfa) - all known without
-        // constructing a Font. When autodetecting the definition file (ifile === '') and the
-        // resolved font is already loaded, skip the expensive Font allocation.
+        // the font key depends only on (family, style, unicode, pdfa), so an already
+        // resolved key is reused when the definition file is autodetected
         if ($ifile === '' && isset($this->fontKeyCache[$font][$style])) {
             $cachedKey = $this->fontKeyCache[$font][$style];
             if (isset($this->font[$cachedKey])) {
+                $this->aggregateSubset($cachedKey, $subset);
                 return $cachedKey;
             }
         }
@@ -271,53 +362,32 @@ abstract class Buffer
         }
 
         if (isset($this->font[$key])) {
+            $this->aggregateSubset($key, $subset);
             return $key;
         }
 
         $fobj->load();
         $this->font[$key] = $fobj->getFontData();
 
-        $this->setFontFile($key);
         $this->setFontDiff($key);
 
         $this->font[$key]['i'] = ++$this->numfonts;
-        $this->font[$key]['n'] = ++$objnum; // @phpstan-ignore assign.propertyType
+        $this->font[$key]['n'] = ++$objnum;
 
         return $key;
     }
 
     /**
-     * Set font file and subset
+     * Record the subsetting mode requested for a font that is already in the buffer.
      *
-     * @param string $key Font key
+     * The font is subset only when every request for it asked for a subset.
+     *
+     * @param string $key    Font key.
+     * @param bool   $subset True if this request asked for a subset.
      */
-    protected function setFontFile(string $key): void
+    protected function aggregateSubset(string $key, bool $subset): void
     {
-        if ($this->font[$key]['file'] === '') {
-            return;
-        }
-
-        $file = $this->font[$key]['file'];
-        if (!isset($this->file[$file])) {
-            $this->file[$file] = [
-                'dir' => '',
-                'keys' => [],
-                'length1' => 0,
-                'length2' => 0,
-                // a shared font file may only be subset if every font referencing it is subset
-                'subset' => $this->font[$key]['subset'],
-            ];
-        } else {
-            $this->file[$file]['subset'] = $this->file[$file]['subset'] && $this->font[$key]['subset'];
-        }
-
-        if (!\in_array($key, $this->file[$file]['keys'], true)) {
-            $this->file[$file]['keys'][] = $key;
-        }
-
-        $this->file[$file]['dir'] = $this->font[$key]['dir'];
-        $this->file[$file]['length1'] = $this->font[$key]['length1'];
-        $this->file[$file]['length2'] = $this->font[$key]['length2'];
+        $this->font[$key]['subset'] = $this->font[$key]['subset'] && $subset;
     }
 
     /**

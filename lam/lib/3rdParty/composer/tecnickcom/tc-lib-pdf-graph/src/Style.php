@@ -118,7 +118,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      */
     protected const MODEFILLING = [
         'f' => true,
+        'h f' => true,
         'f*' => true,
+        'h f*' => true,
         'B' => true,
         'B*' => true,
         'b' => true,
@@ -148,6 +150,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
         'b' => true,
         'b*' => true,
         's' => true,
+        'h' => true,
+        'h f' => true,
+        'h f*' => true,
     ];
 
     /**
@@ -171,6 +176,20 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
         's' => 'S',
         'b' => 'B',
         'b*' => 'B*',
+        'h' => 'n',
+        'h f' => 'f',
+        'h f*' => 'f*',
+    ];
+
+    /**
+     * Map of equivalent modes with close.
+     *
+     * @var array<string, string>
+     */
+    protected const MODETOCLOSE = [
+        'S' => 's',
+        'B' => 'b',
+        'B*' => 'b*',
     ];
 
     /**
@@ -180,7 +199,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      */
     protected const MODETONOFILL = [
         'f' => '',
+        'h f' => 'h',
         'f*' => '',
+        'h f*' => 'h',
         'B' => 'S',
         'B*' => 'S',
         'b' => 's',
@@ -256,9 +277,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
             $styleid = 0;
         }
 
-        $this->styleid = $styleid;
+        $this->style = \array_slice($this->style, 0, $styleid + 1, true);
 
-        $this->style = \array_slice($this->style, 0, $this->styleid + 1, true);
+        $this->styleid = (int) (\array_key_last($this->style) ?? 0);
     }
 
     /**
@@ -278,8 +299,8 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Returns the last set value of the specified property.
      *
-     * @param string $property Property to search.
-     * @param int|float|bool|string|null  $default  Default value to return in case the property is not found.
+     * @param string                     $property Property to search.
+     * @param int|float|bool|string|null $default  Default value to return in case the property is not found.
      *
      * @return int|float|bool|string|null Property value or $default in case the property is not found.
      */
@@ -385,11 +406,7 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
                 $dash[] = \sprintf('%F', (float) $val * $this->kunit);
             }
 
-            if (!array_key_exists('dashPhase', $style)) {
-                $style['dashPhase'] = 0;
-            }
-
-            $out .= \sprintf('[%s] %F d' . "\n", \implode(' ', $dash), $style['dashPhase']);
+            $out .= \sprintf('[%s] %F d' . "\n", \implode(' ', $dash), ($style['dashPhase'] ?? 0.0) * $this->kunit);
         }
 
         return $out;
@@ -398,45 +415,29 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Get the Path-Painting Operators.
      *
-     * @param string|PathPaintOp $mode Mode of rendering (or PathPaintOp enum case). Possible values are:
-     *                        - S or D: Stroke the path. - s or d:
-     *                        Close and stroke the path. - f or F:
-     *                        Fill the path, using the nonzero
-     *                        winding number rule to determine the
-     *                        region to fill. - f* or F*: Fill the
-     *                        path, using the even-odd rule to
-     *                        determine the region to fill. - B or FD
-     *                        or DF: Fill and then stroke the path,
-     *                        using the nonzero winding number rule
-     *                        to determine the region to fill. - B*
-     *                        or F*D or DF*: Fill and then stroke the
-     *                        path, using the even-odd rule to
-     *                        determine the region to fill. - b or fd
-     *                        or df: Close, fill, and then stroke the
-     *                        path, using the nonzero winding number
-     *                        rule to determine the region to fill. -
-     *                        b* or f*d or df*: Close, fill, and then
-     *                        stroke the path, using the even-odd
-     *                        rule to determine the region to fill. -
-     *                        CNZ: Clipping mode using the nonzero
-     *                        winding number rule to determine which
-     *                        regions lie inside the clipping path. -
-     *                        CEO: Clipping mode using the even-odd
-     *                        rule to determine which regions lie
-     *                        inside the clipping path - n: End
-     *                        the path object without filling or
-     *                        stroking it.
-     * @param string|PathPaintOp $default Default style (or PathPaintOp enum case)
+     * @param string|PathPaintOp $mode    Mode of rendering. Possible values are:
+     *                                    - S or D: stroke the path;
+     *                                    - s or d: close and stroke the path;
+     *                                    - f or F: fill the path, using the nonzero winding number rule;
+     *                                    - f* or F*: fill the path, using the even-odd rule;
+     *                                    - B or FD or DF: fill and then stroke the path,
+     *                                      using the nonzero winding number rule;
+     *                                    - B* or F*D or DF*: fill and then stroke the path,
+     *                                      using the even-odd rule;
+     *                                    - b or fd or df: close, fill and then stroke the path,
+     *                                      using the nonzero winding number rule;
+     *                                    - b* or f*d or df*: close, fill and then stroke the path,
+     *                                      using the even-odd rule;
+     *                                    - CNZ: clipping mode using the nonzero winding number rule;
+     *                                    - CEO: clipping mode using the even-odd rule;
+     *                                    - h: close the path;
+     *                                    - n: end the path object without filling or stroking it.
+     * @param string|PathPaintOp $default Mode to use when $mode is empty or unknown.
      */
     public function getPathPaintOp(string|PathPaintOp $mode, string|PathPaintOp $default = 'S'): string
     {
-        if ($mode instanceof PathPaintOp) {
-            $mode = $mode->value;
-        }
-
-        if ($default instanceof PathPaintOp) {
-            $default = $default->value;
-        }
+        $mode = self::modeToString($mode);
+        $default = self::modeToString($default);
 
         if ($mode === '' || !isset(self::PPOPMAP[$mode])) {
             return isset(self::PPOPMAP[$default]) ? self::PPOPMAP[$default] . "\n" : '';
@@ -445,12 +446,23 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
+     * Returns the string form of a path paint mode.
+     *
+     * @param string|PathPaintOp $mode Path paint operator.
+     */
+    private static function modeToString(string|PathPaintOp $mode): string
+    {
+        return $mode instanceof PathPaintOp ? $mode->value : $mode;
+    }
+
+    /**
      * Returns true if the specified path paint operator includes the filling option.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function isFillingMode(string $mode): bool
+    public function isFillingMode(string|PathPaintOp $mode): bool
     {
+        $mode = self::modeToString($mode);
         return (
             isset(self::PPOPMAP[$mode])
             && (array_key_exists(self::PPOPMAP[$mode], self::MODEFILLING) || $this->isClippingMode($mode))
@@ -460,10 +472,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Returns true if the specified mode includes the stroking option.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function isStrokingMode(string $mode): bool
+    public function isStrokingMode(string|PathPaintOp $mode): bool
     {
+        $mode = self::modeToString($mode);
         if (!isset(self::PPOPMAP[$mode])) {
             return false;
         }
@@ -475,10 +488,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Returns true if the specified mode includes "closing the path" option.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function isClosingMode(string $mode): bool
+    public function isClosingMode(string|PathPaintOp $mode): bool
     {
+        $mode = self::modeToString($mode);
         return (
             isset(self::PPOPMAP[$mode])
             && (array_key_exists(self::PPOPMAP[$mode], self::MODECLOSING) || $this->isClippingMode($mode))
@@ -488,10 +502,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Returns true if the specified mode is of clipping type.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function isClippingMode(string $mode): bool
+    public function isClippingMode(string|PathPaintOp $mode): bool
     {
+        $mode = self::modeToString($mode);
         if (!isset(self::PPOPMAP[$mode])) {
             return false;
         }
@@ -501,12 +516,34 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
+     * Add the Close option to the specified Path paint operator.
+     * Modes that do not stroke, or that already close, are returned unchanged.
+     *
+     * @param string|PathPaintOp $mode Path paint operator.
+     */
+    public function getModeWithClose(string|PathPaintOp $mode): string
+    {
+        $mode = self::modeToString($mode);
+        if (!isset(self::PPOPMAP[$mode])) {
+            return $mode;
+        }
+
+        $paintMode = self::PPOPMAP[$mode];
+        if (isset(self::MODETOCLOSE[$paintMode])) {
+            return self::MODETOCLOSE[$paintMode];
+        }
+
+        return $mode;
+    }
+
+    /**
      * Remove the Close option from the specified Path paint operator.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function getModeWithoutClose(string $mode): string
+    public function getModeWithoutClose(string|PathPaintOp $mode): string
     {
+        $mode = self::modeToString($mode);
         if (!isset(self::PPOPMAP[$mode])) {
             return $mode;
         }
@@ -522,10 +559,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Remove the Fill option from the specified Path paint operator.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function getModeWithoutFill(string $mode): string
+    public function getModeWithoutFill(string|PathPaintOp $mode): string
     {
+        $mode = self::modeToString($mode);
         if (!isset(self::PPOPMAP[$mode])) {
             return $mode;
         }
@@ -541,10 +579,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Remove the Stroke option from the specified Path paint operator.
      *
-     * @param string $mode Path paint operator (mode of rendering).
+     * @param string|PathPaintOp $mode Path paint operator.
      */
-    public function getModeWithoutStroke(string $mode): string
+    public function getModeWithoutStroke(string|PathPaintOp $mode): string
     {
+        $mode = self::modeToString($mode);
         if (!isset(self::PPOPMAP[$mode])) {
             return $mode;
         }
@@ -566,12 +605,15 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      */
     public function getExtGState(array $parms): string
     {
-        if ($this->pdfa) {
+        if ($this->notransparency) {
             return '';
         }
 
-        $gsx = \count($this->extgstates) + 1;
-        // check if this ExtGState already exist
+        // the next free key is the one past the last
+        $lastkey = \array_key_last($this->extgstates);
+        $gsx = $lastkey === null ? 1 : $lastkey + 1;
+
+        // check if this ExtGState already exists
         foreach ($this->extgstates as $idx => $ext) {
             if ($ext['parms'] !== $parms) {
                 continue;
@@ -581,14 +623,18 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
             break;
         }
 
-        if (($this->extgstates[$gsx] ?? []) === []) {
-            $this->extgstates[$gsx] = [
+        $ext = $this->extgstates[$gsx] ?? null;
+        if ($ext === null) {
+            $ext = [
                 'n' => 0,
                 'name' => '',
                 'parms' => $parms,
             ];
+            $this->extgstates[$gsx] = $ext;
         }
 
-        return '/GS' . $gsx . ' gs' . "\n";
+        $name = $ext['name'] !== '' ? $ext['name'] : 'GS' . $gsx;
+
+        return '/' . $name . ' gs' . "\n";
     }
 }

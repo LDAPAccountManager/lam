@@ -27,17 +27,11 @@ use Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\Data;
  * PdfFourOneSeven Barcode type class
  * PDF417 (ISO/IEC 15438:2006)
  *
- * PDF417 (ISO/IEC 15438:2006) is a 2-dimensional stacked bar code created by Symbol Technologies in 1991.
- * It is one of the most popular 2D codes because of its ability to be read with slightly modified handheld
- * laser or linear CCD scanners.
- * TECHNICAL DATA / FEATURES OF PDF417:
- *     Encodable Character Set:     All 128 ASCII Characters (including extended)
- *     Code Type:                   Continuous, Multi-Row
- *     Symbol Height:               3 - 90 Rows
- *     Symbol Width:                90X - 583X
- *     Bidirectional Decoding:      Yes
- *     Error Correction Characters: 2 - 512
- *     Maximum Data Characters:     1850 text, 2710 digits, 1108 bytes
+ * Continuous multi-row symbology encoding the 128 ASCII characters and the extended ones.
+ *     Symbol height:               3 to 90 rows
+ *     Symbol width:                90X to 583X
+ *     Error correction characters: 2 to 512
+ *     Maximum data characters:     1850 text, 2710 digits, 1108 bytes
  *
  * @since       2015-02-21
  * @category    Library
@@ -68,6 +62,12 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
      * @var string
      */
     protected const FORMAT = 'PDF417';
+
+    /**
+     * Truncated symbol: the right row indicator and the stop pattern are
+     * replaced by a single narrow bar.
+     */
+    protected bool $truncated = false;
 
     /**
      * Row height respect X dimension of single module
@@ -104,6 +104,8 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
 
     /**
      * Set extra (optional) parameters
+     *
+     * @throws BarcodeException in case of invalid macro control block fields
      */
     protected function setParameters(): void
     {
@@ -128,33 +130,100 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
     }
 
     /**
+     * Characters that Text Compaction can represent.
+     *
+     * @var string
+     */
+    protected const TEXT_COMPACTION_CHARS = '/^[\x09\x0a\x0d\x20-\x7e]*$/';
+
+    /**
+     * Compaction mode of each optional macro field: 900 = text, 902 = numeric.
+     *
+     * @var array<int, int>
+     */
+    protected const MACRO_OPTION_MODES = [900, 902, 902, 900, 900, 902, 902];
+
+    /**
+     * Maximum value of each optional macro field, for the numeric ones with a fixed size.
+     *
+     * @var array<int, int>
+     */
+    protected const MACRO_OPTION_MAX = [1 => 99_999, 2 => 9_999_999_999, 6 => 99_999];
+
+    /**
+     * Highest value of the fixed two-codeword segment index field.
+     *
+     * @var int
+     */
+    protected const MACRO_MAX_SEGMENT = 99_999;
+
+    /**
+     * Validate a macro control block field.
+     *
+     * @param string $value Field value
+     * @param int    $mode  Compaction mode: 900 = text, 902 = numeric
+     * @param int    $max   Maximum value of a numeric field, 0 for no limit
+     * @param string $name  Field name to report in the error message
+     *
+     * @throws BarcodeException if the field cannot be represented
+     */
+    protected function checkMacroField(string $value, int $mode, int $max, string $name): void
+    {
+        if ($mode === 902) {
+            if (!\ctype_digit($value)) {
+                throw new BarcodeException('The macro ' . $name . ' must be a number: ' . $value);
+            }
+
+            if ($max > 0 && (int) $value > $max) {
+                throw new BarcodeException('The macro ' . $name . ' must not be greater than ' . $max . ': ' . $value);
+            }
+
+            return;
+        }
+
+        if (\preg_match(self::TEXT_COMPACTION_CHARS, $value) !== 1) {
+            throw new BarcodeException(
+                'The macro ' . $name . ' contains characters that Text Compaction cannot represent',
+            );
+        }
+    }
+
+    /**
      * Set macro block parameter
+     *
+     * @throws BarcodeException in case of invalid macro control block fields
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
     protected function setMacroBlockParam(): void
     {
-        if (
-            ($this->params[4] ?? null) !== null
-            && \is_string($this->params[4])
-            && ($this->params[2] ?? '') !== ''
-            && ($this->params[3] ?? '') !== ''
-            && $this->params[4] !== ''
-        ) {
-            $this->macro['segment_total'] = (int) $this->params[2];
-            $this->macro['segment_index'] = (int) $this->params[3];
-            $this->macro['file_id'] = \strtr($this->params[4], "\xff", ',');
-            for ($idx = 0; $idx < 7; ++$idx) {
-                $opt = $idx + 5;
-                if (
-                    ($this->params[$opt] ?? null) !== null
-                    && \is_string($this->params[$opt])
-                    && $this->params[$opt] !== ''
-                ) {
-                    /* @phpstan-ignore-next-line */
-                    $this->macro['option_' . $idx] = \strtr($this->params[$opt], "\xff", ',');
-                }
+        $segmentTotal = (string) ($this->params[2] ?? '');
+        $segmentIndex = (string) ($this->params[3] ?? '');
+        $fileId = (string) ($this->params[4] ?? '');
+        if ($segmentTotal === '' || $segmentIndex === '' || $fileId === '') {
+            return;
+        }
+
+        $fileId = \strtr($fileId, "\xff", ',');
+        $this->checkMacroField($segmentTotal, 902, self::MACRO_MAX_SEGMENT, 'segment total');
+        $this->checkMacroField($segmentIndex, 902, self::MACRO_MAX_SEGMENT, 'segment index');
+        $this->checkMacroField($fileId, 900, 0, 'file ID');
+        $this->macro['segment_total'] = (int) $segmentTotal;
+        $this->macro['segment_index'] = (int) $segmentIndex;
+        $this->macro['file_id'] = $fileId;
+        for ($idx = 0; $idx < 7; ++$idx) {
+            $option = \strtr((string) ($this->params[$idx + 5] ?? ''), "\xff", ',');
+            if ($option === '') {
+                continue;
             }
+
+            $this->checkMacroField(
+                $option,
+                self::MACRO_OPTION_MODES[$idx] ?? 900,
+                self::MACRO_OPTION_MAX[$idx] ?? 0,
+                'option ' . $idx,
+            );
+            $this->macro['option_' . $idx] = $option;
         }
     }
 
@@ -273,8 +342,9 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
         ));
         $rows = (int) \min(90, \max(3, \ceil($nce / $cols)));
         $size = $cols * $rows;
-        if ($size > 928) {
-            // set dimensions to get maximum capacity
+        if ($size > 928 || $size < $nce) {
+            // the requested aspect ratio does not fit the data within the 30 columns
+            // and 90 rows limits: use the dimensions of maximum capacity
             $cols = 16;
             $rows = 58;
             if (\abs($this->aspectratio - ((17 * 29) / 32)) < \abs($this->aspectratio - ((17 * 16) / 58))) {
@@ -285,16 +355,22 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
             $size = 928;
         }
 
+        if ($size < $nce) {
+            throw new BarcodeException(
+                'The data does not fit in a PDF417 symbol: ' . $nce . ' codewords required, maximum is ' . $size,
+            );
+        }
+
+        if ($macrocw !== []) {
+            // the macro control block follows the data codewords
+            $codewords = \array_merge($codewords, $macrocw);
+        }
+
         // calculate padding
         $pad = (int) ($size - $nce);
         if ($pad > 0) {
             // add padding
             $codewords = \array_merge($codewords, \array_fill(0, $pad, 900));
-        }
-
-        if ($macrocw !== []) {
-            // add macro section
-            $codewords = \array_merge($codewords, $macrocw);
         }
 
         // Symbol Length Descriptor (number of data codewords including Symbol Length Descriptor and pad codewords)
@@ -324,7 +400,11 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
         // add horizontal quiet zones to start and stop patterns
         $pstart = \str_repeat('0', \max(0, $this->quiet_horizontal)) . Data::START_PATTERN;
         $this->nrows = ($rows * $this->row_height) + (2 * $this->quiet_vertical);
-        $this->ncols = (($cols + 2) * 17) + 35 + (2 * $this->quiet_horizontal);
+        // start pattern, left row indicator, data columns and, unless truncated,
+        // the right row indicator and the stop pattern
+        $this->ncols = $this->truncated
+            ? (($cols + 1) * 17) + 18 + (2 * $this->quiet_horizontal)
+            : (($cols + 2) * 17) + 35 + (2 * $this->quiet_horizontal);
         // build rows for vertical quiet zone
         $empty_row = ',' . \str_repeat('0', \max(0, $this->ncols));
         $empty_rows = \str_repeat($empty_row, \max(0, $this->quiet_vertical));
@@ -363,12 +443,14 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
                 ++$kcw;
             }
 
-            // right row indicator
-            $row .= \sprintf('%17b', $this->getClusterCodewordValue($cid, $cval));
-            // row stop code
-            $row .= Data::STOP_PATTERN . \str_repeat('0', \max(0, $this->quiet_horizontal));
-            $brow = ',' . \str_repeat($row, \max(0, $this->row_height));
-            $barcode .= $brow;
+            // right row indicator and row stop code, or the single bar that
+            // terminates a truncated row
+            $row .= $this->truncated
+                ? '1'
+                : \sprintf('%17b' . Data::STOP_PATTERN, $this->getClusterCodewordValue($cid, $cval));
+            $row .= \str_repeat('0', \max(0, $this->quiet_horizontal));
+            // each codeword row is repeated over $row_height rows of modules
+            $barcode .= \str_repeat(',' . $row, \max(0, $this->row_height));
             ++$cid;
             if ($cid > 2) {
                 $cid = 0;
