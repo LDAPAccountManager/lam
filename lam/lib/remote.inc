@@ -129,11 +129,9 @@ class Remote {
 		$keyPassword = $this->serverConfig->getSshKeyPassword();
 		$password = empty($keyPath) ? $_SESSION['ldap']->getPassword() : $this->loadKey($keyPath, $keyPassword);
 		try {
-			$login = @$handle->login($username, $password);
+			$login = $handle->login($username, $password);
 			if (!$login) {
-				$errors = $handle->getErrors();
-				$errors = empty($errors) ? null : implode(' ', $errors);
-				throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
+				throw new LAMException(_("Unable to login to lamdaemon server."));
 			}
 		}
 		catch (Exception $e) {
