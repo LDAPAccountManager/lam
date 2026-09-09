@@ -1,7 +1,7 @@
 /*!
  * jodit - Jodit is an awesome and useful wysiwyg editor with filebrowser
  * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/jodit/)
- * Version: v4.12.2
+ * Version: v4.14.7
  * Url: https://xdsoft.net/jodit/
  * License(s): MIT
  */
@@ -3819,6 +3819,19 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-color-picker__color-item:active {
   border: 2px solid var(--jd-color-border-selected);
 }
+.jodit-color-picker__extra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.jodit-color-picker__hex input {
+  width: 80px;
+  padding: 2px 4px;
+  border: 1px solid var(--jd-color-border);
+  border-radius: var(--jd-border-radius-default);
+  font-family: monospace;
+  font-size: var(--jd-font-size-small, 12px);
+}
 .jodit-color-picker__native svg {
   display: inline-block;
   width: 16px;
@@ -3922,6 +3935,18 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-tabs .jodit-tabs__wrapper .jodit-tab.jodit-tab_empty {
   min-width: 220px;
   min-height: 100px;
+}
+/*
+ * Insert-image / insert-file popup (see FileSelectorWidget): size the tab
+ * buttons to their labels so long localized captions — e.g. the German
+ * "Datei hochladen" / "Durchsuchen" — are not clipped and the popup widens to
+ * fit. Scoped to `.jodit-file-selector`, so other tab popups (link, video …)
+ * keep their fixed equal-column layout.
+ */
+.jodit-file-selector .jodit-tabs__button {
+  flex: none;
+  width: max-content;
+  max-width: none;
 }
 .jodit-dialog_theme_dark .jodit-tabs .jodit-tabs__buttons,
 .jodit_theme_dark .jodit-tabs .jodit-tabs__buttons {
@@ -5088,14 +5113,19 @@ svg.jodit-icon {
   --jd-slot-left-width: auto;
   --jd-slot-right-width: auto;
 }
+.jodit .jodit-jodit__workplace-slot_above_true,
 .jodit .jodit-jodit__workplace-slot_top_true,
 .jodit .jodit-jodit__workplace-slot_bottom_true {
   min-width: 0;
   flex: 0 0 auto;
 }
+.jodit .jodit-jodit__workplace-slot_above_true:empty,
 .jodit .jodit-jodit__workplace-slot_top_true:empty,
 .jodit .jodit-jodit__workplace-slot_bottom_true:empty {
   display: none;
+}
+.jodit .jodit-jodit__workplace-slot_above_true:not(:empty) {
+  border-bottom: 1px solid var(--jd-color-border, transparent);
 }
 .jodit .jodit-jodit__workplace-slot_top_true {
   height: var(--jd-slot-top-height);

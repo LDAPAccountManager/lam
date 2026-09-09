@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:c8c32eb5-1cd3-4bd1-811b-40a7a9385798",
+  "serialNumber" : "urn:uuid:603c6923-6e5a-4c32-8643-56b394629b96",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-05-19T05:44:01Z",
+    "timestamp" : "2026-09-09T19:09:30Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.6"
+      "version" : "9.7"
     }
   },
   "components" : [
@@ -26,7 +26,7 @@
       "bom-ref" : "64518863-4fde-4015-84a1-e26283a036ee",
       "group" : "cdx:npm:package:bundled",
       "name" : "@floating-ui/core",
-      "version" : "1.7.5",
+      "version" : "1.8.0",
       "licenses" : [
         {
           "license" : {
@@ -34,14 +34,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/%40floating-ui/core@1.7.5"
+      "purl" : "pkg:npm/%40floating-ui/core@1.8.0"
     },
     {
       "type" : "library",
       "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68",
       "group" : "cdx:npm:package:bundled",
       "name" : "@floating-ui/dom",
-      "version" : "1.7.6",
+      "version" : "1.8.0",
       "licenses" : [
         {
           "license" : {
@@ -49,14 +49,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/%40floating-ui/dom@1.7.6"
+      "purl" : "pkg:npm/%40floating-ui/dom@1.8.0"
     },
     {
       "type" : "library",
       "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
-      "version" : "2.1.1",
+      "version" : "2.2.0",
       "licenses" : [
         {
           "license" : {
@@ -64,7 +64,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@2.1.1"
+      "purl" : "pkg:npm/cropperjs@2.2.0"
     },
     {
       "type" : "library",
@@ -86,7 +86,7 @@
       "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "group" : "cdx:npm:package:bundled",
       "name" : "friendly-challenge",
-      "version" : "0.9.19",
+      "version" : "0.9.20",
       "licenses" : [
         {
           "license" : {
@@ -94,14 +94,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/friendly-challenge@0.9.19"
+      "purl" : "pkg:npm/friendly-challenge@0.9.20"
     },
     {
       "type" : "library",
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.12.2",
+      "version" : "4.14.7",
       "licenses" : [
         {
           "license" : {
@@ -109,7 +109,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.12.2"
+      "purl" : "pkg:npm/jodit@4.14.7"
     },
     {
       "type" : "library",
@@ -131,7 +131,7 @@
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.26.24",
+      "version" : "11.26.25",
       "licenses" : [
         {
           "license" : {
@@ -139,30 +139,15 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.26.24"
+      "purl" : "pkg:npm/sweetalert2@11.26.25"
     },
     {
       "type" : "library",
       "bom-ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
       "group" : "cdx:npm:package:bundled",
       "name" : "tabulator-tables",
-      "version" : "6.4.0",
-      "purl" : "pkg:npm/tabulator-tables@6.4.0"
-    },
-    {
-      "type" : "library",
-      "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
-      "group" : "cdx:composer:package",
-      "name" : "tecnickcom/tcpdf",
-      "version" : "6.11.3",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "LGPL-3.0+"
-          }
-        }
-      ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.11.3"
+      "version" : "6.5.2",
+      "purl" : "pkg:npm/tabulator-tables@6.5.2"
     },
     {
       "type" : "library",
@@ -219,10 +204,6 @@
     },
     {
       "ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
       "dependsOn" : [ ]
     },
     {
