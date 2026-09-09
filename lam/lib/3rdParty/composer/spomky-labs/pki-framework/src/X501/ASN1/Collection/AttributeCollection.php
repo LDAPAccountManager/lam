@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X501\ASN1\Collection;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Type\Structure;
@@ -12,7 +13,6 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\Attribute;
 use SpomkyLabs\Pki\X501\ASN1\AttributeType;
 use UnexpectedValueException;
-use function count;
 
 /**
  * Base class for X.501 attribute containers.
@@ -133,7 +133,6 @@ abstract class AttributeCollection implements Countable, IteratorAggregate
     /**
      * Get iterator for attributes.
      *
-     * @return ArrayIterator|Attribute[]
      * @see \IteratorAggregate::getIterator()
      */
     public function getIterator(): ArrayIterator

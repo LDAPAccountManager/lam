@@ -20,11 +20,11 @@ use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierTy
  */
 final class ObjectDigestInfo
 {
-    final public const TYPE_PUBLIC_KEY = 0;
+    public const TYPE_PUBLIC_KEY = 0;
 
-    final public const TYPE_PUBLIC_KEY_CERT = 1;
+    public const TYPE_PUBLIC_KEY_CERT = 1;
 
-    final public const TYPE_OTHER_OBJECT_TYPES = 2;
+    public const TYPE_OTHER_OBJECT_TYPES = 2;
 
     private function __construct(
         private readonly int $digestedObjectType,

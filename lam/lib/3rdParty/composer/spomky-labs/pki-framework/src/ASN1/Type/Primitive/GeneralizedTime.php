@@ -6,6 +6,8 @@ namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use function intval;
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
@@ -15,8 +17,6 @@ use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
 use Throwable;
 use UnexpectedValueException;
-use function intval;
-use function mb_strlen;
 
 /**
  * Implements *GeneralizedTime* type.
@@ -33,7 +33,7 @@ final class GeneralizedTime extends BaseTime
      *
      * @var string
      */
-    final public const REGEX = '#^' .
+    public const REGEX = '#^' .
         '(\d\d\d\d)' . // YYYY
         '(\d\d)' . // MM
         '(\d\d)' . // DD
@@ -92,7 +92,7 @@ final class GeneralizedTime extends BaseTime
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): ElementBase
     {
         $idx = $offset;
-        $length = Length::expectFromDER($data, $idx)->intLength();
+        $length = Length::expectFromDER($data, $idx)->expectIntLength();
         $str = mb_substr($data, $idx, $length, '8bit');
         $idx += $length;
         if (preg_match(self::REGEX, $str, $match) !== 1) {
@@ -114,6 +114,11 @@ final class GeneralizedTime extends BaseTime
         $dt = DateTimeImmutable::createFromFormat('!YmdHis.uT', $time, new DateTimeZone('UTC'));
         if ($dt === false) {
             throw new DecodeException('Failed to decode GeneralizedTime');
+        }
+        // Out of range components roll over silently and are only reported through getLastErrors().
+        $errors = DateTimeImmutable::getLastErrors();
+        if ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0)) {
+            throw new DecodeException('Invalid GeneralizedTime value.');
         }
         $offset = $idx;
         return self::create($dt);

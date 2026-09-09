@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X501\ASN1;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -12,7 +13,6 @@ use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Set;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
-use function count;
 use function sprintf;
 
 /**
@@ -144,7 +144,9 @@ final class Attribute implements Countable, IteratorAggregate
             },
             $this->values
         );
-        return self::fromAttributeValues(...$values);
+        // the attribute type is carried by the attribute itself: deriving it from the first value would refuse an
+        // attribute with an empty value set, which the encoding permits and OpenSSL emits
+        return self::create($this->type, ...$values);
     }
 
     /**

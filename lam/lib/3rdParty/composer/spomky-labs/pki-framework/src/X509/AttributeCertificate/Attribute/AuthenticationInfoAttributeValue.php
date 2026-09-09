@@ -15,7 +15,7 @@ use SpomkyLabs\Pki\X509\GeneralName\GeneralName;
  */
 final class AuthenticationInfoAttributeValue extends SvceAuthInfo
 {
-    final public const OID = '1.3.6.1.5.5.7.10.1';
+    public const OID = '1.3.6.1.5.5.7.10.1';
 
     private function __construct(GeneralName $service, GeneralName $ident, ?string $auth_info)
     {

@@ -4,15 +4,29 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\GeneralName;
 
-use UnexpectedValueException;
+use function array_map;
 use function array_slice;
 use function count;
+use function implode;
 use function sprintf;
+use UnexpectedValueException;
+use function unpack;
 
 final class IPv6Address extends IPAddress
 {
+    /**
+     * @param string $ip Address, in any notation inet_pton() accepts, compressed included
+     * @param null|string $mask Optional subnet mask, in the same notation
+     */
     public static function create(string $ip, ?string $mask = null): self
     {
+        // refuse here rather than when the name is encoded, so that a caller cannot build a constraint whose
+        // meaning differs from what it wrote
+        self::addressToOctets($ip, 16, 'Address');
+        if ($mask !== null) {
+            self::addressToOctets($mask, 16, 'Mask');
+        }
+
         return new self($ip, $mask);
     }
 
@@ -51,10 +65,11 @@ final class IPv6Address extends IPAddress
 
     protected function octets(): string
     {
-        $words = array_map(hexdec(...), explode(':', $this->ip));
+        $octets = self::addressToOctets($this->ip, 16, 'Address');
         if (isset($this->mask)) {
-            $words = array_merge($words, array_map(hexdec(...), explode(':', $this->mask)));
+            $octets .= self::addressToOctets($this->mask, 16, 'Mask');
         }
-        return pack('n*', ...$words);
+
+        return $octets;
     }
 }

@@ -26,7 +26,8 @@ final class PrintableString extends PrimitiveString
 
     protected function validateString(string $string): bool
     {
-        $chars = preg_quote(" '()+,-./:=?]", '/');
+        // X.680 sect. 41, table 10: the PrintableString character set has no ']'
+        $chars = preg_quote(" '()+,-./:=?", '/');
         return preg_match('/[^A-Za-z0-9' . $chars . ']/', $string) !== 1;
     }
 }

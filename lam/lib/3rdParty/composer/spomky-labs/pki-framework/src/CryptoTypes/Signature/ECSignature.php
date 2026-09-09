@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Signature;
 
+use function count;
+use function mb_strlen;
+use SpomkyLabs\Pki\ASN1\Element;
+use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
-use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 
 /**
  * Implements ECDSA signature value.
@@ -45,10 +48,36 @@ final class ECSignature extends Signature
 
     /**
      * Initialize from DER.
+     *
+     * The signature value is not covered by the signature it carries, so whatever this decoder accepts and then
+     * normalises away yields another byte string that verifies just as well. bitString() re-encodes r and s
+     * canonically, and that re-encoding is what reaches the crypto engine, so trailing bytes, a BER length, a
+     * non-minimal INTEGER and any element past s were all erased before OpenSSL ever saw them. One certificate then
+     * had an unlimited supply of accepted encodings, which defeats pinning, deny-listing and deduplicating by the
+     * digest of what was received.
+     *
+     * The encoding must therefore be the one canonical DER of the value it denotes.
+     *
+     * @throws DecodeException If the encoding is not DER.
      */
     public static function fromDER(string $data): self
     {
-        return self::fromASN1(UnspecifiedType::fromDER($data)->asSequence());
+        $offset = 0;
+        $seq = Element::fromDER($data, $offset)->asUnspecified()
+            ->asSequence();
+        if ($offset !== mb_strlen($data, '8bit')) {
+            throw new DecodeException('ECDSA-Sig-Value must not carry trailing data.');
+        }
+        if (count($seq) !== 2) {
+            throw new DecodeException('ECDSA-Sig-Value must consist of exactly two integers.');
+        }
+        $signature = self::fromASN1($seq);
+        // catches a BER length, a long form length and a non-minimal INTEGER in one comparison
+        if ($signature->toDER() !== $data) {
+            throw new DecodeException('ECDSA-Sig-Value must be DER encoded.');
+        }
+
+        return $signature;
     }
 
     /**

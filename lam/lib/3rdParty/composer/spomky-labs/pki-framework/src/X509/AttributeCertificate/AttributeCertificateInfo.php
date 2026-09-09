@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\AttributeCertificate;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function count;
+use const E_USER_DEPRECATED;
+use InvalidArgumentException;
 use LogicException;
+use function ord;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
@@ -16,9 +21,9 @@ use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PrivateKeyInfo;
 use SpomkyLabs\Pki\X509\Certificate\Extension\Extension;
 use SpomkyLabs\Pki\X509\Certificate\Extensions;
 use SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier;
-use UnexpectedValueException;
-use function count;
+use function sprintf;
 use function strval;
+use UnexpectedValueException;
 
 /**
  * Implements *AttributeCertificateInfo* ASN.1 type.
@@ -27,7 +32,7 @@ use function strval;
  */
 final class AttributeCertificateInfo
 {
-    final public const VERSION_2 = 1;
+    public const VERSION_2 = 1;
 
     /**
      * AC version.
@@ -69,6 +74,23 @@ final class AttributeCertificateInfo
         $this->version = self::VERSION_2;
         $this->extensions = Extensions::create();
     }
+
+    /**
+     * Smallest random serial number that meets the CA/Browser Forum Baseline Requirements, in octets.
+     *
+     * They ask for at least 64 bits of CSPRNG output. The sign bit costs one, so eight octets fall just short
+     * and nine are needed. Smaller sizes are still accepted, with a deprecation notice.
+     *
+     * @var int
+     */
+    public const MIN_RANDOM_SERIAL_SIZE = 9;
+
+    /**
+     * Default random serial number size, in octets. RFC 5280 section 4.1.2.2 caps serial numbers at 20 octets.
+     *
+     * @var int
+     */
+    public const DEFAULT_RANDOM_SERIAL_SIZE = 20;
 
     public static function create(
         Holder $holder,
@@ -161,15 +183,38 @@ final class AttributeCertificateInfo
      *
      * @param int $size Number of random bytes
      */
-    public function withRandomSerialNumber(int $size): self
+    public function withRandomSerialNumber(int $size = self::DEFAULT_RANDOM_SERIAL_SIZE): self
     {
-        // ensure that first byte is always non-zero and having first bit unset
-        $num = BigInteger::of(random_int(1, 0x7f));
-        for ($i = 1; $i < $size; ++$i) {
-            $num = $num->shiftedLeft(8);
-            $num = $num->plus(random_int(0, 0xff));
+        return $this->withSerialNumber(self::generateSerialNumber($size));
+    }
+
+    /**
+     * Draw a serial number from a CSPRNG.
+     *
+     * The most significant bit is cleared so the DER INTEGER encodes a positive value, which is why 64 bits of
+     * entropy need nine octets rather than eight.
+     *
+     * @param int $size Number of random octets
+     */
+    private static function generateSerialNumber(int $size): string
+    {
+        if ($size < 1) {
+            throw new InvalidArgumentException('Serial number size must be at least one octet.');
         }
-        return $this->withSerialNumber($num->toBase(10));
+        if ($size < self::MIN_RANDOM_SERIAL_SIZE) {
+            @trigger_error(sprintf(
+                'A %d octet serial number carries %.2f bits of entropy, below the 64 bits the CA/Browser Forum'
+                . ' Baseline Requirements ask for. Use at least %d octets.',
+                $size,
+                8 * $size - 1,
+                self::MIN_RANDOM_SERIAL_SIZE
+            ), E_USER_DEPRECATED);
+        }
+        $octets = random_bytes($size);
+        $octets[0] = chr(ord($octets[0]) & 0x7F);
+        $num = BigInteger::fromBytes($octets, false);
+
+        return $num->isZero() ? '1' : $num->toBase(10);
     }
 
     /**
@@ -355,7 +400,7 @@ final class AttributeCertificateInfo
         $crypto ??= Crypto::getDefault();
         $aci = clone $this;
         if (! isset($aci->serialNumber)) {
-            $aci->serialNumber = '0';
+            $aci->serialNumber = self::generateSerialNumber(self::DEFAULT_RANDOM_SERIAL_SIZE);
         }
         $aci->signature = $algo;
         $data = $aci->toASN1()

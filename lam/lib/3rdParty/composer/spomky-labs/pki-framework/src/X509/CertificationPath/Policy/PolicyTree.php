@@ -4,21 +4,41 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\CertificationPath\Policy;
 
+use function count;
+use function in_array;
 use LogicException;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation;
+use SpomkyLabs\Pki\X509\CertificationPath\Exception\PathValidationException;
 use SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState;
-use function count;
-use function in_array;
 
 final class PolicyTree
 {
+    /**
+     * Maximum number of nodes the valid policy tree may hold.
+     *
+     * RFC 5280 places no bound on the tree, and it grows multiplicatively: a policy mapping gives a node an expected
+     * policy set of the size the issuing certificate chose, and the next certificate's anyPolicy then creates one
+     * child per expected policy per node. The width is multiplied at every level, so the tree is exponential in the
+     * path length with a base the attacker picks. Under half a megabyte of certificate policies reached a gigabyte
+     * of nodes, in a path whose every signature verifies.
+     *
+     * No legitimate path comes anywhere near this many nodes.
+     */
+    private const MAX_NODES = 5000;
+
+    /**
+     * Number of nodes currently in the tree.
+     */
+    private int $nodeCount;
+
     /**
      * @param PolicyNode $root Initial root node
      */
     private function __construct(
         private ?PolicyNode $root
     ) {
+        $this->nodeCount = $root === null ? 0 : $root->nodeCount();
     }
 
     public static function create(?PolicyNode $root): self
@@ -117,7 +137,7 @@ final class PolicyTree
                         // set the valid_policy to P-OID, set the qualifier_set
                         // to P-Q, and set the expected_policy_set to {P-OID}.
                         foreach ($poids as $poid) {
-                            $parent->addChild(PolicyNode::create($poid, $pq, [$poid]));
+                            $this->addNode($parent, PolicyNode::create($poid, $pq, [$poid]));
                         }
                         break;
                     }
@@ -164,7 +184,7 @@ final class PolicyTree
         foreach ($this->nodesAtDepth($i - 1) as $node) {
             // ...where P-OID is in the expected_policy_set
             if ($node->hasExpectedPolicy($p_oid)) {
-                $node->addChild(PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
+                $this->addNode($node, PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
                 ++$match_count;
             }
         }
@@ -174,7 +194,7 @@ final class PolicyTree
             // the valid_policy anyPolicy
             foreach ($this->nodesAtDepth($i - 1) as $node) {
                 if ($node->isAnyPolicy()) {
-                    $node->addChild(PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
+                    $this->addNode($node, PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
                 }
             }
         }
@@ -198,7 +218,7 @@ final class PolicyTree
             foreach ($node->expectedPolicies() as $p_oid) {
                 // that does not appear in a child node
                 if (! $node->hasChildWithValidPolicy($p_oid)) {
-                    $node->addChild(PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
+                    $this->addNode($node, PolicyNode::create($p_oid, $policy->qualifiers(), [$p_oid]));
                 }
             }
         }
@@ -264,7 +284,7 @@ final class PolicyTree
                             // if there's no policies or no qualifiers
                             $qualifiers = [];
                         }
-                        $subnode->addChild(PolicyNode::create($idp, $qualifiers, $sdps));
+                        $this->addNode($subnode, PolicyNode::create($idp, $qualifiers, $sdps));
                         // bail after first anyPolicy has been processed
                         break;
                     }
@@ -317,6 +337,19 @@ final class PolicyTree
             return 0;
         }
         return $this->root->nodeCount();
+    }
+
+    /**
+     * Attach a node to the tree, refusing to let it grow past the bound.
+     *
+     * @throws PathValidationException If the tree has grown past MAX_NODES.
+     */
+    private function addNode(PolicyNode $parent, PolicyNode $child): void
+    {
+        if (++$this->nodeCount > self::MAX_NODES) {
+            throw new PathValidationException('Certificate policy tree is too large.');
+        }
+        $parent->addChild($child);
     }
 
     /**

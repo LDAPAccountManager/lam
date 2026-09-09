@@ -19,6 +19,7 @@ final class UniformResourceIdentifier extends GeneralName
     private function __construct(
         private readonly string $uri
     ) {
+        self::assertNoControlCharacters($uri, 'uniformResourceIdentifier');
         parent::__construct(self::TAG_URI);
     }
 

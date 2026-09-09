@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X501\ASN1;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Set;
@@ -12,7 +13,6 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
 use Stringable;
 use UnexpectedValueException;
-use function count;
 
 /**
  * Implements *RelativeDistinguishedName* ASN.1 type.
@@ -108,21 +108,63 @@ final class RDN implements Countable, IteratorAggregate, Stringable
         if (count($this) !== count($other)) {
             return false;
         }
-        $attribs1 = $this->_attribs;
-        $attribs2 = $other->_attribs;
-        // if there's multiple attributes, sort using SET OF rules
-        if (count($attribs1) > 1) {
-            $attribs1 = self::fromASN1($this->toASN1())->_attribs;
-            $attribs2 = self::fromASN1($other->toASN1())->_attribs;
+        // RFC 5280 sect. 7.1: an RDN is a SET, so two of them are equal when their attributes match as a multiset,
+        // whatever the order. Sorting both sides in DER order and comparing position by position gets this wrong,
+        // because the attribute values compare case insensitively while the DER sort does not: RDN{cn=a,cn=B} and
+        // RDN{cn=A,cn=b} sort the other way round and were reported as different.
+        //
+        // Pairing the two sides off one at a time answers that correctly but costs a comparison for every pair, so
+        // an RDN whose attributes an attacker put in the reverse order costs work quadratic in their number, each
+        // step preparing a string afresh. Where the matching rules can name their values, the attributes are
+        // grouped by that name instead and the answer takes one pass.
+        $counts = self::countByKey($other->_attribs);
+        if ($counts !== null) {
+            foreach ($this->_attribs as $tv) {
+                $key = $tv->comparisonKey();
+                if ($key === null || ($counts[$key] ?? 0) === 0) {
+                    return false;
+                }
+                --$counts[$key];
+            }
+
+            return true;
         }
-        for ($i = count($attribs1) - 1; $i >= 0; --$i) {
-            $tv1 = $attribs1[$i];
-            $tv2 = $attribs2[$i];
-            if (! $tv1->equals($tv2)) {
+        $unmatched = $other->_attribs;
+        foreach ($this->_attribs as $tv1) {
+            $matched = false;
+            foreach ($unmatched as $idx => $tv2) {
+                if ($tv1->equals($tv2)) {
+                    unset($unmatched[$idx]);
+                    $matched = true;
+                    break;
+                }
+            }
+            if (! $matched) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Count the attributes by the key their own matching rule gives them, or null if any of them has none.
+     *
+     * @param AttributeTypeAndValue[] $attributes
+     *
+     * @return null|array<string, int>
+     */
+    private static function countByKey(array $attributes): ?array
+    {
+        $counts = [];
+        foreach ($attributes as $attribute) {
+            $key = $attribute->comparisonKey();
+            if ($key === null) {
+                return null;
+            }
+            $counts[$key] = ($counts[$key] ?? 0) + 1;
+        }
+
+        return $counts;
     }
 
     /**

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\CertificationPath\Policy;
 
 use ArrayIterator;
+use function count;
 use Countable;
+use function in_array;
 use IteratorAggregate;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyQualifierInfo;
-use function count;
-use function in_array;
 
 /**
  * Policy node class for certification path validation.
@@ -107,8 +107,6 @@ final class PolicyNode implements IteratorAggregate, Countable
     }
 
     /**
-     * Set expected policies.
-     *
      * @param string ...$oids Policy OIDs
      */
     public function setExpectedPolicies(string ...$oids): void

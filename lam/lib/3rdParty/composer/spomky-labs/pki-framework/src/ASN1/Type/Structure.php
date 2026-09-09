@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -16,7 +17,7 @@ use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
-use function count;
+use function sprintf;
 
 /**
  * Base class for the constructed types.
@@ -94,7 +95,7 @@ abstract class Structure extends Element implements Countable, IteratorAggregate
             // skip identifier
             Identifier::fromDER($data, $offset);
             // decode element length
-            $length = Length::expectFromDER($data, $offset)->intLength();
+            $length = Length::expectFromDER($data, $offset)->expectIntLength();
             // extract der encoding of the element
             $parts[] = mb_substr($data, $idx, $offset - $idx + $length, '8bit');
             // update offset over content
@@ -236,6 +237,33 @@ abstract class Structure extends Element implements Countable, IteratorAggregate
             }
         }
         return isset($this->taggedMap[$tag]);
+    }
+
+    /**
+     * Assert that no two elements of the structure carry the same context specific tag.
+     *
+     * hasTagged() and getTagged() build a lookup keyed by tag number, so the last element with a given tag wins and
+     * the earlier ones are never seen. That is harmless for a SEQUENCE OF, where repeated tags are the point, and
+     * wrong for a template whose tagged fields are OPTIONAL and distinct: a second copy of a field silently replaces
+     * the first. Templates of the second kind call this before reading their fields.
+     *
+     * @param string $what Name of the type, used in the error message
+     *
+     * @throws DecodeException If a context specific tag occurs more than once.
+     */
+    public function assertUniqueTaggedElements(string $what): void
+    {
+        $seen = [];
+        foreach ($this->elements as $element) {
+            if (! $element->isTagged()) {
+                continue;
+            }
+            $tag = $element->tag();
+            if (isset($seen[$tag])) {
+                throw new DecodeException(sprintf('%s has more than one [%d] element.', $what, $tag));
+            }
+            $seen[$tag] = true;
+        }
     }
 
     /**

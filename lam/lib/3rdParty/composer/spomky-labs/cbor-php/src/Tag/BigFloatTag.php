@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CBOR\Tag;
 
+use Brick\Math\BigInteger;
 use CBOR\CBORObject;
 use CBOR\ListObject;
 use CBOR\NegativeIntegerObject;
@@ -14,9 +15,20 @@ use function count;
 use function extension_loaded;
 use InvalidArgumentException;
 use RuntimeException;
+use function sprintf;
 
 final class BigFloatTag extends Tag implements Normalizable
 {
+    /**
+     * The maximum absolute value accepted for the exponent.
+     *
+     * The result of 2^e grows exponentially with e, so an exponent taken from untrusted input is a denial of
+     * service vector: a document of a handful of bytes can otherwise ask bcpow() for a number of several billion
+     * digits. The bound is far above any legitimate use of this tag -- 2^8192 already has more than 2400 digits,
+     * whereas an IEEE 754 double covers exponents within +/-1074.
+     */
+    public const MAX_ABSOLUTE_EXPONENT = 8192;
+
     public function __construct(int $additionalInformation, ?string $data, CBORObject $object)
     {
         if (! extension_loaded('bcmath')) {
@@ -159,6 +171,20 @@ final class BigFloatTag extends Tag implements Normalizable
         /** @var UnsignedIntegerObject|NegativeIntegerObject|NegativeBigIntegerTag|UnsignedBigIntegerTag $m */
         $m = $object->get(1);
 
-        return rtrim(bcmul((string) $m->normalize(), bcpow('2', (string) $e->normalize(), 100), 100), '0');
+        $exponent = (string) $e->normalize();
+        self::assertExponentIsWithinBounds($exponent);
+
+        return rtrim(bcmul((string) $m->normalize(), bcpow('2', $exponent, 100), 100), '0');
+    }
+
+    private static function assertExponentIsWithinBounds(string $exponent): void
+    {
+        if (BigInteger::of($exponent)->abs()->isGreaterThan(BigInteger::of(self::MAX_ABSOLUTE_EXPONENT))) {
+            throw new InvalidArgumentException(sprintf(
+                'The exponent is out of range. Its absolute value shall not exceed %d, got "%s".',
+                self::MAX_ABSOLUTE_EXPONENT,
+                $exponent
+            ));
+        }
     }
 }

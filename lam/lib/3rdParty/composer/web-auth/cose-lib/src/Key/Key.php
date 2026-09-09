@@ -109,4 +109,11 @@ class Key
 
         return $this->data[$key];
     }
+
+    protected function pem(string $type, string $der): string
+    {
+        return sprintf("-----BEGIN %s-----\n", strtoupper($type)) .
+            chunk_split(base64_encode($der), 64, "\n") .
+            sprintf("-----END %s-----\n", strtoupper($type));
+    }
 }

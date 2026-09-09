@@ -15,23 +15,23 @@ use SpomkyLabs\Pki\ASN1\Util\Flags;
  */
 final class KeyUsageExtension extends Extension
 {
-    final public const DIGITAL_SIGNATURE = 0x100;
+    public const DIGITAL_SIGNATURE = 0x100;
 
-    final public const NON_REPUDIATION = 0x080;
+    public const NON_REPUDIATION = 0x080;
 
-    final public const KEY_ENCIPHERMENT = 0x040;
+    public const KEY_ENCIPHERMENT = 0x040;
 
-    final public const DATA_ENCIPHERMENT = 0x020;
+    public const DATA_ENCIPHERMENT = 0x020;
 
-    final public const KEY_AGREEMENT = 0x010;
+    public const KEY_AGREEMENT = 0x010;
 
-    final public const KEY_CERT_SIGN = 0x008;
+    public const KEY_CERT_SIGN = 0x008;
 
-    final public const CRL_SIGN = 0x004;
+    public const CRL_SIGN = 0x004;
 
-    final public const ENCIPHER_ONLY = 0x002;
+    public const ENCIPHER_ONLY = 0x002;
 
-    final public const DECIPHER_ONLY = 0x001;
+    public const DECIPHER_ONLY = 0x001;
 
     private function __construct(
         bool $critical,

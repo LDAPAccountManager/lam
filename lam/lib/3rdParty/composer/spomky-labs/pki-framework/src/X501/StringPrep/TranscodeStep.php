@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X501\StringPrep;
 
+use function in_array;
 use LogicException;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\T61String;
-use function in_array;
 use function sprintf;
 
 /**

@@ -5,8 +5,19 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function count;
+use const E_USER_DEPRECATED;
+use function func_num_args;
+use function implode;
+use function in_array;
+use InvalidArgumentException;
 use LogicException;
+use function ord;
+use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 use SpomkyLabs\Pki\ASN1\Element;
+use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ExplicitlyTaggedType;
@@ -20,10 +31,11 @@ use SpomkyLabs\Pki\X501\ASN1\Name;
 use SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\Extension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectKeyIdentifierExtension;
+use SpomkyLabs\Pki\X509\Certificate\Extension\UnknownExtension;
 use SpomkyLabs\Pki\X509\CertificationRequest\CertificationRequest;
-use UnexpectedValueException;
-use function count;
+use function sprintf;
 use function strval;
+use UnexpectedValueException;
 
 /**
  * Implements *TBSCertificate* ASN.1 type.
@@ -33,11 +45,11 @@ use function strval;
 final class TBSCertificate
 {
     // Certificate version enumerations
-    final public const VERSION_1 = 0;
+    public const VERSION_1 = 0;
 
-    final public const VERSION_2 = 1;
+    public const VERSION_2 = 1;
 
-    final public const VERSION_3 = 2;
+    public const VERSION_3 = 2;
 
     /**
      * Certificate version.
@@ -84,6 +96,42 @@ final class TBSCertificate
         $this->extensions = Extensions::create();
     }
 
+    /**
+     * Extensions that are never taken from a certification request.
+     *
+     * These decide what the certificate is allowed to do, so they belong to the issuer.
+     *
+     * @var string[]
+     */
+    public const FORBIDDEN_CSR_EXTENSIONS = [
+        Extension::OID_BASIC_CONSTRAINTS,
+        Extension::OID_KEY_USAGE,
+        Extension::OID_EXT_KEY_USAGE,
+        Extension::OID_NAME_CONSTRAINTS,
+        Extension::OID_POLICY_CONSTRAINTS,
+        Extension::OID_POLICY_MAPPINGS,
+        Extension::OID_INHIBIT_ANY_POLICY,
+        Extension::OID_CERTIFICATE_POLICIES,
+        Extension::OID_AUTHORITY_KEY_IDENTIFIER,
+    ];
+
+    /**
+     * Smallest random serial number that meets the CA/Browser Forum Baseline Requirements, in octets.
+     *
+     * They ask for at least 64 bits of CSPRNG output. The sign bit costs one, so eight octets fall just short
+     * and nine are needed. Smaller sizes are still accepted, with a deprecation notice.
+     *
+     * @var int
+     */
+    public const MIN_RANDOM_SERIAL_SIZE = 9;
+
+    /**
+     * Default random serial number size, in octets. RFC 5280 section 4.1.2.2 caps serial numbers at 20 octets.
+     *
+     * @var int
+     */
+    public const DEFAULT_RANDOM_SERIAL_SIZE = 20;
+
     public static function create(
         Name $subject,
         PublicKeyInfo $subjectPublicKeyInfo,
@@ -98,13 +146,24 @@ final class TBSCertificate
      */
     public static function fromASN1(Sequence $seq): self
     {
+        // the optional fields of a TBSCertificate are distinct, so a repeated tag is not a field but a second copy
+        // of one; hasTagged() would keep only the last of them and silently drop what came before
+        $seq->assertUniqueTaggedElements('TBSCertificate');
         $idx = 0;
         if ($seq->hasTagged(0)) {
             ++$idx;
-            $version = $seq->getTagged(0)
+            $number = $seq->getTagged(0)
                 ->asExplicit()
                 ->asInteger()
-                ->intNumber();
+                ->getValue();
+            // calling intNumber() straight away would let brick/math's IntegerOverflowException escape the
+            // decoding contract; a version that does not fit in an int cannot be a supported version anyway
+            if ($number->isLessThan(PHP_INT_MIN) || $number->isGreaterThan(PHP_INT_MAX)) {
+                throw new UnexpectedValueException(
+                    sprintf('Unsupported certificate version %s.', $number->toBase(10))
+                );
+            }
+            $version = $number->toInt();
         } else {
             $version = self::VERSION_1;
         }
@@ -141,16 +200,74 @@ final class TBSCertificate
         if ($seq->hasTagged(3)) {
             $tbs_cert = $tbs_cert->withExtensions(Extensions::fromASN1($seq->getTagged(3)->asExplicit()->asSequence()));
         }
+        self::assertOptionalTrailingFields($seq, $idx);
         return $tbs_cert;
+    }
+
+    /**
+     * Assert that everything past subjectPublicKeyInfo is at most one [1], one [2] and one [3], in that order.
+     *
+     * The fixed fields are read by position and the optional ones by tag, so nothing else looks at the elements in
+     * between or after. An element the template does not define is then carried along unnoticed, and the encoding
+     * no longer means what a conforming decoder reads from it.
+     *
+     * @param int $offset Index of the first element past subjectPublicKeyInfo
+     *
+     * @throws DecodeException If any other element is present.
+     */
+    private static function assertOptionalTrailingFields(Sequence $seq, int $offset): void
+    {
+        $previous = 0;
+        $count = count($seq);
+        for ($i = $offset; $i < $count; ++$i) {
+            $element = $seq->at($i)
+                ->asElement();
+            $tag = $element->isTagged() ? $element->tag() : -1;
+            if ($tag <= $previous || $tag > 3) {
+                throw new DecodeException(
+                    sprintf('TBSCertificate has an unexpected element at index %d.', $i)
+                );
+            }
+            $previous = $tag;
+        }
     }
 
     /**
      * Initialize from certification request.
      *
+     * The extensions a request asks for are chosen by the requester. Those in FORBIDDEN_CSR_EXTENSIONS decide
+     * what a certificate is allowed to do, so they are never copied: a requester asking for basicConstraints
+     * cA:TRUE and keyUsage keyCertSign is asking to become a certificate authority. The issuer sets those
+     * itself.
+     *
+     * Name the extensions to copy in $allowedExtensionOids. Leaving the argument out copies every requested
+     * extension that is not forbidden, which is a deny list: the set of extensions that matter grows over time
+     * and every future one would be copied by default. A request can currently carry a subjectAltName naming an
+     * identity the subject DN says nothing about, or an authorityInformationAccess choosing the OCSP responder a
+     * relying party will ask. That default is deprecated and becomes the empty allow list in the next major
+     * release; pass null explicitly to ask for it.
+     *
+     * An unknown extension marked critical is never copied, whatever the allow list says: it would be signed
+     * verbatim and then no RFC 5280 validator would accept the certificate, this library's own included.
+     *
      * Note that signature is not verified and must be done by the caller.
+     *
+     * @param CertificationRequest $cr Certification request
+     * @param null|string[] $allowedExtensionOids OIDs of the requested extensions to copy, null for all of them
+     * except the forbidden ones
      */
-    public static function fromCSR(CertificationRequest $cr): self
+    public static function fromCSR(CertificationRequest $cr, ?array $allowedExtensionOids = null): self
     {
+        $allowListGiven = func_num_args() > 1;
+        if ($allowedExtensionOids !== null) {
+            $forbidden = array_intersect($allowedExtensionOids, self::FORBIDDEN_CSR_EXTENSIONS);
+            if (count($forbidden) !== 0) {
+                throw new InvalidArgumentException(sprintf(
+                    'Extensions %s cannot be taken from a certification request.',
+                    implode(', ', $forbidden)
+                ));
+            }
+        }
         $cri = $cr->certificationRequestInfo();
         $tbs_cert = self::create(
             $cri->subject(),
@@ -162,7 +279,34 @@ final class TBSCertificate
         if ($cri->hasAttributes()) {
             $attribs = $cri->attributes();
             if ($attribs->hasExtensionRequest()) {
-                $tbs_cert = $tbs_cert->withExtensions($attribs->extensionRequest()->extensions());
+                $requested = $attribs->extensionRequest()
+                    ->extensions();
+                $accepted = [];
+                foreach ($requested as $extension) {
+                    $oid = $extension->oid();
+                    if (in_array($oid, self::FORBIDDEN_CSR_EXTENSIONS, true)) {
+                        continue;
+                    }
+                    if ($allowedExtensionOids !== null && ! in_array($oid, $allowedExtensionOids, true)) {
+                        continue;
+                    }
+                    // an extension this library cannot even parse, signed as critical, produces a certificate
+                    // that is dead on arrival: no conforming validator will accept it
+                    if ($extension->isCritical() && $extension instanceof UnknownExtension) {
+                        continue;
+                    }
+                    $accepted[] = $extension;
+                }
+                if (! $allowListGiven && count($accepted) !== 0) {
+                    @trigger_error(sprintf(
+                        'Copying requested extensions from a certification request without naming them is '
+                        . 'deprecated and will stop copying anything in the next major release. %s '
+                        . 'were taken from the request. Pass the OIDs to copy as the second argument of '
+                        . 'fromCSR(), or pass null explicitly to keep the current behaviour.',
+                        implode(', ', array_map(static fn (Extension $e) => $e->oid(), $accepted))
+                    ), E_USER_DEPRECATED);
+                }
+                $tbs_cert = $tbs_cert->withExtensions(Extensions::create(...$accepted));
             }
         }
         // add Subject Key Identifier extension
@@ -222,15 +366,38 @@ final class TBSCertificate
      *
      * @param int $size Number of random bytes
      */
-    public function withRandomSerialNumber(int $size): self
+    public function withRandomSerialNumber(int $size = self::DEFAULT_RANDOM_SERIAL_SIZE): self
     {
-        // ensure that first byte is always non-zero and having first bit unset
-        $num = BigInteger::of(random_int(1, 0x7f));
-        for ($i = 1; $i < $size; ++$i) {
-            $num = $num->shiftedLeft(8);
-            $num = $num->plus(random_int(0, 0xff));
+        return $this->withSerialNumber(self::generateSerialNumber($size));
+    }
+
+    /**
+     * Draw a serial number from a CSPRNG.
+     *
+     * The most significant bit is cleared so the DER INTEGER encodes a positive value, which is why 64 bits of
+     * entropy need nine octets rather than eight.
+     *
+     * @param int $size Number of random octets
+     */
+    private static function generateSerialNumber(int $size): string
+    {
+        if ($size < 1) {
+            throw new InvalidArgumentException('Serial number size must be at least one octet.');
         }
-        return $this->withSerialNumber($num->toBase(10));
+        if ($size < self::MIN_RANDOM_SERIAL_SIZE) {
+            @trigger_error(sprintf(
+                'A %d octet serial number carries %.2f bits of entropy, below the 64 bits the CA/Browser Forum'
+                . ' Baseline Requirements ask for. Use at least %d octets.',
+                $size,
+                8 * $size - 1,
+                self::MIN_RANDOM_SERIAL_SIZE
+            ), E_USER_DEPRECATED);
+        }
+        $octets = random_bytes($size);
+        $octets[0] = chr(ord($octets[0]) & 0x7F);
+        $num = BigInteger::fromBytes($octets, false);
+
+        return $num->isZero() ? '1' : $num->toBase(10);
     }
 
     /**
@@ -500,7 +667,10 @@ final class TBSCertificate
             $tbs_cert->version = $tbs_cert->_determineVersion();
         }
         if (! isset($tbs_cert->serialNumber)) {
-            $tbs_cert->serialNumber = '0';
+            // RFC 5280 section 4.1.2.2 requires a positive integer, and a constant serial number removes the
+            // unpredictability that protects issuance against collision attacks while breaking CRL revocation,
+            // which identifies certificates by the (issuer, serial number) pair. Draw one rather than use zero.
+            $tbs_cert->serialNumber = self::generateSerialNumber(self::DEFAULT_RANDOM_SERIAL_SIZE);
         }
         $tbs_cert->signature = $algo;
         $data = $tbs_cert->toASN1()

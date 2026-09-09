@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Asymmetric;
 
+use function chr;
+use function ord;
 use RuntimeException;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
@@ -19,8 +21,6 @@ use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\Ed448PublicKey;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\X448PublicKey;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RSA\RSAPublicKey;
 use UnexpectedValueException;
-use function chr;
-use function ord;
 
 /**
  * Implements X.509 SubjectPublicKeyInfo ASN.1 type.
@@ -154,7 +154,7 @@ final class PublicKeyInfo
     public function keyIdentifier64(): string
     {
         $id = mb_substr($this->keyIdentifier(), -8, null, '8bit');
-        $c = (ord($id[0]) & 0x0f) | 0x40;
+        $c = (ord($id[0]) & 0x0F) | 0x40;
         $id[0] = chr($c);
         return $id;
     }

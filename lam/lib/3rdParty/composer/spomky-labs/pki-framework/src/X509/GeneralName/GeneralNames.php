@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\GeneralName;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -13,7 +14,6 @@ use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\Name;
 use UnexpectedValueException;
-use function count;
 
 /**
  * Implements *GeneralNames* ASN.1 type.
@@ -54,6 +54,16 @@ final class GeneralNames implements Countable, IteratorAggregate
         }
         $names = array_map(static fn (UnspecifiedType $el) => GeneralName::fromASN1($el->asTagged()), $seq->elements());
         return self::create(...$names);
+    }
+
+    /**
+     * Get all GeneralName objects.
+     *
+     * @return GeneralName[]
+     */
+    public function all(): array
+    {
+        return $this->_names;
     }
 
     /**

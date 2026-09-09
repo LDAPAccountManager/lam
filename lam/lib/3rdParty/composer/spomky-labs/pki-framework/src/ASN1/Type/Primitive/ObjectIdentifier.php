@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function count;
+use function is_int;
+use function mb_strlen;
+use function ord;
 use RuntimeException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -13,20 +18,28 @@ use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
+use function sprintf;
 use Throwable;
 use UnexpectedValueException;
-use function chr;
-use function count;
-use function is_int;
-use function mb_strlen;
-use function ord;
-use function sprintf;
 
 /**
  * Implements *OBJECT IDENTIFIER* type.
  */
 final class ObjectIdentifier extends Element
 {
+    /**
+     * Largest number of octets a base 128 field may span.
+     *
+     * Each octet carries seven bits, so nine of them already exceed the range of a PHP integer. A tag number or a
+     * sub-identifier beyond that can never name a type or an arc this library implements, and accepting more of them
+     * is not free: the accumulator is a BigInteger that is rebuilt on every step, so an unbounded run of continuation
+     * octets costs work quadratic in its length. A few kilobytes of them are minutes of CPU, spent before any
+     * signature is checked.
+     *
+     * @var int
+     */
+    private const MAX_BASE128_OCTETS = 9;
+
     use UniversalClass;
     use PrimitiveType;
 
@@ -90,7 +103,11 @@ final class ObjectIdentifier extends Element
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): ElementBase
     {
         $idx = $offset;
-        $len = Length::expectFromDER($data, $idx)->intLength();
+        $len = Length::expectFromDER($data, $idx)->expectIntLength();
+        if ($len === 0) {
+            // an object identifier has at least one sub-identifier (X.690 sect. 8.19.1)
+            throw new DecodeException('Object identifier must have at least one content octet.');
+        }
         $subids = self::decodeSubIDs(mb_substr($data, $idx, $len, '8bit'));
         $idx += $len;
         // decode first subidentifier according to spec section 8.19.4
@@ -147,11 +164,11 @@ final class ObjectIdentifier extends Element
         foreach ($subids as $subid) {
             // if number fits to one base 128 byte
             if ($subid->isLessThan(128)) {
-                $data .= chr($subid->toInt());
+                $data .= chr($subid->toInt() & 0xFF);
             } else { // encode to multiple bytes
                 $bytes = [];
                 do {
-                    array_unshift($bytes, 0x7f & $subid->toInt());
+                    array_unshift($bytes, 0x7F & $subid->toInt());
                     $subid = $subid->shiftedRight(7);
                 } while ($subid->isGreaterThan(0));
                 // all bytes except last must have bit 8 set to one
@@ -180,12 +197,22 @@ final class ObjectIdentifier extends Element
         $end = mb_strlen($data, '8bit');
         while ($idx < $end) {
             $num = BigInteger::of(0);
+            $first = true;
+            $octets = 0;
             while (true) {
                 if ($idx >= $end) {
                     throw new DecodeException('Unexpected end of data.');
                 }
+                if (++$octets > self::MAX_BASE128_OCTETS) {
+                    throw new DecodeException('Sub-identifier is too long.');
+                }
                 $byte = ord($data[$idx++]);
-                $num = $num->or($byte & 0x7f);
+                // leading zero bits are not part of a minimal sub-identifier (X.690 sect. 8.19.2)
+                if ($first && $byte === 0x80) {
+                    throw new DecodeException('Leading zero octet in an object identifier sub-identifier.');
+                }
+                $first = false;
+                $num = $num->or($byte & 0x7F);
                 // bit 8 of the last octet is zero
                 if (0 === ($byte & 0x80)) {
                     break;

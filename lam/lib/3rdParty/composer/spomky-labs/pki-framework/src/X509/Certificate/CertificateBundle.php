@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\CryptoEncoding\PEM;
 use SpomkyLabs\Pki\CryptoEncoding\PEMBundle;
-use function count;
 
 /**
  * Implements a list of certificates.
@@ -107,7 +107,10 @@ final class CertificateBundle implements Countable, IteratorAggregate
      */
     public function contains(Certificate $cert): bool
     {
-        $id = self::_getCertKeyId($cert);
+        // the computed identifier is derived from the key itself, so a certificate is always registered under it
+        $id = $cert->tbsCertificate()
+            ->subjectPublicKeyInfo()
+            ->keyIdentifier();
         $map = $this->_getKeyIdMap();
         if (! isset($map[$id])) {
             return false;
@@ -124,6 +127,14 @@ final class CertificateBundle implements Countable, IteratorAggregate
     /**
      * Get all certificates that have given subject key identifier.
      *
+     * A certificate is indexed both under the identifier computed from its subjectPublicKeyInfo and under the one
+     * its subjectKeyIdentifier extension declares, when the two differ. The declared value is arbitrary data that
+     * is never checked against the key, so indexing on it alone let a single certificate whose extension repeats
+     * a real intermediate's identifier displace that intermediate and deny validation of a good chain.
+     *
+     * The certificates whose computed identifier matches come first, ahead of those that only claim the value, so
+     * a caller that takes the first match takes the one that actually holds the key.
+     *
      * @return Certificate[]
      */
     public function allBySubjectKeyIdentifier(string $id): array
@@ -132,7 +143,19 @@ final class CertificateBundle implements Countable, IteratorAggregate
         if (! isset($map[$id])) {
             return [];
         }
-        return $map[$id];
+        $computed = [];
+        $declared = [];
+        foreach ($map[$id] as $cert) {
+            $keyId = $cert->tbsCertificate()
+                ->subjectPublicKeyInfo()
+                ->keyIdentifier();
+            if ($keyId === $id) {
+                $computed[] = $cert;
+            } else {
+                $declared[] = $cert;
+            }
+        }
+        return array_merge($computed, $declared);
     }
 
     /**
@@ -174,29 +197,41 @@ final class CertificateBundle implements Countable, IteratorAggregate
         if (! isset($this->keyIdMap)) {
             $this->keyIdMap = [];
             foreach ($this->certs as $cert) {
-                $id = self::_getCertKeyId($cert);
-                if (! isset($this->keyIdMap[$id])) {
-                    $this->keyIdMap[$id] = [];
+                foreach (self::_getCertKeyIds($cert) as $id) {
+                    if (! isset($this->keyIdMap[$id])) {
+                        $this->keyIdMap[$id] = [];
+                    }
+                    $this->keyIdMap[$id][] = $cert;
                 }
-                array_push($this->keyIdMap[$id], $cert);
             }
         }
         return $this->keyIdMap;
     }
 
     /**
-     * Get public key id for the certificate.
+     * Get the public key ids the certificate is to be indexed under.
+     *
+     * The identifier computed from the subjectPublicKeyInfo comes first: it is derived from the key and cannot be
+     * chosen. The subjectKeyIdentifier extension is added alongside it, so a lookup on the value another
+     * certificate's authorityKeyIdentifier declares still finds this one, without letting that claim be the only
+     * way the certificate can be found.
+     *
+     * @return list<string>
      */
-    private static function _getCertKeyId(Certificate $cert): string
+    private static function _getCertKeyIds(Certificate $cert): array
     {
+        $ids = [$cert->tbsCertificate()
+            ->subjectPublicKeyInfo()
+            ->keyIdentifier()];
         $exts = $cert->tbsCertificate()
             ->extensions();
         if ($exts->hasSubjectKeyIdentifier()) {
-            return $exts->subjectKeyIdentifier()
+            $declared = $exts->subjectKeyIdentifier()
                 ->keyIdentifier();
+            if ($declared !== $ids[0]) {
+                $ids[] = $declared;
+            }
         }
-        return $cert->tbsCertificate()
-            ->subjectPublicKeyInfo()
-            ->keyIdentifier();
+        return $ids;
     }
 }

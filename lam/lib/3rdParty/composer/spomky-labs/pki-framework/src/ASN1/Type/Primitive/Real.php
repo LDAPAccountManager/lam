@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
+use function assert;
 use Brick\Math\BigInteger;
+use function chr;
+use function count;
+use function in_array;
+use const INF;
 use LogicException;
+use function mb_strlen;
+use function ord;
 use RangeException;
+use function rtrim;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
@@ -15,15 +23,9 @@ use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
+use function sprintf;
 use Stringable;
 use UnexpectedValueException;
-use function chr;
-use function count;
-use function in_array;
-use function mb_strlen;
-use function ord;
-use function sprintf;
-use const INF;
 
 /**
  * Implements *REAL* type.
@@ -38,7 +40,7 @@ final class Real extends Element implements Stringable
      *
      * @var string
      */
-    final public const NR1_REGEX = '/^\s*' .
+    public const NR1_REGEX = '/^\s*' .
         '(?<s>[+\-])?' .    // sign
         '(?<i>\d+)' .       // integer
         '$/';
@@ -48,7 +50,7 @@ final class Real extends Element implements Stringable
      *
      * @var string
      */
-    final public const NR2_REGEX = '/^\s*' .
+    public const NR2_REGEX = '/^\s*' .
         '(?<s>[+\-])?' .                            // sign
         '(?<d>(?:\d+[\.,]\d*)|(?:\d*[\.,]\d+))' .   // decimal number
         '$/';
@@ -58,7 +60,7 @@ final class Real extends Element implements Stringable
      *
      * @var string
      */
-    final public const NR3_REGEX = '/^\s*' .
+    public const NR3_REGEX = '/^\s*' .
         '(?<ms>[+\-])?' .                           // mantissa sign
         '(?<m>(?:\d+[\.,]\d*)|(?:\d*[\.,]\d+))' .   // mantissa
         '[Ee](?<es>[+\-])?' .                       // exponent sign
@@ -72,7 +74,7 @@ final class Real extends Element implements Stringable
      *
      * @var string
      */
-    final public const PHP_EXPONENT_DNUM = '/^' .
+    public const PHP_EXPONENT_DNUM = '/^' .
         '(?<ms>[+\-])?' .               // sign
         '(?<m>' .
         '\d+' .                     // LNUM
@@ -87,14 +89,14 @@ final class Real extends Element implements Stringable
      *
      * @var int
      */
-    final public const INF_EXPONENT = 2047;
+    public const INF_EXPONENT = 2047;
 
     /**
      * Exponent bias for IEEE 754 double precision float.
      *
      * @var int
      */
-    final public const EXP_BIAS = -1023;
+    public const EXP_BIAS = -1023;
 
     /**
      * Signed integer mantissa.
@@ -309,7 +311,7 @@ final class Real extends Element implements Stringable
         } else { // base === 16
             $byte |= 0x20;
             // while last 4 bits are zero
-            while ($m->isGreaterThan(0) && $m->and(0x0f)->isEqualTo($zero)) {
+            while ($m->isGreaterThan(0) && $m->and(0x0F)->isEqualTo($zero)) {
                 $m = $m->shiftedRight(4);
                 $e = $e->plus(1);
             }
@@ -324,15 +326,15 @@ final class Real extends Element implements Stringable
         // encode exponent
         $exp_bytes = (BigInt::create($e))->signedOctets();
         $exp_len = mb_strlen($exp_bytes, '8bit');
-        if ($exp_len > 0xff) {
+        if ($exp_len > 0xFF) {
             throw new RangeException('Exponent encoding is too long.');
         }
         if ($exp_len <= 3) {
             $byte |= ($exp_len - 1) & 0x03;
-            $bytes = chr($byte);
+            $bytes = chr($byte & 0xFF);
         } else {
             $byte |= 0x03;
-            $bytes = chr($byte) . chr($exp_len);
+            $bytes = chr($byte & 0xFF) . chr($exp_len & 0xFF);
         }
         $bytes .= $exp_bytes;
         // encode mantissa
@@ -364,7 +366,7 @@ final class Real extends Element implements Stringable
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): ElementBase
     {
         $idx = $offset;
-        $length = Length::expectFromDER($data, $idx)->intLength();
+        $length = Length::expectFromDER($data, $idx)->expectIntLength();
         // if length is zero, value is zero (spec 8.5.2)
         if ($length === 0) {
             $obj = self::create(0, 0, 10);
@@ -383,9 +385,6 @@ final class Real extends Element implements Stringable
         return $obj;
     }
 
-    /**
-     * Decode binary encoding.
-     */
     protected static function decodeBinaryEncoding(string $data): self
     {
         $byte = ord($data[0]);
@@ -434,12 +433,9 @@ final class Real extends Element implements Stringable
         return self::create($n, $exp, 2);
     }
 
-    /**
-     * Decode decimal encoding.
-     */
     protected static function decodeDecimalEncoding(string $data): self
     {
-        $nr = ord($data[0]) & 0x3f;
+        $nr = ord($data[0]) & 0x3F;
         if (! in_array($nr, [1, 2, 3], true)) {
             throw new DecodeException('Unsupported decimal encoding form.');
         }
@@ -512,9 +508,11 @@ final class Real extends Element implements Stringable
      */
     private static function parse754Double(string $octets): array
     {
+        assert($octets !== '');
         $n = BigInteger::fromBytes($octets, false);
         // sign bit
-        $neg = $n->testBit(63);
+        $neg = $n->shiftedRight(63)
+            ->isOdd();
         // 11 bits of biased exponent
         $exponentMask = BigInteger::fromBase('7ff0000000000000', 16);
         $exp = $n->and($exponentMask)
@@ -539,7 +537,7 @@ final class Real extends Element implements Stringable
 
         // find the last fraction bit that is set
         $last = 0;
-        while (! $man->testBit($last) && $last !== 52) {
+        while (! $man->shiftedRight($last)->isOdd() && $last !== 52) {
             $last++;
         }
 
@@ -579,12 +577,19 @@ final class Real extends Element implements Stringable
         else {
             throw new UnexpectedValueException("{$str} could not be parsed to REAL.");
         }
-        // normalize so that mantissa has no trailing zeroes
-        $zero = BigInteger::of(0);
-        $ten = BigInteger::of(10);
-        while (! $m->isEqualTo($zero) && $m->mod($ten)->isEqualTo($zero)) {
-            $m = $m->dividedBy($ten);
-            $e = $e->plus(1);
+        // Normalise so that the mantissa has no trailing zeroes. Dividing by ten once per digit costs work
+        // quadratic in the number of digits an attacker writes, so the zeroes are counted on the decimal string
+        // and removed in one step.
+        $digits = $m->toBase(10);
+        $trimmed = rtrim($digits, '0');
+        if ($trimmed === '' || $trimmed === '-') {
+            // the mantissa is zero, and zero has no trailing zeroes to remove
+            return [BigInteger::of(0), $e];
+        }
+        $removed = mb_strlen($digits, '8bit') - mb_strlen($trimmed, '8bit');
+        if ($removed !== 0) {
+            $m = BigInteger::of($trimmed);
+            $e = $e->plus($removed);
         }
         return [$m, $e];
     }

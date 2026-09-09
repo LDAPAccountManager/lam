@@ -19,6 +19,8 @@ use IteratorAggregate;
  */
 final class MapObject extends AbstractCBORObject implements Countable, IteratorAggregate, Normalizable, ArrayAccess
 {
+    use MapKeyRegistryTrait;
+
     private const MAJOR_TYPE = self::MAJOR_TYPE_MAP;
 
     /**
@@ -37,6 +39,7 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
         $this->data = $data;
         $this->length = $length;
+        $this->rebuildKeyIdentities($data);
     }
 
     public function __toString(): string
@@ -64,7 +67,7 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
         if (! $key instanceof Normalizable) {
             throw new InvalidArgumentException('Invalid key. Shall be normalizable');
         }
-        $this->data[$key->normalize()] = MapItem::create($key, $value);
+        $this->data[$this->registerKey($key, false)] = MapItem::create($key, $value);
         [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
 
         return $this;
@@ -82,6 +85,7 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
         }
         unset($this->data[$index]);
         $this->data = array_values($this->data);
+        $this->rebuildKeyIdentities($this->data);
         [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
 
         return $this;
@@ -98,12 +102,7 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
 
     public function set(MapItem $object): self
     {
-        $key = $object->getKey();
-        if (! $key instanceof Normalizable) {
-            throw new InvalidArgumentException('Invalid key. Shall be normalizable');
-        }
-
-        $this->data[$key->normalize()] = $object;
+        $this->data[$this->registerKey($object->getKey(), true)] = $object;
         [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
 
         return $this;
@@ -128,12 +127,8 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
     public function normalize(): array
     {
         return array_reduce($this->data, static function (array $carry, MapItem $item): array {
-            $key = $item->getKey();
-            if (! $key instanceof Normalizable) {
-                throw new InvalidArgumentException('Invalid key. Shall be normalizable');
-            }
             $valueObject = $item->getValue();
-            $carry[$key->normalize()] = $valueObject instanceof Normalizable ? $valueObject->normalize() : $valueObject;
+            $carry[self::assertNormalizableToScalar($item->getKey())] = $valueObject instanceof Normalizable ? $valueObject->normalize() : $valueObject;
 
             return $carry;
         }, []);

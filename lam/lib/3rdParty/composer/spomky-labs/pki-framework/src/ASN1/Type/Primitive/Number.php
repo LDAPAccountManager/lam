@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
-use InvalidArgumentException;
-use SpomkyLabs\Pki\ASN1\Element;
-use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
-use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
-use SpomkyLabs\Pki\ASN1\Util\BigInt;
+use Brick\Math\Exception\MathException;
 use function gettype;
+use InvalidArgumentException;
 use function is_int;
 use function is_scalar;
 use function is_string;
+use SpomkyLabs\Pki\ASN1\Element;
+use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
+use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
+use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
+use SpomkyLabs\Pki\ASN1\Util\BigInt;
 use function sprintf;
 use function strval;
 
@@ -62,7 +64,11 @@ abstract class Number extends Element
      */
     public function intNumber(): int
     {
-        return $this->number->toInt();
+        try {
+            return $this->number->toInt();
+        } catch (MathException $e) {
+            throw new DecodeException(sprintf('Number %s is too large.', $this->number->base10()), 0, $e);
+        }
     }
 
     protected function encodedAsDER(): string
@@ -78,7 +84,7 @@ abstract class Number extends Element
         if (is_int($num)) {
             return true;
         }
-        if (is_string($num) && preg_match('/-?\d+/', $num) === 1) {
+        if (is_string($num) && preg_match('/\A-?\d+\z/', $num) === 1) {
             return true;
         }
         if ($num instanceof BigInteger) {

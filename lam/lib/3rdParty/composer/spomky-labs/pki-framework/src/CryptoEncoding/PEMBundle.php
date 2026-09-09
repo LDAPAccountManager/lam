@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\CryptoEncoding;
 
 use ArrayIterator;
+use function count;
 use Countable;
+use function is_string;
 use IteratorAggregate;
 use LogicException;
+use function mb_strlen;
+use function preg_last_error_msg;
+use const PREG_SET_ORDER;
 use RuntimeException;
 use Stringable;
 use UnexpectedValueException;
-use function count;
-use function is_string;
-use const PREG_SET_ORDER;
 
 /**
  * Container for multiple PEM objects.
@@ -50,13 +52,20 @@ final class PEMBundle implements Countable, IteratorAggregate, Stringable
     public static function fromString(string $str): self
     {
         $hasMatches = preg_match_all(PEM::PEM_REGEX, $str, $matches, PREG_SET_ORDER);
-        if ($hasMatches === false || $hasMatches === 0) {
+        if ($hasMatches === false) {
+            // a matcher that gave up says nothing about the input, so it must not be reported as malformed
+            throw new RuntimeException('Failed to match PEM blocks: ' . preg_last_error_msg() . '.');
+        }
+        if ($hasMatches === 0) {
             throw new UnexpectedValueException('No PEM blocks.');
         }
         $pems = array_map(
             static function ($match) {
                 $payload = preg_replace('/\s+/', '', $match[2]);
                 if (! is_string($payload)) {
+                    throw new UnexpectedValueException('Failed to decode PEM data.');
+                }
+                if (mb_strlen($payload, '8bit') % 4 !== 0) {
                     throw new UnexpectedValueException('Failed to decode PEM data.');
                 }
                 $data = base64_decode($payload, true);

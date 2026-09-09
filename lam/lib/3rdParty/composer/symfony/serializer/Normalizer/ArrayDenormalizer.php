@@ -85,9 +85,19 @@ class ArrayDenormalizer implements DenormalizerInterface, DenormalizerAwareInter
             }
         }
 
+        if (\is_array($objectsToPopulate = $context[AbstractNormalizer::OBJECT_TO_POPULATE] ?? null)) {
+            unset($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
+        } else {
+            $objectsToPopulate = [];
+        }
+
         foreach ($data as $key => $value) {
             $subContext = $context;
             $subContext['deserialization_path'] = ($context['deserialization_path'] ?? false) ? \sprintf('%s[%s]', $context['deserialization_path'], $key) : "[$key]";
+
+            if (\is_object($objectsToPopulate[$key] ?? null) || \is_array($objectsToPopulate[$key] ?? null)) {
+                $subContext[AbstractNormalizer::OBJECT_TO_POPULATE] = $objectsToPopulate[$key];
+            }
 
             $this->validateKeyType($typeIdentifiers, $key, $subContext['deserialization_path']);
 
@@ -103,8 +113,17 @@ class ArrayDenormalizer implements DenormalizerInterface, DenormalizerAwareInter
             throw new BadMethodCallException(\sprintf('The nested denormalizer needs to be set to allow "%s()" to be used.', __METHOD__));
         }
 
-        return str_ends_with($type, '[]')
-            && $this->denormalizer->supportsDenormalization($data, substr($type, 0, -2), $format, $context);
+        if (!str_ends_with($type, '[]') || !\is_array($data)) {
+            return false;
+        }
+
+        $itemType = substr($type, 0, -2);
+
+        foreach ($data as $item) {
+            return $this->denormalizer->supportsDenormalization($item, $itemType, $format, $context);
+        }
+
+        return true;
     }
 
     /**

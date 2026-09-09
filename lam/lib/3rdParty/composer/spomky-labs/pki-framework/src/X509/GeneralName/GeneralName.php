@@ -7,6 +7,7 @@ namespace SpomkyLabs\Pki\X509\GeneralName;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\TaggedType;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
+use function sprintf;
 use Stringable;
 use UnexpectedValueException;
 
@@ -35,6 +36,13 @@ abstract class GeneralName implements Stringable
     public const TAG_IP_ADDRESS = 7;
 
     public const TAG_REGISTERED_ID = 8;
+
+    /**
+     * Longest accepted dNSName, in octets. A fully qualified domain name is capped at 253 by DNS itself.
+     *
+     * @var int
+     */
+    public const MAX_DNS_NAME_LENGTH = 255;
 
     protected function __construct(
         protected int $tag
@@ -110,6 +118,23 @@ abstract class GeneralName implements Stringable
             return false;
         }
         return true;
+    }
+
+    /**
+     * Reject control characters in a textual name.
+     *
+     * IA5String legitimately spans 0x00 to 0x7f, so a NUL byte is a valid IA5 character and the ASN.1 decoder has
+     * no reason to refuse it. A name is not an arbitrary string though: an embedded NUL is the historic prefix
+     * attack, and it makes any comparison that leaves PHP's binary-safe domain diverge from the encoded value.
+     *
+     * @param string $value Name to check
+     * @param string $type Name type, for the error message
+     */
+    protected static function assertNoControlCharacters(string $value, string $type): void
+    {
+        if (preg_match('/[\x00-\x1f\x7f]/', $value) === 1) {
+            throw new UnexpectedValueException(sprintf('%s must not contain control characters.', $type));
+        }
     }
 
     /**

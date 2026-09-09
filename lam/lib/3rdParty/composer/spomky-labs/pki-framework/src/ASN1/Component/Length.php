@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Component;
 
 use Brick\Math\BigInteger;
+use Brick\Math\Exception\MathException;
+use function count;
 use DomainException;
+use function func_num_args;
 use LogicException;
+use function mb_strlen;
+use function ord;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\Encodable;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
-use function count;
-use function mb_strlen;
-use function ord;
 use function sprintf;
 
 /**
@@ -60,7 +62,7 @@ final class Length implements Encodable
         $indefinite = false;
         $byte = ord($data[$idx++]);
         // bits 7 to 1
-        $length = (0x7f & $byte);
+        $length = (0x7F & $byte);
         // long form
         if ((0x80 & $byte) !== 0) {
             if ($length === 0) {
@@ -72,7 +74,7 @@ final class Length implements Encodable
                 $length = self::decodeLongFormLength($length, $data, $idx);
             }
         }
-        if (isset($offset)) {
+        if (func_num_args() > 1) {
             $offset = $idx;
         }
         return self::create($length, $indefinite);
@@ -104,15 +106,15 @@ final class Length implements Encodable
             }
         }
         // check that enough data is available
-        if (! $length->isIndefinite()
-            && mb_strlen($data, '8bit') < $idx + $length->intLength()) {
-            throw new DecodeException(
-                sprintf(
-                    'Length %d overflows data, %d bytes left.',
-                    $length->intLength(),
-                    mb_strlen($data, '8bit') - $idx
-                )
-            );
+        // the comparison is done on the big integer: a length encoded on many octets may not fit in an int, and
+        // converting it first would let an IntegerOverflowException escape instead of a DecodeException
+        if (! $length->isIndefinite()) {
+            $remaining = mb_strlen($data, '8bit') - $idx;
+            if ($length->_length->getValue()->isGreaterThan($remaining)) {
+                throw new DecodeException(
+                    sprintf('Length %s overflows data, %d bytes left.', $length->_length->base10(), $remaining)
+                );
+            }
         }
         $offset = $idx;
         return $length;
@@ -129,7 +131,7 @@ final class Length implements Encodable
             if ($num->isGreaterThan(127)) {
                 $octets = [];
                 for (; $num->isGreaterThan(0); $num = $num->shiftedRight(8)) {
-                    $octets[] = BigInteger::of(0xff)->and($num)->toInt();
+                    $octets[] = BigInteger::of(0xFF)->and($num)->toInt();
                 }
                 $count = count($octets);
                 // first octet must not be 0xff
@@ -169,7 +171,31 @@ final class Length implements Encodable
         if ($this->_indefinite) {
             throw new LogicException('Length is indefinite.');
         }
-        return $this->_length->toInt();
+        try {
+            return $this->_length->toInt();
+        } catch (MathException $e) {
+            // a length that does not fit in an int can never describe an in-memory string
+            throw new DecodeException(
+                sprintf('Length %s is too large.', $this->_length->base10()),
+                0,
+                $e
+            );
+        }
+    }
+
+    /**
+     * Get the length as an integer, rejecting an indefinite length as a malformed encoding.
+     *
+     * Indefinite length is only permitted for constructed encodings (X.690 sect. 8.1.3.6), so a decoder that needs
+     * a definite length is looking at hostile input rather than at a misuse of the API: intLength() would raise a
+     * LogicException, which is outside the exception contract of fromDER().
+     */
+    public function expectIntLength(): int
+    {
+        if ($this->_indefinite) {
+            throw new DecodeException('Length is indefinite, expected a definite length.');
+        }
+        return $this->intLength();
     }
 
     /**
@@ -181,8 +207,6 @@ final class Length implements Encodable
     }
 
     /**
-     * Decode long form length.
-     *
      * @param int $length Number of octets
      * @param string $data Data
      * @param int $offset reference to the variable containing offset to the data
@@ -193,11 +217,19 @@ final class Length implements Encodable
         if ($length === 127) {
             throw new DecodeException('Invalid number of length octets.');
         }
+        // leading zero octets are not part of a minimal encoding (X.690 sect. 10.1)
+        if (ord($data[$offset]) === 0x00) {
+            throw new DecodeException('Leading zero octet in a long form length.');
+        }
         $num = BigInteger::of(0);
         while (--$length >= 0) {
             $byte = ord($data[$offset++]);
             $num = $num->shiftedLeft(8)
                 ->or($byte);
+        }
+        // a length below 128 must use the short form (X.690 sect. 10.1)
+        if ($num->isLessThan(128)) {
+            throw new DecodeException('Length must be encoded in the short form.');
         }
 
         return $num;

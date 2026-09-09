@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\AttributeCertificate\Attribute;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -16,7 +17,6 @@ use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
 use SpomkyLabs\Pki\X501\MatchingRule\BinaryMatch;
 use SpomkyLabs\Pki\X501\MatchingRule\MatchingRule;
 use SpomkyLabs\Pki\X509\GeneralName\GeneralNames;
-use function count;
 
 /**
  * Base class implementing *IetfAttrSyntax* ASN.1 type used by attribute certificate attribute values.
@@ -62,7 +62,7 @@ abstract class IetfAttrSyntax extends AttributeValue implements Countable, Itera
             );
             ++$idx;
         }
-        $values = array_map(IetfAttrValue::fromASN1(...), $seq->at($idx) ->asSequence() ->elements());
+        $values = array_map(IetfAttrValue::fromASN1(...), $seq->at($idx)->asSequence()->elements());
         $obj = static::create(...$values);
         $obj->_policyAuthority = $authority;
         return $obj;

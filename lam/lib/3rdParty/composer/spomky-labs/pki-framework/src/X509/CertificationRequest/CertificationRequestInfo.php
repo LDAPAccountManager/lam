@@ -26,7 +26,7 @@ use UnexpectedValueException;
  */
 final class CertificationRequestInfo
 {
-    final public const VERSION_1 = 0;
+    public const VERSION_1 = 0;
 
     /**
      * Version.
@@ -59,6 +59,9 @@ final class CertificationRequestInfo
      */
     public static function fromASN1(Sequence $seq): self
     {
+        // attributes is the only tagged field, so a second [0] is a second copy of it and hasTagged() would keep
+        // only the last
+        $seq->assertUniqueTaggedElements('CertificationRequestInfo');
         $version = $seq->at(0)
             ->asInteger()
             ->intNumber();

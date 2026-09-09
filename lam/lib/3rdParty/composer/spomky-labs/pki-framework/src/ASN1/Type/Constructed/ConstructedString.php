@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Constructed;
 
+use function count;
 use LogicException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -11,8 +12,8 @@ use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Type\StringType;
 use SpomkyLabs\Pki\ASN1\Type\Structure;
+use function sprintf;
 use Stringable;
-use function count;
 
 /**
  * Implements constructed type of simple strings.
@@ -86,6 +87,29 @@ final class ConstructedString extends Structure implements StringType, Stringabl
         return implode('', $this->strings());
     }
 
+    /**
+     * Check that a decoded element may take part in a constructed string of the given type.
+     *
+     * A constructed string only contains simple strings of its own type. Hostile input may nest any element here,
+     * and passing it on to createWithTag() would raise either a TypeError -- which derives from Error and therefore
+     * escapes catch (Exception) -- or a LogicException, neither of which belongs to the decoder's contract.
+     */
+    private static function expectStringType(int $typeTag, Element $element): StringType
+    {
+        if (! $element instanceof StringType) {
+            throw new DecodeException(
+                sprintf('Constructed string must contain only string types, got %s.', $element::class)
+            );
+        }
+        if ($element->tag() !== $typeTag) {
+            throw new DecodeException(
+                sprintf('Constructed string of tag %d must not contain a tag %d element.', $typeTag, $element->tag())
+            );
+        }
+
+        return $element;
+    }
+
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): self
     {
         if (! $identifier->isConstructed()) {
@@ -116,7 +140,7 @@ final class ConstructedString extends Structure implements StringType, Stringabl
         $end = $idx + $length;
         $elements = [];
         while ($idx < $end) {
-            $elements[] = Element::fromDER($data, $idx);
+            $elements[] = self::expectStringType($typeTag, Element::fromDER($data, $idx));
             // check that element didn't overflow length
             if ($idx > $end) {
                 throw new DecodeException("Structure's content overflows length.");
@@ -146,7 +170,7 @@ final class ConstructedString extends Structure implements StringType, Stringabl
             if ($el->isType(self::TYPE_EOC)) {
                 break;
             }
-            $elements[] = $el;
+            $elements[] = self::expectStringType($typeTag, $el);
         }
         $offset = $idx;
         $type = self::createWithTag($typeTag, ...$elements);

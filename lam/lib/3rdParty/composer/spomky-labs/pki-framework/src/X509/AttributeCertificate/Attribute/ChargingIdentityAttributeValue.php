@@ -11,7 +11,7 @@ namespace SpomkyLabs\Pki\X509\AttributeCertificate\Attribute;
  */
 final class ChargingIdentityAttributeValue extends IetfAttrSyntax
 {
-    final public const OID = '1.3.6.1.5.5.7.10.3';
+    public const OID = '1.3.6.1.5.5.7.10.3';
 
     public static function create(IetfAttrValue ...$values): self
     {

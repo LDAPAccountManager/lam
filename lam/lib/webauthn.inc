@@ -4,10 +4,15 @@ namespace LAM\LOGIN\WEBAUTHN;
 
 use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\ECDSA\ES256;
+use Cose\Algorithm\Signature\ECDSA\ES256K;
 use Cose\Algorithm\Signature\ECDSA\ES384;
 use Cose\Algorithm\Signature\ECDSA\ES512;
+use Cose\Algorithm\Signature\EdDSA\Ed256;
+use Cose\Algorithm\Signature\EdDSA\Ed512;
 use Cose\Algorithm\Signature\EdDSA\EdDSA;
-use Cose\Algorithm\Signature\RSA\RS1;
+use Cose\Algorithm\Signature\RSA\PS256;
+use Cose\Algorithm\Signature\RSA\PS384;
+use Cose\Algorithm\Signature\RSA\PS512;
 use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
@@ -172,7 +177,7 @@ class WebauthnManager {
 	 * @param string $dn DN
 	 * @return PublicKeyCredentialUserEntity user entity
 	 */
-	private function getUserEntity($dn) {
+	private function getUserEntity($dn): PublicKeyCredentialUserEntity {
 		return new PublicKeyCredentialUserEntity(
 			self::getUserIdFromDn($dn),
 			self::getUserIdFromDn($dn),
@@ -186,7 +191,7 @@ class WebauthnManager {
 	 * @param string $dn user DN
 	 * @return string user ID
 	 */
-	public static function getUserIdFromDn(string $dn) {
+	public static function getUserIdFromDn(string $dn): string {
 		return hash('sha256', $dn);
 	}
 
@@ -252,7 +257,7 @@ class WebauthnManager {
 	 *
 	 * @return AttestationStatementSupportManager manager
 	 */
-	private function getAttestationSupportManager() {
+	private function getAttestationSupportManager(): AttestationStatementSupportManager {
 		$manager = new AttestationStatementSupportManager();
 		$manager->add(new NoneAttestationStatementSupport());
 		$manager->add(new FidoU2FAttestationStatementSupport());
@@ -268,16 +273,21 @@ class WebauthnManager {
 	 *
 	 * @return Manager algorithm manager
 	 */
-	private function getAlgorithmManager() {
+	private function getAlgorithmManager(): Manager {
 		$coseManager = new Manager();
-		$coseManager->add(new ES256());
-		$coseManager->add(new ES384());
-		$coseManager->add(new ES512());
-		$coseManager->add(new EdDSA());
-		$coseManager->add(new RS1());
-		$coseManager->add(new RS256());
-		$coseManager->add(new RS384);
 		$coseManager->add(new RS512());
+		$coseManager->add(new ES512());
+		$coseManager->add(new PS512());
+		$coseManager->add(new Ed512());
+		$coseManager->add(new RS384());
+		$coseManager->add(new ES384());
+		$coseManager->add(new PS384());
+		$coseManager->add(new RS256());
+		$coseManager->add(new ES256());
+		$coseManager->add(new ES256K());
+		$coseManager->add(new PS256());
+		$coseManager->add(new Ed256());
+		$coseManager->add(new EdDSA());
 		return $coseManager;
 	}
 

@@ -19,6 +19,7 @@ final class RFC822Name extends GeneralName
     private function __construct(
         private readonly string $email
     ) {
+        self::assertNoControlCharacters($email, 'rfc822Name');
         parent::__construct(self::TAG_RFC822_NAME);
     }
 

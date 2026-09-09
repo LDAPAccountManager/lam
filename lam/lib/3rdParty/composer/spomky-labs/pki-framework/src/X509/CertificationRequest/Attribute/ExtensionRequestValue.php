@@ -18,7 +18,7 @@ use SpomkyLabs\Pki\X509\Certificate\Extensions;
  */
 final class ExtensionRequestValue extends AttributeValue
 {
-    final public const OID = '1.2.840.113549.1.9.14';
+    public const OID = '1.2.840.113549.1.9.14';
 
     /**
      * @param Extensions $extensions Extensions.

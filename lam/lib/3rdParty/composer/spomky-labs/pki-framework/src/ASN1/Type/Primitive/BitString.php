@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function mb_strlen;
+use function ord;
 use OutOfBoundsException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -13,9 +16,6 @@ use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\BaseString;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
-use function chr;
-use function mb_strlen;
-use function ord;
 
 /**
  * Implements *BIT STRING* type.
@@ -151,12 +151,12 @@ final class BitString extends BaseString
 
     protected function encodedAsDER(): string
     {
-        $der = chr($this->unusedBits);
+        $der = chr($this->unusedBits & 0xFF);
         $der .= $this->string();
         if ($this->unusedBits !== 0) {
             $octet = $der[mb_strlen($der, '8bit') - 1];
             // set unused bits to zero
-            $octet &= chr(0xff & ~((1 << $this->unusedBits) - 1));
+            $octet &= chr(0xFF & ~((1 << $this->unusedBits) - 1));
             $der[mb_strlen($der, '8bit') - 1] = $octet;
         }
         return $der;
@@ -165,15 +165,19 @@ final class BitString extends BaseString
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): ElementBase
     {
         $idx = $offset;
-        $length = Length::expectFromDER($data, $idx);
-        if ($length->intLength() < 1) {
+        $length = Length::expectFromDER($data, $idx)->expectIntLength();
+        if ($length < 1) {
             throw new DecodeException('Bit string length must be at least 1.');
         }
         $unused_bits = ord($data[$idx++]);
         if ($unused_bits > 7) {
             throw new DecodeException('Unused bits in a bit string must be less than 8.');
         }
-        $str_len = $length->intLength() - 1;
+        $str_len = $length - 1;
+        if ($str_len === 0 && $unused_bits !== 0) {
+            // there is no last octet to hold the unused bits, and numBits() would come back negative
+            throw new DecodeException('Empty bit string must have zero unused bits.');
+        }
         if ($str_len !== 0) {
             $str = mb_substr($data, $idx, $str_len, '8bit');
             if ($unused_bits !== 0) {

@@ -163,7 +163,7 @@ abstract class PSSRSA implements Signature
         if ((~$maskedDB[0] & $temp) !== $temp) {
             throw new InvalidArgumentException();
         }
-        $dbMask = $this->getMGF1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
+        $dbMask = $this->getMGF1($h, $emLen - $hash->getLength() - 1, $hash/* MGF */);
         $db = $maskedDB ^ $dbMask;
         $db[0] = ~chr(0xFF << ($emBits & 7)) & $db[0];
         $temp = $emLen - $hash->getLength() - $sLen - 2;

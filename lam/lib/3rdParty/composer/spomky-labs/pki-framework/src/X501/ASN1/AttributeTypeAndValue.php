@@ -6,6 +6,7 @@ namespace SpomkyLabs\Pki\X501\ASN1;
 
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
+use SpomkyLabs\Pki\X501\MatchingRule\StringPrepMatchingRule;
 use Stringable;
 
 /**
@@ -93,8 +94,36 @@ final class AttributeTypeAndValue implements Stringable
             return false;
         }
         $matcher = $this->value->equalityMatchingRule();
+        $otherMatcher = $other->value->equalityMatchingRule();
+        // RFC 5280 section 7.1 compares two attribute values after each has been prepared under its own syntax.
+        // Taking the rule from one side alone pushed the other side's octets through the wrong transcoder, so the
+        // same name written as a BMPString and as a PrintableString compared as two different names, and a
+        // directoryName excluded by a name constraint was reachable by re-encoding it.
+        if ($matcher instanceof StringPrepMatchingRule && $otherMatcher instanceof StringPrepMatchingRule
+            && $matcher::class === $otherMatcher::class) {
+            return $matcher->prepare($this->value->stringValue())
+                === $otherMatcher->prepare($other->value->stringValue());
+        }
 
         return $matcher->compare($this->value->stringValue(), $other->value->stringValue()) === true;
+    }
+
+    /**
+     * Get a key that stands for this attribute under its own matching rule, or null when it has none.
+     *
+     * Two attributes are equal exactly when their keys are identical: the type OID has to match, the rules have to
+     * be of the same kind, and each value is prepared under its own syntax, which is what equals() does pair by
+     * pair.
+     */
+    public function comparisonKey(): ?string
+    {
+        $matcher = $this->value->equalityMatchingRule();
+        $key = $matcher->comparisonKey($this->value->stringValue());
+        if ($key === null) {
+            return null;
+        }
+
+        return $this->oid() . "\0" . $matcher::class . "\0" . $key;
     }
 
     /**

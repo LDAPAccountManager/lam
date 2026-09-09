@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Tagged;
 
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
@@ -88,6 +89,10 @@ class DERTaggedType extends TaggedType implements ExplicitTagging, ImplicitTaggi
             if ($identifier->isPrimitive()) {
                 throw new DecodeException('Primitive type with indefinite length is not supported.');
             }
+            // An indefinite length states no size up front: the content runs until the matching end-of-contents.
+            // Walking it is what moves the offset past the element, so that the caller resumes on the next
+            // sibling instead of inside this one.
+            $idx = self::skipIndefiniteContent($data, $idx);
             // EOC consists of two octets.
             $value_length = $idx - $value_offset - 2;
         } else {
@@ -98,6 +103,28 @@ class DERTaggedType extends TaggedType implements ExplicitTagging, ImplicitTaggi
         $type = static::create($identifier, $data, $offset, $value_offset, $value_length, $length->isIndefinite());
         $offset = $idx;
         return $type;
+    }
+
+    /**
+     * Walk an indefinite length content and return the offset just past its end-of-contents octets.
+     *
+     * @param string $data DER data
+     * @param int $offset Offset to the first content octet
+     */
+    private static function skipIndefiniteContent(string $data, int $offset): int
+    {
+        $end = mb_strlen($data, '8bit');
+        $idx = $offset;
+        while (true) {
+            if ($idx >= $end) {
+                throw new DecodeException('Unexpected end of data while decoding indefinite length element.');
+            }
+            $element = Element::fromDER($data, $idx);
+            $idx ??= $end;
+            if ($element->isType(Element::TYPE_EOC)) {
+                return $idx;
+            }
+        }
     }
 
     protected function encodedAsDER(): string

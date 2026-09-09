@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
+use function chr;
+use function ord;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
@@ -11,8 +13,6 @@ use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
-use function chr;
-use function ord;
 
 /**
  * Implements *BOOLEAN* type.
@@ -43,7 +43,7 @@ final class Boolean extends Element
 
     protected function encodedAsDER(): string
     {
-        return $this->_bool ? chr(0xff) : chr(0);
+        return $this->_bool ? chr(0xFF) : chr(0);
     }
 
     protected static function decodeFromDER(Identifier $identifier, string $data, int &$offset): ElementBase
@@ -52,7 +52,7 @@ final class Boolean extends Element
         Length::expectFromDER($data, $idx, 1);
         $byte = ord($data[$idx++]);
         if ($byte !== 0) {
-            if ($byte !== 0xff) {
+            if ($byte !== 0xFF) {
                 throw new DecodeException('DER encoded boolean true must have all bits set to 1.');
             }
         }

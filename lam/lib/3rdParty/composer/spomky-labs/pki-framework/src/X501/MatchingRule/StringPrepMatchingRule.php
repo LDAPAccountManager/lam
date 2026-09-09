@@ -18,8 +18,27 @@ abstract class StringPrepMatchingRule extends MatchingRule
 
     public function compare(string $assertion, string $value): ?bool
     {
-        $assertion = $this->preparer->prepare($assertion);
-        $value = $this->preparer->prepare($value);
-        return strcmp($assertion, $value) === 0;
+        return strcmp($this->prepare($assertion), $this->prepare($value)) === 0;
+    }
+
+    /**
+     * Prepare a string under this rule's own syntax.
+     *
+     * Transcoding is a property of the value, not of the assertion, so two values of different ASN.1 string types
+     * have to be prepared by their own rules and compared afterwards. Preparing both through one rule pushes one
+     * value's octets through the other's transcoder, and the same name written as a BMPString and as a
+     * PrintableString then never compares equal.
+     *
+     * @see https://tools.ietf.org/html/rfc4518#section-2.1
+     */
+    public function prepare(string $value): string
+    {
+        return $this->preparer->prepare($value);
+    }
+
+    public function comparisonKey(string $value): string
+    {
+        // compare() is an equality test on the prepared strings, so the prepared string is the key
+        return $this->prepare($value);
     }
 }

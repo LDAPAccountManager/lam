@@ -7,6 +7,11 @@ namespace Cose\Key;
 use function array_key_exists;
 use function in_array;
 use InvalidArgumentException;
+use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
 
 /**
  * @final
@@ -48,6 +53,17 @@ class OkpKey extends Key
         self::CURVE_NAME_X448,
         self::CURVE_NAME_ED25519,
         self::CURVE_NAME_ED448,
+    ];
+
+    private const CURVE_OID = [
+        self::CURVE_X25519 => '1.3.101.110',
+        self::CURVE_X448 => '1.3.101.111',
+        self::CURVE_ED25519 => '1.3.101.112',
+        self::CURVE_ED448 => '1.3.101.113',
+        self::CURVE_NAME_X25519 => '1.3.101.110',
+        self::CURVE_NAME_X448 => '1.3.101.111',
+        self::CURVE_NAME_ED25519 => '1.3.101.112',
+        self::CURVE_NAME_ED448 => '1.3.101.113',
     ];
 
     /**
@@ -106,5 +122,35 @@ class OkpKey extends Key
     public function curve(): int|string
     {
         return $this->get(self::DATA_CURVE);
+    }
+
+    public function toPublic(): self
+    {
+        $data = $this->getData();
+        unset($data[self::DATA_D]);
+
+        return new self($data);
+    }
+
+    /**
+     * Returns the key as a PEM encoded RFC 8410 OneAsymmetricKey (private) or SubjectPublicKeyInfo (public) structure.
+     */
+    public function asPEM(): string
+    {
+        $oid = ObjectIdentifier::create(self::CURVE_OID[$this->curve()]);
+
+        if ($this->isPrivate()) {
+            $der = Sequence::create(
+                Integer::create(0),
+                Sequence::create($oid),
+                OctetString::create(OctetString::create($this->d())->toDER())
+            );
+
+            return $this->pem('PRIVATE KEY', $der->toDER());
+        }
+
+        $der = Sequence::create(Sequence::create($oid), BitString::create($this->x()));
+
+        return $this->pem('PUBLIC KEY', $der->toDER());
     }
 }

@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
+use function array_key_exists;
+use function count;
 use SpomkyLabs\Pki\ASN1\Element;
+use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Boolean;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
+use function sprintf;
 use Stringable;
-use function array_key_exists;
 
 /**
  * Base class for certificate extensions.
@@ -245,6 +248,12 @@ abstract class Extension implements Stringable
     public static function fromASN1(Sequence $seq): self
     {
         $idx = 0;
+        // an Extension is two or three elements; without the check a truncated SEQUENCE reaches Structure::at()
+        // and raises an OutOfBoundsException instead of a decoding failure
+        $count = count($seq);
+        if ($count < 2 || $count > 3) {
+            throw new DecodeException(sprintf('Extension must have 2 or 3 elements, got %d.', $count));
+        }
         $extnID = $seq->at($idx++)
             ->asObjectIdentifier()
             ->oid();

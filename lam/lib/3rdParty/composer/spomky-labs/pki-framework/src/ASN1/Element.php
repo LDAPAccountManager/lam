@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1;
 
+use function array_key_exists;
+use function func_num_args;
+use function in_array;
+use InvalidArgumentException;
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
+use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\Constructed;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\ConstructedString;
@@ -43,10 +49,9 @@ use SpomkyLabs\Pki\ASN1\Type\Tagged\PrivateType;
 use SpomkyLabs\Pki\ASN1\Type\TaggedType;
 use SpomkyLabs\Pki\ASN1\Type\TimeType;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
-use UnexpectedValueException;
-use function array_key_exists;
-use function mb_strlen;
 use function sprintf;
+use Throwable;
+use UnexpectedValueException;
 
 /**
  * Base class for all ASN.1 type elements.
@@ -75,13 +80,13 @@ abstract class Element implements ElementBase
 
     public const TYPE_REAL = 0x09;
 
-    public const TYPE_ENUMERATED = 0x0a;
+    public const TYPE_ENUMERATED = 0x0A;
 
-    public const TYPE_EMBEDDED_PDV = 0x0b;
+    public const TYPE_EMBEDDED_PDV = 0x0B;
 
-    public const TYPE_UTF8_STRING = 0x0c;
+    public const TYPE_UTF8_STRING = 0x0C;
 
-    public const TYPE_RELATIVE_OID = 0x0d;
+    public const TYPE_RELATIVE_OID = 0x0D;
 
     public const TYPE_SEQUENCE = 0x10;
 
@@ -103,15 +108,15 @@ abstract class Element implements ElementBase
 
     public const TYPE_GRAPHIC_STRING = 0x19;
 
-    public const TYPE_VISIBLE_STRING = 0x1a;
+    public const TYPE_VISIBLE_STRING = 0x1A;
 
-    public const TYPE_GENERAL_STRING = 0x1b;
+    public const TYPE_GENERAL_STRING = 0x1B;
 
-    public const TYPE_UNIVERSAL_STRING = 0x1c;
+    public const TYPE_UNIVERSAL_STRING = 0x1C;
 
-    public const TYPE_CHARACTER_STRING = 0x1d;
+    public const TYPE_CHARACTER_STRING = 0x1D;
 
-    public const TYPE_BMP_STRING = 0x1e;
+    public const TYPE_BMP_STRING = 0x1E;
 
     /**
      * Pseudotype for all string types.
@@ -139,6 +144,31 @@ abstract class Element implements ElementBase
      * @var int
      */
     public const TYPE_CONSTRUCTED_STRING = -3;
+
+    /**
+     * Default maximum nesting depth allowed when decoding DER data.
+     *
+     * A real world X.509 structure rarely nests deeper than ten levels.
+     *
+     * @var int
+     */
+    public const DEFAULT_MAX_NESTING_DEPTH = 64;
+
+    /**
+     * Universal types that X.690 only ever allows to be encoded as a primitive.
+     *
+     * @internal
+     *
+     * @var list<int>
+     */
+    private const PRIMITIVE_ONLY_TYPES = [
+        self::TYPE_BOOLEAN,
+        self::TYPE_INTEGER,
+        self::TYPE_OBJECT_IDENTIFIER,
+        self::TYPE_REAL,
+        self::TYPE_ENUMERATED,
+        self::TYPE_RELATIVE_OID,
+    ];
 
     /**
      * Mapping from universal type tag to implementation class name.
@@ -220,6 +250,16 @@ abstract class Element implements ElementBase
     ];
 
     /**
+     * Maximum nesting depth allowed when decoding DER data.
+     */
+    private static int $maxNestingDepth = self::DEFAULT_MAX_NESTING_DEPTH;
+
+    /**
+     * Current nesting depth of the decoding in progress.
+     */
+    private static int $nestingDepth = 0;
+
+    /**
      * @param bool $indefiniteLength Whether type shall be encoded with indefinite length.
      */
     protected function __construct(
@@ -235,21 +275,49 @@ abstract class Element implements ElementBase
     /**
      * Decode element from DER data.
      *
+     * Malformed input is always reported as a DecodeException, which derives from RuntimeException. No other type
+     * is thrown: in particular an Error never escapes, so callers may rely on catch (Exception).
+     *
      * @param string $data DER encoded data
      * @param null|int $offset Reference to the variable that contains offset
      * into the data where to start parsing.
      * Variable is updated to the offset next to the
      * parsed element. If null, start from offset 0.
+     *
+     * @throws DecodeException If the data is not a valid encoding
      */
     public static function fromDER(string $data, ?int &$offset = null): static
     {
-        $idx = $offset ?? 0;
-        // decode identifier
-        $identifier = Identifier::fromDER($data, $idx);
-        // determine class that implements type specific decoding
-        $cls = self::determineImplClass($identifier);
-        // decode remaining element
-        $element = $cls::decodeFromDER($identifier, $data, $idx);
+        // decoding of constructed types recurses into this method, hence the
+        // nesting depth is guarded to prevent the stack from being exhausted
+        ++self::$nestingDepth;
+        try {
+            if (self::$nestingDepth > self::$maxNestingDepth) {
+                throw new DecodeException(sprintf(
+                    'Maximum allowed nesting depth of %d exceeded while decoding.',
+                    self::$maxNestingDepth
+                ));
+            }
+            $idx = $offset ?? 0;
+            try {
+                // decode identifier
+                $identifier = Identifier::fromDER($data, $idx);
+                // determine class that implements type specific decoding
+                $cls = self::determineImplClass($identifier);
+                // decode remaining element
+                $element = $cls::decodeFromDER($identifier, $data, $idx);
+            } catch (DecodeException $e) {
+                throw $e;
+            } catch (Throwable $e) {
+                // the type specific decoders reach into brick/math, into type constructors and into string
+                // validation, any of which may signal malformed input with an exception of its own type. The
+                // documented contract of this method is that nothing but a DecodeException escapes, so the
+                // original is kept as the previous exception and the type is normalised here.
+                throw new DecodeException(sprintf('Failed to decode element: %s', $e->getMessage()), 0, $e);
+            }
+        } finally {
+            --self::$nestingDepth;
+        }
         // if called in the context of a concrete class, check
         // that decoded type matches the type of calling class
         $called_class = static::class;
@@ -258,11 +326,35 @@ abstract class Element implements ElementBase
                 throw new UnexpectedValueException(sprintf('%s expected, got %s.', $called_class, $element::class));
             }
         }
-        // update offset for the caller
-        if (isset($offset)) {
+        // update offset for the caller, also when the variable passed by reference was null
+        if (func_num_args() > 1) {
             $offset = $idx;
         }
         return $element;
+    }
+
+    /**
+     * Set the maximum nesting depth allowed when decoding DER data.
+     *
+     * Deeper structures are rejected with a `DecodeException`. Every decoded element takes a level, including the
+     * end-of-contents marker of an indefinite length encoding.
+     *
+     * @param int $depth Maximum nesting depth, at least 1
+     */
+    public static function setMaxNestingDepth(int $depth): void
+    {
+        if ($depth < 1) {
+            throw new InvalidArgumentException('Maximum nesting depth must be at least 1.');
+        }
+        self::$maxNestingDepth = $depth;
+    }
+
+    /**
+     * Get the maximum nesting depth allowed when decoding DER data.
+     */
+    public static function maxNestingDepth(): int
+    {
+        return self::$maxNestingDepth;
     }
 
     public function toDER(): string
@@ -397,12 +489,14 @@ abstract class Element implements ElementBase
     {
         switch ($identifier->typeClass()) {
             case Identifier::CLASS_UNIVERSAL:
-                $cls = self::determineUniversalImplClass($identifier->intTag());
+                $tag = $identifier->intTag();
+                $cls = self::determineUniversalImplClass($tag);
                 // constructed strings may be present in BER
                 if ($identifier->isConstructed()
                     && is_subclass_of($cls, StringType::class)) {
                     $cls = ConstructedString::class;
                 }
+                self::checkUniversalEncodingForm($tag, $identifier->isConstructed());
                 return $cls;
             case Identifier::CLASS_CONTEXT_SPECIFIC:
                 return ContextSpecificType::class;
@@ -429,6 +523,24 @@ abstract class Element implements ElementBase
             throw new UnexpectedValueException("Universal tag {$tag} not implemented.");
         }
         return self::MAP_TAG_TO_CLASS[$tag];
+    }
+
+    /**
+     * Check that an universal type whose contents are a single value is not encoded as a constructed type.
+     *
+     * Without the check `22 01 01` decodes as INTEGER 1 and `21 01 FF` as BOOLEAN TRUE, so one certificate has
+     * many byte-distinct encodings that all parse to the same object. Types that carry a value of their own
+     * check the encoding form in their own decoder; the string types are left out because BER allows them to be
+     * constructed, and `ConstructedString` handles those.
+     *
+     * @param int $tag Universal type tag
+     * @param bool $constructed Whether the constructed bit is set
+     */
+    protected static function checkUniversalEncodingForm(int $tag, bool $constructed): void
+    {
+        if ($constructed && in_array($tag, self::PRIMITIVE_ONLY_TYPES, true)) {
+            throw new DecodeException(sprintf('%s must be encoded as a primitive type.', self::tagToName($tag)));
+        }
     }
 
     /**

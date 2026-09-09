@@ -10,6 +10,7 @@
 This library implements:
 - **[RFC 9052](https://datatracker.ietf.org/doc/html/rfc9052)** - COSE: Structures and Process
 - **[RFC 9053](https://datatracker.ietf.org/doc/html/rfc9053)** - COSE: Initial Algorithms
+- **[RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html)** - COSE: Fully-Specified Algorithms
 
 ## Features
 
@@ -23,6 +24,7 @@ This library implements:
 
 ✅ **Cryptographic Algorithms**
 - **Signatures**: ECDSA (ES256, ES384, ES512, ES256K), EdDSA (Ed25519, Ed448), RSA (RS256/384/512, PS256/384/512)
+- **Fully-specified identifiers** ([RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html)): ESP256/384/512, ESB256/320/384/512, Ed25519, Ed448
 - **MAC**: HMAC with SHA-256/384/512
 - Compatible with WebAuthn, FIDO2, and digital COVID certificates
 
@@ -153,6 +155,43 @@ This library is perfect for:
 | PS256 | -37 | RSASSA-PSS with SHA-256 |
 | PS384 | -38 | RSASSA-PSS with SHA-384 |
 | PS512 | -39 | RSASSA-PSS with SHA-512 |
+| RS1 | -65535 | RSASSA-PKCS1-v1_5 with SHA-1 — legacy only, see below |
+
+#### Fully-Specified Algorithms ([RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html))
+
+These identifiers determine the curve and the hash on their own, instead of leaving them to the other parameters of
+the key. They live in the `Cose\Algorithm\Signature\FullySpecified` namespace.
+
+| Algorithm | Identifier | Description |
+|-----------|------------|-------------|
+| ESP256 | -9 | ECDSA with the P-256 curve and SHA-256 |
+| ESP384 | -51 | ECDSA with the P-384 curve and SHA-384 |
+| ESP512 | -52 | ECDSA with the P-521 curve and SHA-512 |
+| ESB256 | -265 | ECDSA with the brainpoolP256r1 curve and SHA-256 |
+| ESB320 | -266 | ECDSA with the brainpoolP320r1 curve and SHA-384 |
+| ESB384 | -267 | ECDSA with the brainpoolP384r1 curve and SHA-384 |
+| ESB512 | -268 | ECDSA with the brainpoolP512r1 curve and SHA-512 |
+| Ed25519 | -19 | EdDSA with the Ed25519 parameter set |
+| Ed448 | -53 | EdDSA with the Ed448 parameter set — requires PHP 8.4 or later |
+
+> [!NOTE]
+> `Cose\Algorithm\Signature\FullySpecified\Ed25519` (-19) and `Cose\Algorithm\Signature\EdDSA\Ed25519` (-8)
+> compute the same signatures; only the algorithm identifier differs.
+>
+> Ed448 is not covered by the sodium extension and goes through OpenSSL, which PHP only wires up for Edwards curves
+> as of PHP 8.4. Call `Ed448::isSupported()` when the platform is not known in advance.
+
+> [!WARNING]
+> **RS1 (SHA-1) is not secure.** It is kept only for the legacy authenticators that still rely on it.
+> Creating it emits an `E_USER_WARNING` unless you explicitly acknowledge the risk:
+>
+> ```php
+> use Cose\Algorithm\Signature\RSA\RS1;
+>
+> $algorithm = RS1::create(acknowledgeInsecureAlgorithm: true);
+> ```
+>
+> As of the next major version, omitting that acknowledgement will throw an exception instead of warning.
 
 ### MAC Algorithms
 
@@ -162,6 +201,35 @@ This library is perfect for:
 | HS384 | 6 | HMAC with SHA-384 |
 | HS512 | 7 | HMAC with SHA-512 |
 | HS256/64 | 4 | HMAC with SHA-256 truncated to 64 bits |
+
+## Validating RSA Keys
+
+[RFC 8812](https://datatracker.ietf.org/doc/html/rfc8812) defers to
+[RFC 8230, section 6.1](https://www.rfc-editor.org/rfc/rfc8230#section-6.1), which requires a modulus of 2048 bits or
+larger and expects implementations to handle up to 16K bits. The library never applies those bounds on its own; run
+them explicitly on a key before handing it to an algorithm:
+
+```php
+use Cose\Key\RsaKey;
+use Cose\Key\RsaKeyValidator;
+
+$key = RsaKey::create($data);
+
+// Throws an InvalidArgumentException when the key does not comply
+RsaKeyValidator::create()->check($key);
+
+// …or ask without the exception
+if (! RsaKeyValidator::create()->isValid($key)) {
+    // reject the key
+}
+
+// The bounds can be tightened
+RsaKeyValidator::create(minimumModulusLength: 3072, maximumModulusLength: 8192)->check($key);
+```
+
+The validator also enforces the public exponent constraints of
+[RFC 8017, section 3.1](https://datatracker.ietf.org/doc/html/rfc8017#section-3.1): an odd integer between 3 and
+`n - 1`.
 
 ## Testing
 

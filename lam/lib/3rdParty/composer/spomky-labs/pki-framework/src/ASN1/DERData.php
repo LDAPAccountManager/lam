@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1;
 
 use BadMethodCallException;
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
-use function mb_strlen;
 
 /**
  * Container for raw DER encoded data.

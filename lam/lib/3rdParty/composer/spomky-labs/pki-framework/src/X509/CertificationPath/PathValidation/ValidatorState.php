@@ -11,6 +11,7 @@ use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\SignatureAlgorithmIde
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo;
 use SpomkyLabs\Pki\X501\ASN1\Name;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
+use SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees;
 use SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyNode;
 use SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyTree;
 
@@ -46,16 +47,24 @@ final class ValidatorState
      *
      * A set of root names for each name type defining a set of subtrees within which all subject names in subsequent
      * certificates in the certification path must fall.
+     *
+     * RFC 5280 defines this variable as the intersection of the permitted subtrees of every certificate processed so
+     * far. The intersection is kept in its unevaluated form: one entry per constraining certificate, a name being
+     * within the intersection when it is within each of the entries.
+     *
+     * @var list<GeneralSubtrees>
      */
-    private mixed $_permittedSubtrees = null;
+    private array $_permittedSubtrees = [];
 
     /**
      * Excluded subtrees (excluded_subtrees).
      *
      * A set of root names for each name type defining a set of subtrees within which no subject name in subsequent
      * certificates in the certification path may fall.
+     *
+     * This is the union of the excluded subtrees of every certificate processed so far.
      */
-    private mixed $_excludedSubtrees = null;
+    private ?GeneralSubtrees $_excludedSubtrees = null;
 
     /**
      * Explicit policy (explicit_policy).
@@ -130,7 +139,7 @@ final class ValidatorState
         $state->_pathLength = $n;
         $state->_index = 1;
         $state->_validPolicyTree = PolicyTree::create(PolicyNode::anyPolicyNode());
-        $state->_permittedSubtrees = null;
+        $state->_permittedSubtrees = [];
         $state->_excludedSubtrees = null;
         $state->_explicitPolicy = $config->explicitPolicy() ? 0 : $n + 1;
         $state->_inhibitAnyPolicy = $config->anyPolicyInhibit() ? 0 : $n + 1;
@@ -173,6 +182,28 @@ final class ValidatorState
     {
         $state = clone $this;
         $state->_validPolicyTree = null;
+        return $state;
+    }
+
+    /**
+     * Get self with the given permitted subtrees intersected into permitted_subtrees.
+     */
+    public function withAdditionalPermittedSubtrees(GeneralSubtrees $subtrees): self
+    {
+        $state = clone $this;
+        $state->_permittedSubtrees = [...$this->_permittedSubtrees, $subtrees];
+        return $state;
+    }
+
+    /**
+     * Get self with the given excluded subtrees added to the union of excluded_subtrees.
+     */
+    public function withAdditionalExcludedSubtrees(GeneralSubtrees $subtrees): self
+    {
+        $state = clone $this;
+        $state->_excludedSubtrees = $this->_excludedSubtrees === null
+            ? $subtrees
+            : GeneralSubtrees::create(...$this->_excludedSubtrees->all(), ...$subtrees->all());
         return $state;
     }
 
@@ -288,12 +319,20 @@ final class ValidatorState
         return $this->_validPolicyTree;
     }
 
-    public function permittedSubtrees(): mixed
+    /**
+     * Get the unevaluated intersection of the permitted subtrees, empty when no constraint applies.
+     *
+     * @return list<GeneralSubtrees>
+     */
+    public function permittedSubtrees(): array
     {
         return $this->_permittedSubtrees;
     }
 
-    public function excludedSubtrees(): mixed
+    /**
+     * Get the union of the excluded subtrees, null when no constraint applies.
+     */
+    public function excludedSubtrees(): ?GeneralSubtrees
     {
         return $this->_excludedSubtrees;
     }

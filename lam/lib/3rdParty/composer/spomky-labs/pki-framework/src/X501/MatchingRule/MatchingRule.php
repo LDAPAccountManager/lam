@@ -21,4 +21,18 @@ abstract class MatchingRule
      * evaluates to Undefined.
      */
     abstract public function compare(string $assertion, string $value): ?bool;
+
+    /**
+     * Get a key that stands for the value under this rule, or null when the rule cannot produce one.
+     *
+     * Two values compare equal under a rule exactly when their keys are identical, so a caller matching many values
+     * against many others can group them instead of comparing every pair. A rule that cannot express itself that
+     * way returns null, and the caller falls back to comparing pairs.
+     *
+     * @param string $value Attribute value
+     */
+    public function comparisonKey(string $value): ?string
+    {
+        return null;
+    }
 }

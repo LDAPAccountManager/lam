@@ -131,10 +131,41 @@ abstract class Algorithms
 
     final public const COSE_ALGORITHM_RS1 = -65535;
 
+    /**
+     * Fully-specified algorithm identifiers: unlike the polymorphic identifiers above, these determine the curve and
+     * the hash on their own instead of leaving them to the other parameters of the key.
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc9864.html
+     */
+    final public const COSE_ALGORITHM_ESP256 = -9;
+
+    final public const COSE_ALGORITHM_ESP384 = -51;
+
+    final public const COSE_ALGORITHM_ESP512 = -52;
+
+    final public const COSE_ALGORITHM_ESB256 = -265;
+
+    final public const COSE_ALGORITHM_ESB320 = -266;
+
+    final public const COSE_ALGORITHM_ESB384 = -267;
+
+    final public const COSE_ALGORITHM_ESB512 = -268;
+
+    final public const COSE_ALGORITHM_ED25519 = -19;
+
+    final public const COSE_ALGORITHM_ED448 = -53;
+
     final public const COSE_ALGORITHM_MAP = [
         self::COSE_ALGORITHM_ES256 => OPENSSL_ALGO_SHA256,
         self::COSE_ALGORITHM_ES384 => OPENSSL_ALGO_SHA384,
         self::COSE_ALGORITHM_ES512 => OPENSSL_ALGO_SHA512,
+        self::COSE_ALGORITHM_ESP256 => OPENSSL_ALGO_SHA256,
+        self::COSE_ALGORITHM_ESP384 => OPENSSL_ALGO_SHA384,
+        self::COSE_ALGORITHM_ESP512 => OPENSSL_ALGO_SHA512,
+        self::COSE_ALGORITHM_ESB256 => OPENSSL_ALGO_SHA256,
+        self::COSE_ALGORITHM_ESB320 => OPENSSL_ALGO_SHA384,
+        self::COSE_ALGORITHM_ESB384 => OPENSSL_ALGO_SHA384,
+        self::COSE_ALGORITHM_ESB512 => OPENSSL_ALGO_SHA512,
         self::COSE_ALGORITHM_RS256 => OPENSSL_ALGO_SHA256,
         self::COSE_ALGORITHM_RS384 => OPENSSL_ALGO_SHA384,
         self::COSE_ALGORITHM_RS512 => OPENSSL_ALGO_SHA512,
@@ -146,6 +177,13 @@ abstract class Algorithms
         self::COSE_ALGORITHM_ES256 => 'sha256',
         self::COSE_ALGORITHM_ES384 => 'sha384',
         self::COSE_ALGORITHM_ES512 => 'sha512',
+        self::COSE_ALGORITHM_ESP256 => 'sha256',
+        self::COSE_ALGORITHM_ESP384 => 'sha384',
+        self::COSE_ALGORITHM_ESP512 => 'sha512',
+        self::COSE_ALGORITHM_ESB256 => 'sha256',
+        self::COSE_ALGORITHM_ESB320 => 'sha384',
+        self::COSE_ALGORITHM_ESB384 => 'sha384',
+        self::COSE_ALGORITHM_ESB512 => 'sha512',
         self::COSE_ALGORITHM_RS256 => 'sha256',
         self::COSE_ALGORITHM_RS384 => 'sha384',
         self::COSE_ALGORITHM_RS512 => 'sha512',

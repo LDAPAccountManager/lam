@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\GeneralName;
 
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\IA5String;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ImplicitlyTaggedType;
 use SpomkyLabs\Pki\ASN1\Type\TaggedType;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
+use function sprintf;
+use UnexpectedValueException;
 
 /**
  * Implements *dNSName* CHOICE type of *GeneralName*.
@@ -22,6 +25,12 @@ final class DNSName extends GeneralName
     private function __construct(
         private readonly string $name
     ) {
+        self::assertNoControlCharacters($name, 'dNSName');
+        if (mb_strlen($name, '8bit') > self::MAX_DNS_NAME_LENGTH) {
+            throw new UnexpectedValueException(
+                sprintf('dNSName must be at most %d octets.', self::MAX_DNS_NAME_LENGTH)
+            );
+        }
         parent::__construct(self::TAG_DNS_NAME);
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -24,14 +25,17 @@ use SpomkyLabs\Pki\X509\Certificate\Extension\PolicyConstraintsExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappingsExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectAlternativeNameExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectKeyIdentifierExtension;
+use function sprintf;
 use Traversable;
-use function count;
+use UnexpectedValueException;
 
 /**
  * Implements *Extensions* ASN.1 type.
  *
  * Several convenience methods are provided to fetch commonly used standard extensions. Others can be accessed using
  * `get($oid)`.
+ *
+ * @implements IteratorAggregate<string, Extension>
  *
  * @see https://tools.ietf.org/html/rfc5280#section-4.1.2.9
  */
@@ -69,6 +73,17 @@ final class Extensions implements Countable, IteratorAggregate
             static fn (UnspecifiedType $el) => Extension::fromASN1($el->asSequence()),
             $seq->elements()
         );
+        // RFC 5280 section 4.2: a certificate MUST NOT include more than one instance of a particular extension.
+        // Extensions are held in a map keyed by OID, so a duplicate would silently overwrite the earlier one and
+        // the certificate would mean different things to this library and to a peer keeping the first occurrence.
+        $seen = [];
+        foreach ($extensions as $extension) {
+            $oid = $extension->oid();
+            if (isset($seen[$oid])) {
+                throw new UnexpectedValueException(sprintf('Extension %s occurs more than once.', $oid));
+            }
+            $seen[$oid] = true;
+        }
         return self::create(...$extensions);
     }
 
@@ -334,6 +349,8 @@ final class Extensions implements Countable, IteratorAggregate
 
     /**
      * Get iterator for extensions.
+     *
+     * @return Traversable<string, Extension>
      *
      * @see \IteratorAggregate::getIterator()
      */
