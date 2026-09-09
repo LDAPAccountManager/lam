@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:603c6923-6e5a-4c32-8643-56b394629b96",
+  "serialNumber" : "urn:uuid:569a49bb-203a-4cd7-b541-652e6d09232d",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-09-09T19:09:30Z",
+    "timestamp" : "2026-09-09T19:10:58Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -147,6 +147,13 @@
       "group" : "cdx:npm:package:bundled",
       "name" : "tabulator-tables",
       "version" : "6.5.2",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
       "purl" : "pkg:npm/tabulator-tables@6.5.2"
     },
     {
