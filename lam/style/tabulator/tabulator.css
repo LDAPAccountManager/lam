@@ -708,6 +708,14 @@
   outline: none;
 }
 
+.tabulator-row .tabulator-cell .tabulator-tick {
+  fill: #2DC214;
+}
+
+.tabulator-row .tabulator-cell .tabulator-cross {
+  fill: #CE1515;
+}
+
 .tabulator-row .tabulator-cell.tabulator-row-header {
   border-right: 1px solid #999;
   border-bottom: 1px solid #aaa;

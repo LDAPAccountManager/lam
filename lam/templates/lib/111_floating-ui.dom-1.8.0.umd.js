@@ -153,7 +153,7 @@
   function getNearestOverflowAncestor(node) {
     const parentNode = getParentNode(node);
     if (isLastTraversableNode(parentNode)) {
-      return node.ownerDocument ? node.ownerDocument.body : node.body;
+      return (node.ownerDocument || node).body;
     }
     if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
       return parentNode;
@@ -250,10 +250,7 @@
     if (isFixed === void 0) {
       isFixed = false;
     }
-    if (!floatingOffsetParent || isFixed && floatingOffsetParent !== getWindow(element)) {
-      return false;
-    }
-    return isFixed;
+    return !!floatingOffsetParent && isFixed && floatingOffsetParent === getWindow(element);
   }
 
   function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
@@ -280,12 +277,12 @@
     let y = (clientRect.top + visualOffsets.y) / scale.y;
     let width = clientRect.width / scale.x;
     let height = clientRect.height / scale.y;
-    if (domElement) {
+    if (domElement && offsetParent) {
       const win = getWindow(domElement);
-      const offsetWin = offsetParent && isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
+      const offsetWin = isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
       let currentWin = win;
       let currentIFrame = getFrameElement(currentWin);
-      while (currentIFrame && offsetParent && offsetWin !== currentWin) {
+      while (currentIFrame && offsetWin !== currentWin) {
         const iframeScale = getScale(currentIFrame);
         const iframeRect = currentIFrame.getBoundingClientRect();
         const css = getComputedStyle$1(currentIFrame);
@@ -349,7 +346,7 @@
     let scale = createCoords(1);
     const offsets = createCoords(0);
     const isOffsetParentAnElement = isHTMLElement(offsetParent);
-    if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (isOffsetParentAnElement || !isFixed) {
       if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
         scroll = getNodeScroll(offsetParent);
       }
@@ -370,18 +367,17 @@
   }
 
   function getClientRects(element) {
-    return Array.from(element.getClientRects());
+    return element.getClientRects ? Array.from(element.getClientRects()) : [];
   }
 
   // Gets the entire size of the scrollable document area, even extending outside
   // of the `<html>` and `<body>` rect bounds if horizontally scrollable.
-  function getDocumentRect(element) {
-    const html = getDocumentElement(element);
-    const scroll = getNodeScroll(element);
-    const body = element.ownerDocument.body;
+  function getDocumentRect(html) {
+    const scroll = getNodeScroll(html);
+    const body = html.ownerDocument.body;
     const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
     const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
-    let x = -scroll.scrollLeft + getWindowScrollBarX(element);
+    let x = -scroll.scrollLeft + getWindowScrollBarX(html);
     const y = -scroll.scrollTop;
     if (getComputedStyle$1(body).direction === 'rtl') {
       x += max(html.clientWidth, body.clientWidth) - width;
@@ -398,7 +394,11 @@
   // calculation is affected by unusual styles.
   // Most scrollbars leave 15-18px of space.
   const SCROLLBAR_MAX = 25;
-  function getViewportRect(element, strategy) {
+  function getViewportRect(element, strategy, rootBoundary) {
+    if (rootBoundary === void 0) {
+      rootBoundary = 'viewport';
+    }
+    const isLayoutViewport = rootBoundary === 'layoutViewport';
     const win = getWindow(element);
     const html = getDocumentElement(element);
     const visualViewport = win.visualViewport;
@@ -407,31 +407,42 @@
     let x = 0;
     let y = 0;
     if (visualViewport) {
-      width = visualViewport.width;
-      height = visualViewport.height;
-      const visualViewportBased = isWebKit();
-      if (!visualViewportBased || visualViewportBased && strategy === 'fixed') {
-        x = visualViewport.offsetLeft;
-        y = visualViewport.offsetTop;
+      // Client coordinates are relative to the layout viewport, except in
+      // WebKit with an `absolute` strategy, where they are relative to the
+      // visual viewport.
+      const layoutRelativeClientCoords = !isWebKit() || strategy === 'fixed';
+      if (isLayoutViewport) {
+        if (!layoutRelativeClientCoords) {
+          x = -visualViewport.offsetLeft;
+          y = -visualViewport.offsetTop;
+        }
+      } else {
+        width = visualViewport.width;
+        height = visualViewport.height;
+        if (layoutRelativeClientCoords) {
+          x = visualViewport.offsetLeft;
+          y = visualViewport.offsetTop;
+        }
       }
     }
     const windowScrollbarX = getWindowScrollBarX(html);
-    // <html> `overflow: hidden` + `scrollbar-gutter: stable` reduces the
-    // visual width of the <html> but this is not considered in the size
-    // of `html.clientWidth`.
+    // `scrollbar-gutter: stable` on the <html> reserves gutter space that shrinks
+    // the visual width but isn't reflected in `html.clientWidth`, so subtract it.
+    // Only the inline-end (right) gutter can hold the scrollbar; `both-edges` also
+    // reserves an empty inline-start gutter that clips nothing, so exclude just
+    // the one scrollbar-side gutter — halve the measured (two-gutter) total. A
+    // left-side scrollbar (`windowScrollbarX > 0`) is already handled by
+    // `getHTMLOffset`/`visualViewport.width`; skip it here.
     if (windowScrollbarX <= 0) {
       const doc = html.ownerDocument;
       const body = doc.body;
       const bodyStyles = getComputedStyle(body);
       const bodyMarginInline = doc.compatMode === 'CSS1Compat' ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
-      const clippingStableScrollbarWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
-      if (clippingStableScrollbarWidth <= SCROLLBAR_MAX) {
-        width -= clippingStableScrollbarWidth;
+      const reservedWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+      const gutter = getComputedStyle(html).scrollbarGutter === 'stable both-edges' ? reservedWidth / 2 : reservedWidth;
+      if (gutter <= SCROLLBAR_MAX) {
+        width -= gutter;
       }
-    } else if (windowScrollbarX <= SCROLLBAR_MAX) {
-      // If the <body> scrollbar is on the left, the width needs to be extended
-      // by the scrollbar amount so there isn't extra space on the right.
-      width += windowScrollbarX;
     }
     return {
       width,
@@ -446,7 +457,7 @@
     const clientRect = getBoundingClientRect(element, true, strategy === 'fixed');
     const top = clientRect.top + element.clientTop;
     const left = clientRect.left + element.clientLeft;
-    const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
+    const scale = getScale(element);
     const width = element.clientWidth * scale.x;
     const height = element.clientHeight * scale.y;
     const x = left * scale.x;
@@ -460,8 +471,8 @@
   }
   function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
     let rect;
-    if (clippingAncestor === 'viewport') {
-      rect = getViewportRect(element, strategy);
+    if (clippingAncestor === 'viewport' || clippingAncestor === 'layoutViewport') {
+      rect = getViewportRect(element, strategy, clippingAncestor);
     } else if (clippingAncestor === 'document') {
       rect = getDocumentRect(getDocumentElement(element));
     } else if (isElement(clippingAncestor)) {
@@ -477,13 +488,6 @@
     }
     return core.rectToClientRect(rect);
   }
-  function hasFixedPositionAncestor(element, stopNode) {
-    const parentNode = getParentNode(element);
-    if (parentNode === stopNode || !isElement(parentNode) || isLastTraversableNode(parentNode)) {
-      return false;
-    }
-    return getComputedStyle$1(parentNode).position === 'fixed' || hasFixedPositionAncestor(parentNode, stopNode);
-  }
 
   // A "clipping ancestor" is an `overflow` element with the characteristic of
   // clipping (or hiding) child elements. This returns all clipping ancestors
@@ -494,7 +498,7 @@
       return cachedResult;
     }
     let result = getOverflowAncestors(element, [], false).filter(el => isElement(el) && getNodeName(el) !== 'body');
-    let currentContainingBlockComputedStyle = null;
+    let lastKeptComputedStyle = null;
     const elementIsFixed = getComputedStyle$1(element).position === 'fixed';
     let currentNode = elementIsFixed ? getParentNode(element) : element;
 
@@ -502,16 +506,20 @@
     while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
       const computedStyle = getComputedStyle$1(currentNode);
       const currentNodeIsContaining = isContainingBlock(currentNode);
-      if (!currentNodeIsContaining && computedStyle.position === 'fixed') {
-        currentContainingBlockComputedStyle = null;
-      }
-      const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === 'static' && !!currentContainingBlockComputedStyle && (currentContainingBlockComputedStyle.position === 'absolute' || currentContainingBlockComputedStyle.position === 'fixed') || isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
+      // Position of the containing block chain below the current node. A fixed
+      // element whose containing block hasn't been found yet is a fixed chain.
+      const lastPosition = lastKeptComputedStyle ? lastKeptComputedStyle.position : elementIsFixed ? 'fixed' : '';
+
+      // A non-containing ancestor does not clip the element when the chain
+      // below it escapes it: a fixed chain escapes all ancestors up to the
+      // next containing block, an absolute chain escapes static ancestors.
+      const shouldDropCurrentNode = !currentNodeIsContaining && (lastPosition === 'fixed' || lastPosition === 'absolute' && computedStyle.position === 'static');
       if (shouldDropCurrentNode) {
         // Drop non-containing blocks.
         result = result.filter(ancestor => ancestor !== currentNode);
       } else {
-        // Record last containing block for next iteration.
-        currentContainingBlockComputedStyle = computedStyle;
+        // The kept node carries the chain position for the next iteration.
+        lastKeptComputedStyle = computedStyle;
       }
       currentNode = getParentNode(currentNode);
     }
@@ -571,13 +579,7 @@
       scrollTop: 0
     };
     const offsets = createCoords(0);
-
-    // If the <body> scrollbar appears on the left (e.g. RTL systems). Use
-    // Firefox with layout.scrollbar.side = 3 in about:config to test this.
-    function setLeftRTLScrollbarOffset() {
-      offsets.x = getWindowScrollBarX(documentElement);
-    }
-    if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (isOffsetParentAnElement || !isFixed) {
       if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
         scroll = getNodeScroll(offsetParent);
       }
@@ -585,12 +587,13 @@
         const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
         offsets.x = offsetRect.x + offsetParent.clientLeft;
         offsets.y = offsetRect.y + offsetParent.clientTop;
-      } else if (documentElement) {
-        setLeftRTLScrollbarOffset();
       }
     }
-    if (isFixed && !isOffsetParentAnElement && documentElement) {
-      setLeftRTLScrollbarOffset();
+
+    // If the <body> scrollbar appears on the left (e.g. RTL systems). Use
+    // Firefox with layout.scrollbar.side = 3 in about:config to test this.
+    if (!isOffsetParentAnElement && documentElement) {
+      offsets.x = getWindowScrollBarX(documentElement);
     }
     const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
     const x = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
@@ -690,7 +693,7 @@
   }
 
   // https://samthor.au/2021/observing-dom/
-  function observeMove(element, onMove) {
+  function observeMove(element, onMove, ancestorResize) {
     let io = null;
     let timeoutId;
     const root = getDocumentElement(element);
@@ -733,29 +736,28 @@
       let isFirstUpdate = true;
       function handleObserve(entries) {
         const ratio = entries[0].intersectionRatio;
+
+        // The entry is a snapshot, so the reference may have moved since the
+        // intersection was computed (under performance constraints, or between
+        // consecutive frames of a multi-frame layout shift). The reported ratio
+        // and the observed area are stale in that case and cannot be trusted to
+        // detect subsequent movement, so refresh regardless of the ratio.
+        if (!rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+          return refresh();
+        }
         if (ratio !== threshold) {
           if (!isFirstUpdate) {
             return refresh();
           }
           if (!ratio) {
-            // If the reference is clipped, the ratio is 0. Throttle the refresh
-            // to prevent an infinite loop of updates.
+            // If the reference is clipped in place, the ratio is 0. Throttle
+            // the refresh to prevent an infinite loop of updates.
             timeoutId = setTimeout(() => {
               refresh(false, 1e-7);
             }, 1000);
           } else {
             refresh(false, ratio);
           }
-        }
-        if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
-          // It's possible that even though the ratio is reported as 1, the
-          // element is not actually fully within the IntersectionObserver's root
-          // area anymore. This can happen under performance constraints. This may
-          // be a bug in the browser's IntersectionObserver implementation. To
-          // work around this, we compare the element's bounding rect now with
-          // what it was at the time we created the IntersectionObserver. If they
-          // are not equal then the element moved, so we refresh.
-          refresh();
         }
         isFirstUpdate = false;
       }
@@ -773,8 +775,18 @@
       }
       io.observe(element);
     }
+    const win = getWindow(element);
+    // The window is a resize ancestor, so when `ancestorResize` is enabled its
+    // listener already runs the update on resize. Here we only need to rebuild
+    // the `IntersectionObserver` for the new root size, skipping a redundant
+    // update. When `ancestorResize` is disabled, this becomes the sole update.
+    const handleResize = () => refresh(ancestorResize);
+    win.addEventListener('resize', handleResize);
     refresh(true);
-    return cleanup;
+    return () => {
+      win.removeEventListener('resize', handleResize);
+      cleanup();
+    };
   }
 
   /**
@@ -799,12 +811,10 @@
     const referenceEl = unwrapElement(reference);
     const ancestors = ancestorScroll || ancestorResize ? [...(referenceEl ? getOverflowAncestors(referenceEl) : []), ...(floating ? getOverflowAncestors(floating) : [])] : [];
     ancestors.forEach(ancestor => {
-      ancestorScroll && ancestor.addEventListener('scroll', update, {
-        passive: true
-      });
+      ancestorScroll && ancestor.addEventListener('scroll', update);
       ancestorResize && ancestor.addEventListener('resize', update);
     });
-    const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+    const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update, ancestorResize) : null;
     let reobserveFrame = -1;
     let resizeObserver = null;
     if (elementResize) {
@@ -943,11 +953,9 @@
     // multiple lifecycle resets re-use the same result. It only lives for a
     // single call. If other functions become expensive, we can add them as well.
     const cache = new Map();
-    const mergedOptions = {
-      platform,
-      ...options
-    };
+    const mergedOptions = options != null ? options : {};
     const platformWithCache = {
+      ...platform,
       ...mergedOptions.platform,
       _c: cache
     };

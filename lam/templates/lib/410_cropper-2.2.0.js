@@ -1,4 +1,4 @@
-/*! Cropper.js v2.1.1 | (c) 2015-present Chen Fengyuan | MIT */
+/*! Cropper.js v2.2.0 | (c) 2015-present Chen Fengyuan | MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -54,6 +54,12 @@
     const EVENT_ACTION_START = 'actionstart';
     const EVENT_CHANGE = 'change';
     const EVENT_TRANSFORM = 'transform';
+    // Object fit values
+    const OBJECT_FIT_CONTAIN = 'contain';
+    const OBJECT_FIT_COVER = 'cover';
+    const OBJECT_FIT_FILL = 'fill';
+    const OBJECT_FIT_NONE = 'none';
+    const OBJECT_FIT_SCALE_DOWN = 'scale-down';
 
     /**
      * Check if the given value is a string.
@@ -351,7 +357,10 @@
     const shadowRoots = new WeakMap();
     const styleSheets = new WeakMap();
     const tagNames = new Map();
-    const supportsAdoptedStyleSheets = WINDOW.document && Array.isArray(WINDOW.document.adoptedStyleSheets) && 'replaceSync' in WINDOW.CSSStyleSheet.prototype;
+    const supportsAdoptedStyleSheets = Boolean(WINDOW.document
+        && Array.isArray(WINDOW.document.adoptedStyleSheets)
+        && WINDOW.CSSStyleSheet
+        && 'replaceSync' in WINDOW.CSSStyleSheet.prototype);
     class CropperElement extends HTMLElement {
         get $sharedStyle() {
             return `${this.themeColor ? `:host{--theme-color: ${this.themeColor};}` : ''}${style$8}`;
@@ -576,7 +585,7 @@
             }
         }
     }
-    CropperElement.$version = '2.1.1';
+    CropperElement.$version = '2.2.0';
 
     var style$7 = `:host{display:block;min-height:100px;min-width:200px;overflow:hidden;position:relative;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}:host([background]){background-color:#fff;background-image:repeating-linear-gradient(45deg,#ccc 25%,transparent 0,transparent 75%,#ccc 0,#ccc),repeating-linear-gradient(45deg,#ccc 25%,transparent 0,transparent 75%,#ccc 0,#ccc);background-image:repeating-conic-gradient(#ccc 0 25%,#fff 0 50%);background-position:0 0,.5rem .5rem;background-size:1rem 1rem}:host([disabled]){pointer-events:none}:host([disabled]):after{bottom:0;content:"";cursor:not-allowed;display:block;left:0;pointer-events:none;position:absolute;right:0;top:0}`;
 
@@ -610,9 +619,7 @@
             }
         }
         disconnectedCallback() {
-            if (!this.disabled) {
-                this.$unbind();
-            }
+            this.$unbind();
             super.disconnectedCallback();
         }
         $propertyChangedCallback(name, oldValue, newValue) {
@@ -671,20 +678,12 @@
                 });
                 this.$onWheel = null;
             }
+            this.$pointers.clear();
+            this.style.willChange = '';
+            this.$action = ACTION_NONE;
         }
-        $handlePointerDown(event) {
-            const { buttons, button, type } = event;
-            if (this.disabled || (
-            // Handle pointer or mouse event, and ignore touch event
-            ((type === 'pointerdown' && event.pointerType === 'mouse') || type === 'mousedown') && (
-            // No primary button (Usually the left button)
-            (isNumber(buttons) && buttons !== 1) || (isNumber(button) && button !== 0)
-                // Open context menu
-                || event.ctrlKey))) {
-                return;
-            }
+        $addPointers(event) {
             const { $pointers } = this;
-            let action = '';
             if (event.changedTouches) {
                 Array.from(event.changedTouches).forEach(({ identifier, pageX, pageY, }) => {
                     $pointers.set(identifier, {
@@ -704,16 +703,50 @@
                     endY: pageY,
                 });
             }
+        }
+        $removePointers(event) {
+            const { $pointers } = this;
+            if (event.changedTouches) {
+                Array.from(event.changedTouches).forEach(({ identifier }) => {
+                    $pointers.delete(identifier);
+                });
+            }
+            else {
+                const { pointerId = 0 } = event;
+                $pointers.delete(pointerId);
+            }
+            if ($pointers.size === 0) {
+                this.style.willChange = '';
+                this.$action = ACTION_NONE;
+            }
+        }
+        $handlePointerDown(event) {
+            const { buttons, button, type } = event;
+            if (this.disabled || (
+            // Handle pointer or mouse event, and ignore touch event
+            ((type === 'pointerdown' && event.pointerType === 'mouse') || type === 'mousedown') && (
+            // No primary button (Usually the left button)
+            (isNumber(buttons) && buttons !== 1) || (isNumber(button) && button !== 0)
+                // Open context menu
+                || event.ctrlKey))) {
+                return;
+            }
+            this.$addPointers(event);
+            const { $pointers } = this;
+            let action = ACTION_NONE;
             if ($pointers.size > 1) {
                 action = ACTION_TRANSFORM;
             }
             else if (isElement(event.target)) {
-                action = event.target.action || event.target.getAttribute(ATTRIBUTE_ACTION) || '';
+                action = event.target.action
+                    || event.target.getAttribute(ATTRIBUTE_ACTION)
+                    || ACTION_NONE;
             }
             if (this.$emit(EVENT_ACTION_START, {
                 action,
                 relatedEvent: event,
             }) === false) {
+                this.$removePointers(event);
                 return;
             }
             // Prevent page zooming in the browsers for iOS.
@@ -884,36 +917,28 @@
                 pointer.startY = pointer.endY;
             });
             if (detail.action !== ACTION_NONE) {
-                this.$emit(EVENT_ACTION, detail, {
-                    cancelable: false,
-                });
+                this.$emit(EVENT_ACTION, detail);
             }
         }
         $handlePointerUp(event) {
-            const { $action, $pointers } = this;
-            if (this.disabled || $action === ACTION_NONE) {
+            const { $action } = this;
+            if (this.disabled) {
+                this.$removePointers(event);
+                return;
+            }
+            if ($action === ACTION_NONE) {
+                this.$removePointers(event);
                 return;
             }
             if (this.$emit(EVENT_ACTION_END, {
                 action: $action,
                 relatedEvent: event,
             }) === false) {
+                this.$removePointers(event);
                 return;
             }
             event.preventDefault();
-            if (event.changedTouches) {
-                Array.from(event.changedTouches).forEach(({ identifier, }) => {
-                    $pointers.delete(identifier);
-                });
-            }
-            else {
-                const { pointerId = 0 } = event;
-                $pointers.delete(pointerId);
-            }
-            if ($pointers.size === 0) {
-                this.style.willChange = '';
-                this.$action = ACTION_NONE;
-            }
+            this.$removePointers(event);
         }
         $handleWheel(event) {
             if (this.disabled) {
@@ -935,8 +960,6 @@
                 action: ACTION_SCALE,
                 scale,
                 relatedEvent: event,
-            }, {
-                cancelable: false,
             });
         }
         /**
@@ -1021,7 +1044,7 @@
         }
     }
     CropperCanvas.$name = CROPPER_CANVAS;
-    CropperCanvas.$version = '2.1.1';
+    CropperCanvas.$version = '2.2.0';
 
     var style$6 = `:host{display:inline-block}img{display:block;height:100%;max-height:none!important;max-width:none!important;min-height:0!important;min-width:0!important;width:100%}`;
 
@@ -1050,7 +1073,13 @@
             this.$actionStartTarget = null;
             this.$style = style$6;
             this.$image = new Image();
-            this.initialCenterSize = 'contain';
+            /**
+             * @deprecated since version 2.2.0, use `initialFit` instead.
+             */
+            this.initialCenterSize = '';
+            this.initialFit = OBJECT_FIT_CONTAIN;
+            this.maxFit = '';
+            this.minFit = '';
             this.rotatable = false;
             this.scalable = false;
             this.skewable = false;
@@ -1077,6 +1106,9 @@
         static get observedAttributes() {
             return super.observedAttributes.concat(NATIVE_ATTRIBUTES, [
                 'initial-center-size',
+                'initial-fit',
+                'max-fit',
+                'min-fit',
                 'rotatable',
                 'scalable',
                 'skewable',
@@ -1090,7 +1122,12 @@
             super.attributeChangedCallback(name, oldValue, newValue);
             // Inherits the native attributes
             if (NATIVE_ATTRIBUTES.includes(name)) {
-                this.$image.setAttribute(name, newValue);
+                if (newValue === null) {
+                    this.$image.removeAttribute(name);
+                }
+                else {
+                    this.$image.setAttribute(name, newValue);
+                }
             }
         }
         $propertyChangedCallback(name, oldValue, newValue) {
@@ -1100,8 +1137,20 @@
             super.$propertyChangedCallback(name, oldValue, newValue);
             switch (name) {
                 case 'initialCenterSize':
+                case 'initialFit':
                     this.$nextTick(() => {
-                        this.$center(newValue);
+                        if (this.$isReady && this.$canvas) {
+                            this.$center(newValue);
+                        }
+                    });
+                    break;
+                case 'maxFit':
+                case 'minFit':
+                    this.$nextTick(() => {
+                        if (this.$isReady && this.$canvas) {
+                            this.$resetTransform();
+                            this.$center(this.initialCenterSize || this.initialFit);
+                        }
                     });
                     break;
                 case 'src':
@@ -1122,6 +1171,9 @@
                 });
                 this.$onCanvasActionStart = (event) => {
                     var _a, _b;
+                    if (event.defaultPrevented) {
+                        return;
+                    }
                     this.$actionStartTarget = (_b = (_a = event.detail) === null || _a === void 0 ? void 0 : _a.relatedEvent) === null || _b === void 0 ? void 0 : _b.target;
                 };
                 this.$onCanvasActionEnd = () => {
@@ -1166,12 +1218,14 @@
                 height: $image.naturalHeight,
             });
             if (this.$canvas) {
-                this.$center(this.initialCenterSize);
+                this.$center(this.initialCenterSize || this.initialFit);
             }
             this.$isReady = true;
         }
         $handleAction(event) {
-            if (this.hidden || !(this.rotatable || this.scalable || this.translatable)) {
+            if (event.defaultPrevented
+                || this.hidden
+                || !(this.rotatable || this.scalable || this.translatable)) {
                 return;
             }
             const { $canvas } = this;
@@ -1353,22 +1407,102 @@
                 });
             }
             this.$move(endX - startX, endY - startY);
-            if (size && (width !== containerWidth || height !== containerHeight)) {
+            const { maxFit, minFit } = this;
+            if (size || maxFit || minFit) {
+                const { naturalWidth, naturalHeight } = this.$image;
+                switch (size) {
+                    case OBJECT_FIT_COVER:
+                        if ([
+                            OBJECT_FIT_FILL,
+                            OBJECT_FIT_CONTAIN,
+                            OBJECT_FIT_SCALE_DOWN,
+                        ].includes(maxFit) || (maxFit === OBJECT_FIT_NONE
+                            && (naturalWidth < containerWidth || naturalHeight < containerHeight))) {
+                            size = maxFit;
+                        }
+                        else if (minFit === OBJECT_FIT_NONE
+                            && naturalWidth > containerWidth
+                            && naturalHeight > containerHeight) {
+                            size = minFit;
+                        }
+                        break;
+                    case OBJECT_FIT_FILL:
+                        if ([OBJECT_FIT_CONTAIN, OBJECT_FIT_SCALE_DOWN].includes(maxFit) || (maxFit === OBJECT_FIT_NONE
+                            && (naturalWidth < containerWidth || naturalHeight < containerHeight))) {
+                            size = maxFit;
+                        }
+                        else if (minFit === OBJECT_FIT_COVER || (minFit === OBJECT_FIT_NONE
+                            && naturalWidth > containerWidth
+                            && naturalHeight > containerHeight)) {
+                            size = minFit;
+                        }
+                        break;
+                    case OBJECT_FIT_CONTAIN:
+                        if (maxFit === OBJECT_FIT_SCALE_DOWN || (maxFit === OBJECT_FIT_NONE
+                            && naturalWidth < containerWidth
+                            && naturalHeight < containerHeight)) {
+                            size = maxFit;
+                        }
+                        else if ([OBJECT_FIT_COVER, OBJECT_FIT_FILL].includes(minFit) || (minFit === OBJECT_FIT_NONE
+                            && (naturalWidth > containerWidth || naturalHeight > containerHeight))) {
+                            size = minFit;
+                        }
+                        break;
+                    case OBJECT_FIT_SCALE_DOWN:
+                        if (maxFit === OBJECT_FIT_NONE
+                            && naturalWidth < containerWidth
+                            && naturalHeight < containerHeight) {
+                            size = maxFit;
+                        }
+                        else if ([OBJECT_FIT_COVER, OBJECT_FIT_FILL, OBJECT_FIT_CONTAIN].includes(minFit) || (minFit === OBJECT_FIT_NONE
+                            && (naturalWidth > containerWidth && naturalHeight > containerHeight))) {
+                            size = minFit;
+                        }
+                        break;
+                    // case OBJECT_FIT_NONE:
+                    default:
+                        if ([
+                            OBJECT_FIT_COVER,
+                            OBJECT_FIT_FILL,
+                            OBJECT_FIT_CONTAIN,
+                            OBJECT_FIT_SCALE_DOWN,
+                        ].includes(maxFit)
+                            && (naturalWidth > containerWidth || naturalHeight > containerHeight)) {
+                            size = maxFit;
+                        }
+                        else if ([
+                            OBJECT_FIT_COVER,
+                            OBJECT_FIT_FILL,
+                            OBJECT_FIT_CONTAIN,
+                            OBJECT_FIT_SCALE_DOWN,
+                        ].includes(minFit) && naturalWidth < containerWidth && naturalHeight < containerHeight) {
+                            size = minFit;
+                        }
+                }
                 const scaleX = containerWidth / width;
                 const scaleY = containerHeight / height;
                 const { scalable } = this;
-                if (size && !scalable && !this.$isReady) {
+                if (!scalable && !this.$isReady) {
                     this.scalable = true;
                     this.$nextTick(() => {
                         this.scalable = scalable;
                     });
                 }
                 switch (size) {
-                    case 'cover':
+                    case OBJECT_FIT_COVER:
                         this.$scale(Math.max(scaleX, scaleY));
                         break;
-                    case 'contain':
+                    case OBJECT_FIT_CONTAIN:
                         this.$scale(Math.min(scaleX, scaleY));
+                        break;
+                    case OBJECT_FIT_FILL:
+                        this.$scale(scaleX, scaleY);
+                        break;
+                    case OBJECT_FIT_SCALE_DOWN:
+                        this.$scale(Math.min(scaleX, scaleY, 1));
+                        break;
+                    case OBJECT_FIT_NONE:
+                        this.$scale(1);
                         break;
                 }
             }
@@ -1572,6 +1706,85 @@
                     && isNumber(f)) {
                     const oldMatrix = [...this.$matrix];
                     const newMatrix = [a, b, c, d, e, f];
+                    if (this.$isReady && this.$canvas) {
+                        const { $canvas } = this;
+                        const canvasRect = $canvas.getBoundingClientRect();
+                        this.style.transform = `matrix(${newMatrix.join(', ')})`;
+                        const imageRect = this.$image.getBoundingClientRect();
+                        this.style.transform = `matrix(${oldMatrix.join(', ')})`;
+                        let { maxFit, minFit } = this;
+                        if (maxFit || minFit) {
+                            // Check if the image is completely outside the canvas after transformation,
+                            // if so, skip the transformation to avoid losing the image.
+                            if (imageRect.top > canvasRect.bottom
+                                || imageRect.right < canvasRect.left
+                                || imageRect.bottom < canvasRect.top
+                                || imageRect.left > canvasRect.right) {
+                                return this;
+                            }
+                            const { naturalWidth, naturalHeight } = this.$image;
+                            if (maxFit === OBJECT_FIT_SCALE_DOWN) {
+                                if (naturalWidth >= canvasRect.width || naturalHeight >= canvasRect.height) {
+                                    maxFit = OBJECT_FIT_CONTAIN;
+                                }
+                                else {
+                                    maxFit = OBJECT_FIT_NONE;
+                                }
+                            }
+                            switch (maxFit) {
+                                case OBJECT_FIT_COVER:
+                                    if (imageRect.width > canvasRect.width && imageRect.height > canvasRect.height) {
+                                        return this;
+                                    }
+                                    break;
+                                case OBJECT_FIT_FILL:
+                                case OBJECT_FIT_CONTAIN:
+                                    if (imageRect.width > canvasRect.width || imageRect.height > canvasRect.height) {
+                                        return this;
+                                    }
+                                    break;
+                                case OBJECT_FIT_NONE:
+                                    if (imageRect.width > naturalWidth || imageRect.height > naturalHeight) {
+                                        return this;
+                                    }
+                                    break;
+                            }
+                            if (minFit === OBJECT_FIT_SCALE_DOWN) {
+                                if (naturalWidth >= canvasRect.width || naturalHeight >= canvasRect.height) {
+                                    minFit = OBJECT_FIT_CONTAIN;
+                                }
+                                else {
+                                    minFit = OBJECT_FIT_NONE;
+                                }
+                            }
+                            switch (minFit) {
+                                case OBJECT_FIT_COVER:
+                                case OBJECT_FIT_FILL:
+                                    if (imageRect.width < canvasRect.width || imageRect.height < canvasRect.height) {
+                                        return this;
+                                    }
+                                    break;
+                                case OBJECT_FIT_CONTAIN:
+                                    if (imageRect.width < canvasRect.width && imageRect.height < canvasRect.height) {
+                                        return this;
+                                    }
+                                    break;
+                                case OBJECT_FIT_NONE:
+                                    if (imageRect.width < naturalWidth || imageRect.height < naturalHeight) {
+                                        return this;
+                                    }
+                                    break;
+                            }
+                        }
+                        if (this.$emit(EVENT_CHANGE, {
+                            x: imageRect.x - canvasRect.x,
+                            y: imageRect.y - canvasRect.y,
+                            width: imageRect.width,
+                            height: imageRect.height,
+                        }) === false) {
+                            return this;
+                        }
+                    }
                     if (this.$emit(EVENT_TRANSFORM, {
                         matrix: newMatrix,
                         oldMatrix,
@@ -1602,7 +1815,7 @@
         }
     }
     CropperImage.$name = CROPPER_IMAGE;
-    CropperImage.$version = '2.1.1';
+    CropperImage.$version = '2.2.0';
 
     var style$5 = `:host{display:block;height:0;left:0;outline:var(--theme-color) solid 1px;position:relative;top:0;width:0}:host([transparent]){outline-color:transparent}`;
 
@@ -1656,6 +1869,10 @@
                         }
                     };
                     this.$onSelectionChange = (event) => {
+                        var _a, _b;
+                        if (((_b = (_a = event.target) === null || _a === void 0 ? void 0 : _a.constructor) === null || _b === void 0 ? void 0 : _b.$name) !== CROPPER_SELECTION) {
+                            return;
+                        }
                         const { x, y, width, height, } = event.defaultPrevented ? $selection : event.detail;
                         this.$change(x, y, width, height);
                         if ($selection.hidden || (x === 0 && y === 0 && width === 0 && height === 0)) {
@@ -1738,7 +1955,7 @@
         }
     }
     CropperShade.$name = CROPPER_SHADE;
-    CropperShade.$version = '2.1.1';
+    CropperShade.$version = '2.2.0';
 
     var style$4 = `:host{background-color:var(--theme-color);display:block}:host([action=move]),:host([action=select]){height:100%;left:0;position:absolute;top:0;width:100%}:host([action=move]){cursor:move}:host([action=select]){cursor:crosshair}:host([action$=-resize]){background-color:transparent;height:15px;position:absolute;width:15px}:host([action$=-resize]):after{background-color:var(--theme-color);content:"";display:block;height:5px;left:50%;position:absolute;top:50%;transform:translate(-50%,-50%);width:5px}:host([action=n-resize]),:host([action=s-resize]){cursor:ns-resize;left:50%;transform:translateX(-50%);width:100%}:host([action=n-resize]){top:-8px}:host([action=s-resize]){bottom:-8px}:host([action=e-resize]),:host([action=w-resize]){cursor:ew-resize;height:100%;top:50%;transform:translateY(-50%)}:host([action=e-resize]){right:-8px}:host([action=w-resize]){left:-8px}:host([action=ne-resize]){cursor:nesw-resize;right:-8px;top:-8px}:host([action=nw-resize]){cursor:nwse-resize;left:-8px;top:-8px}:host([action=se-resize]){bottom:-8px;cursor:nwse-resize;right:-8px}:host([action=se-resize]):after{height:15px;width:15px}@media (pointer:coarse){:host([action=se-resize]):after{height:10px;width:10px}}@media (pointer:fine){:host([action=se-resize]):after{height:5px;width:5px}}:host([action=sw-resize]){bottom:-8px;cursor:nesw-resize;left:-8px}:host([plain]){background-color:transparent}`;
 
@@ -1761,7 +1978,7 @@
         }
     }
     CropperHandle.$name = CROPPER_HANDLE;
-    CropperHandle.$version = '2.1.1';
+    CropperHandle.$version = '2.2.0';
 
     var style$3 = `:host{display:block;left:0;position:relative;right:0}:host([outlined]){outline:1px solid var(--theme-color)}:host([multiple]){outline:1px dashed hsla(0,0%,100%,.5)}:host([multiple]):after{bottom:0;content:"";cursor:pointer;display:block;left:0;position:absolute;right:0;top:0}:host([multiple][active]){outline-color:var(--theme-color);z-index:1}:host([multiple])>*{visibility:hidden}:host([multiple][active])>*{visibility:visible}:host([multiple][active]):after{display:none}`;
 
@@ -2020,6 +2237,9 @@
         }
         $handleActionStart(event) {
             var _a, _b;
+            if (event.defaultPrevented) {
+                return;
+            }
             const relatedTarget = (_b = (_a = event.detail) === null || _a === void 0 ? void 0 : _a.relatedEvent) === null || _b === void 0 ? void 0 : _b.target;
             this.$action = '';
             this.$actionStartTarget = relatedTarget;
@@ -2042,7 +2262,7 @@
         }
         $handleAction(event) {
             const { currentTarget, detail } = event;
-            if (!currentTarget || !detail) {
+            if (event.defaultPrevented || !currentTarget || !detail) {
                 return;
             }
             const { relatedEvent } = detail;
@@ -2114,6 +2334,7 @@
                     }
                     break;
                 case ACTION_SCALE:
+                case ACTION_TRANSFORM:
                     if (relatedEvent && this.zoomable && (this.dynamic
                         || this.contains(relatedEvent.target))) {
                         const offset = getOffset(currentTarget);
@@ -2129,10 +2350,10 @@
             this.$actionStartTarget = null;
         }
         $handleKeyDown(event) {
-            if (this.hidden
+            if (event.defaultPrevented
+                || this.hidden
                 || !this.keyboard
-                || (this.multiple && !this.active)
-                || event.defaultPrevented) {
+                || (this.multiple && !this.active)) {
                 return;
             }
             const { activeElement } = document;
@@ -2603,7 +2824,7 @@
         }
     }
     CropperSelection.$name = CROPPER_SELECTION;
-    CropperSelection.$version = '2.1.1';
+    CropperSelection.$version = '2.2.0';
 
     var style$2 = `:host{display:flex;flex-direction:column;position:relative;touch-action:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}:host([bordered]){border:1px dashed var(--theme-color)}:host([covered]){bottom:0;left:0;position:absolute;right:0;top:0}:host>span{display:flex;flex:1}:host>span+span{border-top:1px dashed var(--theme-color)}:host>span>span{flex:1}:host>span>span+span{border-left:1px dashed var(--theme-color)}`;
 
@@ -2646,6 +2867,7 @@
             const fragment = document.createDocumentFragment();
             for (let i = 0; i < this.rows; i += 1) {
                 const row = document.createElement('span');
+                row.setAttribute('data-cropper-grid-row', '');
                 row.setAttribute('role', 'row');
                 for (let j = 0; j < this.columns; j += 1) {
                     const column = document.createElement('span');
@@ -2655,13 +2877,13 @@
                 fragment.appendChild(row);
             }
             if (shadow) {
-                shadow.innerHTML = '';
+                shadow.querySelectorAll('[data-cropper-grid-row]').forEach((row) => row.remove());
                 shadow.appendChild(fragment);
             }
         }
     }
     CropperGrid.$name = CROPPER_GIRD;
-    CropperGrid.$version = '2.1.1';
+    CropperGrid.$version = '2.2.0';
 
     var style$1 = `:host{display:inline-block;height:1em;position:relative;touch-action:none;-webkit-user-select:none;-moz-user-select:none;user-select:none;vertical-align:middle;width:1em}:host:after,:host:before{background-color:var(--theme-color);content:"";display:block;position:absolute}:host:before{height:1px;left:0;top:50%;transform:translateY(-50%);width:100%}:host:after{height:100%;left:50%;top:0;transform:translateX(-50%);width:1px}:host([centered]){left:50%;position:absolute;top:50%;transform:translate(-50%,-50%)}`;
 
@@ -2680,7 +2902,7 @@
         }
     }
     CropperCrosshair.$name = CROPPER_CROSSHAIR;
-    CropperCrosshair.$version = '2.1.1';
+    CropperCrosshair.$version = '2.2.0';
 
     var style = `:host{display:block;height:100%;overflow:hidden;position:relative;width:100%}`;
 
@@ -2766,7 +2988,7 @@
             }
         }
         disconnectedCallback() {
-            const { $selection, $sourceImage } = this;
+            const { $image, $selection, $sourceImage } = this;
             if ($selection && this.$onSelectionChange) {
                 off($selection, EVENT_CHANGE, this.$onSelectionChange);
                 this.$onSelectionChange = null;
@@ -2778,6 +3000,10 @@
             if ($sourceImage && this.$onSourceImageTransform) {
                 off($sourceImage, EVENT_TRANSFORM, this.$onSourceImageTransform);
                 this.$onSourceImageTransform = null;
+            }
+            const shadow = this.$getShadowRoot();
+            if ($image && (shadow === null || shadow === void 0 ? void 0 : shadow.contains($image))) {
+                shadow.removeChild($image);
             }
             super.disconnectedCallback();
         }
@@ -2877,7 +3103,7 @@
         }
     }
     CropperViewer.$name = CROPPER_VIEWER;
-    CropperViewer.$version = '2.1.1';
+    CropperViewer.$version = '2.2.0';
 
     var DEFAULT_TEMPLATE = ('<cropper-canvas background>'
         + '<cropper-image rotatable scalable skewable translatable></cropper-image>'
@@ -2898,7 +3124,7 @@
         + '</cropper-selection>'
         + '</cropper-canvas>');
 
-    const REGEXP_ALLOWED_ELEMENTS = /^img|canvas$/;
+    const REGEXP_ALLOWED_ELEMENTS = /^(img|canvas)$/;
     const REGEXP_BLOCKED_TAGS = /<(\/?(?:script|style)[^>]*)>/gi;
     const DEFAULT_OPTIONS = {
         template: DEFAULT_TEMPLATE,
@@ -3009,7 +3235,7 @@
             }
         }
     }
-    Cropper.version = '2.1.1';
+    Cropper.version = '2.2.0';
 
     exports.ACTION_MOVE = ACTION_MOVE;
     exports.ACTION_NONE = ACTION_NONE;
@@ -3065,6 +3291,11 @@
     exports.IS_BROWSER = IS_BROWSER;
     exports.IS_TOUCH_DEVICE = IS_TOUCH_DEVICE;
     exports.NAMESPACE = NAMESPACE;
+    exports.OBJECT_FIT_CONTAIN = OBJECT_FIT_CONTAIN;
+    exports.OBJECT_FIT_COVER = OBJECT_FIT_COVER;
+    exports.OBJECT_FIT_FILL = OBJECT_FIT_FILL;
+    exports.OBJECT_FIT_NONE = OBJECT_FIT_NONE;
+    exports.OBJECT_FIT_SCALE_DOWN = OBJECT_FIT_SCALE_DOWN;
     exports.WINDOW = WINDOW;
     exports["default"] = Cropper;
     exports.emit = emit;

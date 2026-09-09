@@ -1,4 +1,4 @@
-/* Tabulator v6.4.0 (c) Oliver Folkerd 2026 */
+/* Tabulator v6.5.2 (c) Oliver Folkerd 2026 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -119,6 +119,7 @@
 		//////////////// Layout  /////////////////
 		//////////////////////////////////////////
 
+		/** @returns {("fitData" | "fitDataFill" | "fitDataTable" | "fitDataStretch" | "fitColumns")} */
 		layoutMode(){
 			return this.table.modules.layout.getMode();
 		}
@@ -2895,7 +2896,7 @@
 					break;
 				
 				default:
-					if(!isNaN(value) && value !== ""){
+					if(!isNaN(Number(value)) && value !== ""){
 						sorter = "number";
 					}else {
 						if(value.match(/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+$/i)){
@@ -4438,7 +4439,10 @@
 
 					const rowsNeedingHeightInit = [];
 					renderedRows.forEach((row) => {
-						if(!row.heightInitialized) {
+						//(re)calculate the height of any row that has not been sized yet, or
+						//whose cached height is invalid/zero (e.g. it was first measured while
+						//detached), otherwise its bad height poisons the padding calculations.
+						if(!row.heightInitialized || !row.getHeight()) {
 							row.calcHeight(true);
 							rowsNeedingHeightInit.push(row);
 						}
@@ -4449,7 +4453,7 @@
 					});
 
 					renderedRows.forEach((row) => {
-						rowHeight = row.getHeight();
+						rowHeight = row.getHeight() || this.vDomRowHeight;
 
 						if(totalRowsRendered < topPad){
 							topPadHeight += rowHeight;
@@ -7079,13 +7083,23 @@
 						case "bottom":
 							this.element.style.top = (parseInt(this.element.style.top) - this.element.offsetHeight - parentEl.offsetHeight - 1) + "px";
 							break;
-						
+
 						default:
 							this.element.style.top = (parseInt(this.element.style.top) - this.element.offsetHeight + parentEl.offsetHeight + 1) + "px";
 					}
-					
+
 				}else {
-					this.element.style.height = offsetHeight + "px";
+					let menuHeight = this.element.offsetHeight;
+					if(menuHeight > offsetHeight){
+						this.element.style.top = "0px";
+						this.element.style.height = offsetHeight + "px";
+					}else {
+						let newTop = y - menuHeight;
+						if(newTop < 0){
+							newTop = offsetHeight - menuHeight;
+						}
+						this.element.style.top = newTop + "px";
+					}
 				}
 			}
 		}
@@ -10449,7 +10463,7 @@
 
 				if(hasDataTreeColumnCalcs && row.modules.dataTree?.open){
 					this.rowsToData(dataTree.getFilteredTreeChildren(row)).forEach(dataRow =>{
-						data.push(row);
+						data.push(dataRow);
 					});
 				}
 			});
@@ -12221,6 +12235,8 @@
 			
 			if(DT.isDateTime(value)){
 				newDatetime = value;
+			}else if(inputFormat === "x"){
+				newDatetime = DT.fromMillis(value);
 			}else if(inputFormat === "iso"){
 				newDatetime = DT.fromISO(String(value));
 			}else {
@@ -12291,6 +12307,10 @@
 							value = luxDate;
 							break;
 
+						case "x":
+							value = luxDate.toMillis();
+							break;
+							
 						case "iso":
 							value = luxDate.toISO();
 							break;
@@ -12378,6 +12398,8 @@
 			if(DT){
 				if(DT.isDateTime(cellValue)){
 					newDatetime = cellValue;
+				}else if(inputFormat === "x"){
+					newDatetime = DT.fromMillis(cellValue);
 				}else if(inputFormat === "iso"){
 					newDatetime = DT.fromISO(String(cellValue));
 				}else {
@@ -12418,6 +12440,10 @@
 							value = luxTime;
 							break;
 
+						case "x":
+							value = luxTime.toMillis();
+							break;
+						
 						case "iso":
 							value = luxTime.toISO();
 							break;
@@ -12505,6 +12531,8 @@
 			if(DT){
 				if(DT.isDateTime(cellValue)){
 					newDatetime = cellValue;
+				}else if(inputFormat === "x"){
+					newDatetime = DT.fromMillis(cellValue);	
 				}else if(inputFormat === "iso"){
 					newDatetime = DT.fromISO(String(cellValue));
 				}else {
@@ -12544,6 +12572,10 @@
 							value = luxDateTime;
 							break;
 
+						case "x":
+							value = luxDateTime.toMillis();
+							break;
+						
 						case "iso":
 							value = luxDateTime.toISO();
 							break;
@@ -13007,7 +13039,11 @@
 				this._resolveValue(true);
 			}else {
 				if(this.focusedItem){
-					this._chooseItem(this.focusedItem);
+					if(this.isFilter && !this.params.multiselect && this.focusedItem.selected){
+						this._resolveValue();
+					}else {
+						this._chooseItem(this.focusedItem);
+					}
 				}
 			}
 		}
@@ -13252,6 +13288,10 @@
 				this.lastAction = "typing";
 			}
 			
+			if(this.params.multiselect) {
+				this.initialValues = null;
+			}
+			
 			this.data = data;
 			
 			return data;    
@@ -13275,7 +13315,19 @@
 					original:option,
 				};
 				
-				if(this.initialValues && this.initialValues.indexOf(option.value) > -1){
+				if(this.params.multiselect){
+					var existingIndex = this.currentItems.findIndex(existing => existing.value === option.value);
+					if(existingIndex > -1){
+						if(this.focusedItem === this.currentItems[existingIndex]){
+							this.focusedItem = item;
+						}
+						
+						this.currentItems[existingIndex] = item;
+						item.selected = true;
+					}else if(this.initialValues && this.initialValues.indexOf(option.value) > -1){
+						this._chooseItem(item, true);
+					}
+				}else if(this.initialValues && this.initialValues.indexOf(option.value) > -1){
 					this._chooseItem(item, true);
 				}
 			}
@@ -13594,6 +13646,12 @@
 				this._styleItem(item);
 				
 			}else {
+				if(this.isFilter && !silent && item.selected){
+					this._clearChoices();
+					this.input.value = "";
+					this._resolveValue();
+					return;
+				}
 				this.currentItems = [item];
 				item.selected = true;
 				
@@ -13629,6 +13687,8 @@
 				}else {
 					if(this.currentItems[0]){
 						output = this.currentItems[0].value;
+					}else if(this.isFilter && this.focusedItem && this.focusedItem.selected){
+						output = this.focusedItem.value;
 					}else {
 						initialValue = Array.isArray(this.initialValues) ? this.initialValues[0] : this.initialValues;
 						
@@ -14790,13 +14850,16 @@
 			}
 			
 			if(!cell.column.modules.edit.blocked){
-				if(e){
-					e.stopPropagation();
-				}
-				
 				allowEdit = this.allowEdit(cell);
-				
+
 				if(allowEdit || forceEdit){
+					//only stop event propagation once we know the cell will be edited,
+					//otherwise non-editable cells would swallow clicks meant for other
+					//handlers such as the cellClick callback (#4421)
+					if(e){
+						e.stopPropagation();
+					}
+
 					self.cancelEdit();
 					
 					self.currentCell = cell;
@@ -15716,6 +15779,113 @@
 				return false;
 			}
 		},
+
+		// Smart filter
+		// Supports ., !, <, >, <=, >=, = and falls back to like filter
+		"smart": function (filterVal, rowVal, rowData, filterParams) {
+			const search = filterVal.trim();
+
+			// searching . returns all non-empty cells
+			if (search === ".") return !(rowVal === null || rowVal == "");
+			// searching ! returns all empty cells
+			if (search === "!") return rowVal === null || rowVal == "";
+			
+			// number comparisons - use existing filters
+			if (search.indexOf("<=") === 0)
+				return this["<="](
+					parseFloat(search.substring(2)),
+					rowVal,
+					rowData,
+					filterParams
+				);
+			if (search.indexOf(">=") === 0)
+				return this[">="](
+					parseFloat(search.substring(2)),
+					rowVal,
+					rowData,
+					filterParams
+				);
+			if (search.indexOf("<") === 0)
+				return this["<"](
+					parseFloat(search.substring(1)),
+					rowVal,
+					rowData,
+					filterParams
+				);
+			if (search.indexOf(">") === 0)
+				return this[">"](
+					parseFloat(search.substring(1)),
+					rowVal,
+					rowData,
+					filterParams
+				);
+			if (search.indexOf("=") === 0)
+				return this["="](search.substring(1).trim(), rowVal, rowData, filterParams);
+
+			// we got a string like "ne ci"
+			// convert this to "ne AND ci" to find "New York City"
+			if (search.includes(" ")) {
+				// Split by spaces and join with AND for fuzzy search
+				const terms = search.split(/\s+/).filter((term) => term.length > 0);
+				if (terms.length > 1) {
+					const fuzzySearch = terms.join(" AND ");
+					return this["smarter"](fuzzySearch, rowVal, rowData, filterParams);
+				}
+			}
+
+			// otherwise we use the regular like filter
+			return this["like"](search, rowVal, rowData, filterParams);
+		},
+
+		// Smarter filter
+		// Just like the smart filter but you can combine multiple filters (AND/OR)
+		// Examples:
+		// - "john AND smith" - both terms must match
+		// - "john OR jane" - either term must match
+		// - ">100 AND <500" - value must be between 100 and 500
+		// - "! OR foo" - either empty or foo
+		"smarter": function (filterVal, rowVal, rowData, filterParams) {
+			const search = filterVal.trim();
+
+			// If no search value, show all rows
+			if (!search) return true;
+
+			// Split by AND/OR operators while preserving the operators
+			const parts = search.split(/\s+(AND|OR)\s+/i);
+
+			// If no operators found, use the original smart filter
+			if (parts.length === 1) {
+				return this["smart"](search, rowVal, rowData, filterParams);
+			}
+
+			// Process each part and operator
+			let result = null;
+			let currentOperator = null;
+
+			for (let i = 0; i < parts.length; i++) {
+				const part = parts[i].trim();
+
+				if (part === "AND" || part === "OR") {
+					currentOperator = part;
+					continue;
+				}
+
+				// Apply the smart filter to this part
+				const partResult = this["smart"](part, rowVal, rowData, filterParams);
+
+				// Combine results based on operator
+				if (result === null) {
+					result = partResult;
+				} else if (currentOperator === "AND") {
+					result = result && partResult;
+				} else if (currentOperator === "OR") {
+					result = result || partResult;
+				}
+			}
+
+			return result !== null ? result : true;
+		},
+
 	};
 
 	class Filter extends Module{
@@ -16642,7 +16812,7 @@
 		var after = !!formatterParams.symbolAfter;
 		var precision = typeof formatterParams.precision !== "undefined" ? formatterParams.precision : 2;
 
-		if(isNaN(floatVal)){
+		if(Number.isNaN(floatVal)){
 			return this.emptyToSpace(this.sanitizeHTML(cell.getValue()));
 		}
 
@@ -16802,8 +16972,8 @@
 		empty = formatterParams.allowEmpty,
 		truthy = formatterParams.allowTruthy,
 		trueValueSet = Object.keys(formatterParams).includes("trueValue"),
-		tick = typeof formatterParams.tickElement !== "undefined" ? formatterParams.tickElement : '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>',
-		cross = typeof formatterParams.crossElement !== "undefined" ? formatterParams.crossElement : '<svg enable-background="new 0 0 24 24" height="14" width="14"  viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
+		tick = typeof formatterParams.tickElement !== "undefined" ? formatterParams.tickElement : '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path class="tabulator-tick" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>',
+		cross = typeof formatterParams.crossElement !== "undefined" ? formatterParams.crossElement : '<svg enable-background="new 0 0 24 24" height="14" width="14"  viewBox="0 0 24 24" xml:space="preserve" ><path class="tabulator-cross" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
 
 		if((trueValueSet && value === formatterParams.trueValue) || (!trueValueSet && ((truthy && value) || (value === true || value === "true" || value === "True" || value === 1 || value === "1")))){
 			element.setAttribute("aria-checked", true);
@@ -16831,6 +17001,8 @@
 
 			if(DT.isDateTime(value)){
 				newDatetime = value;
+			}else if(inputFormat === "x"){
+				newDatetime = DT.fromMillis(value);	
 			}else if(inputFormat === "iso"){
 				newDatetime = DT.fromISO(String(value));
 			}else {
@@ -16872,6 +17044,8 @@
 
 			if(DT.isDateTime(value)){
 				newDatetime = value;
+			}else if(inputFormat === "x"){
+				newDatetime = DT.fromMillis(value);	
 			}else if(inputFormat === "iso"){
 				newDatetime = DT.fromISO(String(value));
 			}else {
@@ -16929,7 +17103,7 @@
 		star.setAttribute("xml:space", "preserve");
 		star.style.padding = "0 1px";
 
-		value = value && !isNaN(value) ? parseInt(value) : 0;
+		value = value && !Number.isNaN(value) ? parseInt(value) : 0;
 
 		value = Math.max(0, Math.min(value, maxStars));
 
@@ -16958,7 +17132,7 @@
 		color = "#666666",
 		percent, percentValue;
 
-		if(isNaN(value) || typeof cell.getValue() === "undefined"){
+		if(Number.isNaN(value) || typeof cell.getValue() === "undefined"){
 			return;
 		}
 
@@ -18644,7 +18818,9 @@
 		
 		reinitializeHeight(){}
 		
-		calcHeight(){}
+		calcHeight(){
+			this.outerHeight = this.element.offsetHeight;
+		}
 		
 		setCellHeight(){}
 		
@@ -18732,6 +18908,7 @@
 				this.subscribe("rows-sample", this.rowSample.bind(this));
 				
 				this.subscribe("render-virtual-fill", this.virtualRenderFill.bind(this));
+				this.subscribe("table-layout", this.virtualRenderFill.bind(this));
 				
 				this.registerDisplayHandler(this.displayHandler, 20);
 				
@@ -18852,17 +19029,14 @@
 		}
 		
 		virtualRenderFill(){
-			var el = this.table.rowManager.tableElement;
-			var rows = this.table.rowManager.getVisibleRows();
-			
-			if(this.table.options.groupBy){
-				rows = rows.filter((row) => {
-					return row.type !== "group";
-				});
-				
-				el.style.minWidth = !rows.length ? this.table.columnManager.getWidth() + "px" : "";
-			}else {
-				return rows;
+			const layout = this.layoutMode();
+			if (
+				layout === "fitDataFill"
+					|| layout === "fitDataStretch"
+					|| layout === "fitColumns"
+			) {
+				this.table.rowManager.tableElement.style.minWidth = 
+					this.table.columnManager.getWidth() + "px";
 			}
 		}
 		
@@ -20279,6 +20453,10 @@
 			var types = Object.values(this.touchWatchers);
 
 			types.forEach((type) => {
+				//tapDbl and tapHold hold timer ids that must be cancelled (tap is just a boolean flag)
+				clearTimeout(type.tapDbl);
+				clearTimeout(type.tapHold);
+
 				for(let key in type){
 					type[key] = null;
 				}
@@ -24054,7 +24232,14 @@
 			this.unwatchData();
 			
 			this.data = data;
-			
+
+			//hold a reference to the instance methods so they can be restored in unwatchData.
+			//note: the actual array mutation below is performed via the native Array.prototype
+			//methods rather than these captured references. On framework reactive arrays (e.g.
+			//Vue 3) reading data.push returns an instrumented method that re-dispatches through
+			//this overridden property, which - while reactivity is blocked - would silently drop
+			//the underlying mutation and leave the array out of sync with the table (issue #4212).
+
 			//override array push function
 			this.origFuncs.push = data.push;
 			
@@ -24072,8 +24257,8 @@
 							self.table.rowManager.addRowActual(arg, false);
 						});
 						
-						result = self.origFuncs.push.apply(data, arguments);
-						
+						result = Array.prototype.push.apply(data, arguments);
+
 						self.unblock("data-push");
 					}
 					
@@ -24098,8 +24283,8 @@
 							self.table.rowManager.addRowActual(arg, true);
 						});
 						
-						result = self.origFuncs.unshift.apply(data, arguments);
-						
+						result = Array.prototype.unshift.apply(data, arguments);
+
 						self.unblock("data-unshift");
 					}
 					
@@ -24128,7 +24313,7 @@
 							}
 						}
 
-						result = self.origFuncs.shift.call(data);
+						result = Array.prototype.shift.call(data);
 
 						self.unblock("data-shift");
 					}
@@ -24157,8 +24342,8 @@
 							}
 						}
 
-						result = self.origFuncs.pop.call(data);
-						
+						result = Array.prototype.pop.call(data);
+
 						self.unblock("data-pop");
 					}
 
@@ -24216,8 +24401,8 @@
 							self.table.rowManager.reRenderInPosition();
 						}
 
-						result = self.origFuncs.splice.apply(data, arguments);
-						
+						result = Array.prototype.splice.apply(data, arguments);
+
 						self.unblock("data-splice");
 					}
 					
@@ -24253,102 +24438,108 @@
 		
 		watchTreeChildren (row){
 			var self = this,
-			childField = row.getData()[this.table.options.dataTreeChildField],
-			origFuncs = {};
-			
+			childField = row.getData()[this.table.options.dataTreeChildField];
+
+			//note: the actual array mutation below is performed via the native Array.prototype
+			//methods. Reading childField.push on a framework reactive array (e.g. Vue 3) returns
+			//an instrumented method that re-dispatches through this overridden property; while
+			//reactivity is blocked that would silently drop the mutation and desync the child
+			//array from the table (issue #4212). Regular functions (not arrows) are required so
+			//that `arguments` refers to the call's arguments rather than watchTreeChildren's.
+
 			if(childField){
-				
-				origFuncs.push = childField.push;
-				
+
 				Object.defineProperty(childField, "push", {
 					enumerable: false,
 					configurable: true,
-					value: () => {
+					value: function(){
+						var result;
+
 						if(!self.blocked){
 							self.block("tree-push");
-							
-							var result = origFuncs.push.apply(childField, arguments);
-							this.rebuildTree(row);
-							
+
+							result = Array.prototype.push.apply(childField, arguments);
+							self.rebuildTree(row);
+
 							self.unblock("tree-push");
 						}
-						
+
 						return result;
 					}
 				});
-				
-				origFuncs.unshift = childField.unshift;
-				
+
 				Object.defineProperty(childField, "unshift", {
 					enumerable: false,
 					configurable: true,
-					value: () => {
+					value: function(){
+						var result;
+
 						if(!self.blocked){
 							self.block("tree-unshift");
-							
-							var result =  origFuncs.unshift.apply(childField, arguments);
-							this.rebuildTree(row);
-							
+
+							result = Array.prototype.unshift.apply(childField, arguments);
+							self.rebuildTree(row);
+
 							self.unblock("tree-unshift");
 						}
-						
+
 						return result;
 					}
 				});
-				
-				origFuncs.shift = childField.shift;
-				
+
 				Object.defineProperty(childField, "shift", {
 					enumerable: false,
 					configurable: true,
-					value: () => {
+					value: function(){
+						var result;
+
 						if(!self.blocked){
 							self.block("tree-shift");
-							
-							var result =  origFuncs.shift.call(childField);
-							this.rebuildTree(row);
-							
+
+							result = Array.prototype.shift.call(childField);
+							self.rebuildTree(row);
+
 							self.unblock("tree-shift");
 						}
-						
+
 						return result;
 					}
 				});
-				
-				origFuncs.pop = childField.pop;
-				
+
 				Object.defineProperty(childField, "pop", {
 					enumerable: false,
 					configurable: true,
-					value: () => {
+					value: function(){
+						var result;
+
 						if(!self.blocked){
 							self.block("tree-pop");
-							
-							var result =  origFuncs.pop.call(childField);
-							this.rebuildTree(row);
-							
+
+							result = Array.prototype.pop.call(childField);
+							self.rebuildTree(row);
+
 							self.unblock("tree-pop");
 						}
-						
+
 						return result;
 					}
 				});
-				
-				origFuncs.splice = childField.splice;
-				
+
 				Object.defineProperty(childField, "splice", {
 					enumerable: false,
 					configurable: true,
-					value: () => {
+					value: function(){
+						var result;
+
 						if(!self.blocked){
 							self.block("tree-splice");
-							
-							var result =  origFuncs.splice.apply(childField, arguments);
-							this.rebuildTree(row);
-							
+
+							result = Array.prototype.splice.apply(childField, arguments);
+							self.rebuildTree(row);
+
 							self.unblock("tree-splice");
 						}
-						
+
 						return result;
 					}
 				});
@@ -24628,10 +24819,26 @@
 				component.modules.resize.handleEl.style.height = height;
 			}
 		}
+
+		getResizingClientX(e){
+			if (typeof e.clientX !== "undefined") return e.clientX;
+
+			const touch = this.table.options.resizableColumnGuide
+				? e.changedTouches?.[0]
+				: e.touches?.[0];
+
+			return touch?.clientX;
+		}
 		
 		resize(e, column){
-			var x = typeof e.clientX === "undefined" ? e.touches[0].clientX : e.clientX,
-			startDiff = x - this.startX,
+			var x = this.getResizingClientX(e);
+
+			if (typeof x !== "number" || !isFinite(x)) {
+				console.warn("ResizeColumns: could not resolve pointer X from event", e);
+				return;
+			}
+
+			var startDiff = x - this.startX,
 			moveDiff = x - this.latestX,
 			blockedBefore, blockedAfter;
 
@@ -25742,7 +25949,9 @@
 				this.lastClickedRow = row;
 			}else {
 				this.deselectRows(undefined, true);
-				this.selectRows(row);
+				if (this.selectedRows.length === 1 && this.isRowSelected(row)) ; else {
+					this.selectRows(row);
+				}
 				this.lastClickedRow = row;
 			}
 		}
@@ -26709,6 +26918,7 @@
 			this.registerTableOption("selectableRangeClearCells", false); //allow clearing of active range
 			this.registerTableOption("selectableRangeClearCellsValue", undefined); //value for cleared active range
 			this.registerTableOption("selectableRangeAutoFocus", true); //focus on a cell after resetRanges
+			this.registerTableOption("selectableRangeInitializeDefault", true); //initializes default range on cell [0,0]
 			this.registerTableOption("selectableRangeBlurEditOnNavigate", undefined); //prevent editing on navigation
 			
 			this.registerTableFunction("getRangesData", this.getRangesData.bind(this));
@@ -26765,7 +26975,7 @@
 			
 			this.table.rowManager.element.addEventListener("keydown", this.keyDownEvent);
 			
-			this.resetRanges();
+			this.setDefaultRange();
 			
 			this.table.rowManager.element.appendChild(this.overlay);
 			this.table.columnManager.element.setAttribute("tabindex", 0);
@@ -26800,7 +27010,7 @@
 			this.subscribe("scroll-horizontal", this.layoutChange.bind(this));
 			
 			this.subscribe("data-destroy", this.tableDestroyed.bind(this));
-			this.subscribe("data-processed", this.resetRanges.bind(this));
+			this.subscribe("data-processed", this.setDefaultRange.bind(this));
 			
 			this.subscribe("table-layout", this.layoutElement.bind(this));
 			this.subscribe("table-redraw", this.redraw.bind(this));
@@ -26917,9 +27127,15 @@
 					if (this.table.modules.edit && this.table.modules.edit.currentCell) {
 						return;
 					}
-					
-					this.table.modules.edit.editCell(this.getActiveCell());
-					
+
+					var activeCell = this.getActiveCell();
+					// no range is selected
+					if(!activeCell) {
+						return;
+					}
+
+					this.table.modules.edit.editCell(activeCell);
+
 					e.preventDefault();
 				}
 				
@@ -27449,7 +27665,7 @@
 		redraw(force) {
 			if (force) {
 				this.selecting = 'cell';
-				this.resetRanges();
+				this.setDefaultRange();
 				this.layoutElement();
 			}
 		}
@@ -27564,6 +27780,7 @@
 		
 		
 		getActiveCell() {
+			if(!this.activeRange) return;
 			return this.getCell(this.activeRange.start.row, this.activeRange.start.col);
 		}
 		
@@ -27598,28 +27815,41 @@
 			
 			return range;
 		}
-		
-		resetRanges() {
+
+		createDefaultRange() {
 			var range, cell, visibleCells;
-			
-			this.ranges.forEach((range) => range.destroy());
-			this.ranges = [];
-			
 			range = this.addRange();
-			
-			if(this.table.rowManager.activeRows.length){
+
+			if(this.table.rowManager.activeRows.length) {
 				visibleCells = this.table.rowManager.activeRows[0].cells.filter((cell) => cell.column.visible);
 				cell = visibleCells[this.rowHeader ? 1 : 0];
 
-				if(cell){
+				if (cell) {
 					range.setBounds(cell);
-					if(this.options("selectableRangeAutoFocus")){
+					if (this.options("selectableRangeAutoFocus")) {
 						this.initializeFocus(cell);
 					}
 				}
 			}
-			
+
 			return range;
+		}
+
+		clearRanges() {
+			this.ranges.forEach((range) => range.destroy());
+			this.ranges = [];
+		}
+
+		setDefaultRange() {
+			this.clearRanges();
+			if(this.options("selectableRangeInitializeDefault")) {
+				this.createDefaultRange();
+			}
+		}
+
+		resetRanges() {
+			this.clearRanges();
+			return this.createDefaultRange();
 		}
 		
 		tableDestroyed(){
@@ -27734,6 +27964,8 @@
 			if(!DT.isDateTime(a)){
 				if(format === "iso"){
 					a = DT.fromISO(String(a));
+				}else if(format === "x"){
+					a = DT.fromMillis(a);
 				}else {
 					a = DT.fromFormat(String(a), format);
 				}
@@ -27742,6 +27974,8 @@
 			if(!DT.isDateTime(b)){
 				if(format === "iso"){
 					b = DT.fromISO(String(b));
+				}else if(format === "x"){
+					b = DT.fromMillis(b);
 				}else {
 					b = DT.fromFormat(String(b), format);
 				}
@@ -28260,7 +28494,7 @@
 							break;
 						
 						default:
-							if(!isNaN(value) && value !== ""){
+							if(!isNaN(Number(value)) && value !== ""){
 								sorter = "number";
 							}else {
 								if(value.match(/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+$/i)){

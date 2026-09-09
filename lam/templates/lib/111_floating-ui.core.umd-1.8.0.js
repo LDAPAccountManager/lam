@@ -98,12 +98,12 @@
     return oppositeSideMap[side] + placement.slice(side.length);
   }
   function expandPaddingObject(padding) {
+    var _padding$top, _padding$right, _padding$bottom, _padding$left;
     return {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      ...padding
+      top: (_padding$top = padding.top) != null ? _padding$top : 0,
+      right: (_padding$right = padding.right) != null ? _padding$right : 0,
+      bottom: (_padding$bottom = padding.bottom) != null ? _padding$bottom : 0,
+      left: (_padding$left = padding.left) != null ? _padding$left : 0
     };
   }
   function getPaddingObject(padding) {
@@ -178,13 +178,9 @@
           y: reference.y
         };
     }
-    switch (getAlignment(placement)) {
-      case 'start':
-        coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
-        break;
-      case 'end':
-        coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
-        break;
+    const alignment = getAlignment(placement);
+    if (alignment) {
+      coords[alignmentAxis] += commonAlign * (alignment === 'end' ? 1 : -1) * (rtl && isVertical ? -1 : 1);
     }
     return coords;
   }
@@ -233,10 +229,7 @@
       height: rects.floating.height
     } : rects.reference;
     const offsetParent = await (platform.getOffsetParent == null ? void 0 : platform.getOffsetParent(elements.floating));
-    const offsetScale = (await (platform.isElement == null ? void 0 : platform.isElement(offsetParent))) ? (await (platform.getScale == null ? void 0 : platform.getScale(offsetParent))) || {
-      x: 1,
-      y: 1
-    } : {
+    const offsetScale = (await (platform.isElement == null ? void 0 : platform.isElement(offsetParent))) && (await (platform.getScale == null ? void 0 : platform.getScale(offsetParent))) || {
       x: 1,
       y: 1
     };
@@ -409,17 +402,16 @@
 
       // Make sure the arrow doesn't overflow the floating element if the center
       // point is outside the floating element's bounds.
-      const min$1 = minPadding;
       const max = clientSize - arrowDimensions[length] - maxPadding;
       const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
-      const offset = clamp(min$1, center, max);
+      const offset = clamp(minPadding, center, max);
 
       // If the reference is small enough that the arrow's padding causes it to
       // to point to nothing for an aligned placement, adjust the offset of the
       // floating element itself. To ensure `shift()` continues to take action,
       // a single reset is performed when this is true.
-      const shouldAddOffset = !middlewareData.arrow && getAlignment(placement) != null && center !== offset && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
-      const alignmentOffset = shouldAddOffset ? center < min$1 ? center - min$1 : center - max : 0;
+      const shouldAddOffset = !middlewareData.arrow && getAlignment(placement) != null && center !== offset && rects.reference[length] / 2 - (center < minPadding ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+      const alignmentOffset = shouldAddOffset ? center < minPadding ? center - minPadding : center - max : 0;
       return {
         [axis]: coords[axis] + alignmentOffset,
         data: {
@@ -473,13 +465,11 @@
           ...detectOverflowOptions
         } = evaluate(options, state);
         const placements$1 = alignment !== undefined || allowedPlacements === placements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
-        const overflow = await platform.detectOverflow(state, detectOverflowOptions);
         const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
         const currentPlacement = placements$1[currentIndex];
         if (currentPlacement == null) {
           return {};
         }
-        const alignmentSides = getAlignmentSides(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
 
         // Make `computeCoords` start from the right place.
         if (placement !== currentPlacement) {
@@ -489,6 +479,8 @@
             }
           };
         }
+        const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+        const alignmentSides = getAlignmentSides(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
         const currentOverflows = [overflow[getSide(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
         const allOverflows = [...(((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || []), {
           placement: currentPlacement,
@@ -795,12 +787,19 @@
           y
         } = evaluate(options, state);
         const nativeClientRects = Array.from((await (platform.getClientRects == null ? void 0 : platform.getClientRects(elements.reference))) || []);
+
+        // No rects (e.g. a hidden or detached reference, or a collapsed range) —
+        // keep the existing reference rect rather than resetting to an invalid
+        // one with non-finite values.
+        if (!nativeClientRects.length) {
+          return {};
+        }
         const clientRects = getRectsByLine(nativeClientRects);
         const fallback = rectToClientRect(getBoundingRect(nativeClientRects));
         const paddingObject = getPaddingObject(padding);
         function getBoundingClientRect() {
           // There are two rects and they are disjoined.
-          if (clientRects.length === 2 && clientRects[0].left > clientRects[1].right && x != null && y != null) {
+          if (clientRects.length === 2 && (clientRects[0].left > clientRects[1].right || clientRects[1].left > clientRects[0].right) && x != null && y != null) {
             // Find the first rect in which the point is fully inside.
             return clientRects.find(rect => x > rect.left - paddingObject.left && x < rect.right + paddingObject.right && y > rect.top - paddingObject.top && y < rect.bottom + paddingObject.bottom) || fallback;
           }
@@ -815,18 +814,12 @@
               const bottom = lastRect.bottom;
               const left = isTop ? firstRect.left : lastRect.left;
               const right = isTop ? firstRect.right : lastRect.right;
-              const width = right - left;
-              const height = bottom - top;
-              return {
-                top,
-                bottom,
-                left,
-                right,
-                width,
-                height,
+              return rectToClientRect({
                 x: left,
-                y: top
-              };
+                y: top,
+                width: right - left,
+                height: bottom - top
+              });
             }
             const isLeftSide = getSide(placement) === 'left';
             const maxRight = max(...clientRects.map(rect => rect.right));
@@ -834,20 +827,12 @@
             const measureRects = clientRects.filter(rect => isLeftSide ? rect.left === minLeft : rect.right === maxRight);
             const top = measureRects[0].top;
             const bottom = measureRects[measureRects.length - 1].bottom;
-            const left = minLeft;
-            const right = maxRight;
-            const width = right - left;
-            const height = bottom - top;
-            return {
-              top,
-              bottom,
-              left,
-              right,
-              width,
-              height,
-              x: left,
-              y: top
-            };
+            return rectToClientRect({
+              x: minLeft,
+              y: top,
+              width: maxRight - minLeft,
+              height: bottom - top
+            });
           }
           return fallback;
         }
@@ -997,23 +982,16 @@
           y
         };
         const overflow = await platform.detectOverflow(state, detectOverflowOptions);
-        const crossAxis = getSideAxis(getSide(placement));
+        const crossAxis = getSideAxis(placement);
         const mainAxis = getOppositeAxis(crossAxis);
         let mainAxisCoord = coords[mainAxis];
         let crossAxisCoord = coords[crossAxis];
+        const clampCoord = (axis, coord) => clamp(coord + overflow[axis === 'y' ? 'top' : 'left'], coord, coord - overflow[axis === 'y' ? 'bottom' : 'right']);
         if (checkMainAxis) {
-          const minSide = mainAxis === 'y' ? 'top' : 'left';
-          const maxSide = mainAxis === 'y' ? 'bottom' : 'right';
-          const min = mainAxisCoord + overflow[minSide];
-          const max = mainAxisCoord - overflow[maxSide];
-          mainAxisCoord = clamp(min, mainAxisCoord, max);
+          mainAxisCoord = clampCoord(mainAxis, mainAxisCoord);
         }
         if (checkCrossAxis) {
-          const minSide = crossAxis === 'y' ? 'top' : 'left';
-          const maxSide = crossAxis === 'y' ? 'bottom' : 'right';
-          const min = crossAxisCoord + overflow[minSide];
-          const max = crossAxisCoord - overflow[maxSide];
-          crossAxisCoord = clamp(min, crossAxisCoord, max);
+          crossAxisCoord = clampCoord(crossAxis, crossAxisCoord);
         }
         const limitedCoords = limiter.fn({
           ...state,
@@ -1044,6 +1022,7 @@
     return {
       options,
       fn(state) {
+        var _rawOffset$mainAxis, _rawOffset$crossAxis;
         const {
           x,
           y,
@@ -1069,9 +1048,8 @@
           mainAxis: rawOffset,
           crossAxis: 0
         } : {
-          mainAxis: 0,
-          crossAxis: 0,
-          ...rawOffset
+          mainAxis: (_rawOffset$mainAxis = rawOffset.mainAxis) != null ? _rawOffset$mainAxis : 0,
+          crossAxis: (_rawOffset$crossAxis = rawOffset.crossAxis) != null ? _rawOffset$crossAxis : 0
         };
         if (checkMainAxis) {
           const len = mainAxis === 'y' ? 'height' : 'width';
@@ -1103,6 +1081,12 @@
     };
   };
 
+  // Method syntax keeps callback parameters bivariant, but expressing the
+  // explicit `| undefined` required by `exactOptionalPropertyTypes` needs
+  // property syntax, which is contravariant under `strictFunctionTypes`.
+  // Extracting the function from a method position restores that bivariance so
+  // consumers can still assign callbacks with narrower parameter types.
+
   /**
    * Provides data that allows you to change the size of the floating element —
    * for instance, prevent it from overflowing the clipping boundary or match the
@@ -1117,7 +1101,6 @@
       name: 'size',
       options,
       async fn(state) {
-        var _state$middlewareData, _state$middlewareData2;
         const {
           placement,
           rects,
@@ -1149,24 +1132,21 @@
         const maximumClippingWidth = width - overflow.left - overflow.right;
         const overflowAvailableHeight = min(height - overflow[heightSide], maximumClippingHeight);
         const overflowAvailableWidth = min(width - overflow[widthSide], maximumClippingWidth);
-        const noShift = !state.middlewareData.shift;
+        const shiftData = state.middlewareData.shift;
+        const noShift = !shiftData;
         let availableHeight = overflowAvailableHeight;
         let availableWidth = overflowAvailableWidth;
-        if ((_state$middlewareData = state.middlewareData.shift) != null && _state$middlewareData.enabled.x) {
+        if (shiftData != null && shiftData.enabled.x) {
           availableWidth = maximumClippingWidth;
         }
-        if ((_state$middlewareData2 = state.middlewareData.shift) != null && _state$middlewareData2.enabled.y) {
+        if (shiftData != null && shiftData.enabled.y) {
           availableHeight = maximumClippingHeight;
         }
         if (noShift && !alignment) {
-          const xMin = max(overflow.left, 0);
-          const xMax = max(overflow.right, 0);
-          const yMin = max(overflow.top, 0);
-          const yMax = max(overflow.bottom, 0);
           if (isYAxis) {
-            availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max(overflow.left, overflow.right));
+            availableWidth = width - 2 * max(overflow.left, overflow.right);
           } else {
-            availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max(overflow.top, overflow.bottom));
+            availableHeight = height - 2 * max(overflow.top, overflow.bottom);
           }
         }
         await apply({

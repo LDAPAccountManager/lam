@@ -1,17 +1,27 @@
 "use strict";
 
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _wrapNativeSuper(t) { var r = "function" == typeof Map ? new Map() : void 0; return _wrapNativeSuper = function _wrapNativeSuper(t) { if (null === t || !_isNativeFunction(t)) return t; if ("function" != typeof t) throw new TypeError("Super expression must either be null or a function"); if (void 0 !== r) { if (r.has(t)) return r.get(t); r.set(t, Wrapper); } function Wrapper() { return _construct(t, arguments, _getPrototypeOf(this).constructor); } return Wrapper.prototype = Object.create(t.prototype, { constructor: { value: Wrapper, enumerable: !1, writable: !0, configurable: !0 } }), _setPrototypeOf(Wrapper, t); }, _wrapNativeSuper(t); }
+function _construct(t, e, r) { if (_isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments); var o = [null]; o.push.apply(o, e); var p = new (t.bind.apply(t, o))(); return r && _setPrototypeOf(p, r.prototype), p; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _isNativeFunction(t) { try { return -1 !== Function.toString.call(t).indexOf("[native code]"); } catch (n) { return "function" == typeof t; } }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
 (function () {
   'use strict';
 
@@ -222,6 +232,19 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     }
     return startingPoints;
   }
+  var UserFacingError = /*#__PURE__*/function (_Error) {
+    function UserFacingError(message) {
+      var _this;
+      _classCallCheck(this, UserFacingError);
+      _this = _callSuper(this, UserFacingError, [message]);
+      _this.name = "UserFacingError";
+      // no underlying error; this is for API compatibility only
+      _this.rawError = _this;
+      return _this;
+    }
+    _inherits(UserFacingError, _Error);
+    return _createClass(UserFacingError);
+  }( /*#__PURE__*/_wrapNativeSuper(Error));
   function decodeBase64Puzzle(base64Puzzle) {
     var parts = base64Puzzle.split(".");
     var puzzle = parts[1];
@@ -262,6 +285,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           var $Try_1_Catch = function $Try_1_Catch(e) {
             try {
               {
+                if (e instanceof UserFacingError) throw e;
                 console.error("[FRC Fetch]:", e);
                 var err;
                 err = new Error("".concat(lang.text_fetch_error, " <a class=\"frc-err-url\" href=\"").concat(urls[i], "\">").concat(urls[i], "</a>"));
@@ -275,7 +299,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           try {
             var response;
             return Promise.resolve(fetchAndRetryWithBackoff(urls[i] + "?sitekey=" + siteKey, {
-              headers: [["x-frc-client", "js-0.9.19"]],
+              headers: [["x-frc-client", "js-0.9.20"]],
               mode: "cors"
             }, 2)).then(function ($await_7) {
               try {
@@ -298,7 +322,10 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
                   var $Try_2_Post = function () {
                     try {
                       if (_json && _json.errors && _json.errors[0] === "endpoint_not_enabled") {
-                        throw Error("Endpoint not allowed (".concat(response.status, ")"));
+                        throw new UserFacingError("Endpoint not allowed (".concat(response.status, ")"));
+                      }
+                      if (_json && _json.errors && _json.errors[0] === "account_usage_limit_reached") {
+                        throw new UserFacingError("Usage limit reached");
                       }
                       if (i === urls.length - 1) {
                         throw Error("Response status ".concat(response.status, " ").concat(response.statusText, " ").concat(_json ? _json.errors : ""));
@@ -1016,7 +1043,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     return _createClass(WorkerGroup, [{
       key: "init",
       value: function init() {
-        var _this = this;
+        var _this2 = this;
         this.terminateWorkers();
         this.progress = 0;
         this.totalHashes = 0;
@@ -1032,62 +1059,62 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           type: "text/javascript"
         });
         var _loop = function _loop(_i4) {
-          _this.workers[_i4] = new Worker(URL.createObjectURL(workerBlob));
-          _this.workers[_i4].onerror = function (e) {
-            return _this.errorCallback(e);
+          _this2.workers[_i4] = new Worker(URL.createObjectURL(workerBlob));
+          _this2.workers[_i4].onerror = function (e) {
+            return _this2.errorCallback(e);
           };
-          _this.workers[_i4].onmessage = function (e) {
+          _this2.workers[_i4].onmessage = function (e) {
             var data = e.data;
             if (!data) return;
             if (data.type === "ready") {
-              _this.readyCount++;
-              _this.solverType = data.solver;
+              _this2.readyCount++;
+              _this2.solverType = data.solver;
               // We are ready, when all workers are ready
-              if (_this.readyCount == _this.workers.length) {
+              if (_this2.readyCount == _this2.workers.length) {
                 setReady();
-                _this.readyCallback();
+                _this2.readyCallback();
               }
             } else if (data.type === "started") {
-              _this.startCount++;
+              _this2.startCount++;
               // We started, when the first worker starts working
-              if (_this.startCount == 1) {
-                _this.startTime = Date.now();
-                _this.startedCallback();
+              if (_this2.startCount == 1) {
+                _this2.startTime = Date.now();
+                _this2.startedCallback();
               }
             } else if (data.type === "done") {
-              if (data.puzzleNumber !== _this.puzzleNumber) return; // solution belongs to a previous puzzle
-              if (_this.puzzleIndex < _this.puzzleSolverInputs.length) {
-                _this.workers[_i4].postMessage({
+              if (data.puzzleNumber !== _this2.puzzleNumber) return; // solution belongs to a previous puzzle
+              if (_this2.puzzleIndex < _this2.puzzleSolverInputs.length) {
+                _this2.workers[_i4].postMessage({
                   type: "start",
-                  puzzleSolverInput: _this.puzzleSolverInputs[_this.puzzleIndex],
-                  threshold: _this.threshold,
-                  puzzleIndex: _this.puzzleIndex,
-                  puzzleNumber: _this.puzzleNumber
+                  puzzleSolverInput: _this2.puzzleSolverInputs[_this2.puzzleIndex],
+                  threshold: _this2.threshold,
+                  puzzleIndex: _this2.puzzleIndex,
+                  puzzleNumber: _this2.puzzleNumber
                 });
-                _this.puzzleIndex++;
+                _this2.puzzleIndex++;
               }
-              _this.progress++;
-              _this.totalHashes += data.h;
-              _this.progressCallback({
-                n: _this.numPuzzles,
-                h: _this.totalHashes,
-                t: (Date.now() - _this.startTime) / 1000,
-                i: _this.progress
+              _this2.progress++;
+              _this2.totalHashes += data.h;
+              _this2.progressCallback({
+                n: _this2.numPuzzles,
+                h: _this2.totalHashes,
+                t: (Date.now() - _this2.startTime) / 1000,
+                i: _this2.progress
               });
-              _this.solutionBuffer.set(data.solution, data.puzzleIndex * 8);
+              _this2.solutionBuffer.set(data.solution, data.puzzleIndex * 8);
               // We are done, when all puzzles have been solved
-              if (_this.progress == _this.numPuzzles) {
-                var totalTime = (Date.now() - _this.startTime) / 1000;
-                _this.doneCallback({
-                  solution: _this.solutionBuffer,
-                  h: _this.totalHashes,
+              if (_this2.progress == _this2.numPuzzles) {
+                var totalTime = (Date.now() - _this2.startTime) / 1000;
+                _this2.doneCallback({
+                  solution: _this2.solutionBuffer,
+                  h: _this2.totalHashes,
                   t: totalTime,
-                  diagnostics: createDiagnosticsBuffer(_this.solverType, totalTime),
-                  solver: _this.solverType
+                  diagnostics: createDiagnosticsBuffer(_this2.solverType, totalTime),
+                  solver: _this2.solverType
                 });
               }
             } else if (data.type === "error") {
-              _this.errorCallback(data);
+              _this2.errorCallback(data);
             }
           };
         };
@@ -1203,7 +1230,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     return _createClass(WidgetInstance, [{
       key: "init",
       value: function init(forceStart) {
-        var _this2 = this;
+        var _this3 = this;
         if (this.hasBeenDestroyed) {
           console.error("FriendlyCaptcha widget has been destroyed using destroy(), it can not be used anymore.");
           return;
@@ -1215,7 +1242,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           var form = findParentFormElement(this.e);
           if (form) {
             executeOnceOnFocusInEvent(form, function () {
-              return _this2.start();
+              return _this3.start();
             });
           } else {
             console.log("FriendlyCaptcha div seems not to be contained in a form, autostart will not work");
@@ -1259,17 +1286,17 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     }, {
       key: "makeButtonStart",
       value: function makeButtonStart() {
-        var _this3 = this;
+        var _this4 = this;
         var b = this.e.querySelector("button");
         if (b) {
           b.addEventListener("click", function (e) {
-            return _this3.start();
+            return _this4.start();
           }, {
             once: true,
             passive: true
           });
           b.addEventListener("touchstart", function (e) {
-            return _this3.start();
+            return _this4.start();
           }, {
             once: true,
             passive: true
@@ -1291,29 +1318,29 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     }, {
       key: "initWorkerGroup",
       value: function initWorkerGroup() {
-        var _this4 = this;
+        var _this5 = this;
         this.workerGroup.progressCallback = function (progress) {
-          updateProgressBar(_this4.e, progress);
+          updateProgressBar(_this5.e, progress);
         };
         this.workerGroup.readyCallback = function () {
-          _this4.e.innerHTML = getReadyHTML(_this4.opts.solutionFieldName, _this4.lang);
-          _this4.makeButtonStart();
-          _this4.opts.readyCallback();
+          _this5.e.innerHTML = getReadyHTML(_this5.opts.solutionFieldName, _this5.lang);
+          _this5.makeButtonStart();
+          _this5.opts.readyCallback();
         };
         this.workerGroup.startedCallback = function () {
-          _this4.e.innerHTML = getRunningHTML(_this4.opts.solutionFieldName, _this4.lang);
-          _this4.opts.startedCallback();
+          _this5.e.innerHTML = getRunningHTML(_this5.opts.solutionFieldName, _this5.lang);
+          _this5.opts.startedCallback();
         };
         this.workerGroup.doneCallback = function (data) {
-          var solutionPayload = _this4.handleDone(data);
-          _this4.opts.doneCallback(solutionPayload);
-          var callback = _this4.e.dataset["callback"];
+          var solutionPayload = _this5.handleDone(data);
+          _this5.opts.doneCallback(solutionPayload);
+          var callback = _this5.e.dataset["callback"];
           if (callback) {
             window[callback](solutionPayload);
           }
         };
         this.workerGroup.errorCallback = function (e) {
-          _this4.onWorkerError(e);
+          _this5.onWorkerError(e);
         };
         this.workerGroup.init();
         this.workerGroup.setupSolver(this.opts.forceJSFallback);
@@ -1399,12 +1426,12 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           try {
             this.e.innerHTML = getFetchingHTML(this.opts.solutionFieldName, this.lang);
             return Promise.resolve(getPuzzle(this.opts.puzzleEndpoint, sitekey, this.lang)).then(function ($await_13) {
-              var _this5 = this;
+              var _this6 = this;
               try {
                 this.puzzle = decodeBase64Puzzle($await_13);
                 if (this.expiryTimeout) clearTimeout(this.expiryTimeout);
                 this.expiryTimeout = setTimeout(function () {
-                  return _this5.expire();
+                  return _this6.expire();
                 }, this.puzzle.expiry - 30000); // 30s grace
                 return $Try_3_Post();
               } catch ($boundEx) {
