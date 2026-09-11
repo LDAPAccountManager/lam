@@ -2,8 +2,9 @@
 
 set -e
 
-wget -q http://localhost/lam/templates/login.php
+service apache2 start
 
+wget -q http://localhost/lam/templates/login.php
 grep -v -i "ldap" login.php > /dev/null
 
 set +e
