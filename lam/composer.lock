@@ -5689,16 +5689,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-pdf",
-            "version": "8.73.6",
+            "version": "8.75.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-pdf.git",
-                "reference": "5a1dcccbb0d34d0fe93eea956a08e3bc913135b1"
+                "reference": "96eedde8634e8ff70d0857eb3c0136d7d037de85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf/zipball/5a1dcccbb0d34d0fe93eea956a08e3bc913135b1",
-                "reference": "5a1dcccbb0d34d0fe93eea956a08e3bc913135b1",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf/zipball/96eedde8634e8ff70d0857eb3c0136d7d037de85",
+                "reference": "96eedde8634e8ff70d0857eb3c0136d7d037de85",
                 "shasum": ""
             },
             "require": {
@@ -5720,7 +5720,7 @@
                 "tecnickcom/tc-lib-pdf-graph": "^2.17",
                 "tecnickcom/tc-lib-pdf-image": "^3.14",
                 "tecnickcom/tc-lib-pdf-page": "^4.16",
-                "tecnickcom/tc-lib-pdf-parser": "^3.15",
+                "tecnickcom/tc-lib-pdf-parser": "^3.16",
                 "tecnickcom/tc-lib-pdf-sign": "^2.0",
                 "tecnickcom/tc-lib-unicode": "^3.0",
                 "tecnickcom/tc-lib-unicode-data": "^3.0"
@@ -5770,7 +5770,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-07T09:51:52+00:00"
+            "time": "2026-09-14T14:04:06+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-pdf-encrypt",
@@ -6168,16 +6168,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-pdf-parser",
-            "version": "3.15.2",
+            "version": "3.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-pdf-parser.git",
-                "reference": "812608b1e534747f36d8ab907c07f5eb53bc38a7"
+                "reference": "3a3ba69111e8b3a701fb96af21884f169a2de34e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-parser/zipball/812608b1e534747f36d8ab907c07f5eb53bc38a7",
-                "reference": "812608b1e534747f36d8ab907c07f5eb53bc38a7",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-parser/zipball/3a3ba69111e8b3a701fb96af21884f169a2de34e",
+                "reference": "3a3ba69111e8b3a701fb96af21884f169a2de34e",
                 "shasum": ""
             },
             "require": {
@@ -6225,7 +6225,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-05T07:37:01+00:00"
+            "time": "2026-09-13T09:23:18+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-pdf-sign",
@@ -6899,5 +6899,5 @@
     "platform-overrides": {
         "php": "8.2"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
