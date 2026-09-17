@@ -86,7 +86,7 @@ class PdfStructTest extends TestCase {
 	 * @return string file name
 	 */
 	private function getTestFileName($file): string {
-		return dirname(__DIR__) . '/resources/pdf/' . $file;
+		return __DIR__ . '/../resources/pdf/' . $file;
 	}
 
 	/**
