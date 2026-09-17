@@ -155,7 +155,7 @@ final class AAControlsExtension extends Extension
             ++$idx;
         }
         if ($seq->has($idx, Element::TYPE_BOOLEAN)) {
-            $permit_unspecified = $seq->at($idx++)
+            $permit_unspecified = $seq->at($idx)
                 ->asBoolean()
                 ->value();
         }

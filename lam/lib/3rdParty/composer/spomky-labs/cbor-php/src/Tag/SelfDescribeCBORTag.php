@@ -15,6 +15,13 @@ use CBOR\Tag;
  * a high tag number to minimize collision with other applications.
  *
  * @see https://datatracker.ietf.org/doc/html/rfc8949#section-3.4.6
+ *
+ * @deprecated since 3.3.5, use {@see CBORTag} instead. Will be removed in 4.0.0.
+ *
+ * Both classes declare tag 55799, but a tag manager can only register one class per tag number.
+ * `CBORTag` is the one registered by the default decoder, so a decoded self-described document is
+ * always a `CBORTag`, never a `SelfDescribeCBORTag`. `CBORTag` also implements `Normalizable`.
+ * `getCBORObject()` has no equivalent on `CBORTag`; use the inherited `getValue()`, which it duplicates.
  */
 final class SelfDescribeCBORTag extends Tag
 {

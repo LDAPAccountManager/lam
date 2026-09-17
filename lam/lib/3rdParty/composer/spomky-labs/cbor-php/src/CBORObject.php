@@ -70,6 +70,12 @@ interface CBORObject extends Stringable
 
     public const TAG_BIG_FLOAT = 5;
 
+    public const TAG_COSE_ENCRYPT0 = 16;
+
+    public const TAG_COSE_MAC0 = 17;
+
+    public const TAG_COSE_SIGN1 = 18;
+
     public const TAG_ENCODED_BASE64_URL = 21;
 
     public const TAG_ENCODED_BASE64 = 22;
@@ -78,13 +84,123 @@ interface CBORObject extends Stringable
 
     public const TAG_ENCODED_CBOR = 24;
 
+    public const TAG_STRING_REFERENCE = 25;
+
+    public const TAG_PERL_OBJECT = 26;
+
+    public const TAG_LANGUAGE_INDEPENDENT_OBJECT = 27;
+
+    public const TAG_SHAREABLE = 28;
+
+    public const TAG_SHARED_REFERENCE = 29;
+
+    public const TAG_RATIONAL_NUMBER = 30;
+
     public const TAG_URI = 32;
 
     public const TAG_BASE64_URL = 33;
 
     public const TAG_BASE64 = 34;
 
+    public const TAG_REGULAR_EXPRESSION = 35;
+
     public const TAG_MIME = 36;
+
+    public const TAG_UUID = 37;
+
+    public const TAG_LANGUAGE_TAGGED_STRING = 38;
+
+    public const TAG_IDENTIFIER = 39;
+
+    public const TAG_ROW_MAJOR_MULTI_DIMENSIONAL_ARRAY = 40;
+
+    public const TAG_HOMOGENEOUS_ARRAY = 41;
+
+    public const TAG_IPLD_CONTENT_IDENTIFIER = 42;
+
+    public const TAG_IPV4 = 52;
+
+    public const TAG_IPV6 = 54;
+
+    public const TAG_CWT = 61;
+
+    public const TAG_ENCODED_CBOR_SEQUENCE = 63;
+
+    public const TAG_TYPED_ARRAY_UINT8 = 64;
+
+    public const TAG_TYPED_ARRAY_UINT16_BE = 65;
+
+    public const TAG_TYPED_ARRAY_UINT32_BE = 66;
+
+    public const TAG_TYPED_ARRAY_UINT64_BE = 67;
+
+    public const TAG_TYPED_ARRAY_UINT8_CLAMPED = 68;
+
+    public const TAG_TYPED_ARRAY_UINT16_LE = 69;
+
+    public const TAG_TYPED_ARRAY_UINT32_LE = 70;
+
+    public const TAG_TYPED_ARRAY_UINT64_LE = 71;
+
+    public const TAG_TYPED_ARRAY_SINT8 = 72;
+
+    public const TAG_TYPED_ARRAY_SINT16_BE = 73;
+
+    public const TAG_TYPED_ARRAY_SINT32_BE = 74;
+
+    public const TAG_TYPED_ARRAY_SINT64_BE = 75;
+
+    public const TAG_TYPED_ARRAY_SINT16_LE = 77;
+
+    public const TAG_TYPED_ARRAY_SINT32_LE = 78;
+
+    public const TAG_TYPED_ARRAY_SINT64_LE = 79;
+
+    public const TAG_TYPED_ARRAY_FLOAT16_BE = 80;
+
+    public const TAG_TYPED_ARRAY_FLOAT32_BE = 81;
+
+    public const TAG_TYPED_ARRAY_FLOAT64_BE = 82;
+
+    public const TAG_TYPED_ARRAY_FLOAT128_BE = 83;
+
+    public const TAG_TYPED_ARRAY_FLOAT16_LE = 84;
+
+    public const TAG_TYPED_ARRAY_FLOAT32_LE = 85;
+
+    public const TAG_TYPED_ARRAY_FLOAT64_LE = 86;
+
+    public const TAG_TYPED_ARRAY_FLOAT128_LE = 87;
+
+    public const TAG_COSE_ENCRYPT = 96;
+
+    public const TAG_COSE_MAC = 97;
+
+    public const TAG_COSE_SIGN = 98;
+
+    public const TAG_DATE = 100;
+
+    public const TAG_STRING_REFERENCE_NAMESPACE = 256;
+
+    public const TAG_BINARY_MIME = 257;
+
+    public const TAG_SET = 258;
+
+    public const TAG_EXPLICIT_MAP = 259;
+
+    public const TAG_NETWORK_ADDRESS = 260;
+
+    public const TAG_NETWORK_ADDRESS_PREFIX = 261;
+
+    public const TAG_EXTENDED_TIME = 1001;
+
+    public const TAG_DURATION = 1002;
+
+    public const TAG_PERIOD = 1003;
+
+    public const TAG_DATE_STRING = 1004;
+
+    public const TAG_COLUMN_MAJOR_MULTI_DIMENSIONAL_ARRAY = 1040;
 
     public const TAG_CBOR = 55799;
 

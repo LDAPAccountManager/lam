@@ -10,11 +10,18 @@ use InvalidArgumentException;
 final class OtherObjectManager implements OtherObjectManagerInterface
 {
     /**
+     * @var array<int, class-string<OtherObjectInterface>>
+     */
+    private array $classes = [];
+
+    /**
      * @param  class-string<OtherObjectInterface>[] $classes
      */
-    public function __construct(
-        private array $classes = [],
-    ) {
+    public function __construct(array $classes = [])
+    {
+        foreach ($classes as $class) {
+            $this->add($class);
+        }
     }
 
     /**

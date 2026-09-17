@@ -7,6 +7,8 @@ namespace CBOR;
 use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
+use function count;
+use Countable;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
@@ -16,14 +18,14 @@ use IteratorAggregate;
  * @phpstan-implements IteratorAggregate<int, CBORObject>
  * @final
  */
-class IndefiniteLengthListObject extends AbstractCBORObject implements IteratorAggregate, Normalizable, ArrayAccess
+class IndefiniteLengthListObject extends AbstractCBORObject implements Countable, IteratorAggregate, Normalizable, ArrayAccess
 {
     private const MAJOR_TYPE = self::MAJOR_TYPE_LIST;
 
     private const ADDITIONAL_INFORMATION = self::LENGTH_INDEFINITE;
 
     /**
-     * @var CBORObject[]
+     * @var array<int, CBORObject>
      */
     private array $data = [];
 
@@ -53,7 +55,10 @@ class IndefiniteLengthListObject extends AbstractCBORObject implements IteratorA
     }
 
     /**
-     * @return mixed[]
+     * Items that do not implement Normalizable -- the encoding tags or the "break" simple value, for instance -- have
+     * no native counterpart and are returned as the CBORObject they are.
+     *
+     * @return array<int, mixed>
      */
     public function normalize(): array
     {
@@ -104,6 +109,11 @@ class IndefiniteLengthListObject extends AbstractCBORObject implements IteratorA
         $this->data[$index] = $object;
 
         return $this;
+    }
+
+    public function count(): int
+    {
+        return count($this->data);
     }
 
     /**

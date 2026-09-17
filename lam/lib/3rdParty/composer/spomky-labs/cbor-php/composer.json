@@ -26,7 +26,8 @@
     "require": {
         "php": ">=8.0",
         "ext-mbstring": "*",
-        "brick/math": "^0.9|^0.10|^0.11|^0.12|^0.13|^0.14|^0.15|^0.16|^0.17|^0.18|^0.19|^0.20"
+        "brick/math": "^0.9|^0.10|^0.11|^0.12|^0.13|^0.14|^0.15|^0.16|^0.17|^0.18|^0.19|^0.20|^1.0",
+        "symfony/polyfill-php81": "^1.32"
     },
     "require-dev": {
         "ext-json": "*",
@@ -42,7 +43,7 @@
         }
     },
     "suggest": {
-        "ext-gmp": "GMP or BCMath extensions will drastically improve the library performance",
-        "ext-bcmath": "GMP or BCMath extensions will drastically improve the library performance. BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
+        "ext-gmp": "Strongly recommended when decoding untrusted input: without it, converting the byte string of a Big Number Tag (2 and 3) is quadratic in its length. Also improves the library performance overall",
+        "ext-bcmath": "Improves the library performance when ext-gmp is missing, and is required to handle the Big Float and Decimal Fraction Tags (4 and 5)"
     }
 }

@@ -9,7 +9,9 @@ use Brick\Math\Exception\IntegerOverflowException;
 use Brick\Math\Exception\MathException;
 use InvalidArgumentException;
 use function is_string;
+use function ord;
 use function sprintf;
+use function strlen;
 
 /**
  * @internal
@@ -18,6 +20,21 @@ abstract class Utils
 {
     public static function binToInt(string $value): int
     {
+        // A CBOR head argument is at most 8 bytes and nearly always fits a PHP integer, so build it from the bytes
+        // and keep brick/math for the one case that does not: an argument above PHP_INT_MAX, which wraps negative
+        // here and is handed over below for the range error.
+        $length = strlen($value);
+        if ($length <= 8) {
+            $result = 0;
+            for ($i = 0; $i < $length; ++$i) {
+                $result = ($result << 8) | ord($value[$i]);
+            }
+
+            if ($result >= 0) {
+                return $result;
+            }
+        }
+
         return self::bigIntegerToInt(self::binToBigInteger($value));
     }
 

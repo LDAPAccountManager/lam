@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace Com\Tecnick\Pdf\Parser\Process;
 
-use Com\Tecnick\Pdf\Parser\Exception as PPException;
+use Com\Tecnick\Pdf\Parser\LimitException as PPLimitException;
 
 /**
  * Com\Tecnick\Pdf\Parser\Process\RawObject
@@ -102,6 +102,11 @@ abstract class RawObject
      * Current nesting depth of array and dictionary objects.
      */
     protected int $nesting = 0;
+
+    /**
+     * Maximum nesting depth allowed for array and dictionary objects.
+     */
+    protected int $maxNestingDepth = self::MAX_NESTING_DEPTH;
 
     /**
      * Offset where the data of the most recently tokenized stream begins
@@ -415,12 +420,12 @@ abstract class RawObject
     /**
      * Enter a nested array or dictionary, enforcing the maximum nesting depth.
      *
-     * @throws \Com\Tecnick\Pdf\Parser\Exception
+     * @throws \Com\Tecnick\Pdf\Parser\LimitException
      */
     protected function enterNesting(): void
     {
-        if ($this->nesting >= static::MAX_NESTING_DEPTH) {
-            throw new PPException('Maximum object nesting depth exceeded: ' . static::MAX_NESTING_DEPTH);
+        if ($this->nesting >= $this->maxNestingDepth) {
+            throw new PPLimitException('Maximum object nesting depth exceeded: ' . $this->maxNestingDepth);
         }
 
         ++$this->nesting;

@@ -14,12 +14,24 @@ use CBOR\Tag;
 use CBOR\UnsignedIntegerObject;
 use DateTimeImmutable;
 use DateTimeInterface;
+use function floor;
 use InvalidArgumentException;
-use const STR_PAD_RIGHT;
-use function strlen;
+use function is_infinite;
+use function is_nan;
+use function round;
+use function sprintf;
 
 final class TimestampTag extends Tag implements Normalizable
 {
+    /**
+     * The largest magnitude accepted for a floating point timestamp.
+     *
+     * Beyond that, the instant cannot be represented: the seconds no longer fit a PHP integer, and a double has
+     * long since lost the resolution needed to tell one second from the next anyway. The bound is some 3 x 10^10
+     * years, far outside the range DateTimeImmutable itself supports.
+     */
+    private const MAXIMUM_TIMESTAMP_MAGNITUDE = 1.0e18;
+
     public function __construct(int $additionalInformation, ?string $data, CBORObject $object)
     {
         if (! $object instanceof UnsignedIntegerObject && ! $object instanceof NegativeIntegerObject && ! $object instanceof HalfPrecisionFloatObject && ! $object instanceof SinglePrecisionFloatObject && ! $object instanceof DoublePrecisionFloatObject) {
@@ -49,35 +61,44 @@ final class TimestampTag extends Tag implements Normalizable
     {
         $object = $this->object;
 
-        switch (true) {
-            case $object instanceof UnsignedIntegerObject:
-            case $object instanceof NegativeIntegerObject:
-                $formatted = DateTimeImmutable::createFromFormat('U', $object->normalize());
-
-                break;
-            case $object instanceof HalfPrecisionFloatObject:
-            case $object instanceof SinglePrecisionFloatObject:
-            case $object instanceof DoublePrecisionFloatObject:
-                $value = (string) $object->normalize();
-                $parts = explode('.', $value);
-                if (isset($parts[1])) {
-                    if (strlen($parts[1]) > 6) {
-                        $parts[1] = substr($parts[1], 0, 6);
-                    } else {
-                        $parts[1] = str_pad($parts[1], 6, '0', STR_PAD_RIGHT);
-                    }
-                }
-                $formatted = DateTimeImmutable::createFromFormat('U.u', implode('.', $parts));
-
-                break;
-            default:
-                throw new InvalidArgumentException('Unable to normalize the object');
-        }
+        $formatted = match (true) {
+            $object instanceof UnsignedIntegerObject, $object instanceof NegativeIntegerObject => DateTimeImmutable::createFromFormat('U', $object->normalize()),
+            $object instanceof HalfPrecisionFloatObject, $object instanceof SinglePrecisionFloatObject, $object instanceof DoublePrecisionFloatObject => DateTimeImmutable::createFromFormat('U.u', self::formatFloat($object->normalize())),
+            default => throw new InvalidArgumentException('Unable to normalize the object'),
+        };
 
         if ($formatted === false) {
             throw new InvalidArgumentException('Invalid data. Cannot be converted into a datetime object');
         }
 
         return $formatted;
+    }
+
+    /**
+     * Splits a floating point timestamp into the seconds and microseconds that "U.u" expects.
+     *
+     * The value is decomposed arithmetically rather than printed and cut apart: the decimal representation of a
+     * double depends on the "precision" ini setting, it drops the fractional part of an integral value entirely
+     * -- "U.u" then rejects the result -- and, being the representation of a signed magnitude, it truncates
+     * towards zero where "U.u" needs the seconds floored.
+     */
+    private static function formatFloat(float $timestamp): string
+    {
+        if (is_nan($timestamp) || is_infinite($timestamp)) {
+            throw new InvalidArgumentException('Invalid data. Cannot be converted into a datetime object');
+        }
+        if ($timestamp < -self::MAXIMUM_TIMESTAMP_MAGNITUDE || $timestamp > self::MAXIMUM_TIMESTAMP_MAGNITUDE) {
+            throw new InvalidArgumentException('Invalid data. Cannot be converted into a datetime object');
+        }
+
+        $seconds = (int) floor($timestamp);
+        $microseconds = (int) round(($timestamp - $seconds) * 1000000);
+        // Rounding up from something like x.9999996 carries into the next second.
+        if ($microseconds === 1000000) {
+            ++$seconds;
+            $microseconds = 0;
+        }
+
+        return sprintf('%d.%06d', $seconds, $microseconds);
     }
 }

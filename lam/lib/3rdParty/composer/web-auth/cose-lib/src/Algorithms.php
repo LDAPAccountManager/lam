@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Cose;
 
 use function array_key_exists;
+use Cose\Algorithm\Signature\RSA\RS1;
+use const E_USER_WARNING;
 use InvalidArgumentException;
 use const OPENSSL_ALGO_SHA1;
 use const OPENSSL_ALGO_SHA256;
 use const OPENSSL_ALGO_SHA384;
 use const OPENSSL_ALGO_SHA512;
+use function trigger_error;
 
 /**
  * @see https://www.iana.org/assignments/cose/cose.xhtml#algorithms
@@ -73,6 +76,12 @@ abstract class Algorithms
 
     final public const COSE_ALGORITHM_EDDSA = -8;
 
+    /**
+     * Ed25519 over a SHA-256 (-260) or SHA-512 (-261) digest of the message. These pre-hash variants are not
+     * registered anywhere and are not EdDSA identifiers: the IANA COSE Algorithms registry assigns -260 to WalnutDSA
+     * and -261 to TurboSHAKE128. They are kept for the authenticators that already produce them; new code should use
+     * COSE_ALGORITHM_ED25519 (-19) or COSE_ALGORITHM_ED448 (-53).
+     */
     final public const COSE_ALGORITHM_ED256 = -260;
 
     final public const COSE_ALGORITHM_ED512 = -261;
@@ -155,8 +164,23 @@ abstract class Algorithms
 
     final public const COSE_ALGORITHM_ED448 = -53;
 
+    /**
+     * The digest to hand to openssl_sign() / openssl_verify() for the ECDSA and RSASSA-PKCS1-v1_5 algorithms, and
+     * for those only.
+     *
+     * openssl_verify() called with an OPENSSL_ALGO_* digest implies PKCS #1 v1.5 padding, so PS256, PS384 and PS512
+     * (RSASSA-PSS) are deliberately absent, and so are EdDSA (-8), Ed25519 (-19) and Ed448 (-53), which are one-shot
+     * schemes that hash the message themselves. Verifying with one of those identifiers goes through the matching
+     * Cose\Algorithm\Signature\Signature class instead - Cose\Algorithm\Signature\CertificateSignatureVerifier
+     * does exactly that for a signature made by the key of an X.509 certificate.
+     *
+     * @internal this constant bypasses getOpensslAlgorithmFor() and the acknowledgement it requires for RS1; it will
+     * become private in the next major version
+     * @var array<int, int>
+     */
     final public const COSE_ALGORITHM_MAP = [
         self::COSE_ALGORITHM_ES256 => OPENSSL_ALGO_SHA256,
+        self::COSE_ALGORITHM_ES256K => OPENSSL_ALGO_SHA256,
         self::COSE_ALGORITHM_ES384 => OPENSSL_ALGO_SHA384,
         self::COSE_ALGORITHM_ES512 => OPENSSL_ALGO_SHA512,
         self::COSE_ALGORITHM_ESP256 => OPENSSL_ALGO_SHA256,
@@ -172,6 +196,16 @@ abstract class Algorithms
         self::COSE_ALGORITHM_RS1 => OPENSSL_ALGO_SHA1,
     ];
 
+    /**
+     * The name of the digest each algorithm identifier uses, as hash() spells it.
+     *
+     * The EdDSA identifiers (-8, -19, -53) are absent: they name one-shot signature schemes with no separately
+     * applicable digest.
+     *
+     * @internal this constant bypasses getHashAlgorithmFor() and the acknowledgement it requires for RS1; it will
+     * become private in the next major version
+     * @var array<int, string>
+     */
     final public const COSE_HASH_MAP = [
         self::COSE_ALGORITHM_ES256K => 'sha256',
         self::COSE_ALGORITHM_ES256 => 'sha256',
@@ -193,21 +227,64 @@ abstract class Algorithms
         self::COSE_ALGORITHM_RS1 => 'sha1',
     ];
 
-    public static function getOpensslAlgorithmFor(int $algorithmIdentifier): int
-    {
+    /**
+     * The digest to hand to openssl_sign() / openssl_verify() for an ECDSA or RSASSA-PKCS1-v1_5 identifier.
+     *
+     * @see self::COSE_ALGORITHM_MAP for the identifiers this covers, and for those it deliberately does not
+     *
+     * @param bool $acknowledgeInsecureAlgorithm see Cose\Algorithm\Signature\RSA\RS1: SHA-1 is only handed out
+     * against an explicit acknowledgement, as creating the RS1 algorithm itself is
+     *
+     * @throws InvalidArgumentException when the identifier is not one this map describes
+     */
+    public static function getOpensslAlgorithmFor(
+        int $algorithmIdentifier,
+        bool $acknowledgeInsecureAlgorithm = false
+    ): int {
         if (! array_key_exists($algorithmIdentifier, self::COSE_ALGORITHM_MAP)) {
             throw new InvalidArgumentException('The specified algorithm identifier is not supported');
         }
+        self::checkInsecureAlgorithm($algorithmIdentifier, $acknowledgeInsecureAlgorithm);
 
         return self::COSE_ALGORITHM_MAP[$algorithmIdentifier];
     }
 
-    public static function getHashAlgorithmFor(int $algorithmIdentifier): string
-    {
+    /**
+     * The name of the digest an identifier uses, as hash() spells it.
+     *
+     * @see self::COSE_HASH_MAP for the identifiers this covers, and for those it deliberately does not
+     *
+     * @param bool $acknowledgeInsecureAlgorithm see Cose\Algorithm\Signature\RSA\RS1: SHA-1 is only handed out
+     * against an explicit acknowledgement, as creating the RS1 algorithm itself is
+     *
+     * @throws InvalidArgumentException when the identifier is not one this map describes
+     */
+    public static function getHashAlgorithmFor(
+        int $algorithmIdentifier,
+        bool $acknowledgeInsecureAlgorithm = false
+    ): string {
         if (! array_key_exists($algorithmIdentifier, self::COSE_HASH_MAP)) {
             throw new InvalidArgumentException('The specified algorithm identifier is not supported');
         }
+        self::checkInsecureAlgorithm($algorithmIdentifier, $acknowledgeInsecureAlgorithm);
 
         return self::COSE_HASH_MAP[$algorithmIdentifier];
+    }
+
+    /**
+     * The RS1 class refuses to be created without an acknowledgement, but the two accessors above expose the very
+     * same primitive - SHA-1 with PKCS #1 v1.5 padding - without any object ever being built, and their result is
+     * handed straight to openssl_verify(). The policy therefore has to hold here too, otherwise the operator's
+     * decision not to register RS1 has no effect on the code paths that go through these maps.
+     *
+     * Unlike RS1::__construct(), this fires per verification rather than once at configuration time, which is
+     * precisely what makes an unacknowledged SHA-1 verification visible in the logs.
+     */
+    private static function checkInsecureAlgorithm(int $algorithmIdentifier, bool $acknowledgeInsecureAlgorithm): void
+    {
+        if ($algorithmIdentifier === self::COSE_ALGORITHM_RS1 && ! $acknowledgeInsecureAlgorithm) {
+            // As of v5.0.0, this will throw an InvalidArgumentException instead of warning.
+            trigger_error(RS1::INSECURE_ALGORITHM_MESSAGE, E_USER_WARNING);
+        }
     }
 }

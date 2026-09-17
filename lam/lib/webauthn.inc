@@ -278,7 +278,6 @@ class WebauthnManager {
 		$coseManager->add(new RS512());
 		$coseManager->add(new ES512());
 		$coseManager->add(new PS512());
-		$coseManager->add(new Ed512());
 		$coseManager->add(new RS384());
 		$coseManager->add(new ES384());
 		$coseManager->add(new PS384());
@@ -286,7 +285,6 @@ class WebauthnManager {
 		$coseManager->add(new ES256());
 		$coseManager->add(new ES256K());
 		$coseManager->add(new PS256());
-		$coseManager->add(new Ed256());
 		$coseManager->add(new EdDSA());
 		return $coseManager;
 	}

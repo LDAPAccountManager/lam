@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Cose\Algorithm\Signature\FullySpecified;
 
+use Cose\Algorithm\KeyRestrictionAware;
+use Cose\Algorithm\KeyRestrictionEnforcement;
+use Cose\Algorithm\Signature\OpenSslError;
 use Cose\Algorithm\Signature\Signature;
 use Cose\Key\Key;
 use Cose\Key\OkpKey;
@@ -14,6 +17,7 @@ use function openssl_sign;
 use function openssl_verify;
 use const PHP_VERSION_ID;
 use RuntimeException;
+use Throwable;
 
 /**
  * EdDSA using the Ed448 parameter set of RFC 8032, section 5.2.
@@ -23,8 +27,10 @@ use RuntimeException;
  *
  * @see https://www.rfc-editor.org/rfc/rfc9864.html#section-2.2
  */
-final class Ed448 implements Signature
+final class Ed448 implements Signature, KeyRestrictionAware
 {
+    use KeyRestrictionEnforcement;
+
     public const ID = -53;
 
     /**
@@ -54,7 +60,7 @@ final class Ed448 implements Signature
 
     public function sign(string $data, Key $key): string
     {
-        $key = $this->handleKey($key);
+        $key = $this->handleKey($key, Key::OP_SIGN);
         if (! $key->isPrivate()) {
             throw new InvalidArgumentException('The key is not private.');
         }
@@ -64,8 +70,9 @@ final class Ed448 implements Signature
             throw new InvalidArgumentException('Unable to load the Ed448 private key');
         }
 
+        OpenSslError::clear();
         if (! openssl_sign($data, $signature, $privateKey, self::NO_DIGEST)) {
-            throw new InvalidArgumentException('Unable to sign the data');
+            throw new InvalidArgumentException('Unable to sign the data: ' . OpenSslError::lastMessage());
         }
 
         return $signature;
@@ -73,17 +80,19 @@ final class Ed448 implements Signature
 
     public function verify(string $data, Key $key, string $signature): bool
     {
-        $key = $this->handleKey($key);
+        $key = $this->handleKey($key, Key::OP_VERIFY);
 
+        // RFC 8032 section 5.2.7: a public key that cannot be decoded as a point makes the signature invalid; it is
+        // a verification outcome, not an error.
         $publicKey = openssl_pkey_get_public($key->toPublic()->asPEM());
         if ($publicKey === false) {
-            throw new InvalidArgumentException('Unable to load the Ed448 public key');
+            return false;
         }
 
         return openssl_verify($data, $signature, $publicKey, self::NO_DIGEST) === 1;
     }
 
-    private function handleKey(Key $key): OkpKey
+    private function handleKey(Key $key, int $operation): OkpKey
     {
         if (! self::isSupported()) {
             throw new RuntimeException(
@@ -91,8 +100,17 @@ final class Ed448 implements Signature
             );
         }
 
-        $key = OkpKey::create($key->getData());
-        if ($key->curve() !== OkpKey::CURVE_ED448 && $key->curve() !== OkpKey::CURVE_NAME_ED448) {
+        $this->checkKeyRestrictions($key, $operation);
+        try {
+            $key = OkpKey::create($key->getData());
+        } catch (InvalidArgumentException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            // A last resort: key material comes from the wire, and every rejection of it has to reach the caller as
+            // the exception type this library documents, never as a TypeError or an Error.
+            throw new InvalidArgumentException('Invalid OKP key', 0, $e);
+        }
+        if ($key->curveId() !== OkpKey::CURVE_ED448) {
             throw new InvalidArgumentException('This key cannot be used with this algorithm');
         }
 

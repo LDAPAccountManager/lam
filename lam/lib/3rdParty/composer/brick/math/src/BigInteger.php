@@ -268,7 +268,7 @@ final readonly class BigInteger extends BigNumber
         $byteLength = intdiv($bitCount - 1, 8) + 1;
 
         $extraBits = ($byteLength * 8 - $bitCount);
-        $bitmask = chr(0xFF >> $extraBits);
+        $bitmask = chr(0xFF >> $extraBits); // @phpstan-ignore argument.type
 
         $randomBytes = self::randomBytes($byteLength, $randomBytesGenerator);
         $randomBytes[0] = $randomBytes[0] & $bitmask;
@@ -385,7 +385,7 @@ final readonly class BigInteger extends BigNumber
     {
         $result = BigInteger::of($a)->abs();
 
-        $n = array_map(BigInteger::of(...), $n); // @phpstan-ignore possiblyImpure.functionCall
+        $n = array_map(BigInteger::of(...), $n);
 
         foreach ($n as $next) {
             $result = $result->gcd($next);
@@ -414,7 +414,7 @@ final readonly class BigInteger extends BigNumber
     {
         $result = BigInteger::of($a)->abs();
 
-        $n = array_map(BigInteger::of(...), $n); // @phpstan-ignore possiblyImpure.functionCall
+        $n = array_map(BigInteger::of(...), $n);
 
         foreach ($n as $next) {
             $result = $result->lcm($next);
@@ -1336,6 +1336,11 @@ final readonly class BigInteger extends BigNumber
      * The string will contain the minimum number of bytes required to represent this BigInteger, including a sign bit
      * if `$signed` is true.
      *
+     * Note that in signed mode, a positive number whose most significant byte is 0x80 or greater gains an extra leading
+     * 0x00 byte, so that its first bit is not interpreted as a sign bit: for example, 128 converts to "\x00\x80" when
+     * signed, and to "\x80" when unsigned. Callers that require fixed-width unsigned output, such as cryptographic
+     * code, should use `$signed = false`.
+     *
      * This representation is compatible with the `fromBytes()` factory method, as long as the `$signed` flags match.
      *
      * @param bool $signed Whether to output a signed number in two's-complement representation with a leading sign bit.
@@ -1425,12 +1430,10 @@ final readonly class BigInteger extends BigNumber
      */
     public function __unserialize(array $data): void
     {
-        /** @phpstan-ignore isset.initializedProperty */
         if (isset($this->value)) {
             throw new LogicException('__unserialize() is an internal function, it must not be called directly.');
         }
 
-        /** @phpstan-ignore deadCode.unreachable */
         $this->value = $data['value'];
     }
 
@@ -1456,9 +1459,7 @@ final readonly class BigInteger extends BigNumber
      */
     private static function randomBytes(int $byteLength, ?callable $randomBytesGenerator): string
     {
-        if ($randomBytesGenerator === null) {
-            $randomBytesGenerator = random_bytes(...);
-        }
+        $randomBytesGenerator ??= random_bytes(...);
 
         try {
             $randomBytes = $randomBytesGenerator($byteLength);

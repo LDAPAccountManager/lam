@@ -131,7 +131,7 @@ final class AttributeCertificateInfo
             $obj->issuerUniqueID = UniqueIdentifier::fromASN1($seq->at($idx++)->asBitString());
         }
         if ($seq->has($idx, Element::TYPE_SEQUENCE)) {
-            $obj->extensions = Extensions::fromASN1($seq->at($idx++)->asSequence());
+            $obj->extensions = Extensions::fromASN1($seq->at($idx)->asSequence());
         }
         return $obj;
     }

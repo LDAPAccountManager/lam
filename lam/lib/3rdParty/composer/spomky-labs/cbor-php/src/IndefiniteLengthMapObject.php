@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace CBOR;
 
-use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
+use function count;
+use Countable;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
@@ -16,7 +17,7 @@ use IteratorAggregate;
  * @phpstan-implements IteratorAggregate<int, MapItem>
  * @final
  */
-class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAggregate, Normalizable, ArrayAccess
+class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable, IteratorAggregate, Normalizable, ArrayAccess
 {
     use MapKeyRegistryTrait;
 
@@ -52,17 +53,18 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAg
 
     public function add(CBORObject $key, CBORObject $value): self
     {
-        if (! $key instanceof Normalizable) {
-            throw new InvalidArgumentException('Invalid key. Shall be normalizable');
-        }
         $this->data[$this->registerKey($key, false)] = MapItem::create($key, $value);
 
         return $this;
     }
 
+    /**
+     * Whether an entry is reachable at that offset: a key that is opaque, or that shares its offset with a key of
+     * another major type, is only reached by iterating the map.
+     */
     public function has(int|string $key): bool
     {
-        return array_key_exists($key, $this->data);
+        return $this->isAddressable($this->data, $key);
     }
 
     public function remove(int|string $index): self
@@ -71,8 +73,7 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAg
             return $this;
         }
         unset($this->data[$index]);
-        $this->data = array_values($this->data);
-        $this->rebuildKeyIdentities($this->data);
+        $this->unregisterKey($index);
 
         return $this;
     }
@@ -93,6 +94,11 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAg
         return $this;
     }
 
+    public function count(): int
+    {
+        return count($this->data);
+    }
+
     /**
      * @return Iterator<int, MapItem>
      */
@@ -102,16 +108,18 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAg
     }
 
     /**
-     * @return mixed[]
+     * Items that do not implement Normalizable -- the encoding tags or the "break" simple value, for instance -- have
+     * no native counterpart and are returned as the CBORObject they are.
+     *
+     * A key has to become a PHP array offset, which only an integer or a string can. A map holding any other kind of
+     * key -- a float, a boolean, null, a list, a map -- or two keys of different major types that resolve to the
+     * same offset, decodes and iterates, but cannot be normalized.
+     *
+     * @return array<int|string, mixed>
      */
     public function normalize(): array
     {
-        return array_reduce($this->data, static function (array $carry, MapItem $item): array {
-            $valueObject = $item->getValue();
-            $carry[self::assertNormalizableToScalar($item->getKey())] = $valueObject instanceof Normalizable ? $valueObject->normalize() : $valueObject;
-
-            return $carry;
-        }, []);
+        return $this->normalizeEntries($this->data);
     }
 
     public function offsetExists($offset): bool

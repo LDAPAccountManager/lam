@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CBOR;
 
-use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
 use function count;
@@ -30,20 +29,23 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
 
     private ?string $length;
 
+    private bool $lengthStale = false;
+
     /**
      * @param MapItem[] $data
      */
     public function __construct(array $data = [])
     {
-        [$additionalInformation, $length] = LengthCalculator::getLengthOfArray($data);
+        $entries = $this->registerKeys($data);
+        [$additionalInformation, $length] = LengthCalculator::getLengthOfArray($entries);
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
-        $this->data = $data;
+        $this->data = $entries;
         $this->length = $length;
-        $this->rebuildKeyIdentities($data);
     }
 
     public function __toString(): string
     {
+        $this->refreshLength();
         $result = parent::__toString();
         $result .= $this->length ?? '';
         foreach ($this->data as $object) {
@@ -52,6 +54,27 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
         }
 
         return $result;
+    }
+
+    public function getAdditionalInformation(): int
+    {
+        $this->refreshLength();
+
+        return parent::getAdditionalInformation();
+    }
+
+    /**
+     * The head carries the item count, so every insertion or removal invalidates it. Recomputing it there made the
+     * cost of building a container quadratic in call count; it is only ever observed when the object is written out.
+     */
+    private function refreshLength(): void
+    {
+        if (! $this->lengthStale) {
+            return;
+        }
+
+        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = false;
     }
 
     /**
@@ -64,18 +87,19 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
 
     public function add(CBORObject $key, CBORObject $value): self
     {
-        if (! $key instanceof Normalizable) {
-            throw new InvalidArgumentException('Invalid key. Shall be normalizable');
-        }
         $this->data[$this->registerKey($key, false)] = MapItem::create($key, $value);
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = true;
 
         return $this;
     }
 
+    /**
+     * Whether an entry is reachable at that offset: a key that is opaque, or that shares its offset with a key of
+     * another major type, is only reached by iterating the map.
+     */
     public function has(int|string $key): bool
     {
-        return array_key_exists($key, $this->data);
+        return $this->isAddressable($this->data, $key);
     }
 
     public function remove(int|string $index): self
@@ -84,9 +108,8 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
             return $this;
         }
         unset($this->data[$index]);
-        $this->data = array_values($this->data);
-        $this->rebuildKeyIdentities($this->data);
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->unregisterKey($index);
+        $this->lengthStale = true;
 
         return $this;
     }
@@ -103,7 +126,7 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
     public function set(MapItem $object): self
     {
         $this->data[$this->registerKey($object->getKey(), true)] = $object;
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = true;
 
         return $this;
     }
@@ -122,16 +145,18 @@ final class MapObject extends AbstractCBORObject implements Countable, IteratorA
     }
 
     /**
+     * Items that do not implement Normalizable -- the encoding tags or the "break" simple value, for instance -- have
+     * no native counterpart and are returned as the CBORObject they are.
+     *
+     * A key has to become a PHP array offset, which only an integer or a string can. A map holding any other kind of
+     * key -- a float, a boolean, null, a list, a map -- or two keys of different major types that resolve to the
+     * same offset, decodes and iterates, but cannot be normalized.
+     *
      * @return array<int|string, mixed>
      */
     public function normalize(): array
     {
-        return array_reduce($this->data, static function (array $carry, MapItem $item): array {
-            $valueObject = $item->getValue();
-            $carry[self::assertNormalizableToScalar($item->getKey())] = $valueObject instanceof Normalizable ? $valueObject->normalize() : $valueObject;
-
-            return $carry;
-        }, []);
+        return $this->normalizeEntries($this->data);
     }
 
     public function offsetExists($offset): bool

@@ -9,9 +9,11 @@ use ArrayAccess;
 use ArrayIterator;
 use function count;
 use Countable;
+use function get_debug_type;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
+use function sprintf;
 
 /**
  * @phpstan-implements ArrayAccess<int, CBORObject>
@@ -23,11 +25,13 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
     private const MAJOR_TYPE = self::MAJOR_TYPE_LIST;
 
     /**
-     * @var CBORObject[]
+     * @var array<int, CBORObject>
      */
     private array $data;
 
     private ?string $length;
+
+    private bool $lengthStale = false;
 
     /**
      * @param CBORObject[] $data
@@ -35,8 +39,15 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
     public function __construct(array $data = [])
     {
         [$additionalInformation, $length] = LengthCalculator::getLengthOfArray($data);
-        array_map(static function ($item): void {
-        }, $data);
+        foreach ($data as $index => $item) {
+            if (! $item instanceof CBORObject) {
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid item at index "%s". Expected a CBORObject, got "%s".',
+                    $index,
+                    get_debug_type($item)
+                ));
+            }
+        }
 
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
         $this->data = array_values($data);
@@ -45,6 +56,7 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
 
     public function __toString(): string
     {
+        $this->refreshLength();
         $result = parent::__toString();
         $result .= $this->length ?? '';
         foreach ($this->data as $object) {
@@ -52,6 +64,27 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
         }
 
         return $result;
+    }
+
+    public function getAdditionalInformation(): int
+    {
+        $this->refreshLength();
+
+        return parent::getAdditionalInformation();
+    }
+
+    /**
+     * The head carries the item count, so every insertion or removal invalidates it. Recomputing it there made the
+     * cost of building a container quadratic in call count; it is only ever observed when the object is written out.
+     */
+    private function refreshLength(): void
+    {
+        if (! $this->lengthStale) {
+            return;
+        }
+
+        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = false;
     }
 
     /**
@@ -65,7 +98,7 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
     public function add(CBORObject $object): self
     {
         $this->data[] = $object;
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = true;
 
         return $this;
     }
@@ -82,7 +115,7 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
         }
         unset($this->data[$index]);
         $this->data = array_values($this->data);
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = true;
 
         return $this;
     }
@@ -103,12 +136,15 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
         }
 
         $this->data[$index] = $object;
-        [$this->additionalInformation, $this->length] = LengthCalculator::getLengthOfArray($this->data);
+        $this->lengthStale = true;
 
         return $this;
     }
 
     /**
+     * Items that do not implement Normalizable -- the encoding tags or the "break" simple value, for instance -- have
+     * no native counterpart and are returned as the CBORObject they are.
+     *
      * @return array<int, mixed>
      */
     public function normalize(): array

@@ -20,6 +20,7 @@ namespace Com\Tecnick\Pdf\Parser;
 
 use Com\Tecnick\Pdf\Filter\Filter;
 use Com\Tecnick\Pdf\Parser\Exception as PPException;
+use Com\Tecnick\Pdf\Parser\LimitException as PPLimitException;
 
 /**
  * Com\Tecnick\Pdf\Parser\Parser
@@ -52,9 +53,45 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     protected const MAX_RESOLUTION_DEPTH = 64;
 
     /**
+     * Header of an indirect object, anchored at the offset the match starts from.
+     *
+     * The object number, the generation number and the "obj" keyword are separated by
+     * any non-empty run of the white-space characters of PDF 32000-1 Table 1.
+     */
+    protected const OBJECT_HEADER = '/\G([0-9]+)[\x00\x09\x0a\x0c\x0d\x20]+([0-9]+)[\x00\x09\x0a\x0c\x0d\x20]+obj/';
+
+    /**
+     * Limit event kind: the resolution depth limit left a reference unresolved.
+     */
+    public const LIMIT_RESOLUTION_DEPTH = 'resolution_depth';
+
+    /**
+     * Limit event kind: a reference cycle left a reference unresolved.
+     */
+    public const LIMIT_REFERENCE_CYCLE = 'reference_cycle';
+
+    /**
      * Maximum size in bytes of a single decoded stream, 0 means unlimited.
      */
     private int $maxStreamSize = self::DEFAULT_MAX_STREAM_SIZE;
+
+    /**
+     * Maximum number of indirect object resolutions that may be in flight at once.
+     */
+    private int $maxResolutionDepth = self::MAX_RESOLUTION_DEPTH;
+
+    /**
+     * If true, a limit event raises a LimitException instead of being recorded.
+     */
+    private bool $strictLimits = false;
+
+    /**
+     * Limit events recorded while parsing, keyed by event kind. One entry per kind
+     * keeps the record bounded regardless of how many times a limit is reached.
+     *
+     * @var array<string, array{count: int, ref: string}>
+     */
+    private array $limitEvents = [];
 
     /**
      * Cache of decoded object streams keyed by object stream reference.
@@ -89,12 +126,35 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      *                                     'decode_streams': if true, decode stream payloads while parsing
      *                                     regular indirect objects;
      *                                     'max_stream_size': maximum size in bytes of a single decoded
-     *                                     stream, 0 means unlimited.
+     *                                     stream, 0 means unlimited;
+     *                                     'max_resolution_depth': maximum number of indirect object
+     *                                     resolutions in flight at once, values below 1 are clamped to 1;
+     *                                     'max_nesting_depth': maximum nesting depth of array and
+     *                                     dictionary objects, values below 1 are clamped to 1;
+     *                                     'strict_limits': if true, raise a LimitException as soon as a
+     *                                     limit or a reference cycle leaves an object unresolved.
      */
     public function __construct(array $cfg = [])
     {
+        $this->maxResolutionDepth = static::MAX_RESOLUTION_DEPTH;
+        $this->maxNestingDepth = static::MAX_NESTING_DEPTH;
+
         if (\array_key_exists('max_stream_size', $cfg)) {
             $this->maxStreamSize = \max(0, (int) $cfg['max_stream_size']);
+        }
+
+        // both limits bound a recursion: they are clamped to 1 instead of accepting a
+        // value that would leave the recursion unbounded
+        if (\array_key_exists('max_resolution_depth', $cfg)) {
+            $this->maxResolutionDepth = \max(1, (int) $cfg['max_resolution_depth']);
+        }
+
+        if (\array_key_exists('max_nesting_depth', $cfg)) {
+            $this->maxNestingDepth = \max(1, (int) $cfg['max_nesting_depth']);
+        }
+
+        if (\array_key_exists('strict_limits', $cfg)) {
+            $this->strictLimits = (bool) $cfg['strict_limits'];
         }
 
         if (\array_key_exists('ignore_filter_errors', $cfg)) {
@@ -136,6 +196,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         $this->xrefdone = [];
         $this->objstmCache = [];
         $this->resolving = [];
+        $this->limitEvents = [];
         $this->nesting = 0;
         $this->streamDataStart = -1;
         $this->objects = [];
@@ -196,7 +257,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     {
         $obj = \explode('_', $obj_ref);
         if (\count($obj) !== 2) {
-            throw new PPException('Invalid object reference: ' . \serialize($obj));
+            throw new PPException('Invalid object reference: ' . $obj_ref);
         }
 
         // an indirect reference to an undefined object shall be considered a reference to the null object
@@ -209,29 +270,33 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
 
         // break reference cycles (e.g. two streams whose /Length point at each other)
         // and bound the depth of an acyclic chain of references
-        if (isset($this->resolving[$obj_ref]) || $this->resolutionDepthReached()) {
+        if (isset($this->resolving[$obj_ref])) {
+            $this->noteLimit(self::LIMIT_REFERENCE_CYCLE, $obj_ref);
+            return $nullobj;
+        }
+
+        if ($this->resolutionDepthReached()) {
+            $this->noteLimit(self::LIMIT_RESOLUTION_DEPTH, $obj_ref);
             return $nullobj;
         }
 
         /** @var array{0: string, 1: string} $obj */
-        $objref = $obj[0] . ' ' . $obj[1] . ' obj';
-        // ignore leading zeros
-        $offset += \strspn($this->pdfdata, '0', $offset);
-        $objPos = \strpos($this->pdfdata, $objref, $offset);
-        if ($objPos !== $offset) {
+        $contentPos = $this->matchObjectHeader($obj[0], $obj[1], $offset);
+        if ($contentPos === null) {
+            // tolerate an offset that points one byte before the header
             ++$offset;
             if ($offset >= \strlen($this->pdfdata)) {
                 return $nullobj;
             }
 
-            $objPos = \strpos($this->pdfdata, $objref, $offset);
-            if ($objPos !== $offset) {
+            $contentPos = $this->matchObjectHeader($obj[0], $obj[1], $offset);
+            if ($contentPos === null) {
                 return [['null', 'null', $offset]];
             }
         }
 
         // starting position of object content
-        $offset += \strlen($objref);
+        $offset = $contentPos;
 
         $this->resolving[$obj_ref] = true;
         try {
@@ -240,6 +305,38 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         } finally {
             unset($this->resolving[$obj_ref]);
         }
+    }
+
+    /**
+     * Match the "objnum gennum obj" header of an indirect object at the given offset.
+     *
+     * The three tokens are separated by any non-empty run of the white-space characters
+     * of PDF 32000-1 Table 1, and each number may carry leading zeros.
+     *
+     * @param string $num    Object number.
+     * @param string $gen    Generation number.
+     * @param int    $offset Offset at which the header is expected.
+     *
+     * @return int|null Offset of the object content, or null when the header is not there.
+     */
+    private function matchObjectHeader(string $num, string $gen, int $offset): ?int
+    {
+        $matches = [];
+        // one constant pattern for every object, so PCRE compiles and caches it once
+        if (\preg_match(self::OBJECT_HEADER, $this->pdfdata, $matches, 0, $offset) !== 1) {
+            return null;
+        }
+
+        // leading zeros carry no value
+        if (\ltrim($matches[1] ?? '', '0') !== \ltrim($num, '0')) {
+            return null;
+        }
+
+        if (\ltrim($matches[2] ?? '', '0') !== \ltrim($gen, '0')) {
+            return null;
+        }
+
+        return $offset + \strlen($matches[0] ?? '');
     }
 
     /**
@@ -285,9 +382,10 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
                     $offset = $reslice['offset'];
                     // index 2 is the offset to the next object: keep it in step with the cursor
                     $element[2] = $offset;
-                } elseif ($length === null) {
-                    // no length to slice by: the end-of-line before "endstream" is the only
-                    // part of the extracted bytes known not to belong to the payload
+                } elseif ($length !== \strlen($element[1])) {
+                    // no usable length to slice by: the end-of-line before "endstream" is the
+                    // only part of the extracted bytes known not to belong to the payload.
+                    // A length that accounts for every extracted byte claims them all as data.
                     $element[1] = $this->stripStreamEol($element[1]);
                 }
 
@@ -444,8 +542,15 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
                 return $this->objects[$obj[1]][0];
             }
 
-            if (isset($this->resolving[$obj[1]]) || $this->resolutionDepthReached()) {
-                // cycle or depth limit: leave the reference unresolved
+            if (isset($this->resolving[$obj[1]])) {
+                // cycle: leave the reference unresolved
+                $this->noteLimit(self::LIMIT_REFERENCE_CYCLE, $obj[1]);
+                return $obj;
+            }
+
+            if ($this->resolutionDepthReached()) {
+                // depth limit: leave the reference unresolved
+                $this->noteLimit(self::LIMIT_RESOLUTION_DEPTH, $obj[1]);
                 return $obj;
             }
 
@@ -726,7 +831,89 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      */
     private function resolutionDepthReached(): bool
     {
-        return \count($this->resolving) >= static::MAX_RESOLUTION_DEPTH;
+        return \count($this->resolving) >= $this->maxResolutionDepth;
+    }
+
+    /**
+     * Record a limit event, or raise it as an exception in strict mode.
+     *
+     * @param string $kind One of the LIMIT_* constants.
+     * @param string $ref  Reference of the object left unresolved.
+     *
+     * @throws \Com\Tecnick\Pdf\Parser\LimitException
+     */
+    private function noteLimit(string $kind, string $ref): void
+    {
+        if ($this->strictLimits) {
+            throw new PPLimitException($this->limitMessage($kind, $ref, 1));
+        }
+
+        if (isset($this->limitEvents[$kind])) {
+            ++$this->limitEvents[$kind]['count'];
+            return;
+        }
+
+        $this->limitEvents[$kind] = ['count' => 1, 'ref' => $ref];
+    }
+
+    /**
+     * Merge the limit events recorded by a nested parser instance.
+     *
+     * @param array<string, array{count: int, ref: string}> $events Events of the nested instance.
+     */
+    private function mergeLimitEvents(array $events): void
+    {
+        foreach ($events as $kind => $event) {
+            if (isset($this->limitEvents[$kind])) {
+                $this->limitEvents[$kind]['count'] += $event['count'];
+                continue;
+            }
+
+            $this->limitEvents[$kind] = $event;
+        }
+    }
+
+    /**
+     * Build the human-readable description of a limit event.
+     *
+     * @param string $kind  One of the LIMIT_* constants.
+     * @param string $ref   Reference of the first object left unresolved.
+     * @param int    $count Number of times the event occurred.
+     */
+    private function limitMessage(string $kind, string $ref, int $count): string
+    {
+        $times = $count === 1 ? 'once' : $count . ' times';
+        return match ($kind) {
+            self::LIMIT_RESOLUTION_DEPTH => 'the indirect object resolution depth limit ('
+                . $this->maxResolutionDepth
+                . ') left a reference unresolved '
+                . $times
+                . ', first at object '
+                . $ref,
+            self::LIMIT_REFERENCE_CYCLE => 'an indirect object reference cycle left a reference unresolved '
+                . $times
+                . ', first at object '
+                . $ref,
+            default => $kind . ' left a reference unresolved ' . $times . ', first at object ' . $ref,
+        };
+    }
+
+    /**
+     * Return one description per kind of limit event recorded during the last parse.
+     *
+     * The list is empty when no limit was reached, and always empty in strict mode,
+     * where the first event raises a LimitException instead.
+     *
+     * @return array<int, string>
+     */
+    public function getLimitWarnings(): array
+    {
+        $warnings = [];
+        foreach ($this->limitEvents as $kind => $event) {
+            $warnings[] = $this->limitMessage($kind, $event['ref'], $event['count']);
+        }
+
+        return $warnings;
     }
 
     /**
@@ -743,13 +930,31 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      */
     private function parseObjectBody(string $body): ?array
     {
-        $parser = new self($this->cfg + ['max_stream_size' => $this->maxStreamSize]);
-        $obj = $parser->parseStandaloneObject($body);
+        $parser = new self(
+            $this->cfg
+            + [
+                'max_stream_size' => $this->maxStreamSize,
+                'max_resolution_depth' => $this->maxResolutionDepth,
+                'max_nesting_depth' => $this->maxNestingDepth,
+                'strict_limits' => $this->strictLimits,
+            ],
+        );
+
+        try {
+            $obj = $parser->parseStandaloneObject($body);
+        } finally {
+            // the nested instance is discarded here: keep what it recorded
+            $this->mergeLimitEvents($parser->limitEvents);
+        }
+
         return $obj === [] ? null : $obj;
     }
 
     /**
      * Decode a single indirect object body in isolation.
+     *
+     * The body is tokenized as-is: wrapping it in a synthetic "n 0 obj" envelope would
+     * make any reference to that object number look like a cycle.
      *
      * @param string $body Raw object body (the content between "obj" and "endobj").
      *
@@ -763,14 +968,15 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
         $this->xrefdone = [];
         $this->objstmCache = [];
         $this->resolving = [];
+        $this->limitEvents = [];
         $this->nesting = 0;
         $this->streamDataStart = -1;
         $this->objects = [];
         $this->xref = self::XREF_EMPTY;
-        $this->pdfdata = "1 0 obj\n" . $body . "\nendobj\n";
+        $this->pdfdata = $body;
 
         try {
-            return $this->getIndirectObject('1_0', 0, $this->cfg['decode_streams'] ?? true);
+            return $this->getRawIndirectObject(0, $this->cfg['decode_streams'] ?? true);
         } finally {
             $this->pdfdata = '';
         }

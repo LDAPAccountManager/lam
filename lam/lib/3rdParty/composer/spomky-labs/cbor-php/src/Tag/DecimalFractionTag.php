@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace CBOR\Tag;
 
 use Brick\Math\BigInteger;
+use CBOR\ByteStringObject;
 use CBOR\CBORObject;
+use CBOR\IndefiniteLengthListObject;
 use CBOR\ListObject;
 use CBOR\NegativeIntegerObject;
 use CBOR\Normalizable;
@@ -16,6 +18,8 @@ use function extension_loaded;
 use InvalidArgumentException;
 use RuntimeException;
 use function sprintf;
+use function str_contains;
+use function str_starts_with;
 use function strlen;
 
 final class DecimalFractionTag extends Tag implements Normalizable
@@ -23,19 +27,21 @@ final class DecimalFractionTag extends Tag implements Normalizable
     /**
      * The maximum absolute value accepted for the exponent.
      *
-     * The result of 10^e grows exponentially with e, so an exponent taken from untrusted input is a denial of
-     * service vector: a document of a handful of bytes can otherwise ask bcpow() for a number of several billion
-     * digits. The bound is far above any legitimate use of this tag -- 10^8192 already has more than 2400 digits,
-     * whereas an IEEE 754 double covers exponents within +/-1074.
+     * 10^e needs about e decimal digits to write down, so the exponent alone decides how much memory normalizing
+     * one item costs -- and the exponent is three bytes on the wire. At 8192 a six byte item expanded to more than
+     * eight kilobytes, an amplification of over a thousand, and a document made of such items exhausted the memory
+     * limit inside decode() with a fatal error no try/catch can intercept. The bound is now the range of an IEEE
+     * 754 double, which is what a decimal fraction is meant to exceed in precision, not in magnitude.
      */
-    public const MAX_ABSOLUTE_EXPONENT = 8192;
+    public const MAX_ABSOLUTE_EXPONENT = 1024;
 
     public function __construct(int $additionalInformation, ?string $data, CBORObject $object)
     {
         if (! extension_loaded('bcmath')) {
             throw new RuntimeException('The extension "bcmath" is required to use this tag');
         }
-        if (! $object instanceof ListObject || count($object) !== 2) {
+        $isList = $object instanceof ListObject || $object instanceof IndefiniteLengthListObject;
+        if (! $isList || count($object) !== 2) {
             throw new InvalidArgumentException(
                 'This tag only accepts a ListObject object that contains an exponent and a mantissa.'
             );
@@ -131,23 +137,26 @@ final class DecimalFractionTag extends Tag implements Normalizable
         // Calculate exponent (negative = decimal places)
         $exponent = -strlen($fractionalPart);
 
-        // Combine to form mantissa (remove decimal point)
-        $mantissaStr = $integerPart . $fractionalPart;
+        // Keep the sign aside: it is not a digit and must not survive the normalisation below, which would
+        // otherwise turn a value rounding to zero, such as -1e-12, into the unparsable mantissa "-".
+        $isNegative = str_starts_with($integerPart, '-');
 
-        // Remove leading zeros (except if mantissa is just "0")
-        $mantissaStr = ltrim($mantissaStr, '0');
-        if ($mantissaStr === '') {
-            $mantissaStr = '0';
+        // Combine to form mantissa (drop the sign and the decimal point, then the leading zeros)
+        $mantissa = ltrim(ltrim($integerPart, '-') . $fractionalPart, '0');
+        if ($mantissa === '') {
+            $mantissa = '0';
         }
-
-        // Parse mantissa as integer
-        bcscale(0);
-        $mantissa = $mantissaStr;
 
         // Normalize: remove trailing zeros from mantissa by adjusting exponent
         while ($mantissa !== '0' && str_ends_with($mantissa, '0')) {
             $mantissa = substr($mantissa, 0, -1);
             $exponent++;
+        }
+
+        // A value that rounds to zero at the requested precision is zero, whatever its sign was.
+        if ($mantissa === '0') {
+            $isNegative = false;
+            $exponent = 0;
         }
 
         // Create exponent object
@@ -157,20 +166,65 @@ final class DecimalFractionTag extends Tag implements Normalizable
             $exponentObj = NegativeIntegerObject::create($exponent);
         }
 
-        // Create mantissa object
-        $mantissaInt = (int) $mantissa;
-        if ($mantissaInt >= 0) {
-            $mantissaObj = UnsignedIntegerObject::createFromString($mantissa);
-        } else {
-            $mantissaObj = NegativeIntegerObject::createFromString($mantissa);
+        // Put the sign back on the mantissa now that the normalisation above is done with it.
+        return self::createFromExponentAndMantissa(
+            $exponentObj,
+            self::mantissaObject($isNegative ? '-' . $mantissa : $mantissa)
+        );
+    }
+
+    /**
+     * The mantissa of a decimal fraction is only bounded by the requested precision, so it routinely outgrows the
+     * 8-byte argument an integer head can carry. RFC 8949 section 3.4.3 answers that with the bignum tags the
+     * constructor already accepts, and this picks whichever of the four representations fits.
+     *
+     * The sign is read off the string rather than from a PHP integer cast, which saturates at PHP_INT_MIN or
+     * PHP_INT_MAX and would report the wrong sign for exactly the long mantissas this has to handle.
+     */
+    private static function mantissaObject(string $mantissa): CBORObject
+    {
+        $value = BigInteger::of($mantissa);
+        if (str_starts_with($mantissa, '-')) {
+            $argument = BigInteger::of(-1)->minus($value);
+
+            return $argument->isLessThanOrEqualTo(self::maximumHeadArgument())
+                ? NegativeIntegerObject::createFromString($mantissa)
+                : NegativeBigIntegerTag::create(ByteStringObject::create(self::toBigEndianBytes($argument)));
         }
 
-        return self::createFromExponentAndMantissa($exponentObj, $mantissaObj);
+        return $value->isLessThanOrEqualTo(self::maximumHeadArgument())
+            ? UnsignedIntegerObject::createFromString($mantissa)
+            : UnsignedBigIntegerTag::create(ByteStringObject::create(self::toBigEndianBytes($value)));
+    }
+
+    /**
+     * Largest argument an integer head can carry, 2^64 - 1. Beyond it a bignum tag is the only representation.
+     */
+    private static function maximumHeadArgument(): BigInteger
+    {
+        return BigInteger::fromBase('FFFFFFFFFFFFFFFF', 16);
+    }
+
+    /**
+     * The network byte order, unsigned, no leading zero byte representation a bignum tag wraps.
+     */
+    private static function toBigEndianBytes(BigInteger $value): string
+    {
+        $hex = $value->toBase(16);
+        if (strlen($hex) % 2 === 1) {
+            $hex = '0' . $hex;
+        }
+        $bytes = hex2bin($hex);
+        if ($bytes === false) {
+            throw new InvalidArgumentException('Unable to convert the data');
+        }
+
+        return $bytes;
     }
 
     public function normalize()
     {
-        /** @var ListObject $object */
+        /** @var ListObject|IndefiniteLengthListObject $object */
         $object = $this->object;
         /** @var UnsignedIntegerObject|NegativeIntegerObject $e */
         $e = $object->get(0);
@@ -179,8 +233,34 @@ final class DecimalFractionTag extends Tag implements Normalizable
 
         $exponent = (string) $e->normalize();
         self::assertExponentIsWithinBounds($exponent);
+        $mantissa = (string) $m->normalize();
 
-        return rtrim(bcmul((string) $m->normalize(), bcpow('10', $exponent, 100), 100), '0');
+        // The exponent is bounded, so it fits a PHP integer and the scale below is finite.
+        $exponentValue = (int) $exponent;
+        if ($exponentValue >= 0) {
+            // m x 10^e with e >= 0 is an integer: no scale is needed and none shall be printed.
+            return bcmul($mantissa, bcpow('10', $exponent, 0), 0);
+        }
+
+        // m x 10^-s has exactly s decimal digits, so that scale makes the division exact. A fixed scale would
+        // either truncate the result to zero or, worse, report a rounded value as if it were the decoded one.
+        $scale = -$exponentValue;
+
+        return self::stripTrailingZeros(bcdiv($mantissa, bcpow('10', (string) $scale, 0), $scale));
+    }
+
+    /**
+     * bcdiv() pads the result up to the requested scale, so the exact value comes back with trailing zeros and,
+     * once they are gone, a dangling decimal point. Both are stripped, but only from a value that has a decimal
+     * point at all: trimming "500" would turn it into "5".
+     */
+    private static function stripTrailingZeros(string $value): string
+    {
+        if (! str_contains($value, '.')) {
+            return $value;
+        }
+
+        return rtrim(rtrim($value, '0'), '.');
     }
 
     private static function assertExponentIsWithinBounds(string $exponent): void

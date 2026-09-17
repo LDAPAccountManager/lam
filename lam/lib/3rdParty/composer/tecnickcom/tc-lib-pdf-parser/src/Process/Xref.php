@@ -602,8 +602,10 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     {
         // try to read Cross-Reference Stream
         $xrefobj = $this->getRawObject($startxref);
-        if (!\is_string($xrefobj[1])) {
-            throw new PPException('Unable to find xref stream');
+        // every other token type also carries a string value, so the type is what tells an
+        // object header apart from a byte the tokenizer could not classify
+        if ($xrefobj[0] !== 'obj' || !\is_string($xrefobj[1])) {
+            throw new PPException('Unable to find xref stream at offset ' . $startxref);
         }
 
         $xrefcrs = $this->getIndirectObject($xrefobj[1], $startxref, true);

@@ -8,9 +8,9 @@ final class HS256 extends Hmac
 {
     public const ID = 5;
 
-    public static function create(): self
+    public static function create(bool $acknowledgeShortKey = false): self
     {
-        return new self();
+        return new self($acknowledgeShortKey);
     }
 
     public static function identifier(): int

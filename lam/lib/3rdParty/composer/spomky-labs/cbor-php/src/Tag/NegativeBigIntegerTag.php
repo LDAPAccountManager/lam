@@ -12,9 +12,24 @@ use CBOR\Normalizable;
 use CBOR\Tag;
 use CBOR\Utils;
 use InvalidArgumentException;
+use function sprintf;
+use function strlen;
 
 final class NegativeBigIntegerTag extends Tag implements Normalizable
 {
+    /**
+     * The maximum length, in bytes, accepted for the wrapped byte string.
+     *
+     * Turning the big-endian byte string into the decimal string this tag normalizes to is a base conversion, and
+     * brick/math performs it in time quadratic in the length on every calculator but GMP. ext-gmp and ext-bcmath are
+     * only suggested by this package, so the slowest of the three is what a default installation runs: a 500 byte
+     * big number already cost 1.8 s there, and 2 kB close to a hundred. Since a big number used as a map key is
+     * normalized by decode() itself, that was reachable without the application ever asking for the value. 256 bytes
+     * is a 2048 bit integer, past any number this tag is used to carry, and bounds the conversion to well under a
+     * second on the slowest calculator.
+     */
+    public const MAX_BYTE_LENGTH = 256;
+
     public function __construct(int $additionalInformation, ?string $data, CBORObject $object)
     {
         if (! $object instanceof ByteStringObject && ! $object instanceof IndefiniteLengthByteStringObject) {
@@ -45,11 +60,30 @@ final class NegativeBigIntegerTag extends Tag implements Normalizable
     {
         /** @var ByteStringObject|IndefiniteLengthByteStringObject $object */
         $object = $this->object;
-        $integer = Utils::hexToBigInteger(bin2hex($object->getValue()));
+        $value = $object->getValue();
+        self::assertLengthIsWithinBounds($value);
+        // RFC 8949 section 3.4.3: the empty byte string is the preferred serialization of zero, so tag 3 wrapping
+        // it is -1 - 0.
+        $integer = $value === '' ? BigInteger::zero() : Utils::hexToBigInteger(bin2hex($value));
         $minusOne = BigInteger::of(-1);
 
         return $minusOne->minus($integer)
             ->toBase(10)
         ;
+    }
+
+    /**
+     * @param string $value the big-endian byte string this tag wraps
+     */
+    private static function assertLengthIsWithinBounds(string $value): void
+    {
+        $length = strlen($value);
+        if ($length > self::MAX_BYTE_LENGTH) {
+            throw new InvalidArgumentException(sprintf(
+                'The big number is out of range. Its byte string shall not exceed %d bytes, got %d.',
+                self::MAX_BYTE_LENGTH,
+                $length
+            ));
+        }
     }
 }

@@ -25,6 +25,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         '19e6faa27d773988183e0f384143fcad' => __DIR__ . '/..' . '/illuminate/reflection/helpers.php',
         'f625ee536139dfb962a398b200bdb2bd' => __DIR__ . '/..' . '/illuminate/support/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '09f6b20656683369174dd6fa83b7e5fb' => __DIR__ . '/..' . '/symfony/polyfill-uuid/bootstrap.php',
         '530e62ecf2178d5ac30fe3c96b600878' => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src/Internal/functions/derived_key.php',
         'fc676f0a6fb5bbf1e0d6bd10a36b3aad' => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src/Internal/functions/jose_secret_key.php',
@@ -65,6 +66,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Symfony\\Polyfill\\Php84\\' => 23,
             'Symfony\\Polyfill\\Php83\\' => 23,
             'Symfony\\Polyfill\\Php82\\' => 23,
+            'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
@@ -221,6 +223,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Symfony\\Polyfill\\Php82\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php82',
+        ),
+        'Symfony\\Polyfill\\Php81\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -540,6 +546,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'AWS\\CRT\\Options' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
         'AllowDynamicProperties' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/AllowDynamicProperties.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
         'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
@@ -571,6 +578,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Random\\RandomError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomError.php',
         'Random\\RandomException' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomException.php',
         'ReflectionConstant' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/ReflectionConstant.php',
+        'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'RoundingMode' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/RoundingMode.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'SensitiveParameter' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameter.php',

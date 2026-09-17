@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use function array_is_list;
 use CBOR\OtherObject\DoublePrecisionFloatObject;
 use CBOR\OtherObject\FalseObject;
 use CBOR\OtherObject\NullObject;

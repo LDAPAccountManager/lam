@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cose;
 
 use Brick\Math\BigInteger as BrickBigInteger;
+use Brick\Math\Exception\MathException;
 use function chr;
 use function hex2bin;
 use function strlen;
@@ -86,6 +87,18 @@ final class BigInteger
     public function modPow(self $e, self $n): self
     {
         $value = $this->value->modPow($e->value, $n->value);
+
+        return new self($value);
+    }
+
+    /**
+     * Returns the modular multiplicative inverse of this number modulo $m.
+     *
+     * @throws MathException if this number is not invertible modulo $m, i.e. if they are not coprime
+     */
+    public function modInverse(self $m): self
+    {
+        $value = $this->value->modInverse($m->value);
 
         return new self($value);
     }

@@ -90,23 +90,6 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
     }
 
     /**
-     * Process the xref stream rows, numbering them sequentially from $obj_num.
-     *
-     * @param XrefData                    $xref    XREF data.
-     * @param int                         $obj_num Object number of the first row.
-     * @param array<int, array<int, int>> $sdata   Decoded entry values.
-     *
-     * @throws \Com\Tecnick\Pdf\Parser\Exception
-     */
-    protected function processObjIndexes(array &$xref, int &$obj_num, array $sdata): void
-    {
-        foreach ($sdata as $sdatum) {
-            $this->processSingleObjIndex($xref, $obj_num, $sdatum);
-            ++$obj_num;
-        }
-    }
-
-    /**
      * Process object indexes using explicit object numbers.
      *
      * @param XrefData                    $xref       XREF data.
@@ -266,21 +249,25 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
     /**
      * Parse the xref stream Index array into normalized [startObj, count] pairs.
      *
+     * Only called for an Index entry the dictionary declares, so a value that cannot be
+     * read is an error: falling back to the default coverage would number the rows after
+     * a section the document did not declare.
+     *
      * @param RawObjectArray|null $indexObj Index object token.
      *
-     * @return array<int, array{0:int, 1:int}>|null Sections, or null when Index is missing.
+     * @return array<int, array{0:int, 1:int}> Sections.
      *
      * @throws \Com\Tecnick\Pdf\Parser\Exception
      */
-    protected function parseXrefIndexSections(?array $indexObj): ?array
+    protected function parseXrefIndexSections(?array $indexObj): array
     {
-        if (!\is_array($indexObj)) {
-            return null;
+        if (!\is_array($indexObj) || $indexObj[0] !== '[') {
+            throw new PPException('Invalid xref stream Index array: expected an array of numeric values');
         }
 
         $values = $indexObj[1];
         if (!\is_array($values)) {
-            return null;
+            throw new PPException('Invalid xref stream Index array: expected an array of numeric values');
         }
 
         if ((\count($values) % 2) !== 0) {

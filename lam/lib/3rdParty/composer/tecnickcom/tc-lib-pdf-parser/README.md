@@ -61,6 +61,37 @@ The constructor accepts an array of parameters:
 | `ignore_filter_errors` | `bool` | `false` | If true, a stream that fails to decode is kept as raw data instead of raising an exception |
 | `decode_streams` | `bool` | `true` | If true, decode the stream payloads of the indirect objects while parsing |
 | `max_stream_size` | `int` | `33554432` | Maximum size in bytes of a single decoded stream; `0` means unlimited |
+| `max_resolution_depth` | `int` | `64` | Maximum number of indirect object resolutions in flight at once; values below `1` are clamped to `1` |
+| `max_nesting_depth` | `int` | `256` | Maximum nesting depth of array and dictionary objects; values below `1` are clamped to `1` |
+| `strict_limits` | `bool` | `false` | If true, raise a `LimitException` as soon as a limit or a reference cycle leaves an object unresolved |
+
+---
+
+## Parsing Limits
+
+Two limits bound the work a document can ask the parser to do. Both bound a recursion and cannot be
+disabled: a value below `1` is clamped to `1`.
+
+Exceeding `max_nesting_depth` always raises `Com\Tecnick\Pdf\Parser\LimitException`, a subclass of
+`Com\Tecnick\Pdf\Parser\Exception`: a dictionary or array that cannot be tokenized has no usable
+value to fall back to.
+
+Reaching `max_resolution_depth`, or meeting a reference cycle, leaves the reference unresolved and
+lets the rest of the document parse. Both cases are recorded and readable after `parse()`:
+
+```php
+$parser = new \Com\Tecnick\Pdf\Parser\Parser();
+[$xref, $objects] = $parser->parse((string) $raw);
+
+foreach ($parser->getLimitWarnings() as $warning) {
+    // "the indirect object resolution depth limit (64) left a reference
+    //  unresolved 7 times, first at object 128_0"
+}
+```
+
+One warning is reported per kind of event, with the number of occurrences and the first object
+affected. Setting `strict_limits` turns the first such event into a `LimitException` instead, and
+`getLimitWarnings()` then always returns an empty list.
 
 ---
 

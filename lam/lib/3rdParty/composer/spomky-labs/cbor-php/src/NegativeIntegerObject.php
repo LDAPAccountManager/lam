@@ -6,10 +6,11 @@ namespace CBOR;
 
 use Brick\Math\BigInteger;
 use InvalidArgumentException;
-use const STR_PAD_LEFT;
 
 final class NegativeIntegerObject extends AbstractCBORObject implements Normalizable
 {
+    use IntegerPayloadTrait;
+
     private const MAJOR_TYPE = self::MAJOR_TYPE_NEGATIVE_INTEGER;
 
     public function __construct(
@@ -36,7 +37,14 @@ final class NegativeIntegerObject extends AbstractCBORObject implements Normaliz
 
     public static function create(int $value): self
     {
-        return self::createFromString((string) $value);
+        if ($value >= 0) {
+            throw new InvalidArgumentException('The value must be a negative integer.');
+        }
+
+        // Exact for every negative PHP integer: -1 - PHP_INT_MIN is PHP_INT_MAX, so the argument never overflows.
+        [$additionalInformation, $data] = self::payloadForInt(-1 - $value);
+
+        return new self($additionalInformation, $data);
     }
 
     public static function createFromString(string $value): self
@@ -55,10 +63,12 @@ final class NegativeIntegerObject extends AbstractCBORObject implements Normaliz
             return (string) (-1 - $this->additionalInformation);
         }
 
-        $result = Utils::binToBigInteger($this->data);
-        $minusOne = BigInteger::of(-1);
+        $argument = self::argumentFromPayload($this->data);
+        if ($argument >= 0) {
+            return (string) (-1 - $argument);
+        }
 
-        return $minusOne->minus($result)
+        return BigInteger::of(-1)->minus(Utils::binToBigInteger($this->data))
             ->toBase(10)
         ;
     }
@@ -77,42 +87,15 @@ final class NegativeIntegerObject extends AbstractCBORObject implements Normaliz
             throw new InvalidArgumentException('The value must be a negative integer.');
         }
 
-        $minusOne = BigInteger::of(-1);
-        $computed_value = $minusOne->minus($integer);
-
-        switch (true) {
-            case $computed_value->isLessThan(BigInteger::of(24)):
-                $ai = $computed_value->toInt();
-                $data = null;
-                break;
-            case $computed_value->isLessThan(BigInteger::fromBase('FF', 16)):
-                $ai = 24;
-                $data = self::hex2bin(str_pad($computed_value->toBase(16), 2, '0', STR_PAD_LEFT));
-                break;
-            case $computed_value->isLessThan(BigInteger::fromBase('FFFF', 16)):
-                $ai = 25;
-                $data = self::hex2bin(str_pad($computed_value->toBase(16), 4, '0', STR_PAD_LEFT));
-                break;
-            case $computed_value->isLessThan(BigInteger::fromBase('FFFFFFFF', 16)):
-                $ai = 26;
-                $data = self::hex2bin(str_pad($computed_value->toBase(16), 8, '0', STR_PAD_LEFT));
-                break;
-            default:
-                throw new InvalidArgumentException(
-                    'Out of range. Please use NegativeBigIntegerTag tag with ByteStringObject object instead.'
-                );
+        $argument = BigInteger::of(-1)->minus($integer);
+        if ($argument->isGreaterThan(self::maximumArgument())) {
+            throw new InvalidArgumentException(
+                'Out of range. Please use NegativeBigIntegerTag tag with ByteStringObject object instead.'
+            );
         }
 
-        return new self($ai, $data);
-    }
+        [$additionalInformation, $data] = self::payloadForBigInteger($argument);
 
-    private static function hex2bin(string $data): string
-    {
-        $result = hex2bin($data);
-        if ($result === false) {
-            throw new InvalidArgumentException('Unable to convert the data');
-        }
-
-        return $result;
+        return new self($additionalInformation, $data);
     }
 }

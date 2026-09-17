@@ -65,7 +65,7 @@ $data = $decoded->normalize();
 
 ### Quick Links
 
-- **[Tags Reference](doc/tags.md)** - Complete guide to all 15+ supported CBOR tags
+- **[Tags Reference](doc/tags.md)** - Complete guide to the 70+ supported CBOR tags
 - **[Creating Custom Tags](doc/custom-tags.md)** - Implement your own tags for domain-specific needs
 - **[API Reference](doc/index.md#api-reference)** - Encoding and decoding API
 - **[Examples](doc/index.md#integration-examples)** - WebAuthn, COSE, IoT, and more
@@ -138,11 +138,13 @@ echo $decimal->normalize(); // "3.14159"
 ```
 
 **Supported Tags:**
-- Date/Time (Tags 0, 1)
-- Big Numbers (Tags 2, 3)
-- Decimal/Binary Fractions (Tags 4, 5)
-- Encoding hints (Tags 21, 22, 23)
-- URIs and MIME (Tags 32, 36)
+- Date/Time (Tags 0, 1) and dates without a time (Tags 100, 1004)
+- Big Numbers (Tags 2, 3), Decimal/Binary Fractions (Tags 4, 5) and Rationals (Tag 30)
+- Encoding hints (Tags 21, 22, 23), embedded CBOR (Tags 24, 63)
+- URIs, MIME and UUIDs (Tags 32, 36, 37, 257)
+- COSE structures and CBOR Web Tokens (Tags 16, 17, 18, 61, 96, 97, 98)
+- Typed and multi-dimensional arrays (Tags 40, 41, 64-87, 1040)
+- IP and network addresses (Tags 52, 54, 260, 261)
 - [And more...](doc/tags.md)
 
 **Create your own:** See [Creating Custom Tags](doc/custom-tags.md) guide.

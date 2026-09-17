@@ -24,6 +24,7 @@ return array(
     '19e6faa27d773988183e0f384143fcad' => $vendorDir . '/illuminate/reflection/helpers.php',
     'f625ee536139dfb962a398b200bdb2bd' => $vendorDir . '/illuminate/support/functions.php',
     '72579e7bd17821bb1321b87411366eae' => $vendorDir . '/illuminate/support/helpers.php',
+    '23c18046f52bef3eea034657bafda50f' => $vendorDir . '/symfony/polyfill-php81/bootstrap.php',
     '09f6b20656683369174dd6fa83b7e5fb' => $vendorDir . '/symfony/polyfill-uuid/bootstrap.php',
     '530e62ecf2178d5ac30fe3c96b600878' => $vendorDir . '/facile-it/php-jose-verifier/src/Internal/functions/derived_key.php',
     'fc676f0a6fb5bbf1e0d6bd10a36b3aad' => $vendorDir . '/facile-it/php-jose-verifier/src/Internal/functions/jose_secret_key.php',
