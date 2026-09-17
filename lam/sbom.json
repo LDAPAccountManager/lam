@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:359f5a8b-0e92-4dfd-a7a9-39b926747113",
+  "serialNumber": "urn:uuid:7c162e65-06cc-4ec8-b0e9-94cea38adf42",
   "version": 1,
   "metadata": {
     "tools": [
@@ -87,7 +87,7 @@
     "component": {
       "type": "application",
       "name": "ldap-account-manager",
-      "version": "9.6"
+      "version": "9.7"
     }
   },
   "components": [
@@ -151,11 +151,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "aws/aws-sdk-php-3.384.7.0",
+      "bom-ref": "aws/aws-sdk-php-3.395.4.0",
       "author": "Amazon Web Services",
       "group": "aws",
       "name": "aws-sdk-php",
-      "version": "3.384.7",
+      "version": "3.395.4",
       "description": "AWS SDK for PHP - Use Amazon Web Services in your PHP project",
       "licenses": [
         {
@@ -164,17 +164,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/aws/aws-sdk-php@3.384.7",
+      "purl": "pkg:composer/aws/aws-sdk-php@3.395.4",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d1152dfc19b4cf19f454bc9bc9fdc9ed937f2492",
+          "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0756c511a913b57ab5415db6136d8c0c250ace15",
           "type": "distribution",
-          "comment": "dist reference: d1152dfc19b4cf19f454bc9bc9fdc9ed937f2492"
+          "comment": "dist reference: 0756c511a913b57ab5415db6136d8c0c250ace15"
         },
         {
           "url": "https://github.com/aws/aws-sdk-php.git",
           "type": "vcs",
-          "comment": "source reference: d1152dfc19b4cf19f454bc9bc9fdc9ed937f2492"
+          "comment": "source reference: 0756c511a913b57ab5415db6136d8c0c250ace15"
         },
         {
           "url": "https://aws.amazon.com/sdk-for-php",
@@ -192,7 +192,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/aws/aws-sdk-php/tree/3.384.7",
+          "url": "https://github.com/aws/aws-sdk-php/tree/3.395.4",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -200,11 +200,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "d1152dfc19b4cf19f454bc9bc9fdc9ed937f2492"
+          "value": "0756c511a913b57ab5415db6136d8c0c250ace15"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "d1152dfc19b4cf19f454bc9bc9fdc9ed937f2492"
+          "value": "0756c511a913b57ab5415db6136d8c0c250ace15"
         },
         {
           "name": "cdx:composer:package:type",
@@ -214,10 +214,10 @@
     },
     {
       "type": "library",
-      "bom-ref": "brick/math-0.12.3.0",
+      "bom-ref": "brick/math-1.0.0.0",
       "group": "brick",
       "name": "math",
-      "version": "0.12.3",
+      "version": "1.0.0",
       "description": "Arbitrary-precision arithmetic library",
       "licenses": [
         {
@@ -226,17 +226,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/brick/math@0.12.3",
+      "purl": "pkg:composer/brick/math@1.0.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/brick/math/zipball/866551da34e9a618e64a819ee1e01c20d8a588ba",
+          "url": "https://api.github.com/repos/brick/math/zipball/2effe05d2177c451b86c6a073196a4034c02f211",
           "type": "distribution",
-          "comment": "dist reference: 866551da34e9a618e64a819ee1e01c20d8a588ba"
+          "comment": "dist reference: 2effe05d2177c451b86c6a073196a4034c02f211"
         },
         {
           "url": "https://github.com/brick/math.git",
           "type": "vcs",
-          "comment": "source reference: 866551da34e9a618e64a819ee1e01c20d8a588ba"
+          "comment": "source reference: 2effe05d2177c451b86c6a073196a4034c02f211"
         },
         {
           "url": "https://github.com/brick/math/issues",
@@ -244,7 +244,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/brick/math/tree/0.12.3",
+          "url": "https://github.com/brick/math/tree/1.0.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -252,11 +252,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "866551da34e9a618e64a819ee1e01c20d8a588ba"
+          "value": "2effe05d2177c451b86c6a073196a4034c02f211"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "866551da34e9a618e64a819ee1e01c20d8a588ba"
+          "value": "2effe05d2177c451b86c6a073196a4034c02f211"
         },
         {
           "name": "cdx:composer:package:type",
@@ -266,11 +266,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "carbonphp/carbon-doctrine-types-3.2.0.0",
+      "bom-ref": "carbonphp/carbon-doctrine-types-3.2.1.0",
       "author": "KyleKatarn",
       "group": "carbonphp",
       "name": "carbon-doctrine-types",
-      "version": "3.2.0",
+      "version": "3.2.1",
       "description": "Types to use Carbon in Doctrine",
       "licenses": [
         {
@@ -279,17 +279,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/carbonphp/carbon-doctrine-types@3.2.0",
+      "purl": "pkg:composer/carbonphp/carbon-doctrine-types@3.2.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/CarbonPHP/carbon-doctrine-types/zipball/18ba5ddfec8976260ead6e866180bd5d2f71aa1d",
+          "url": "https://api.github.com/repos/CarbonPHP/carbon-doctrine-types/zipball/5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc",
           "type": "distribution",
-          "comment": "dist reference: 18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+          "comment": "dist reference: 5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc"
         },
         {
           "url": "https://github.com/CarbonPHP/carbon-doctrine-types.git",
           "type": "vcs",
-          "comment": "source reference: 18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+          "comment": "source reference: 5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc"
         },
         {
           "url": "https://github.com/CarbonPHP/carbon-doctrine-types/issues",
@@ -297,7 +297,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/CarbonPHP/carbon-doctrine-types/tree/3.2.0",
+          "url": "https://github.com/CarbonPHP/carbon-doctrine-types/tree/3.2.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -305,11 +305,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+          "value": "5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+          "value": "5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc"
         },
         {
           "name": "cdx:composer:package:type",
@@ -319,11 +319,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "christian-riesen/base32-1.6.0.0",
+      "bom-ref": "christian-riesen/base32-2.0.1.0",
       "author": "Christian Riesen",
       "group": "christian-riesen",
       "name": "base32",
-      "version": "1.6.0",
+      "version": "2.0.1",
       "description": "Base32 encoder/decoder according to RFC 4648",
       "licenses": [
         {
@@ -332,32 +332,42 @@
           }
         }
       ],
-      "purl": "pkg:composer/christian-riesen/base32@1.6.0",
+      "purl": "pkg:composer/christian-riesen/base32@2.0.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/ChristianRiesen/base32/zipball/2e82dab3baa008e24a505649b0d583c31d31e894",
+          "url": "https://api.github.com/repos/ChristianRiesen/base32/zipball/be07b4a4a2d6056975934d71e111c64e7d8babf9",
           "type": "distribution",
-          "comment": "dist reference: 2e82dab3baa008e24a505649b0d583c31d31e894"
+          "comment": "dist reference: be07b4a4a2d6056975934d71e111c64e7d8babf9"
         },
         {
           "url": "https://github.com/ChristianRiesen/base32.git",
           "type": "vcs",
-          "comment": "source reference: 2e82dab3baa008e24a505649b0d583c31d31e894"
+          "comment": "source reference: be07b4a4a2d6056975934d71e111c64e7d8babf9"
         },
         {
           "url": "https://github.com/ChristianRiesen/base32",
           "type": "website",
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/ChristianRiesen/base32/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/ChristianRiesen/base32/tree/2.0.1",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
       ],
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "2e82dab3baa008e24a505649b0d583c31d31e894"
+          "value": "be07b4a4a2d6056975934d71e111c64e7d8babf9"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "2e82dab3baa008e24a505649b0d583c31d31e894"
+          "value": "be07b4a4a2d6056975934d71e111c64e7d8babf9"
         },
         {
           "name": "cdx:composer:package:type",
@@ -482,10 +492,10 @@
     },
     {
       "type": "library",
-      "bom-ref": "duosecurity/duo_universal_php-1.1.2.0",
+      "bom-ref": "duosecurity/duo_universal_php-1.2.0.0",
       "group": "duosecurity",
       "name": "duo_universal_php",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "description": "A PHP implementation of the Duo Universal SDK.",
       "licenses": [
         {
@@ -494,17 +504,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/duosecurity/duo_universal_php@1.1.2",
+      "purl": "pkg:composer/duosecurity/duo_universal_php@1.2.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/68e699c52d41f681df07dc0f98e2ba551bef2fd3",
+          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/7045587e8a0a850355ed55f019090a033e49b29a",
           "type": "distribution",
-          "comment": "dist reference: 68e699c52d41f681df07dc0f98e2ba551bef2fd3"
+          "comment": "dist reference: 7045587e8a0a850355ed55f019090a033e49b29a"
         },
         {
           "url": "https://github.com/duosecurity/duo_universal_php.git",
           "type": "vcs",
-          "comment": "source reference: 68e699c52d41f681df07dc0f98e2ba551bef2fd3"
+          "comment": "source reference: 7045587e8a0a850355ed55f019090a033e49b29a"
         },
         {
           "url": "https://duo.com/",
@@ -522,7 +532,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.1.2",
+          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.2.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -530,11 +540,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "68e699c52d41f681df07dc0f98e2ba551bef2fd3"
+          "value": "7045587e8a0a850355ed55f019090a033e49b29a"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "68e699c52d41f681df07dc0f98e2ba551bef2fd3"
+          "value": "7045587e8a0a850355ed55f019090a033e49b29a"
         },
         {
           "name": "cdx:composer:package:type",
@@ -544,11 +554,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "facile-it/php-jose-verifier-0.5.2.0",
+      "bom-ref": "facile-it/php-jose-verifier-1.0.0.0",
       "author": "Thomas Vargiu",
       "group": "facile-it",
       "name": "php-jose-verifier",
-      "version": "0.5.2",
+      "version": "1.0.0",
       "description": "JWT Token Verifier. A JWT verifier for access tokens, id tokens and others",
       "licenses": [
         {
@@ -557,17 +567,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/facile-it/php-jose-verifier@0.5.2",
+      "purl": "pkg:composer/facile-it/php-jose-verifier@1.0.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/facile-it/php-jose-verifier/zipball/a0045e88d9ded81055fffd43a0b74ce3818f76aa",
+          "url": "https://api.github.com/repos/facile-it/php-jose-verifier/zipball/2fed59e21b28729c1fa57456ac129ffc2bc2c08e",
           "type": "distribution",
-          "comment": "dist reference: a0045e88d9ded81055fffd43a0b74ce3818f76aa"
+          "comment": "dist reference: 2fed59e21b28729c1fa57456ac129ffc2bc2c08e"
         },
         {
           "url": "https://github.com/facile-it/php-jose-verifier.git",
           "type": "vcs",
-          "comment": "source reference: a0045e88d9ded81055fffd43a0b74ce3818f76aa"
+          "comment": "source reference: 2fed59e21b28729c1fa57456ac129ffc2bc2c08e"
         },
         {
           "url": "https://github.com/facile-it/php-jose-verifier/issues",
@@ -575,7 +585,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/facile-it/php-jose-verifier/tree/0.5.2",
+          "url": "https://github.com/facile-it/php-jose-verifier/tree/1.0.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -583,11 +593,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "a0045e88d9ded81055fffd43a0b74ce3818f76aa"
+          "value": "2fed59e21b28729c1fa57456ac129ffc2bc2c08e"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "a0045e88d9ded81055fffd43a0b74ce3818f76aa"
+          "value": "2fed59e21b28729c1fa57456ac129ffc2bc2c08e"
         },
         {
           "name": "cdx:composer:package:type",
@@ -597,11 +607,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "facile-it/php-openid-client-0.4.0.0",
+      "bom-ref": "facile-it/php-openid-client-1.0.0.0",
       "author": "Thomas Vargiu",
       "group": "facile-it",
       "name": "php-openid-client",
-      "version": "0.4.0",
+      "version": "1.0.0",
       "description": "OpenID (OIDC) Client",
       "licenses": [
         {
@@ -610,17 +620,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/facile-it/php-openid-client@0.4.0",
+      "purl": "pkg:composer/facile-it/php-openid-client@1.0.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/facile-it/php-openid-client/zipball/3c7100990b616f36c68b0f47a593cfbb73694a24",
+          "url": "https://api.github.com/repos/facile-it/php-openid-client/zipball/4257463518a8a9f1de6fe6014c130330030331fb",
           "type": "distribution",
-          "comment": "dist reference: 3c7100990b616f36c68b0f47a593cfbb73694a24"
+          "comment": "dist reference: 4257463518a8a9f1de6fe6014c130330030331fb"
         },
         {
           "url": "https://github.com/facile-it/php-openid-client.git",
           "type": "vcs",
-          "comment": "source reference: 3c7100990b616f36c68b0f47a593cfbb73694a24"
+          "comment": "source reference: 4257463518a8a9f1de6fe6014c130330030331fb"
         },
         {
           "url": "https://github.com/facile-it/php-openid-client/issues",
@@ -628,7 +638,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/facile-it/php-openid-client/tree/0.4.0",
+          "url": "https://github.com/facile-it/php-openid-client/tree/1.0.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -636,11 +646,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "3c7100990b616f36c68b0f47a593cfbb73694a24"
+          "value": "4257463518a8a9f1de6fe6014c130330030331fb"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "3c7100990b616f36c68b0f47a593cfbb73694a24"
+          "value": "4257463518a8a9f1de6fe6014c130330030331fb"
         },
         {
           "name": "cdx:composer:package:type",
@@ -650,11 +660,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "firebase/php-jwt-7.0.5.0",
+      "bom-ref": "firebase/php-jwt-7.1.1.0",
       "author": "Neuman Vong, Anant Narayanan",
       "group": "firebase",
       "name": "php-jwt",
-      "version": "v7.0.5",
+      "version": "v7.1.1",
       "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
       "licenses": [
         {
@@ -663,20 +673,20 @@
           }
         }
       ],
-      "purl": "pkg:composer/firebase/php-jwt@v7.0.5",
+      "purl": "pkg:composer/firebase/php-jwt@v7.1.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/googleapis/php-jwt/zipball/47ad26bab5e7c70ae8a6f08ed25ff83631121380",
+          "url": "https://api.github.com/repos/googleapis/php-jwt/zipball/9bc93bd7e3ee5bead4cd23c365ec12f3c1fb0a6a",
           "type": "distribution",
-          "comment": "dist reference: 47ad26bab5e7c70ae8a6f08ed25ff83631121380"
+          "comment": "dist reference: 9bc93bd7e3ee5bead4cd23c365ec12f3c1fb0a6a"
         },
         {
           "url": "https://github.com/googleapis/php-jwt.git",
           "type": "vcs",
-          "comment": "source reference: 47ad26bab5e7c70ae8a6f08ed25ff83631121380"
+          "comment": "source reference: 9bc93bd7e3ee5bead4cd23c365ec12f3c1fb0a6a"
         },
         {
-          "url": "https://github.com/firebase/php-jwt",
+          "url": "https://github.com/googleapis/php-jwt",
           "type": "website",
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
@@ -686,7 +696,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/googleapis/php-jwt/tree/v7.0.5",
+          "url": "https://github.com/googleapis/php-jwt/tree/v7.1.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -694,11 +704,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "47ad26bab5e7c70ae8a6f08ed25ff83631121380"
+          "value": "9bc93bd7e3ee5bead4cd23c365ec12f3c1fb0a6a"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "47ad26bab5e7c70ae8a6f08ed25ff83631121380"
+          "value": "9bc93bd7e3ee5bead4cd23c365ec12f3c1fb0a6a"
         },
         {
           "name": "cdx:composer:package:type",
@@ -708,11 +718,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "guzzlehttp/guzzle-7.11.1.0",
+      "bom-ref": "guzzlehttp/guzzle-8.2.0.0",
       "author": "Graham Campbell, Michael Dowling, Jeremy Lindblom, George Mponos, Tobias Nyholm, M\u00E1rk S\u00E1gi-Kaz\u00E1r, Tobias Schultze",
       "group": "guzzlehttp",
       "name": "guzzle",
-      "version": "7.11.1",
+      "version": "8.2.0",
       "description": "Guzzle is a PHP HTTP client library",
       "licenses": [
         {
@@ -721,17 +731,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/guzzlehttp/guzzle@7.11.1",
+      "purl": "pkg:composer/guzzlehttp/guzzle@8.2.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/guzzle/guzzle/zipball/5af96f374e0ab4ebd747b8310888c99d3adb0a8c",
+          "url": "https://api.github.com/repos/guzzle/guzzle/zipball/93939470950a9b11e2e84204166ef5e048c55fe4",
           "type": "distribution",
-          "comment": "dist reference: 5af96f374e0ab4ebd747b8310888c99d3adb0a8c"
+          "comment": "dist reference: 93939470950a9b11e2e84204166ef5e048c55fe4"
         },
         {
           "url": "https://github.com/guzzle/guzzle.git",
           "type": "vcs",
-          "comment": "source reference: 5af96f374e0ab4ebd747b8310888c99d3adb0a8c"
+          "comment": "source reference: 93939470950a9b11e2e84204166ef5e048c55fe4"
         },
         {
           "url": "https://github.com/guzzle/guzzle/issues",
@@ -739,7 +749,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/guzzle/guzzle/tree/7.11.1",
+          "url": "https://github.com/guzzle/guzzle/tree/8.2.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -747,11 +757,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "5af96f374e0ab4ebd747b8310888c99d3adb0a8c"
+          "value": "93939470950a9b11e2e84204166ef5e048c55fe4"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "5af96f374e0ab4ebd747b8310888c99d3adb0a8c"
+          "value": "93939470950a9b11e2e84204166ef5e048c55fe4"
         },
         {
           "name": "cdx:composer:package:type",
@@ -761,11 +771,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "guzzlehttp/promises-2.5.0.0",
+      "bom-ref": "guzzlehttp/promises-3.0.2.0",
       "author": "Graham Campbell, Michael Dowling, Tobias Nyholm, Tobias Schultze",
       "group": "guzzlehttp",
       "name": "promises",
-      "version": "2.5.0",
+      "version": "3.0.2",
       "description": "Guzzle promises library",
       "licenses": [
         {
@@ -774,17 +784,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/guzzlehttp/promises@2.5.0",
+      "purl": "pkg:composer/guzzlehttp/promises@3.0.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/guzzle/promises/zipball/4360e982f87f5f258bf872d094647791db2f4c8e",
+          "url": "https://api.github.com/repos/guzzle/promises/zipball/42118e66a53c492effaf92bc357e931985d5c6f9",
           "type": "distribution",
-          "comment": "dist reference: 4360e982f87f5f258bf872d094647791db2f4c8e"
+          "comment": "dist reference: 42118e66a53c492effaf92bc357e931985d5c6f9"
         },
         {
           "url": "https://github.com/guzzle/promises.git",
           "type": "vcs",
-          "comment": "source reference: 4360e982f87f5f258bf872d094647791db2f4c8e"
+          "comment": "source reference: 42118e66a53c492effaf92bc357e931985d5c6f9"
         },
         {
           "url": "https://github.com/guzzle/promises/issues",
@@ -792,7 +802,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/guzzle/promises/tree/2.5.0",
+          "url": "https://github.com/guzzle/promises/tree/3.0.2",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -800,11 +810,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "4360e982f87f5f258bf872d094647791db2f4c8e"
+          "value": "42118e66a53c492effaf92bc357e931985d5c6f9"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "4360e982f87f5f258bf872d094647791db2f4c8e"
+          "value": "42118e66a53c492effaf92bc357e931985d5c6f9"
         },
         {
           "name": "cdx:composer:package:type",
@@ -814,11 +824,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "guzzlehttp/psr7-2.11.0.0",
+      "bom-ref": "guzzlehttp/psr7-3.1.0.0",
       "author": "Graham Campbell, Michael Dowling, George Mponos, Tobias Nyholm, M\u00E1rk S\u00E1gi-Kaz\u00E1r, Tobias Schultze, M\u00E1rk S\u00E1gi-Kaz\u00E1r",
       "group": "guzzlehttp",
       "name": "psr7",
-      "version": "2.11.0",
+      "version": "3.1.0",
       "description": "PSR-7 message implementation that also provides common utility methods",
       "licenses": [
         {
@@ -827,17 +837,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/guzzlehttp/psr7@2.11.0",
+      "purl": "pkg:composer/guzzlehttp/psr7@3.1.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/guzzle/psr7/zipball/bbb5e61349fa5cb822b3e87842b951088b76b81f",
+          "url": "https://api.github.com/repos/guzzle/psr7/zipball/a3059ba1a84c9139c4ae03cf0f45bea276c97c74",
           "type": "distribution",
-          "comment": "dist reference: bbb5e61349fa5cb822b3e87842b951088b76b81f"
+          "comment": "dist reference: a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
         },
         {
           "url": "https://github.com/guzzle/psr7.git",
           "type": "vcs",
-          "comment": "source reference: bbb5e61349fa5cb822b3e87842b951088b76b81f"
+          "comment": "source reference: a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
         },
         {
           "url": "https://github.com/guzzle/psr7/issues",
@@ -845,7 +855,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/guzzle/psr7/tree/2.11.0",
+          "url": "https://github.com/guzzle/psr7/tree/3.1.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -853,11 +863,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "bbb5e61349fa5cb822b3e87842b951088b76b81f"
+          "value": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "bbb5e61349fa5cb822b3e87842b951088b76b81f"
+          "value": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
         },
         {
           "name": "cdx:composer:package:type",
@@ -867,11 +877,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/collections-12.62.0.0",
+      "bom-ref": "illuminate/collections-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "collections",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Collections package.",
       "licenses": [
         {
@@ -880,7 +890,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/collections@v12.62.0",
+      "purl": "pkg:composer/illuminate/collections@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/collections/zipball/83313b009c4afb6f02dbc090bdb67809756eefa2",
@@ -925,11 +935,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/conditionable-12.62.0.0",
+      "bom-ref": "illuminate/conditionable-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "conditionable",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Conditionable package.",
       "licenses": [
         {
@@ -938,7 +948,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/conditionable@v12.62.0",
+      "purl": "pkg:composer/illuminate/conditionable@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/conditionable/zipball/ec677967c1f2faf90b8428919124d2184a4c9b49",
@@ -983,11 +993,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/contracts-12.62.0.0",
+      "bom-ref": "illuminate/contracts-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "contracts",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Contracts package.",
       "licenses": [
         {
@@ -996,7 +1006,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/contracts@v12.62.0",
+      "purl": "pkg:composer/illuminate/contracts@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/contracts/zipball/c16fd7ba7d8e6b8f336639ceb6b7e1ff6ed0efb5",
@@ -1041,11 +1051,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/macroable-12.62.0.0",
+      "bom-ref": "illuminate/macroable-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "macroable",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Macroable package.",
       "licenses": [
         {
@@ -1054,7 +1064,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/macroable@v12.62.0",
+      "purl": "pkg:composer/illuminate/macroable@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/macroable/zipball/e295d62d89dcdb87e2b1bd70dd14d074a0ed73cc",
@@ -1099,11 +1109,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/pagination-12.62.0.0",
+      "bom-ref": "illuminate/pagination-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "pagination",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Pagination package.",
       "licenses": [
         {
@@ -1112,7 +1122,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/pagination@v12.62.0",
+      "purl": "pkg:composer/illuminate/pagination@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/pagination/zipball/8327d828676654053906a771abf5eea5426354ec",
@@ -1157,11 +1167,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/reflection-12.62.0.0",
+      "bom-ref": "illuminate/reflection-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "reflection",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Reflection package.",
       "licenses": [
         {
@@ -1170,7 +1180,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/reflection@v12.62.0",
+      "purl": "pkg:composer/illuminate/reflection@v12.69.2",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/illuminate/reflection/zipball/348cf5da9de89b596d7723be6425fb048e2bf4bb",
@@ -1215,11 +1225,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "illuminate/support-12.62.0.0",
+      "bom-ref": "illuminate/support-12.69.2.0",
       "author": "Taylor Otwell",
       "group": "illuminate",
       "name": "support",
-      "version": "v12.62.0",
+      "version": "v12.69.2",
       "description": "The Illuminate Support package.",
       "licenses": [
         {
@@ -1228,17 +1238,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/illuminate/support@v12.62.0",
+      "purl": "pkg:composer/illuminate/support@v12.69.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/illuminate/support/zipball/3a8772095ef7d6b1961a77f2f0b8921c056c48ea",
+          "url": "https://api.github.com/repos/illuminate/support/zipball/7d7a7d2dc5084aa4b1fd8b0a42094e1d3fb51e00",
           "type": "distribution",
-          "comment": "dist reference: 3a8772095ef7d6b1961a77f2f0b8921c056c48ea"
+          "comment": "dist reference: 7d7a7d2dc5084aa4b1fd8b0a42094e1d3fb51e00"
         },
         {
           "url": "https://github.com/illuminate/support.git",
           "type": "vcs",
-          "comment": "source reference: 3a8772095ef7d6b1961a77f2f0b8921c056c48ea"
+          "comment": "source reference: 7d7a7d2dc5084aa4b1fd8b0a42094e1d3fb51e00"
         },
         {
           "url": "https://laravel.com",
@@ -1259,11 +1269,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "3a8772095ef7d6b1961a77f2f0b8921c056c48ea"
+          "value": "7d7a7d2dc5084aa4b1fd8b0a42094e1d3fb51e00"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "3a8772095ef7d6b1961a77f2f0b8921c056c48ea"
+          "value": "7d7a7d2dc5084aa4b1fd8b0a42094e1d3fb51e00"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1273,11 +1283,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "monolog/monolog-3.10.0.0",
+      "bom-ref": "monolog/monolog-3.12.0.0",
       "author": "Jordi Boggiano",
       "group": "monolog",
       "name": "monolog",
-      "version": "3.10.0",
+      "version": "3.12.0",
       "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
       "licenses": [
         {
@@ -1286,17 +1296,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/monolog/monolog@3.10.0",
+      "purl": "pkg:composer/monolog/monolog@3.12.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b321dd6749f0bf7189444158a3ce785cc16d69b0",
+          "url": "https://api.github.com/repos/Seldaek/monolog/zipball/72c534fc0ab181ef52d92a68382318631e301608",
           "type": "distribution",
-          "comment": "dist reference: b321dd6749f0bf7189444158a3ce785cc16d69b0"
+          "comment": "dist reference: 72c534fc0ab181ef52d92a68382318631e301608"
         },
         {
           "url": "https://github.com/Seldaek/monolog.git",
           "type": "vcs",
-          "comment": "source reference: b321dd6749f0bf7189444158a3ce785cc16d69b0"
+          "comment": "source reference: 72c534fc0ab181ef52d92a68382318631e301608"
         },
         {
           "url": "https://github.com/Seldaek/monolog",
@@ -1309,7 +1319,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/Seldaek/monolog/tree/3.10.0",
+          "url": "https://github.com/Seldaek/monolog/tree/3.12.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -1317,11 +1327,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "b321dd6749f0bf7189444158a3ce785cc16d69b0"
+          "value": "72c534fc0ab181ef52d92a68382318631e301608"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "b321dd6749f0bf7189444158a3ce785cc16d69b0"
+          "value": "72c534fc0ab181ef52d92a68382318631e301608"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1331,11 +1341,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "mtdowling/jmespath.php-2.9.0.0",
+      "bom-ref": "mtdowling/jmespath.php-2.9.2.0",
       "author": "Graham Campbell, Michael Dowling",
       "group": "mtdowling",
       "name": "jmespath.php",
-      "version": "2.9.0",
+      "version": "2.9.2",
       "description": "Declaratively specify how to extract elements from a JSON document",
       "licenses": [
         {
@@ -1344,17 +1354,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/mtdowling/jmespath.php@2.9.0",
+      "purl": "pkg:composer/mtdowling/jmespath.php@2.9.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/9501100cccbc6005cbaf3847bfdfb5d6334996fe",
+          "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/2157c5e50e813ec6a96c1eed3be7f64a20fb32a8",
           "type": "distribution",
-          "comment": "dist reference: 9501100cccbc6005cbaf3847bfdfb5d6334996fe"
+          "comment": "dist reference: 2157c5e50e813ec6a96c1eed3be7f64a20fb32a8"
         },
         {
           "url": "https://github.com/jmespath/jmespath.php.git",
           "type": "vcs",
-          "comment": "source reference: 9501100cccbc6005cbaf3847bfdfb5d6334996fe"
+          "comment": "source reference: 2157c5e50e813ec6a96c1eed3be7f64a20fb32a8"
         },
         {
           "url": "https://github.com/jmespath/jmespath.php/issues",
@@ -1362,7 +1372,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/jmespath/jmespath.php/tree/2.9.0",
+          "url": "https://github.com/jmespath/jmespath.php/tree/2.9.2",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -1370,11 +1380,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "9501100cccbc6005cbaf3847bfdfb5d6334996fe"
+          "value": "2157c5e50e813ec6a96c1eed3be7f64a20fb32a8"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "9501100cccbc6005cbaf3847bfdfb5d6334996fe"
+          "value": "2157c5e50e813ec6a96c1eed3be7f64a20fb32a8"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1384,11 +1394,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "nesbot/carbon-3.11.4.0",
+      "bom-ref": "nesbot/carbon-3.14.0.0",
       "author": "Brian Nesbitt, kylekatarnls",
       "group": "nesbot",
       "name": "carbon",
-      "version": "3.11.4",
+      "version": "3.14.0",
       "description": "An API extension for DateTime that supports 281 different languages.",
       "licenses": [
         {
@@ -1397,17 +1407,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/nesbot/carbon@3.11.4",
+      "purl": "pkg:composer/nesbot/carbon@3.14.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/e890471a3494740f7d9326d72ce6a8c559ffee60",
+          "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/0023eaa2c9110e47446dd512a263c69c40cd41f2",
           "type": "distribution",
-          "comment": "dist reference: e890471a3494740f7d9326d72ce6a8c559ffee60"
+          "comment": "dist reference: 0023eaa2c9110e47446dd512a263c69c40cd41f2"
         },
         {
           "url": "https://github.com/CarbonPHP/carbon.git",
           "type": "vcs",
-          "comment": "source reference: e890471a3494740f7d9326d72ce6a8c559ffee60"
+          "comment": "source reference: 0023eaa2c9110e47446dd512a263c69c40cd41f2"
         },
         {
           "url": "https://carbonphp.github.io/carbon/",
@@ -1433,11 +1443,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "e890471a3494740f7d9326d72ce6a8c559ffee60"
+          "value": "0023eaa2c9110e47446dd512a263c69c40cd41f2"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "e890471a3494740f7d9326d72ce6a8c559ffee60"
+          "value": "0023eaa2c9110e47446dd512a263c69c40cd41f2"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1612,59 +1622,6 @@
         {
           "name": "cdx:composer:package:sourceReference",
           "value": "96c132c7f2f7bc3230723b66e89f8f150b29d5ae"
-        },
-        {
-          "name": "cdx:composer:package:type",
-          "value": "library"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "bom-ref": "paragonie/sodium_compat-2.5.0.0",
-      "author": "Paragon Initiative Enterprises, Frank Denis",
-      "group": "paragonie",
-      "name": "sodium_compat",
-      "version": "v2.5.0",
-      "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
-      "licenses": [
-        {
-          "license": {
-            "id": "ISC"
-          }
-        }
-      ],
-      "purl": "pkg:composer/paragonie/sodium_compat@v2.5.0",
-      "externalReferences": [
-        {
-          "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/4714da6efdc782c06690bc72ce34fae7941c2d9f",
-          "type": "distribution",
-          "comment": "dist reference: 4714da6efdc782c06690bc72ce34fae7941c2d9f"
-        },
-        {
-          "url": "https://github.com/paragonie/sodium_compat.git",
-          "type": "vcs",
-          "comment": "source reference: 4714da6efdc782c06690bc72ce34fae7941c2d9f"
-        },
-        {
-          "url": "https://github.com/paragonie/sodium_compat/issues",
-          "type": "issue-tracker",
-          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
-        },
-        {
-          "url": "https://github.com/paragonie/sodium_compat/tree/v2.5.0",
-          "type": "vcs",
-          "comment": "as detected from Composer manifest \u0027support.source\u0027"
-        }
-      ],
-      "properties": [
-        {
-          "name": "cdx:composer:package:distReference",
-          "value": "4714da6efdc782c06690bc72ce34fae7941c2d9f"
-        },
-        {
-          "name": "cdx:composer:package:sourceReference",
-          "value": "4714da6efdc782c06690bc72ce34fae7941c2d9f"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1949,11 +1906,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "phpseclib/phpseclib-3.0.53.0",
-      "author": "Jim Wigginton, Patrick Monnerat, Andreas Fischer, Hans-J\u00FCrgen Petrich, Graham Campbell",
+      "bom-ref": "phpseclib/phpseclib-4.0.1.0",
+      "author": "Jim Wigginton, Patrick Monnerat, Andreas Fischer, Hans-J\u00FCrgen Petrich, Graham Campbell, Jack Worman",
       "group": "phpseclib",
       "name": "phpseclib",
-      "version": "3.0.53",
+      "version": "4.0.1",
       "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
       "licenses": [
         {
@@ -1962,20 +1919,20 @@
           }
         }
       ],
-      "purl": "pkg:composer/phpseclib/phpseclib@3.0.53",
+      "purl": "pkg:composer/phpseclib/phpseclib@4.0.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/511ddc8e352d5d1f1e33bea468b6f4ef48438cf9",
+          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/bb7b959c8159957edae6f5084ebbac765d310e16",
           "type": "distribution",
-          "comment": "dist reference: 511ddc8e352d5d1f1e33bea468b6f4ef48438cf9"
+          "comment": "dist reference: bb7b959c8159957edae6f5084ebbac765d310e16"
         },
         {
           "url": "https://github.com/phpseclib/phpseclib.git",
           "type": "vcs",
-          "comment": "source reference: 511ddc8e352d5d1f1e33bea468b6f4ef48438cf9"
+          "comment": "source reference: bb7b959c8159957edae6f5084ebbac765d310e16"
         },
         {
-          "url": "http://phpseclib.sourceforge.net",
+          "url": "https://phpseclib.com/",
           "type": "website",
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
@@ -1985,7 +1942,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/phpseclib/phpseclib/tree/3.0.53",
+          "url": "https://github.com/phpseclib/phpseclib/tree/4.0.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -1993,11 +1950,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "511ddc8e352d5d1f1e33bea468b6f4ef48438cf9"
+          "value": "bb7b959c8159957edae6f5084ebbac765d310e16"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "511ddc8e352d5d1f1e33bea468b6f4ef48438cf9"
+          "value": "bb7b959c8159957edae6f5084ebbac765d310e16"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2007,10 +1964,10 @@
     },
     {
       "type": "library",
-      "bom-ref": "phpstan/phpdoc-parser-2.3.2.0",
+      "bom-ref": "phpstan/phpdoc-parser-2.3.5.0",
       "group": "phpstan",
       "name": "phpdoc-parser",
-      "version": "2.3.2",
+      "version": "2.3.5",
       "description": "PHPDoc parser with support for nullable, intersection and generic types",
       "licenses": [
         {
@@ -2019,17 +1976,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/phpstan/phpdoc-parser@2.3.2",
+      "purl": "pkg:composer/phpstan/phpdoc-parser@2.3.5",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/a004701b11273a26cd7955a61d67a7f1e525a45a",
+          "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
           "type": "distribution",
-          "comment": "dist reference: a004701b11273a26cd7955a61d67a7f1e525a45a"
+          "comment": "dist reference: 148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
         },
         {
           "url": "https://github.com/phpstan/phpdoc-parser.git",
           "type": "vcs",
-          "comment": "source reference: a004701b11273a26cd7955a61d67a7f1e525a45a"
+          "comment": "source reference: 148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
         },
         {
           "url": "https://github.com/phpstan/phpdoc-parser/issues",
@@ -2037,7 +1994,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/phpstan/phpdoc-parser/tree/2.3.2",
+          "url": "https://github.com/phpstan/phpdoc-parser/tree/2.3.5",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2045,59 +2002,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "a004701b11273a26cd7955a61d67a7f1e525a45a"
+          "value": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "a004701b11273a26cd7955a61d67a7f1e525a45a"
-        },
-        {
-          "name": "cdx:composer:package:type",
-          "value": "library"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "bom-ref": "psr/cache-3.0.0.0",
-      "author": "PHP-FIG",
-      "group": "psr",
-      "name": "cache",
-      "version": "3.0.0",
-      "description": "Common interface for caching libraries",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:composer/psr/cache@3.0.0",
-      "externalReferences": [
-        {
-          "url": "https://api.github.com/repos/php-fig/cache/zipball/aa5030cfa5405eccfdcb1083ce040c2cb8d253bf",
-          "type": "distribution",
-          "comment": "dist reference: aa5030cfa5405eccfdcb1083ce040c2cb8d253bf"
-        },
-        {
-          "url": "https://github.com/php-fig/cache.git",
-          "type": "vcs",
-          "comment": "source reference: aa5030cfa5405eccfdcb1083ce040c2cb8d253bf"
-        },
-        {
-          "url": "https://github.com/php-fig/cache/tree/3.0.0",
-          "type": "vcs",
-          "comment": "as detected from Composer manifest \u0027support.source\u0027"
-        }
-      ],
-      "properties": [
-        {
-          "name": "cdx:composer:package:distReference",
-          "value": "aa5030cfa5405eccfdcb1083ce040c2cb8d253bf"
-        },
-        {
-          "name": "cdx:composer:package:sourceReference",
-          "value": "aa5030cfa5405eccfdcb1083ce040c2cb8d253bf"
+          "value": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2632,49 +2541,6 @@
     },
     {
       "type": "library",
-      "bom-ref": "ralouphie/getallheaders-3.0.3.0",
-      "author": "Ralph Khattar",
-      "group": "ralouphie",
-      "name": "getallheaders",
-      "version": "3.0.3",
-      "description": "A polyfill for getallheaders.",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:composer/ralouphie/getallheaders@3.0.3",
-      "externalReferences": [
-        {
-          "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
-          "type": "distribution",
-          "comment": "dist reference: 120b605dfeb996808c31b6477290a714d356e822"
-        },
-        {
-          "url": "https://github.com/ralouphie/getallheaders.git",
-          "type": "vcs",
-          "comment": "source reference: 120b605dfeb996808c31b6477290a714d356e822"
-        }
-      ],
-      "properties": [
-        {
-          "name": "cdx:composer:package:distReference",
-          "value": "120b605dfeb996808c31b6477290a714d356e822"
-        },
-        {
-          "name": "cdx:composer:package:sourceReference",
-          "value": "120b605dfeb996808c31b6477290a714d356e822"
-        },
-        {
-          "name": "cdx:composer:package:type",
-          "value": "library"
-        }
-      ]
-    },
-    {
-      "type": "library",
       "bom-ref": "spomky-labs/aes-key-wrap-7.0.0.0",
       "author": "Florent Morselli",
       "group": "spomky-labs",
@@ -2781,11 +2647,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "spomky-labs/cbor-php-3.2.3.0",
+      "bom-ref": "spomky-labs/cbor-php-3.4.2.0",
       "author": "Florent Morselli, All contributors",
       "group": "spomky-labs",
       "name": "cbor-php",
-      "version": "3.2.3",
+      "version": "3.4.2",
       "description": "CBOR Encoder/Decoder for PHP",
       "licenses": [
         {
@@ -2794,17 +2660,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/spomky-labs/cbor-php@3.2.3",
+      "purl": "pkg:composer/spomky-labs/cbor-php@3.4.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/dd6eb84e6d92f7b8bd0da56b4b4dd7235aed0c32",
+          "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6",
           "type": "distribution",
-          "comment": "dist reference: dd6eb84e6d92f7b8bd0da56b4b4dd7235aed0c32"
+          "comment": "dist reference: 8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6"
         },
         {
           "url": "https://github.com/Spomky-Labs/cbor-php.git",
           "type": "vcs",
-          "comment": "source reference: dd6eb84e6d92f7b8bd0da56b4b4dd7235aed0c32"
+          "comment": "source reference: 8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6"
         },
         {
           "url": "https://github.com/Spomky-Labs/cbor-php/issues",
@@ -2812,7 +2678,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/Spomky-Labs/cbor-php/tree/3.2.3",
+          "url": "https://github.com/Spomky-Labs/cbor-php/tree/3.4.2",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2820,11 +2686,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "dd6eb84e6d92f7b8bd0da56b4b4dd7235aed0c32"
+          "value": "8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "dd6eb84e6d92f7b8bd0da56b4b4dd7235aed0c32"
+          "value": "8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2834,11 +2700,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "spomky-labs/pki-framework-1.4.2.0",
+      "bom-ref": "spomky-labs/pki-framework-1.6.3.0",
       "author": "Joni Eskelinen, Florent Morselli",
       "group": "spomky-labs",
       "name": "pki-framework",
-      "version": "1.4.2",
+      "version": "1.6.3",
       "description": "A PHP framework for managing Public Key Infrastructures. It comprises X.509 public key certificates, attribute certificates, certification requests and certification path validation.",
       "licenses": [
         {
@@ -2847,17 +2713,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/spomky-labs/pki-framework@1.4.2",
+      "purl": "pkg:composer/spomky-labs/pki-framework@1.6.3",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/Spomky-Labs/pki-framework/zipball/aa576cbd07128075bef97ac2f8af9854e67513d8",
+          "url": "https://api.github.com/repos/Spomky-Labs/pki-framework/zipball/792e909d4e387adffe3c4f404451c7d57a3d2022",
           "type": "distribution",
-          "comment": "dist reference: aa576cbd07128075bef97ac2f8af9854e67513d8"
+          "comment": "dist reference: 792e909d4e387adffe3c4f404451c7d57a3d2022"
         },
         {
           "url": "https://github.com/Spomky-Labs/pki-framework.git",
           "type": "vcs",
-          "comment": "source reference: aa576cbd07128075bef97ac2f8af9854e67513d8"
+          "comment": "source reference: 792e909d4e387adffe3c4f404451c7d57a3d2022"
         },
         {
           "url": "https://github.com/spomky-labs/pki-framework",
@@ -2870,7 +2736,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/Spomky-Labs/pki-framework/tree/1.4.2",
+          "url": "https://github.com/Spomky-Labs/pki-framework/tree/1.6.3",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2878,11 +2744,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "aa576cbd07128075bef97ac2f8af9854e67513d8"
+          "value": "792e909d4e387adffe3c4f404451c7d57a3d2022"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "aa576cbd07128075bef97ac2f8af9854e67513d8"
+          "value": "792e909d4e387adffe3c4f404451c7d57a3d2022"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2945,64 +2811,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/console-7.4.13.0",
-      "author": "Fabien Potencier, Symfony Community",
-      "group": "symfony",
-      "name": "console",
-      "version": "v7.4.13",
-      "description": "Eases the creation of beautiful and testable command line interfaces",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:composer/symfony/console@v7.4.13",
-      "externalReferences": [
-        {
-          "url": "https://api.github.com/repos/symfony/console/zipball/85095d2573eaefaf35e40b9513a9bf09f72cd217",
-          "type": "distribution",
-          "comment": "dist reference: 85095d2573eaefaf35e40b9513a9bf09f72cd217"
-        },
-        {
-          "url": "https://github.com/symfony/console.git",
-          "type": "vcs",
-          "comment": "source reference: 85095d2573eaefaf35e40b9513a9bf09f72cd217"
-        },
-        {
-          "url": "https://symfony.com",
-          "type": "website",
-          "comment": "as detected from Composer manifest \u0027homepage\u0027"
-        },
-        {
-          "url": "https://github.com/symfony/console/tree/v7.4.13",
-          "type": "vcs",
-          "comment": "as detected from Composer manifest \u0027support.source\u0027"
-        }
-      ],
-      "properties": [
-        {
-          "name": "cdx:composer:package:distReference",
-          "value": "85095d2573eaefaf35e40b9513a9bf09f72cd217"
-        },
-        {
-          "name": "cdx:composer:package:sourceReference",
-          "value": "85095d2573eaefaf35e40b9513a9bf09f72cd217"
-        },
-        {
-          "name": "cdx:composer:package:type",
-          "value": "library"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "bom-ref": "symfony/deprecation-contracts-3.7.0.0",
+      "bom-ref": "symfony/deprecation-contracts-3.7.1.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "deprecation-contracts",
-      "version": "v3.7.0",
+      "version": "v3.7.1",
       "description": "A generic function and convention to trigger deprecation notices",
       "licenses": [
         {
@@ -3011,17 +2824,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/deprecation-contracts@v3.7.0",
+      "purl": "pkg:composer/symfony/deprecation-contracts@v3.7.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/50f59d1f3ca46d41ac911f97a78626b6756af35b",
+          "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/f3202fa1b5097b0af062dc978b32ecf63404e31d",
           "type": "distribution",
-          "comment": "dist reference: 50f59d1f3ca46d41ac911f97a78626b6756af35b"
+          "comment": "dist reference: f3202fa1b5097b0af062dc978b32ecf63404e31d"
         },
         {
           "url": "https://github.com/symfony/deprecation-contracts.git",
           "type": "vcs",
-          "comment": "source reference: 50f59d1f3ca46d41ac911f97a78626b6756af35b"
+          "comment": "source reference: f3202fa1b5097b0af062dc978b32ecf63404e31d"
         },
         {
           "url": "https://symfony.com",
@@ -3029,7 +2842,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/deprecation-contracts/tree/v3.7.0",
+          "url": "https://github.com/symfony/deprecation-contracts/tree/v3.7.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3037,11 +2850,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "50f59d1f3ca46d41ac911f97a78626b6756af35b"
+          "value": "f3202fa1b5097b0af062dc978b32ecf63404e31d"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "50f59d1f3ca46d41ac911f97a78626b6756af35b"
+          "value": "f3202fa1b5097b0af062dc978b32ecf63404e31d"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3051,11 +2864,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/filesystem-7.4.11.0",
+      "bom-ref": "symfony/filesystem-7.4.18.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "filesystem",
-      "version": "v7.4.11",
+      "version": "v7.4.18",
       "description": "Provides basic utilities for the filesystem",
       "licenses": [
         {
@@ -3064,17 +2877,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/filesystem@v7.4.11",
+      "purl": "pkg:composer/symfony/filesystem@v7.4.18",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/filesystem/zipball/d721ea61b4a5fba8c5b6e7c1feda19efea144b50",
+          "url": "https://api.github.com/repos/symfony/filesystem/zipball/90d412aa5277c6819db39e7605aa46b1019e3232",
           "type": "distribution",
-          "comment": "dist reference: d721ea61b4a5fba8c5b6e7c1feda19efea144b50"
+          "comment": "dist reference: 90d412aa5277c6819db39e7605aa46b1019e3232"
         },
         {
           "url": "https://github.com/symfony/filesystem.git",
           "type": "vcs",
-          "comment": "source reference: d721ea61b4a5fba8c5b6e7c1feda19efea144b50"
+          "comment": "source reference: 90d412aa5277c6819db39e7605aa46b1019e3232"
         },
         {
           "url": "https://symfony.com",
@@ -3082,7 +2895,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/filesystem/tree/v7.4.11",
+          "url": "https://github.com/symfony/filesystem/tree/v7.4.18",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3090,11 +2903,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "d721ea61b4a5fba8c5b6e7c1feda19efea144b50"
+          "value": "90d412aa5277c6819db39e7605aa46b1019e3232"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "d721ea61b4a5fba8c5b6e7c1feda19efea144b50"
+          "value": "90d412aa5277c6819db39e7605aa46b1019e3232"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3104,11 +2917,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-client-7.4.13.0",
+      "bom-ref": "symfony/http-client-7.4.19.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "http-client",
-      "version": "v7.4.13",
+      "version": "v7.4.19",
       "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
       "licenses": [
         {
@@ -3117,17 +2930,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-client@v7.4.13",
+      "purl": "pkg:composer/symfony/http-client@v7.4.19",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-client/zipball/e8a112b8415707265a7e614278136a9d92989a6a",
+          "url": "https://api.github.com/repos/symfony/http-client/zipball/3a523f38dc399337ec45b2ab9628e8c37ceb23c7",
           "type": "distribution",
-          "comment": "dist reference: e8a112b8415707265a7e614278136a9d92989a6a"
+          "comment": "dist reference: 3a523f38dc399337ec45b2ab9628e8c37ceb23c7"
         },
         {
           "url": "https://github.com/symfony/http-client.git",
           "type": "vcs",
-          "comment": "source reference: e8a112b8415707265a7e614278136a9d92989a6a"
+          "comment": "source reference: 3a523f38dc399337ec45b2ab9628e8c37ceb23c7"
         },
         {
           "url": "https://symfony.com",
@@ -3135,7 +2948,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-client/tree/v7.4.13",
+          "url": "https://github.com/symfony/http-client/tree/v7.4.19",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3143,11 +2956,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "e8a112b8415707265a7e614278136a9d92989a6a"
+          "value": "3a523f38dc399337ec45b2ab9628e8c37ceb23c7"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "e8a112b8415707265a7e614278136a9d92989a6a"
+          "value": "3a523f38dc399337ec45b2ab9628e8c37ceb23c7"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3157,11 +2970,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-client-contracts-3.7.0.0",
+      "bom-ref": "symfony/http-client-contracts-3.7.3.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "http-client-contracts",
-      "version": "v3.7.0",
+      "version": "v3.7.3",
       "description": "Generic abstractions related to HTTP clients",
       "licenses": [
         {
@@ -3170,17 +2983,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-client-contracts@v3.7.0",
+      "purl": "pkg:composer/symfony/http-client-contracts@v3.7.3",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/4a2d00c37651c0bdc2b9e1c773487a8bf4edb12d",
+          "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/35be0019e2c2c9fba80f9dc033290a5240f7b44f",
           "type": "distribution",
-          "comment": "dist reference: 4a2d00c37651c0bdc2b9e1c773487a8bf4edb12d"
+          "comment": "dist reference: 35be0019e2c2c9fba80f9dc033290a5240f7b44f"
         },
         {
           "url": "https://github.com/symfony/http-client-contracts.git",
           "type": "vcs",
-          "comment": "source reference: 4a2d00c37651c0bdc2b9e1c773487a8bf4edb12d"
+          "comment": "source reference: 35be0019e2c2c9fba80f9dc033290a5240f7b44f"
         },
         {
           "url": "https://symfony.com",
@@ -3188,7 +3001,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-client-contracts/tree/v3.7.0",
+          "url": "https://github.com/symfony/http-client-contracts/tree/v3.7.3",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3196,11 +3009,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "4a2d00c37651c0bdc2b9e1c773487a8bf4edb12d"
+          "value": "35be0019e2c2c9fba80f9dc033290a5240f7b44f"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "4a2d00c37651c0bdc2b9e1c773487a8bf4edb12d"
+          "value": "35be0019e2c2c9fba80f9dc033290a5240f7b44f"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3210,11 +3023,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-foundation-7.4.13.0",
+      "bom-ref": "symfony/http-foundation-7.4.19.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "http-foundation",
-      "version": "v7.4.13",
+      "version": "v7.4.19",
       "description": "Defines an object-oriented layer for the HTTP specification",
       "licenses": [
         {
@@ -3223,17 +3036,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-foundation@v7.4.13",
+      "purl": "pkg:composer/symfony/http-foundation@v7.4.19",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-foundation/zipball/bc354f47c62301e990b7874fa662326368508e2c",
+          "url": "https://api.github.com/repos/symfony/http-foundation/zipball/f7b953be7801974a5a0685e1228bbc3b12b35936",
           "type": "distribution",
-          "comment": "dist reference: bc354f47c62301e990b7874fa662326368508e2c"
+          "comment": "dist reference: f7b953be7801974a5a0685e1228bbc3b12b35936"
         },
         {
           "url": "https://github.com/symfony/http-foundation.git",
           "type": "vcs",
-          "comment": "source reference: bc354f47c62301e990b7874fa662326368508e2c"
+          "comment": "source reference: f7b953be7801974a5a0685e1228bbc3b12b35936"
         },
         {
           "url": "https://symfony.com",
@@ -3241,7 +3054,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-foundation/tree/v7.4.13",
+          "url": "https://github.com/symfony/http-foundation/tree/v7.4.19",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3249,11 +3062,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "bc354f47c62301e990b7874fa662326368508e2c"
+          "value": "f7b953be7801974a5a0685e1228bbc3b12b35936"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "bc354f47c62301e990b7874fa662326368508e2c"
+          "value": "f7b953be7801974a5a0685e1228bbc3b12b35936"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3316,11 +3129,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-intl-grapheme-1.38.1.0",
+      "bom-ref": "symfony/polyfill-intl-grapheme-1.41.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-intl-grapheme",
-      "version": "v1.38.1",
+      "version": "v1.41.0",
       "description": "Symfony polyfill for intl\u0027s grapheme_* functions",
       "licenses": [
         {
@@ -3329,17 +3142,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-intl-grapheme@v1.38.1",
+      "purl": "pkg:composer/symfony/polyfill-intl-grapheme@v1.41.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/e9247d281d694a5120554d9afaf54e070e88a603",
+          "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/bb899c1db0aa8127dc3afe8cda4a67eb24915f8d",
           "type": "distribution",
-          "comment": "dist reference: e9247d281d694a5120554d9afaf54e070e88a603"
+          "comment": "dist reference: bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
         },
         {
           "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
           "type": "vcs",
-          "comment": "source reference: e9247d281d694a5120554d9afaf54e070e88a603"
+          "comment": "source reference: bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
         },
         {
           "url": "https://symfony.com",
@@ -3347,7 +3160,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.38.1",
+          "url": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.41.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3355,11 +3168,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "e9247d281d694a5120554d9afaf54e070e88a603"
+          "value": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "e9247d281d694a5120554d9afaf54e070e88a603"
+          "value": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3369,11 +3182,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-intl-normalizer-1.38.0.0",
+      "bom-ref": "symfony/polyfill-intl-normalizer-1.42.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-intl-normalizer",
-      "version": "v1.38.0",
+      "version": "v1.42.0",
       "description": "Symfony polyfill for intl\u0027s Normalizer class and related functions",
       "licenses": [
         {
@@ -3382,17 +3195,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-intl-normalizer@v1.38.0",
+      "purl": "pkg:composer/symfony/polyfill-intl-normalizer@v1.42.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/2d446c214bdbe5b71bde5011b060a05fece3ae6b",
+          "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/aa20edea75bd9c48cfecc8360922e5a6e5c44502",
           "type": "distribution",
-          "comment": "dist reference: 2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+          "comment": "dist reference: aa20edea75bd9c48cfecc8360922e5a6e5c44502"
         },
         {
           "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
           "type": "vcs",
-          "comment": "source reference: 2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+          "comment": "source reference: aa20edea75bd9c48cfecc8360922e5a6e5c44502"
         },
         {
           "url": "https://symfony.com",
@@ -3400,7 +3213,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.38.0",
+          "url": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.42.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3408,11 +3221,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+          "value": "aa20edea75bd9c48cfecc8360922e5a6e5c44502"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+          "value": "aa20edea75bd9c48cfecc8360922e5a6e5c44502"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3528,11 +3341,117 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-php83-1.38.2.0",
+      "bom-ref": "symfony/polyfill-php81-1.38.1.0",
+      "author": "Nicolas Grekas, Symfony Community",
+      "group": "symfony",
+      "name": "polyfill-php81",
+      "version": "v1.38.1",
+      "description": "Symfony polyfill backporting some PHP 8.1\u002B features to lower PHP versions",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:composer/symfony/polyfill-php81@v1.38.1",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/symfony/polyfill-php81/zipball/6bfb9c766cacffbc8e118cb87217d08ed84e5cd7",
+          "type": "distribution",
+          "comment": "dist reference: 6bfb9c766cacffbc8e118cb87217d08ed84e5cd7"
+        },
+        {
+          "url": "https://github.com/symfony/polyfill-php81.git",
+          "type": "vcs",
+          "comment": "source reference: 6bfb9c766cacffbc8e118cb87217d08ed84e5cd7"
+        },
+        {
+          "url": "https://symfony.com",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/symfony/polyfill-php81/tree/v1.38.1",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "6bfb9c766cacffbc8e118cb87217d08ed84e5cd7"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "6bfb9c766cacffbc8e118cb87217d08ed84e5cd7"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "symfony/polyfill-php82-1.38.1.0",
+      "author": "Nicolas Grekas, Symfony Community",
+      "group": "symfony",
+      "name": "polyfill-php82",
+      "version": "v1.38.1",
+      "description": "Symfony polyfill backporting some PHP 8.2\u002B features to lower PHP versions",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:composer/symfony/polyfill-php82@v1.38.1",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/symfony/polyfill-php82/zipball/002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b",
+          "type": "distribution",
+          "comment": "dist reference: 002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b"
+        },
+        {
+          "url": "https://github.com/symfony/polyfill-php82.git",
+          "type": "vcs",
+          "comment": "source reference: 002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b"
+        },
+        {
+          "url": "https://symfony.com",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/symfony/polyfill-php82/tree/v1.38.1",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "symfony/polyfill-php83-1.41.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-php83",
-      "version": "v1.38.2",
+      "version": "v1.41.0",
       "description": "Symfony polyfill backporting some PHP 8.3\u002B features to lower PHP versions",
       "licenses": [
         {
@@ -3541,17 +3460,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-php83@v1.38.2",
+      "purl": "pkg:composer/symfony/polyfill-php83@v1.41.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/796a26abb75ce49f3a84433cd81bf1009d73d5f8",
+          "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/5ea99087fb99c273a9b9236ed4c31e78b16103c6",
           "type": "distribution",
-          "comment": "dist reference: 796a26abb75ce49f3a84433cd81bf1009d73d5f8"
+          "comment": "dist reference: 5ea99087fb99c273a9b9236ed4c31e78b16103c6"
         },
         {
           "url": "https://github.com/symfony/polyfill-php83.git",
           "type": "vcs",
-          "comment": "source reference: 796a26abb75ce49f3a84433cd81bf1009d73d5f8"
+          "comment": "source reference: 5ea99087fb99c273a9b9236ed4c31e78b16103c6"
         },
         {
           "url": "https://symfony.com",
@@ -3559,7 +3478,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-php83/tree/v1.38.2",
+          "url": "https://github.com/symfony/polyfill-php83/tree/v1.41.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3567,11 +3486,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "796a26abb75ce49f3a84433cd81bf1009d73d5f8"
+          "value": "5ea99087fb99c273a9b9236ed4c31e78b16103c6"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "796a26abb75ce49f3a84433cd81bf1009d73d5f8"
+          "value": "5ea99087fb99c273a9b9236ed4c31e78b16103c6"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3634,11 +3553,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-php85-1.38.1.0",
+      "bom-ref": "symfony/polyfill-php85-1.41.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-php85",
-      "version": "v1.38.1",
+      "version": "v1.41.0",
       "description": "Symfony polyfill backporting some PHP 8.5\u002B features to lower PHP versions",
       "licenses": [
         {
@@ -3647,17 +3566,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-php85@v1.38.1",
+      "purl": "pkg:composer/symfony/polyfill-php85@v1.41.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/ba2ba04f3352cfa2dcbbcb90aee13ed967f505b1",
+          "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/255fab485aaa1006ed411040c42aecd7b5302d7a",
           "type": "distribution",
-          "comment": "dist reference: ba2ba04f3352cfa2dcbbcb90aee13ed967f505b1"
+          "comment": "dist reference: 255fab485aaa1006ed411040c42aecd7b5302d7a"
         },
         {
           "url": "https://github.com/symfony/polyfill-php85.git",
           "type": "vcs",
-          "comment": "source reference: ba2ba04f3352cfa2dcbbcb90aee13ed967f505b1"
+          "comment": "source reference: 255fab485aaa1006ed411040c42aecd7b5302d7a"
         },
         {
           "url": "https://symfony.com",
@@ -3665,7 +3584,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-php85/tree/v1.38.1",
+          "url": "https://github.com/symfony/polyfill-php85/tree/v1.41.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3673,11 +3592,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "ba2ba04f3352cfa2dcbbcb90aee13ed967f505b1"
+          "value": "255fab485aaa1006ed411040c42aecd7b5302d7a"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "ba2ba04f3352cfa2dcbbcb90aee13ed967f505b1"
+          "value": "255fab485aaa1006ed411040c42aecd7b5302d7a"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3740,11 +3659,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/property-access-7.4.8.0",
+      "bom-ref": "symfony/property-access-7.4.16.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "property-access",
-      "version": "v7.4.8",
+      "version": "v7.4.16",
       "description": "Provides functions to read and write from/to an object or array using a simple string notation",
       "licenses": [
         {
@@ -3753,17 +3672,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/property-access@v7.4.8",
+      "purl": "pkg:composer/symfony/property-access@v7.4.16",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/property-access/zipball/b7dad9dae8b8a47ef7ecc76c8569e7d8c7d90cfc",
+          "url": "https://api.github.com/repos/symfony/property-access/zipball/c3dce76a6697c6428f7d80d5cd1cf0aa5d9679f3",
           "type": "distribution",
-          "comment": "dist reference: b7dad9dae8b8a47ef7ecc76c8569e7d8c7d90cfc"
+          "comment": "dist reference: c3dce76a6697c6428f7d80d5cd1cf0aa5d9679f3"
         },
         {
           "url": "https://github.com/symfony/property-access.git",
           "type": "vcs",
-          "comment": "source reference: b7dad9dae8b8a47ef7ecc76c8569e7d8c7d90cfc"
+          "comment": "source reference: c3dce76a6697c6428f7d80d5cd1cf0aa5d9679f3"
         },
         {
           "url": "https://symfony.com",
@@ -3771,7 +3690,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/property-access/tree/v7.4.8",
+          "url": "https://github.com/symfony/property-access/tree/v7.4.16",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3779,11 +3698,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "b7dad9dae8b8a47ef7ecc76c8569e7d8c7d90cfc"
+          "value": "c3dce76a6697c6428f7d80d5cd1cf0aa5d9679f3"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "b7dad9dae8b8a47ef7ecc76c8569e7d8c7d90cfc"
+          "value": "c3dce76a6697c6428f7d80d5cd1cf0aa5d9679f3"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3793,11 +3712,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/property-info-7.4.8.0",
+      "bom-ref": "symfony/property-info-7.4.19.0",
       "author": "K\u00E9vin Dunglas, Symfony Community",
       "group": "symfony",
       "name": "property-info",
-      "version": "v7.4.8",
+      "version": "v7.4.19",
       "description": "Extracts information about PHP class\u0027 properties using metadata of popular sources",
       "licenses": [
         {
@@ -3806,17 +3725,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/property-info@v7.4.8",
+      "purl": "pkg:composer/symfony/property-info@v7.4.19",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/property-info/zipball/ac5e82528b986c4f7cfccbf7764b5d2e824d6175",
+          "url": "https://api.github.com/repos/symfony/property-info/zipball/547d2acbe865d511809b96ab653304fd632abbaa",
           "type": "distribution",
-          "comment": "dist reference: ac5e82528b986c4f7cfccbf7764b5d2e824d6175"
+          "comment": "dist reference: 547d2acbe865d511809b96ab653304fd632abbaa"
         },
         {
           "url": "https://github.com/symfony/property-info.git",
           "type": "vcs",
-          "comment": "source reference: ac5e82528b986c4f7cfccbf7764b5d2e824d6175"
+          "comment": "source reference: 547d2acbe865d511809b96ab653304fd632abbaa"
         },
         {
           "url": "https://symfony.com",
@@ -3824,7 +3743,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/property-info/tree/v7.4.8",
+          "url": "https://github.com/symfony/property-info/tree/v7.4.19",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3832,11 +3751,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "ac5e82528b986c4f7cfccbf7764b5d2e824d6175"
+          "value": "547d2acbe865d511809b96ab653304fd632abbaa"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "ac5e82528b986c4f7cfccbf7764b5d2e824d6175"
+          "value": "547d2acbe865d511809b96ab653304fd632abbaa"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3846,11 +3765,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/serializer-7.4.10.0",
+      "bom-ref": "symfony/serializer-7.4.19.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "serializer",
-      "version": "v7.4.10",
+      "version": "v7.4.19",
       "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
       "licenses": [
         {
@@ -3859,17 +3778,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/serializer@v7.4.10",
+      "purl": "pkg:composer/symfony/serializer@v7.4.19",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/serializer/zipball/268c5aa6c4bd675eddd89348e7ecac292a843ddd",
+          "url": "https://api.github.com/repos/symfony/serializer/zipball/d631b82e0db971444651c4e6a076040d20878caa",
           "type": "distribution",
-          "comment": "dist reference: 268c5aa6c4bd675eddd89348e7ecac292a843ddd"
+          "comment": "dist reference: d631b82e0db971444651c4e6a076040d20878caa"
         },
         {
           "url": "https://github.com/symfony/serializer.git",
           "type": "vcs",
-          "comment": "source reference: 268c5aa6c4bd675eddd89348e7ecac292a843ddd"
+          "comment": "source reference: d631b82e0db971444651c4e6a076040d20878caa"
         },
         {
           "url": "https://symfony.com",
@@ -3877,7 +3796,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/serializer/tree/v7.4.10",
+          "url": "https://github.com/symfony/serializer/tree/v7.4.19",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3885,11 +3804,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "268c5aa6c4bd675eddd89348e7ecac292a843ddd"
+          "value": "d631b82e0db971444651c4e6a076040d20878caa"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "268c5aa6c4bd675eddd89348e7ecac292a843ddd"
+          "value": "d631b82e0db971444651c4e6a076040d20878caa"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3899,11 +3818,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/service-contracts-3.7.0.0",
+      "bom-ref": "symfony/service-contracts-3.7.3.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "service-contracts",
-      "version": "v3.7.0",
+      "version": "v3.7.3",
       "description": "Generic abstractions related to writing services",
       "licenses": [
         {
@@ -3912,17 +3831,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/service-contracts@v3.7.0",
+      "purl": "pkg:composer/symfony/service-contracts@v3.7.3",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/service-contracts/zipball/d25d82433a80eba6aa0e6c24b61d7370d99e444a",
+          "url": "https://api.github.com/repos/symfony/service-contracts/zipball/15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
           "type": "distribution",
-          "comment": "dist reference: d25d82433a80eba6aa0e6c24b61d7370d99e444a"
+          "comment": "dist reference: 15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
         },
         {
           "url": "https://github.com/symfony/service-contracts.git",
           "type": "vcs",
-          "comment": "source reference: d25d82433a80eba6aa0e6c24b61d7370d99e444a"
+          "comment": "source reference: 15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
         },
         {
           "url": "https://symfony.com",
@@ -3930,7 +3849,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/service-contracts/tree/v3.7.0",
+          "url": "https://github.com/symfony/service-contracts/tree/v3.7.3",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3938,11 +3857,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "d25d82433a80eba6aa0e6c24b61d7370d99e444a"
+          "value": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "d25d82433a80eba6aa0e6c24b61d7370d99e444a"
+          "value": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3952,11 +3871,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/string-7.4.13.0",
+      "bom-ref": "symfony/string-7.4.19.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "string",
-      "version": "v7.4.13",
+      "version": "v7.4.19",
       "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
       "licenses": [
         {
@@ -3965,17 +3884,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/string@v7.4.13",
+      "purl": "pkg:composer/symfony/string@v7.4.19",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/string/zipball/961683010db3b27ec6ebcd7308e6e1ee8fa7ffde",
+          "url": "https://api.github.com/repos/symfony/string/zipball/02731ce2bd26514bec9efc0baef2cd0b0cf67f46",
           "type": "distribution",
-          "comment": "dist reference: 961683010db3b27ec6ebcd7308e6e1ee8fa7ffde"
+          "comment": "dist reference: 02731ce2bd26514bec9efc0baef2cd0b0cf67f46"
         },
         {
           "url": "https://github.com/symfony/string.git",
           "type": "vcs",
-          "comment": "source reference: 961683010db3b27ec6ebcd7308e6e1ee8fa7ffde"
+          "comment": "source reference: 02731ce2bd26514bec9efc0baef2cd0b0cf67f46"
         },
         {
           "url": "https://symfony.com",
@@ -3983,7 +3902,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/string/tree/v7.4.13",
+          "url": "https://github.com/symfony/string/tree/v7.4.19",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3991,11 +3910,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "961683010db3b27ec6ebcd7308e6e1ee8fa7ffde"
+          "value": "02731ce2bd26514bec9efc0baef2cd0b0cf67f46"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "961683010db3b27ec6ebcd7308e6e1ee8fa7ffde"
+          "value": "02731ce2bd26514bec9efc0baef2cd0b0cf67f46"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4005,11 +3924,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/translation-7.4.10.0",
+      "bom-ref": "symfony/translation-7.4.17.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "translation",
-      "version": "v7.4.10",
+      "version": "v7.4.17",
       "description": "Provides tools to internationalize your application",
       "licenses": [
         {
@@ -4018,17 +3937,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/translation@v7.4.10",
+      "purl": "pkg:composer/symfony/translation@v7.4.17",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/translation/zipball/ada7578c30dd5feaa8259cff3e885069ea81ddde",
+          "url": "https://api.github.com/repos/symfony/translation/zipball/2ee1e4a3b32a528a642babe041ff7c440b213b4b",
           "type": "distribution",
-          "comment": "dist reference: ada7578c30dd5feaa8259cff3e885069ea81ddde"
+          "comment": "dist reference: 2ee1e4a3b32a528a642babe041ff7c440b213b4b"
         },
         {
           "url": "https://github.com/symfony/translation.git",
           "type": "vcs",
-          "comment": "source reference: ada7578c30dd5feaa8259cff3e885069ea81ddde"
+          "comment": "source reference: 2ee1e4a3b32a528a642babe041ff7c440b213b4b"
         },
         {
           "url": "https://symfony.com",
@@ -4036,7 +3955,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/translation/tree/v7.4.10",
+          "url": "https://github.com/symfony/translation/tree/v7.4.17",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4044,11 +3963,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "ada7578c30dd5feaa8259cff3e885069ea81ddde"
+          "value": "2ee1e4a3b32a528a642babe041ff7c440b213b4b"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "ada7578c30dd5feaa8259cff3e885069ea81ddde"
+          "value": "2ee1e4a3b32a528a642babe041ff7c440b213b4b"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4058,11 +3977,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/translation-contracts-3.7.0.0",
+      "bom-ref": "symfony/translation-contracts-3.7.1.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "translation-contracts",
-      "version": "v3.7.0",
+      "version": "v3.7.1",
       "description": "Generic abstractions related to translation",
       "licenses": [
         {
@@ -4071,17 +3990,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/translation-contracts@v3.7.0",
+      "purl": "pkg:composer/symfony/translation-contracts@v3.7.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/0ab302977a952b42fd51475c4ebac81f8da0a95d",
+          "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/ccb206b98faccc511ebae8e5fad50f2dc0b30621",
           "type": "distribution",
-          "comment": "dist reference: 0ab302977a952b42fd51475c4ebac81f8da0a95d"
+          "comment": "dist reference: ccb206b98faccc511ebae8e5fad50f2dc0b30621"
         },
         {
           "url": "https://github.com/symfony/translation-contracts.git",
           "type": "vcs",
-          "comment": "source reference: 0ab302977a952b42fd51475c4ebac81f8da0a95d"
+          "comment": "source reference: ccb206b98faccc511ebae8e5fad50f2dc0b30621"
         },
         {
           "url": "https://symfony.com",
@@ -4089,7 +4008,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/translation-contracts/tree/v3.7.0",
+          "url": "https://github.com/symfony/translation-contracts/tree/v3.7.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4097,11 +4016,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "0ab302977a952b42fd51475c4ebac81f8da0a95d"
+          "value": "ccb206b98faccc511ebae8e5fad50f2dc0b30621"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "0ab302977a952b42fd51475c4ebac81f8da0a95d"
+          "value": "ccb206b98faccc511ebae8e5fad50f2dc0b30621"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4111,11 +4030,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/type-info-7.4.9.0",
+      "bom-ref": "symfony/type-info-7.4.17.0",
       "author": "Mathias Arlaud, Baptiste LEDUC, Symfony Community",
       "group": "symfony",
       "name": "type-info",
-      "version": "v7.4.9",
+      "version": "v7.4.17",
       "description": "Extracts PHP types information.",
       "licenses": [
         {
@@ -4124,17 +4043,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/type-info@v7.4.9",
+      "purl": "pkg:composer/symfony/type-info@v7.4.17",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/type-info/zipball/cafeedbf157b890e94ac5b83eaed85595106d5d6",
+          "url": "https://api.github.com/repos/symfony/type-info/zipball/62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
           "type": "distribution",
-          "comment": "dist reference: cafeedbf157b890e94ac5b83eaed85595106d5d6"
+          "comment": "dist reference: 62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
         },
         {
           "url": "https://github.com/symfony/type-info.git",
           "type": "vcs",
-          "comment": "source reference: cafeedbf157b890e94ac5b83eaed85595106d5d6"
+          "comment": "source reference: 62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
         },
         {
           "url": "https://symfony.com",
@@ -4142,7 +4061,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/type-info/tree/v7.4.9",
+          "url": "https://github.com/symfony/type-info/tree/v7.4.17",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4150,11 +4069,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "cafeedbf157b890e94ac5b83eaed85595106d5d6"
+          "value": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "cafeedbf157b890e94ac5b83eaed85595106d5d6"
+          "value": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4164,11 +4083,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/uid-7.4.9.0",
+      "bom-ref": "symfony/uid-7.4.17.0",
       "author": "Gr\u00E9goire Pineau, Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "uid",
-      "version": "v7.4.9",
+      "version": "v7.4.17",
       "description": "Provides an object-oriented API to generate and represent UIDs",
       "licenses": [
         {
@@ -4177,17 +4096,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/uid@v7.4.9",
+      "purl": "pkg:composer/symfony/uid@v7.4.17",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/uid/zipball/2676b524340abcfe4d6151ec698463cebafee439",
+          "url": "https://api.github.com/repos/symfony/uid/zipball/69d732355a139c6f8881337d28515aa01f12b8be",
           "type": "distribution",
-          "comment": "dist reference: 2676b524340abcfe4d6151ec698463cebafee439"
+          "comment": "dist reference: 69d732355a139c6f8881337d28515aa01f12b8be"
         },
         {
           "url": "https://github.com/symfony/uid.git",
           "type": "vcs",
-          "comment": "source reference: 2676b524340abcfe4d6151ec698463cebafee439"
+          "comment": "source reference: 69d732355a139c6f8881337d28515aa01f12b8be"
         },
         {
           "url": "https://symfony.com",
@@ -4195,7 +4114,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/uid/tree/v7.4.9",
+          "url": "https://github.com/symfony/uid/tree/v7.4.17",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4203,11 +4122,823 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "2676b524340abcfe4d6151ec698463cebafee439"
+          "value": "69d732355a139c6f8881337d28515aa01f12b8be"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "2676b524340abcfe4d6151ec698463cebafee439"
+          "value": "69d732355a139c6f8881337d28515aa01f12b8be"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-barcode-2.16.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-barcode",
+      "version": "2.16.2",
+      "description": "PHP library to generate 73 types of linear, 2D and postal barcodes as SVG, PNG, HTML or GD images",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-barcode@2.16.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/06446612a4e47fb6f75f88aee6775090edabd587",
+          "type": "distribution",
+          "comment": "dist reference: 06446612a4e47fb6f75f88aee6775090edabd587"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
+          "type": "vcs",
+          "comment": "source reference: 06446612a4e47fb6f75f88aee6775090edabd587"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-barcode/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-barcode",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "06446612a4e47fb6f75f88aee6775090edabd587"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "06446612a4e47fb6f75f88aee6775090edabd587"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-color-3.0.5.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-color",
+      "version": "3.0.5",
+      "description": "PHP library to manipulate various color representations",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-color@3.0.5",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/c788cb2a7ae6abf5ca5f9246c2bad79bf990c861",
+          "type": "distribution",
+          "comment": "dist reference: c788cb2a7ae6abf5ca5f9246c2bad79bf990c861"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-color.git",
+          "type": "vcs",
+          "comment": "source reference: c788cb2a7ae6abf5ca5f9246c2bad79bf990c861"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-color/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-color",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "c788cb2a7ae6abf5ca5f9246c2bad79bf990c861"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "c788cb2a7ae6abf5ca5f9246c2bad79bf990c861"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-file-3.9.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-file",
+      "version": "3.9.2",
+      "description": "PHP library for safe low-level file access: byte-level reads, path allowlisting, file caching and directory lookup",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-file@3.9.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-file/zipball/2e222e6437f8b36ad2b364540f4873912e4b6497",
+          "type": "distribution",
+          "comment": "dist reference: 2e222e6437f8b36ad2b364540f4873912e4b6497"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-file.git",
+          "type": "vcs",
+          "comment": "source reference: 2e222e6437f8b36ad2b364540f4873912e4b6497"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-file/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-file",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "2e222e6437f8b36ad2b364540f4873912e4b6497"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "2e222e6437f8b36ad2b364540f4873912e4b6497"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-8.75.0.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf",
+      "version": "8.75.0",
+      "description": "PHP PDF Library",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf@8.75.0",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf/zipball/96eedde8634e8ff70d0857eb3c0136d7d037de85",
+          "type": "distribution",
+          "comment": "dist reference: 96eedde8634e8ff70d0857eb3c0136d7d037de85"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf.git",
+          "type": "vcs",
+          "comment": "source reference: 96eedde8634e8ff70d0857eb3c0136d7d037de85"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "96eedde8634e8ff70d0857eb3c0136d7d037de85"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "96eedde8634e8ff70d0857eb3c0136d7d037de85"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-encrypt",
+      "version": "2.11.2",
+      "description": "PHP library to encrypt and decrypt PDF data",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-encrypt@2.11.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-encrypt/zipball/1c663db601e335e2e2ac9032569e198ddf6e450b",
+          "type": "distribution",
+          "comment": "dist reference: 1c663db601e335e2e2ac9032569e198ddf6e450b"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-encrypt.git",
+          "type": "vcs",
+          "comment": "source reference: 1c663db601e335e2e2ac9032569e198ddf6e450b"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-encrypt/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-encrypt",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "1c663db601e335e2e2ac9032569e198ddf6e450b"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "1c663db601e335e2e2ac9032569e198ddf6e450b"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-filter-2.11.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-filter",
+      "version": "2.11.2",
+      "description": "PHP library to decode PDF compression and encryption filters",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-filter@2.11.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-filter/zipball/6587298a0c46bde9537eeb4062f880398b7e4c65",
+          "type": "distribution",
+          "comment": "dist reference: 6587298a0c46bde9537eeb4062f880398b7e4c65"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-filter.git",
+          "type": "vcs",
+          "comment": "source reference: 6587298a0c46bde9537eeb4062f880398b7e4c65"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-filter/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-filter",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "6587298a0c46bde9537eeb4062f880398b7e4c65"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "6587298a0c46bde9537eeb4062f880398b7e4c65"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-font-4.3.3.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-font",
+      "version": "4.3.3",
+      "description": "PHP library containing PDF font methods and utilities",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-font@4.3.3",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-font/zipball/7ef01385b46987403c055f718d63f4227206d3f4",
+          "type": "distribution",
+          "comment": "dist reference: 7ef01385b46987403c055f718d63f4227206d3f4"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-font.git",
+          "type": "vcs",
+          "comment": "source reference: 7ef01385b46987403c055f718d63f4227206d3f4"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-font/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-font",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "7ef01385b46987403c055f718d63f4227206d3f4"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "7ef01385b46987403c055f718d63f4227206d3f4"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-graph-2.17.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-graph",
+      "version": "2.17.2",
+      "description": "PHP library containing PDF graphic and geometric methods",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-graph@2.17.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-graph/zipball/1f2d45e2a6dddd97d59f16a2cb4b6ff38326d2cc",
+          "type": "distribution",
+          "comment": "dist reference: 1f2d45e2a6dddd97d59f16a2cb4b6ff38326d2cc"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-graph.git",
+          "type": "vcs",
+          "comment": "source reference: 1f2d45e2a6dddd97d59f16a2cb4b6ff38326d2cc"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-graph/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-graph",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "1f2d45e2a6dddd97d59f16a2cb4b6ff38326d2cc"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "1f2d45e2a6dddd97d59f16a2cb4b6ff38326d2cc"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-image-3.14.2.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-image",
+      "version": "3.14.2",
+      "description": "PHP library containing PDF Image methods",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-image@3.14.2",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-image/zipball/343ba23f5f1fba9790a9c9e4a5d4b226d05992de",
+          "type": "distribution",
+          "comment": "dist reference: 343ba23f5f1fba9790a9c9e4a5d4b226d05992de"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-image.git",
+          "type": "vcs",
+          "comment": "source reference: 343ba23f5f1fba9790a9c9e4a5d4b226d05992de"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-image/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-image",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "343ba23f5f1fba9790a9c9e4a5d4b226d05992de"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "343ba23f5f1fba9790a9c9e4a5d4b226d05992de"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-page-4.16.3.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-page",
+      "version": "4.16.3",
+      "description": "PHP library containing PDF page formats and definitions",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-page@4.16.3",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-page/zipball/15fe47afdad0f1e37a66f8a11d8207f508fa2de9",
+          "type": "distribution",
+          "comment": "dist reference: 15fe47afdad0f1e37a66f8a11d8207f508fa2de9"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-page.git",
+          "type": "vcs",
+          "comment": "source reference: 15fe47afdad0f1e37a66f8a11d8207f508fa2de9"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-page/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-page",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "15fe47afdad0f1e37a66f8a11d8207f508fa2de9"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "15fe47afdad0f1e37a66f8a11d8207f508fa2de9"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-parser-3.16.0.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-parser",
+      "version": "3.16.0",
+      "description": "PHP library to parse PDF documents",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-parser@3.16.0",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-parser/zipball/3a3ba69111e8b3a701fb96af21884f169a2de34e",
+          "type": "distribution",
+          "comment": "dist reference: 3a3ba69111e8b3a701fb96af21884f169a2de34e"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-parser.git",
+          "type": "vcs",
+          "comment": "source reference: 3a3ba69111e8b3a701fb96af21884f169a2de34e"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-parser/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-parser",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "3a3ba69111e8b3a701fb96af21884f169a2de34e"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "3a3ba69111e8b3a701fb96af21884f169a2de34e"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-pdf-sign-2.0.3.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-pdf-sign",
+      "version": "2.0.3",
+      "description": "PHP library to create and embed digital signatures (PKCS#7 / CAdES / PAdES) in PDF documents",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-pdf-sign@2.0.3",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-sign/zipball/aa75ca61a39691ae13ecf4e9dfdcaef371ee55c1",
+          "type": "distribution",
+          "comment": "dist reference: aa75ca61a39691ae13ecf4e9dfdcaef371ee55c1"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-sign.git",
+          "type": "vcs",
+          "comment": "source reference: aa75ca61a39691ae13ecf4e9dfdcaef371ee55c1"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-sign/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-pdf-sign",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "aa75ca61a39691ae13ecf4e9dfdcaef371ee55c1"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "aa75ca61a39691ae13ecf4e9dfdcaef371ee55c1"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-unicode-3.0.7.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-unicode",
+      "version": "3.0.7",
+      "description": "PHP library to process UTF-8 and Unicode text",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-unicode@3.0.7",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-unicode/zipball/941073f34bd4a617bd4dedaf076d471ebace0928",
+          "type": "distribution",
+          "comment": "dist reference: 941073f34bd4a617bd4dedaf076d471ebace0928"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode.git",
+          "type": "vcs",
+          "comment": "source reference: 941073f34bd4a617bd4dedaf076d471ebace0928"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "941073f34bd4a617bd4dedaf076d471ebace0928"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "941073f34bd4a617bd4dedaf076d471ebace0928"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tecnickcom/tc-lib-unicode-data-3.0.7.0",
+      "author": "Nicola Asuni",
+      "group": "tecnickcom",
+      "name": "tc-lib-unicode-data",
+      "version": "3.0.7",
+      "description": "PHP library containing Unicode definitions",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "purl": "pkg:composer/tecnickcom/tc-lib-unicode-data@3.0.7",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/tecnickcom/tc-lib-unicode-data/zipball/c6fc757f42687bc2c92210803d5d8361d7df1e49",
+          "type": "distribution",
+          "comment": "dist reference: c6fc757f42687bc2c92210803d5d8361d7df1e49"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode-data.git",
+          "type": "vcs",
+          "comment": "source reference: c6fc757f42687bc2c92210803d5d8361d7df1e49"
+        },
+        {
+          "url": "https://tcpdf.org",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode-data/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/tecnickcom/tc-lib-unicode-data",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "c6fc757f42687bc2c92210803d5d8361d7df1e49"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "c6fc757f42687bc2c92210803d5d8361d7df1e49"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4275,11 +5006,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "web-auth/cose-lib-4.5.2.0",
+      "bom-ref": "web-auth/cose-lib-4.8.2.0",
       "author": "Florent Morselli, All contributors",
       "group": "web-auth",
       "name": "cose-lib",
-      "version": "4.5.2",
+      "version": "4.8.2",
       "description": "CBOR Object Signing and Encryption (COSE) For PHP",
       "licenses": [
         {
@@ -4288,17 +5019,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/web-auth/cose-lib@4.5.2",
+      "purl": "pkg:composer/web-auth/cose-lib@4.8.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/5b38660f90070a8e45f3dbc9528ade3b608dd77d",
+          "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/8849e8bf043a2d42d0bec5bda5db2469ad376148",
           "type": "distribution",
-          "comment": "dist reference: 5b38660f90070a8e45f3dbc9528ade3b608dd77d"
+          "comment": "dist reference: 8849e8bf043a2d42d0bec5bda5db2469ad376148"
         },
         {
           "url": "https://github.com/web-auth/cose-lib.git",
           "type": "vcs",
-          "comment": "source reference: 5b38660f90070a8e45f3dbc9528ade3b608dd77d"
+          "comment": "source reference: 8849e8bf043a2d42d0bec5bda5db2469ad376148"
         },
         {
           "url": "https://github.com/web-auth",
@@ -4311,7 +5042,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/web-auth/cose-lib/tree/4.5.2",
+          "url": "https://github.com/web-auth/cose-lib/tree/4.8.2",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4319,11 +5050,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "5b38660f90070a8e45f3dbc9528ade3b608dd77d"
+          "value": "8849e8bf043a2d42d0bec5bda5db2469ad376148"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "5b38660f90070a8e45f3dbc9528ade3b608dd77d"
+          "value": "8849e8bf043a2d42d0bec5bda5db2469ad376148"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4333,11 +5064,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "web-auth/webauthn-lib-5.3.5.0",
+      "bom-ref": "web-auth/webauthn-lib-5.3.9.0",
       "author": "Florent Morselli, All contributors",
       "group": "web-auth",
       "name": "webauthn-lib",
-      "version": "5.3.5",
+      "version": "5.3.9",
       "description": "FIDO2/Webauthn Support For PHP",
       "licenses": [
         {
@@ -4346,17 +5077,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/web-auth/webauthn-lib@5.3.5",
+      "purl": "pkg:composer/web-auth/webauthn-lib@5.3.9",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/web-auth/webauthn-lib/zipball/9e0986d999f4102e24ac8a598d3a80d98b56c19f",
+          "url": "https://api.github.com/repos/web-auth/webauthn-lib/zipball/727e378fb7a36c26be5c911e4a0120c146741ce7",
           "type": "distribution",
-          "comment": "dist reference: 9e0986d999f4102e24ac8a598d3a80d98b56c19f"
+          "comment": "dist reference: 727e378fb7a36c26be5c911e4a0120c146741ce7"
         },
         {
           "url": "https://github.com/web-auth/webauthn-lib.git",
           "type": "vcs",
-          "comment": "source reference: 9e0986d999f4102e24ac8a598d3a80d98b56c19f"
+          "comment": "source reference: 727e378fb7a36c26be5c911e4a0120c146741ce7"
         },
         {
           "url": "https://github.com/web-auth",
@@ -4364,7 +5095,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/web-auth/webauthn-lib/tree/5.3.5",
+          "url": "https://github.com/web-auth/webauthn-lib/tree/5.3.9",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4372,11 +5103,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "9e0986d999f4102e24ac8a598d3a80d98b56c19f"
+          "value": "727e378fb7a36c26be5c911e4a0120c146741ce7"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "9e0986d999f4102e24ac8a598d3a80d98b56c19f"
+          "value": "727e378fb7a36c26be5c911e4a0120c146741ce7"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4386,11 +5117,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "web-token/jwt-library-3.4.10.0",
+      "bom-ref": "web-token/jwt-library-4.2.3.0",
       "author": "Florent Morselli, All contributors",
       "group": "web-token",
       "name": "jwt-library",
-      "version": "3.4.10",
+      "version": "4.2.3",
       "description": "JWT library",
       "licenses": [
         {
@@ -4399,17 +5130,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/web-token/jwt-library@3.4.10",
+      "purl": "pkg:composer/web-token/jwt-library@4.2.3",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/web-token/jwt-library/zipball/8c38010d971c2313406fa1376d763cee745a833b",
+          "url": "https://api.github.com/repos/web-token/jwt-library/zipball/db962c3ad8bc91c531a49dd373f0a641fc507bfd",
           "type": "distribution",
-          "comment": "dist reference: 8c38010d971c2313406fa1376d763cee745a833b"
+          "comment": "dist reference: db962c3ad8bc91c531a49dd373f0a641fc507bfd"
         },
         {
           "url": "https://github.com/web-token/jwt-library.git",
           "type": "vcs",
-          "comment": "source reference: 8c38010d971c2313406fa1376d763cee745a833b"
+          "comment": "source reference: db962c3ad8bc91c531a49dd373f0a641fc507bfd"
         },
         {
           "url": "https://github.com/web-token",
@@ -4422,7 +5153,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/web-token/jwt-library/tree/3.4.10",
+          "url": "https://github.com/web-token/jwt-library/tree/4.2.3",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4430,11 +5161,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "8c38010d971c2313406fa1376d763cee745a833b"
+          "value": "db962c3ad8bc91c531a49dd373f0a641fc507bfd"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "8c38010d971c2313406fa1376d763cee745a833b"
+          "value": "db962c3ad8bc91c531a49dd373f0a641fc507bfd"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4502,11 +5233,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "webmozart/assert-2.4.0.0",
+      "bom-ref": "webmozart/assert-2.4.1.0",
       "author": "Bernhard Schussek, Woody Gilk",
       "group": "webmozart",
       "name": "assert",
-      "version": "2.4.0",
+      "version": "2.4.1",
       "description": "Assertions to validate method input/output with nice error messages.",
       "licenses": [
         {
@@ -4515,17 +5246,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/webmozart/assert@2.4.0",
+      "purl": "pkg:composer/webmozart/assert@2.4.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/webmozarts/assert/zipball/9007ea6f45ecf352a9422b36644e4bfc039b9155",
+          "url": "https://api.github.com/repos/webmozarts/assert/zipball/2ccb7c2e821038c03a3e6e1700c570c158c55f70",
           "type": "distribution",
-          "comment": "dist reference: 9007ea6f45ecf352a9422b36644e4bfc039b9155"
+          "comment": "dist reference: 2ccb7c2e821038c03a3e6e1700c570c158c55f70"
         },
         {
           "url": "https://github.com/webmozarts/assert.git",
           "type": "vcs",
-          "comment": "source reference: 9007ea6f45ecf352a9422b36644e4bfc039b9155"
+          "comment": "source reference: 2ccb7c2e821038c03a3e6e1700c570c158c55f70"
         },
         {
           "url": "https://github.com/webmozarts/assert/issues",
@@ -4533,7 +5264,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/webmozarts/assert/tree/2.4.0",
+          "url": "https://github.com/webmozarts/assert/tree/2.4.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -4541,11 +5272,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "9007ea6f45ecf352a9422b36644e4bfc039b9155"
+          "value": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "9007ea6f45ecf352a9422b36644e4bfc039b9155"
+          "value": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
         },
         {
           "name": "cdx:composer:package:type",
@@ -4555,11 +5286,11 @@
     },
     {
       "type": "application",
-      "bom-ref": "ldap-account-manager/ldap-account-manager-9.6.0.0",
+      "bom-ref": "ldap-account-manager/ldap-account-manager-9.7.0.0",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.6",
-      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.6",
+      "version": "9.7",
+      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.7",
       "properties": [
         {
           "name": "cdx:composer:package:type",
@@ -4572,7 +5303,7 @@
       "bom-ref": "64518863-4fde-4015-84a1-e26283a036ee",
       "group": "cdx:npm:package:bundled",
       "name": "@floating-ui/core",
-      "version": "1.7.5",
+      "version": "1.8.0",
       "licenses": [
         {
           "license": {
@@ -4580,14 +5311,14 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40floating-ui/core@1.7.5"
+      "purl": "pkg:npm/%40floating-ui/core@1.8.0"
     },
     {
       "type": "library",
       "bom-ref": "73140e29-f689-49c1-9b10-28ff13117f68",
       "group": "cdx:npm:package:bundled",
       "name": "@floating-ui/dom",
-      "version": "1.7.6",
+      "version": "1.8.0",
       "licenses": [
         {
           "license": {
@@ -4595,14 +5326,14 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40floating-ui/dom@1.7.6"
+      "purl": "pkg:npm/%40floating-ui/dom@1.8.0"
     },
     {
       "type": "library",
       "bom-ref": "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group": "cdx:npm:package:bundled",
       "name": "cropperjs",
-      "version": "2.1.1",
+      "version": "2.2.0",
       "licenses": [
         {
           "license": {
@@ -4610,7 +5341,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/cropperjs@2.1.1"
+      "purl": "pkg:npm/cropperjs@2.2.0"
     },
     {
       "type": "library",
@@ -4632,7 +5363,7 @@
       "bom-ref": "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "group": "cdx:npm:package:bundled",
       "name": "friendly-challenge",
-      "version": "0.9.19",
+      "version": "0.9.20",
       "licenses": [
         {
           "license": {
@@ -4640,14 +5371,14 @@
           }
         }
       ],
-      "purl": "pkg:npm/friendly-challenge@0.9.19"
+      "purl": "pkg:npm/friendly-challenge@0.9.20"
     },
     {
       "type": "library",
       "bom-ref": "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group": "cdx:npm:package:bundled",
       "name": "jodit",
-      "version": "4.12.2",
+      "version": "4.14.7",
       "licenses": [
         {
           "license": {
@@ -4655,7 +5386,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/jodit@4.12.2"
+      "purl": "pkg:npm/jodit@4.14.7"
     },
     {
       "type": "library",
@@ -4677,7 +5408,7 @@
       "bom-ref": "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group": "cdx:npm:package:bundled",
       "name": "sweetalert2",
-      "version": "11.26.24",
+      "version": "11.26.25",
       "licenses": [
         {
           "license": {
@@ -4685,30 +5416,22 @@
           }
         }
       ],
-      "purl": "pkg:npm/sweetalert2@11.26.24"
+      "purl": "pkg:npm/sweetalert2@11.26.25"
     },
     {
       "type": "library",
       "bom-ref": "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
       "group": "cdx:npm:package:bundled",
       "name": "tabulator-tables",
-      "version": "6.4.0",
-      "purl": "pkg:npm/tabulator-tables@6.4.0"
-    },
-    {
-      "type": "library",
-      "bom-ref": "72240acd-7de4-4058-b56f-e64638babcbf",
-      "group": "cdx:composer:package",
-      "name": "tecnickcom/tcpdf",
-      "version": "6.11.3",
+      "version": "6.5.2",
       "licenses": [
         {
           "license": {
-            "id": "LGPL-3.0\u002B"
+            "id": "MIT"
           }
         }
       ],
-      "purl": "pkg:composer/tecnickcom/tcpdf@6.11.3"
+      "purl": "pkg:npm/tabulator-tables@6.5.2"
     },
     {
       "type": "library",
@@ -4730,7 +5453,7 @@
       "bom-ref": "c2095505-c3af-4958-af68-6a61f216807d",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.6"
+      "version": "9.7"
     }
   ],
   "dependencies": [
@@ -4738,25 +5461,25 @@
       "ref": "aws/aws-crt-php-1.2.7.0"
     },
     {
-      "ref": "aws/aws-sdk-php-3.384.7.0",
+      "ref": "aws/aws-sdk-php-3.395.4.0",
       "dependsOn": [
         "aws/aws-crt-php-1.2.7.0",
-        "guzzlehttp/guzzle-7.11.1.0",
-        "guzzlehttp/promises-2.5.0.0",
-        "guzzlehttp/psr7-2.11.0.0",
-        "mtdowling/jmespath.php-2.9.0.0",
+        "guzzlehttp/guzzle-8.2.0.0",
+        "guzzlehttp/promises-3.0.2.0",
+        "guzzlehttp/psr7-3.1.0.0",
+        "mtdowling/jmespath.php-2.9.2.0",
         "psr/http-message-2.0.0.0",
-        "symfony/filesystem-7.4.11.0"
+        "symfony/filesystem-7.4.18.0"
       ]
     },
     {
-      "ref": "brick/math-0.12.3.0"
+      "ref": "brick/math-1.0.0.0"
     },
     {
-      "ref": "carbonphp/carbon-doctrine-types-3.2.0.0"
+      "ref": "carbonphp/carbon-doctrine-types-3.2.1.0"
     },
     {
-      "ref": "christian-riesen/base32-1.6.0.0"
+      "ref": "christian-riesen/base32-2.0.1.0"
     },
     {
       "ref": "doctrine/deprecations-1.1.6.0"
@@ -4765,13 +5488,13 @@
       "ref": "doctrine/inflector-2.1.0.0"
     },
     {
-      "ref": "duosecurity/duo_universal_php-1.1.2.0",
+      "ref": "duosecurity/duo_universal_php-1.2.0.0",
       "dependsOn": [
-        "firebase/php-jwt-7.0.5.0"
+        "firebase/php-jwt-7.1.1.0"
       ]
     },
     {
-      "ref": "facile-it/php-jose-verifier-0.5.2.0",
+      "ref": "facile-it/php-jose-verifier-1.0.0.0",
       "dependsOn": [
         "nyholm/psr7-1.8.2.0",
         "psr/clock-1.0.0.0",
@@ -4779,129 +5502,126 @@
         "psr/http-message-2.0.0.0",
         "psr/simple-cache-3.0.0.0",
         "spomky-labs/base64url-2.0.4.0",
-        "symfony/http-client-7.4.13.0",
+        "symfony/http-client-7.4.19.0",
         "symfony/polyfill-mbstring-1.38.2.0",
-        "symfony/polyfill-php83-1.38.2.0",
-        "web-token/jwt-library-3.4.10.0"
+        "symfony/polyfill-php83-1.41.0.0",
+        "web-token/jwt-library-4.2.3.0"
       ]
     },
     {
-      "ref": "facile-it/php-openid-client-0.4.0.0",
+      "ref": "facile-it/php-openid-client-1.0.0.0",
       "dependsOn": [
-        "facile-it/php-jose-verifier-0.5.2.0",
+        "facile-it/php-jose-verifier-1.0.0.0",
         "php-http/discovery-1.20.0.0",
         "psr/http-client-1.0.3.0",
         "psr/http-factory-1.1.0.0",
         "psr/http-message-2.0.0.0",
         "psr/http-server-middleware-1.0.2.0",
         "spomky-labs/aes-key-wrap-7.0.0.0",
-        "symfony/polyfill-php83-1.38.2.0",
-        "web-token/jwt-library-3.4.10.0"
+        "symfony/polyfill-php83-1.41.0.0",
+        "web-token/jwt-library-4.2.3.0"
       ]
     },
     {
-      "ref": "firebase/php-jwt-7.0.5.0"
+      "ref": "firebase/php-jwt-7.1.1.0"
     },
     {
-      "ref": "guzzlehttp/guzzle-7.11.1.0",
+      "ref": "guzzlehttp/guzzle-8.2.0.0",
       "dependsOn": [
-        "guzzlehttp/promises-2.5.0.0",
-        "guzzlehttp/psr7-2.11.0.0",
+        "guzzlehttp/promises-3.0.2.0",
+        "guzzlehttp/psr7-3.1.0.0",
         "psr/http-client-1.0.3.0",
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/polyfill-php80-1.37.0.0"
+        "psr/http-factory-1.1.0.0",
+        "symfony/polyfill-php80-1.37.0.0",
+        "symfony/polyfill-php82-1.38.1.0"
       ]
     },
     {
-      "ref": "guzzlehttp/promises-2.5.0.0",
-      "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0"
-      ]
+      "ref": "guzzlehttp/promises-3.0.2.0"
     },
     {
-      "ref": "guzzlehttp/psr7-2.11.0.0",
+      "ref": "guzzlehttp/psr7-3.1.0.0",
       "dependsOn": [
         "psr/http-factory-1.1.0.0",
         "psr/http-message-2.0.0.0",
-        "ralouphie/getallheaders-3.0.3.0",
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/polyfill-php80-1.37.0.0"
+        "symfony/polyfill-php80-1.37.0.0",
+        "symfony/polyfill-php82-1.38.1.0"
       ]
     },
     {
-      "ref": "illuminate/collections-12.62.0.0",
+      "ref": "illuminate/collections-12.69.2.0",
       "dependsOn": [
-        "illuminate/conditionable-12.62.0.0",
-        "illuminate/contracts-12.62.0.0",
-        "illuminate/macroable-12.62.0.0",
-        "symfony/polyfill-php83-1.38.2.0",
+        "illuminate/conditionable-12.69.2.0",
+        "illuminate/contracts-12.69.2.0",
+        "illuminate/macroable-12.69.2.0",
+        "symfony/polyfill-php83-1.41.0.0",
         "symfony/polyfill-php84-1.38.1.0",
-        "symfony/polyfill-php85-1.38.1.0"
+        "symfony/polyfill-php85-1.41.0.0"
       ]
     },
     {
-      "ref": "illuminate/conditionable-12.62.0.0"
+      "ref": "illuminate/conditionable-12.69.2.0"
     },
     {
-      "ref": "illuminate/contracts-12.62.0.0",
+      "ref": "illuminate/contracts-12.69.2.0",
       "dependsOn": [
         "psr/container-2.0.2.0",
         "psr/simple-cache-3.0.0.0"
       ]
     },
     {
-      "ref": "illuminate/macroable-12.62.0.0"
+      "ref": "illuminate/macroable-12.69.2.0"
     },
     {
-      "ref": "illuminate/pagination-12.62.0.0",
+      "ref": "illuminate/pagination-12.69.2.0",
       "dependsOn": [
-        "illuminate/collections-12.62.0.0",
-        "illuminate/contracts-12.62.0.0",
-        "illuminate/support-12.62.0.0"
+        "illuminate/collections-12.69.2.0",
+        "illuminate/contracts-12.69.2.0",
+        "illuminate/support-12.69.2.0"
       ]
     },
     {
-      "ref": "illuminate/reflection-12.62.0.0",
+      "ref": "illuminate/reflection-12.69.2.0",
       "dependsOn": [
-        "illuminate/collections-12.62.0.0",
-        "illuminate/contracts-12.62.0.0"
+        "illuminate/collections-12.69.2.0",
+        "illuminate/contracts-12.69.2.0"
       ]
     },
     {
-      "ref": "illuminate/support-12.62.0.0",
+      "ref": "illuminate/support-12.69.2.0",
       "dependsOn": [
         "doctrine/inflector-2.1.0.0",
-        "illuminate/collections-12.62.0.0",
-        "illuminate/conditionable-12.62.0.0",
-        "illuminate/contracts-12.62.0.0",
-        "illuminate/macroable-12.62.0.0",
-        "illuminate/reflection-12.62.0.0",
-        "nesbot/carbon-3.11.4.0",
-        "symfony/polyfill-php83-1.38.2.0",
-        "symfony/polyfill-php85-1.38.1.0",
+        "illuminate/collections-12.69.2.0",
+        "illuminate/conditionable-12.69.2.0",
+        "illuminate/contracts-12.69.2.0",
+        "illuminate/macroable-12.69.2.0",
+        "illuminate/reflection-12.69.2.0",
+        "nesbot/carbon-3.14.0.0",
+        "symfony/polyfill-php83-1.41.0.0",
+        "symfony/polyfill-php85-1.41.0.0",
         "voku/portable-ascii-2.1.1.0"
       ]
     },
     {
-      "ref": "monolog/monolog-3.10.0.0",
+      "ref": "monolog/monolog-3.12.0.0",
       "dependsOn": [
         "psr/log-3.0.2.0"
       ]
     },
     {
-      "ref": "mtdowling/jmespath.php-2.9.0.0",
+      "ref": "mtdowling/jmespath.php-2.9.2.0",
       "dependsOn": [
         "symfony/polyfill-mbstring-1.38.2.0"
       ]
     },
     {
-      "ref": "nesbot/carbon-3.11.4.0",
+      "ref": "nesbot/carbon-3.14.0.0",
       "dependsOn": [
-        "carbonphp/carbon-doctrine-types-3.2.0.0",
+        "carbonphp/carbon-doctrine-types-3.2.1.0",
         "psr/clock-1.0.0.0",
         "symfony/clock-7.4.8.0",
         "symfony/polyfill-mbstring-1.38.2.0",
-        "symfony/translation-7.4.10.0"
+        "symfony/translation-7.4.17.0"
       ]
     },
     {
@@ -4918,9 +5638,6 @@
       "ref": "paragonie/random_compat-2.0.21.0"
     },
     {
-      "ref": "paragonie/sodium_compat-2.5.0.0"
-    },
-    {
       "ref": "php-http/discovery-1.20.0.0"
     },
     {
@@ -4932,8 +5649,8 @@
         "doctrine/deprecations-1.1.6.0",
         "phpdocumentor/reflection-common-2.2.0.0",
         "phpdocumentor/type-resolver-2.0.0.0",
-        "phpstan/phpdoc-parser-2.3.2.0",
-        "webmozart/assert-2.4.0.0"
+        "phpstan/phpdoc-parser-2.3.5.0",
+        "webmozart/assert-2.4.1.0"
       ]
     },
     {
@@ -4941,24 +5658,21 @@
       "dependsOn": [
         "doctrine/deprecations-1.1.6.0",
         "phpdocumentor/reflection-common-2.2.0.0",
-        "phpstan/phpdoc-parser-2.3.2.0"
+        "phpstan/phpdoc-parser-2.3.5.0"
       ]
     },
     {
       "ref": "phpmailer/phpmailer-7.1.1.0"
     },
     {
-      "ref": "phpseclib/phpseclib-3.0.53.0",
+      "ref": "phpseclib/phpseclib-4.0.1.0",
       "dependsOn": [
         "paragonie/constant_time_encoding-3.1.3.0",
-        "paragonie/random_compat-2.0.21.0"
+        "symfony/polyfill-php82-1.38.1.0"
       ]
     },
     {
-      "ref": "phpstan/phpdoc-parser-2.3.2.0"
-    },
-    {
-      "ref": "psr/cache-3.0.0.0"
+      "ref": "phpstan/phpdoc-parser-2.3.5.0"
     },
     {
       "ref": "psr/clock-1.0.0.0"
@@ -5004,70 +5718,58 @@
       "ref": "psr/simple-cache-3.0.0.0"
     },
     {
-      "ref": "ralouphie/getallheaders-3.0.3.0"
-    },
-    {
       "ref": "spomky-labs/aes-key-wrap-7.0.0.0"
     },
     {
       "ref": "spomky-labs/base64url-2.0.4.0"
     },
     {
-      "ref": "spomky-labs/cbor-php-3.2.3.0",
+      "ref": "spomky-labs/cbor-php-3.4.2.0",
       "dependsOn": [
-        "brick/math-0.12.3.0"
+        "brick/math-1.0.0.0",
+        "symfony/polyfill-php81-1.38.1.0"
       ]
     },
     {
-      "ref": "spomky-labs/pki-framework-1.4.2.0",
+      "ref": "spomky-labs/pki-framework-1.6.3.0",
       "dependsOn": [
-        "brick/math-0.12.3.0",
-        "psr/clock-1.0.0.0"
+        "brick/math-1.0.0.0"
       ]
     },
     {
       "ref": "symfony/clock-7.4.8.0",
       "dependsOn": [
         "psr/clock-1.0.0.0",
-        "symfony/polyfill-php83-1.38.2.0"
+        "symfony/polyfill-php83-1.41.0.0"
       ]
     },
     {
-      "ref": "symfony/console-7.4.13.0",
-      "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/polyfill-mbstring-1.38.2.0",
-        "symfony/service-contracts-3.7.0.0",
-        "symfony/string-7.4.13.0"
-      ]
+      "ref": "symfony/deprecation-contracts-3.7.1.0"
     },
     {
-      "ref": "symfony/deprecation-contracts-3.7.0.0"
-    },
-    {
-      "ref": "symfony/filesystem-7.4.11.0",
+      "ref": "symfony/filesystem-7.4.18.0",
       "dependsOn": [
         "symfony/polyfill-ctype-1.37.0.0",
         "symfony/polyfill-mbstring-1.38.2.0"
       ]
     },
     {
-      "ref": "symfony/http-client-7.4.13.0",
+      "ref": "symfony/http-client-7.4.19.0",
       "dependsOn": [
         "psr/log-3.0.2.0",
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/http-client-contracts-3.7.0.0",
-        "symfony/polyfill-php83-1.38.2.0",
-        "symfony/service-contracts-3.7.0.0"
+        "symfony/deprecation-contracts-3.7.1.0",
+        "symfony/http-client-contracts-3.7.3.0",
+        "symfony/polyfill-php83-1.41.0.0",
+        "symfony/service-contracts-3.7.3.0"
       ]
     },
     {
-      "ref": "symfony/http-client-contracts-3.7.0.0"
+      "ref": "symfony/http-client-contracts-3.7.3.0"
     },
     {
-      "ref": "symfony/http-foundation-7.4.13.0",
+      "ref": "symfony/http-foundation-7.4.19.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
+        "symfony/deprecation-contracts-3.7.1.0",
         "symfony/polyfill-mbstring-1.38.2.0"
       ]
     },
@@ -5075,10 +5777,10 @@
       "ref": "symfony/polyfill-ctype-1.37.0.0"
     },
     {
-      "ref": "symfony/polyfill-intl-grapheme-1.38.1.0"
+      "ref": "symfony/polyfill-intl-grapheme-1.41.0.0"
     },
     {
-      "ref": "symfony/polyfill-intl-normalizer-1.38.0.0"
+      "ref": "symfony/polyfill-intl-normalizer-1.42.0.0"
     },
     {
       "ref": "symfony/polyfill-mbstring-1.38.2.0"
@@ -5087,150 +5789,231 @@
       "ref": "symfony/polyfill-php80-1.37.0.0"
     },
     {
-      "ref": "symfony/polyfill-php83-1.38.2.0"
+      "ref": "symfony/polyfill-php81-1.38.1.0"
+    },
+    {
+      "ref": "symfony/polyfill-php82-1.38.1.0"
+    },
+    {
+      "ref": "symfony/polyfill-php83-1.41.0.0"
     },
     {
       "ref": "symfony/polyfill-php84-1.38.1.0"
     },
     {
-      "ref": "symfony/polyfill-php85-1.38.1.0"
+      "ref": "symfony/polyfill-php85-1.41.0.0"
     },
     {
       "ref": "symfony/polyfill-uuid-1.37.0.0"
     },
     {
-      "ref": "symfony/property-access-7.4.8.0",
+      "ref": "symfony/property-access-7.4.16.0",
       "dependsOn": [
-        "symfony/property-info-7.4.8.0"
+        "symfony/property-info-7.4.19.0"
       ]
     },
     {
-      "ref": "symfony/property-info-7.4.8.0",
+      "ref": "symfony/property-info-7.4.19.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/string-7.4.13.0",
-        "symfony/type-info-7.4.9.0"
+        "symfony/deprecation-contracts-3.7.1.0",
+        "symfony/string-7.4.19.0",
+        "symfony/type-info-7.4.17.0"
       ]
     },
     {
-      "ref": "symfony/serializer-7.4.10.0",
+      "ref": "symfony/serializer-7.4.19.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
+        "symfony/deprecation-contracts-3.7.1.0",
         "symfony/polyfill-ctype-1.37.0.0",
         "symfony/polyfill-php84-1.38.1.0"
       ]
     },
     {
-      "ref": "symfony/service-contracts-3.7.0.0",
+      "ref": "symfony/service-contracts-3.7.3.0",
       "dependsOn": [
         "psr/container-2.0.2.0",
-        "symfony/deprecation-contracts-3.7.0.0"
+        "symfony/deprecation-contracts-3.7.1.0"
       ]
     },
     {
-      "ref": "symfony/string-7.4.13.0",
+      "ref": "symfony/string-7.4.19.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
+        "symfony/deprecation-contracts-3.7.1.0",
         "symfony/polyfill-ctype-1.37.0.0",
-        "symfony/polyfill-intl-grapheme-1.38.1.0",
-        "symfony/polyfill-intl-normalizer-1.38.0.0",
+        "symfony/polyfill-intl-grapheme-1.41.0.0",
+        "symfony/polyfill-intl-normalizer-1.42.0.0",
         "symfony/polyfill-mbstring-1.38.2.0"
       ]
     },
     {
-      "ref": "symfony/translation-7.4.10.0",
+      "ref": "symfony/translation-7.4.17.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.7.0.0",
+        "symfony/deprecation-contracts-3.7.1.0",
         "symfony/polyfill-mbstring-1.38.2.0",
-        "symfony/translation-contracts-3.7.0.0"
+        "symfony/translation-contracts-3.7.1.0"
       ]
     },
     {
-      "ref": "symfony/translation-contracts-3.7.0.0"
+      "ref": "symfony/translation-contracts-3.7.1.0"
     },
     {
-      "ref": "symfony/type-info-7.4.9.0",
+      "ref": "symfony/type-info-7.4.17.0",
       "dependsOn": [
         "psr/container-2.0.2.0",
-        "symfony/deprecation-contracts-3.7.0.0"
+        "symfony/deprecation-contracts-3.7.1.0"
       ]
     },
     {
-      "ref": "symfony/uid-7.4.9.0",
+      "ref": "symfony/uid-7.4.17.0",
       "dependsOn": [
         "symfony/polyfill-uuid-1.37.0.0"
       ]
     },
     {
-      "ref": "voku/portable-ascii-2.1.1.0"
-    },
-    {
-      "ref": "web-auth/cose-lib-4.5.2.0",
+      "ref": "tecnickcom/tc-lib-barcode-2.16.2.0",
       "dependsOn": [
-        "brick/math-0.12.3.0",
-        "spomky-labs/pki-framework-1.4.2.0"
+        "tecnickcom/tc-lib-color-3.0.5.0"
       ]
     },
     {
-      "ref": "web-auth/webauthn-lib-5.3.5.0",
+      "ref": "tecnickcom/tc-lib-color-3.0.5.0"
+    },
+    {
+      "ref": "tecnickcom/tc-lib-file-3.9.2.0"
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-8.75.0.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-barcode-2.16.2.0",
+        "tecnickcom/tc-lib-color-3.0.5.0",
+        "tecnickcom/tc-lib-file-3.9.2.0",
+        "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0",
+        "tecnickcom/tc-lib-pdf-font-4.3.3.0",
+        "tecnickcom/tc-lib-pdf-graph-2.17.2.0",
+        "tecnickcom/tc-lib-pdf-image-3.14.2.0",
+        "tecnickcom/tc-lib-pdf-page-4.16.3.0",
+        "tecnickcom/tc-lib-pdf-parser-3.16.0.0",
+        "tecnickcom/tc-lib-pdf-sign-2.0.3.0",
+        "tecnickcom/tc-lib-unicode-3.0.7.0",
+        "tecnickcom/tc-lib-unicode-data-3.0.7.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0"
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-filter-2.11.2.0"
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-font-4.3.3.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-file-3.9.2.0",
+        "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0",
+        "tecnickcom/tc-lib-unicode-data-3.0.7.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-graph-2.17.2.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-color-3.0.5.0",
+        "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-image-3.14.2.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-file-3.9.2.0",
+        "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-page-4.16.3.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-color-3.0.5.0",
+        "tecnickcom/tc-lib-pdf-encrypt-2.11.2.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-parser-3.16.0.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-pdf-filter-2.11.2.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-pdf-sign-2.0.3.0"
+    },
+    {
+      "ref": "tecnickcom/tc-lib-unicode-3.0.7.0",
+      "dependsOn": [
+        "tecnickcom/tc-lib-unicode-data-3.0.7.0"
+      ]
+    },
+    {
+      "ref": "tecnickcom/tc-lib-unicode-data-3.0.7.0"
+    },
+    {
+      "ref": "voku/portable-ascii-2.1.1.0"
+    },
+    {
+      "ref": "web-auth/cose-lib-4.8.2.0",
+      "dependsOn": [
+        "brick/math-1.0.0.0",
+        "spomky-labs/pki-framework-1.6.3.0"
+      ]
+    },
+    {
+      "ref": "web-auth/webauthn-lib-5.3.9.0",
       "dependsOn": [
         "paragonie/constant_time_encoding-3.1.3.0",
         "phpdocumentor/reflection-docblock-6.0.3.0",
         "psr/clock-1.0.0.0",
         "psr/event-dispatcher-1.0.0.0",
         "psr/log-3.0.2.0",
-        "spomky-labs/cbor-php-3.2.3.0",
-        "spomky-labs/pki-framework-1.4.2.0",
+        "spomky-labs/cbor-php-3.4.2.0",
+        "spomky-labs/pki-framework-1.6.3.0",
         "symfony/clock-7.4.8.0",
-        "symfony/deprecation-contracts-3.7.0.0",
-        "symfony/property-access-7.4.8.0",
-        "symfony/property-info-7.4.8.0",
-        "symfony/serializer-7.4.10.0",
-        "symfony/uid-7.4.9.0",
-        "web-auth/cose-lib-4.5.2.0"
+        "symfony/deprecation-contracts-3.7.1.0",
+        "symfony/property-access-7.4.16.0",
+        "symfony/property-info-7.4.19.0",
+        "symfony/serializer-7.4.19.0",
+        "symfony/uid-7.4.17.0",
+        "web-auth/cose-lib-4.8.2.0"
       ]
     },
     {
-      "ref": "web-token/jwt-library-3.4.10.0",
+      "ref": "web-token/jwt-library-4.2.3.0",
       "dependsOn": [
-        "brick/math-0.12.3.0",
-        "paragonie/constant_time_encoding-3.1.3.0",
-        "paragonie/sodium_compat-2.5.0.0",
-        "psr/cache-3.0.0.0",
+        "brick/math-1.0.0.0",
         "psr/clock-1.0.0.0",
-        "psr/http-client-1.0.3.0",
-        "psr/http-factory-1.1.0.0",
-        "spomky-labs/pki-framework-1.4.2.0",
-        "symfony/console-7.4.13.0",
-        "symfony/http-client-7.4.13.0",
-        "symfony/polyfill-mbstring-1.38.2.0"
+        "spomky-labs/pki-framework-1.6.3.0",
+        "symfony/deprecation-contracts-3.7.1.0"
       ]
     },
     {
       "ref": "webklex/php-imap-6.2.0.0",
       "dependsOn": [
-        "illuminate/pagination-12.62.0.0",
-        "nesbot/carbon-3.11.4.0",
-        "symfony/http-foundation-7.4.13.0"
+        "illuminate/pagination-12.69.2.0",
+        "nesbot/carbon-3.14.0.0",
+        "symfony/http-foundation-7.4.19.0"
       ]
     },
     {
-      "ref": "webmozart/assert-2.4.0.0"
+      "ref": "webmozart/assert-2.4.1.0"
     },
     {
-      "ref": "ldap-account-manager/ldap-account-manager-9.6.0.0",
+      "ref": "ldap-account-manager/ldap-account-manager-9.7.0.0",
       "dependsOn": [
-        "web-auth/webauthn-lib-5.3.5.0",
+        "web-auth/webauthn-lib-5.3.9.0",
         "webklex/php-imap-6.2.0.0",
         "phpmailer/phpmailer-7.1.1.0",
-        "guzzlehttp/psr7-2.11.0.0",
-        "phpseclib/phpseclib-3.0.53.0",
+        "phpseclib/phpseclib-4.0.1.0",
         "paragonie/random_compat-2.0.21.0",
-        "christian-riesen/base32-1.6.0.0",
-        "facile-it/php-openid-client-0.4.0.0",
-        "monolog/monolog-3.10.0.0",
-        "duosecurity/duo_universal_php-1.1.2.0",
-        "aws/aws-sdk-php-3.384.7.0"
+        "christian-riesen/base32-2.0.1.0",
+        "facile-it/php-openid-client-1.0.0.0",
+        "monolog/monolog-3.12.0.0",
+        "duosecurity/duo_universal_php-1.2.0.0",
+        "aws/aws-sdk-php-3.395.4.0",
+        "tecnickcom/tc-lib-pdf-8.75.0.0"
       ]
     },
     {
@@ -5271,10 +6054,6 @@
     },
     {
       "ref": "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
-      "dependsOn": []
-    },
-    {
-      "ref": "72240acd-7de4-4058-b56f-e64638babcbf",
       "dependsOn": []
     },
     {
