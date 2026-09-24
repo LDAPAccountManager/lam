@@ -3569,29 +3569,32 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @param string $groupname group name
 	 * @return string|null GID
 	 */
-	private function getGID($groupname): ?string {
-		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', ['gidnumber'], ['group']);
-		if ((count($results) > 0) && isset($results[0]['gidnumber'][0])) {
-			return $results[0]['gidnumber'][0];
-		}
-		return null;
-	}
-
+    private function getGID($groupname): ?string {
+        $modules = $this->getAccountContainer()->get_type()->getModules();
+        $objectClass = $this->isWindows($modules) ? 'group' : 'posixGroup';
+        $results = searchLDAPByAttribute('cn', $groupname, $objectClass, ['gidnumber'], ['group']);
+        if ((count($results) > 0) && isset($results[0]['gidnumber'][0])) {
+                return $results[0]['gidnumber'][0];
+        }
+        return null;
+    }
+    
 	/**
 	 * Returns the group name of the group with the given group ID.
 	 *
 	 * @param string $groupID group ID
 	 * @return string|null group name
 	 */
-	private function getGroupName($groupID): ?string {
-		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
-		if ((count($results) > 0) && isset($results[0]['cn'][0])) {
-			return $results[0]['cn'][0];
-		}
-		return null;
-	}
-
-	/**
+    private function getGroupName($groupID): ?string {
+        $modules = $this->getAccountContainer()->get_type()->getModules();
+        $objectClass = $this->isWindows($modules) ? 'group' : 'posixGroup';
+        $results = searchLDAPByAttribute('gidNumber', $groupID, $objectClass, ['cn'], ['group']);
+        if ((count($results) > 0) && isset($results[0]['cn'][0])) {
+                return $results[0]['cn'][0];
+        }
+        return null;
+    }	
+    /**
 	 * Finds all existing LDAP groups.
 	 *
 	 * @param string[] $modules account modules
