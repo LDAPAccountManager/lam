@@ -302,7 +302,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
             $row->addField(new htmlDiv(null, $userSelect));
         }
         elseif ($config_object->getHttpAuthentication() == 'true') {
-            $httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
+            $httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] ?? '-'));
             $httpAuth->setCSSClasses(['text-left', 'margin3']);
             $row->addField($httpAuth);
         }
