@@ -245,7 +245,7 @@ class lamUserList extends lamList {
 	protected function refreshPrimaryGroupTranslation(): void {
 		$this->trans_primary_hash = [];
 		$attrs = ["cn", "gidNumber"];
-		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, ['group']);
+		$entries = searchLDAPByFilter('(&(|(objectclass=posixGroup)(objectClass=group))(gidNumber=*))', $attrs, ['group']);
 		$entryCount = count($entries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$this->trans_primary_hash[$entries[$i]['gidnumber'][0]] = $entries[$i]['cn'][0];

@@ -1943,7 +1943,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$groups = array_delete($this->groups, $groups);
 			// Remove primary group from group list
 			$group = $this->getGroupName($this->attributes['gidNumber'][0]);
-			unset ($groups[$group]);
+			if ($group !== null) {
+				$groups = array_delete([$group], $groups);
+			}
 			$groups = array_values($groups);
 
 			$unixContainer = new htmlResponsiveRow();
@@ -3570,7 +3572,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return string|null GID
 	 */
 	private function getGID($groupname): ?string {
-		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', ['gidnumber'], ['group']);
+		$results = searchLDAPByFilter('(&(|(objectclass=posixGroup)(objectClass=group))(cn=' . $groupname . '))', ['gidnumber'], ['group']);
 		if ((count($results) > 0) && isset($results[0]['gidnumber'][0])) {
 			return $results[0]['gidnumber'][0];
 		}
@@ -3584,7 +3586,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return string|null group name
 	 */
 	private function getGroupName($groupID): ?string {
-		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
+		$results = searchLDAPByFilter('(&(|(objectclass=posixGroup)(objectClass=group))(gidNumber=' . $groupID . '))', ['cn'], ['group']);
 		if ((count($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
 		}
