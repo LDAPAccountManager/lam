@@ -1,4 +1,4 @@
-September 2026 9.7
+02.10.2026 9.7
  - Optional audit log can track all LDAP changes (716)
  - Windows users: list view can show flags of "userAccountControl" (735)
  - Group of (unique) names/members: added business category, organisation and organisational unit (needs to be activated in server profile) (771)
