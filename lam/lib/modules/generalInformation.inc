@@ -36,6 +36,13 @@ use LAM\TYPES\TypeManager;
  */
 class generalInformation extends baseModule {
 
+	/** display groups with DN */
+	private const DISPLAY_DN = 'dn';
+	/** display groups with cn */
+	private const DISPLAY_CN = 'cn';
+	/** display groups with cn+dn */
+	private const DISPLAY_CN_DN = 'cn_dn';
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -59,6 +66,12 @@ class generalInformation extends baseModule {
 			'modifytimestamp', 'hassubordinates', 'memberof'];
 		$return['hiddenAttributes'] = ['creatorsname', 'createtimestamp', 'modifiersname',
 			'modifytimestamp', 'hassubordinates'];
+		$return['help'] = [
+			'displayGroups' => [
+				"Headline" => _('Display format'),
+				"Text" => _('Specifies how groups are displayed.')
+			],
+		];
 		return $return;
 	}
 
@@ -121,11 +134,20 @@ class generalInformation extends baseModule {
 			$groupLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addLabel($groupLabel);
 			$groups = new htmlTable();
-			foreach ($this->attributes['memberof'] as $memberOf) {
-				$groupEntry = new htmlOutputText(getAbstractDN($memberOf));
+			$memberOfList = $this->attributes['memberof'];
+			if ($this->formatContainsDN()) {
+				// sort by DN
+				usort($memberOfList, compareDN(...));
+				$groups->setCSSClasses(['text-right']);
+			}
+			else {
+				natcasesort($memberOfList);
+			}
+			foreach ($memberOfList as $memberOf) {
+				$groupEntry = new htmlOutputText($this->getGroupLabel($memberOf));
 				foreach ($suffixList as $suffix => $type) {
 					if ((stripos($memberOf, $suffix) > 0) && !isAccountTypeHidden($type)) {
-						$groupEntry = new htmlLink(getAbstractDN($memberOf), 'edit.php?type=' . $type . '&DN=\'' . $memberOf . '\'');
+						$groupEntry = new htmlLink($this->getGroupLabel($memberOf), 'edit.php?type=' . $type . '&DN=\'' . $memberOf . '\'');
 						$groupEntry->setTargetWindow('_blank');
 						break;
 					}
@@ -163,6 +185,80 @@ class generalInformation extends baseModule {
 			'hassubordinates' => _('Has subentries'),
 			'memberof' => _('Groups')
 		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
+		$configContainer = new htmlResponsiveRow();
+		$displayOptions = [
+			'dn' => self::DISPLAY_DN,
+			'cn' => self::DISPLAY_CN,
+			'cn - dn' => self::DISPLAY_CN_DN,
+		];
+		$displaySelect = new htmlResponsiveSelect(static::class . '_displayGroups', $displayOptions, [self::DISPLAY_CN_DN], _('Display format'), 'displayGroups');
+		$displaySelect->setHasDescriptiveElements(true);
+		$configContainer->add($displaySelect);
+		return $configContainer;
+	}
+
+	/**
+	 * Returns if the display format contains a DN.
+	 * DN values should be sorted by DN and aligned right.
+	 *
+	 * @return bool contains DN
+	 */
+	private function formatContainsDN(): bool {
+		$format = self::DISPLAY_CN_DN;
+		if (!empty($this->moduleSettings[static::class . '_displayGroups'][0])) {
+			$format = $this->moduleSettings[static::class . '_displayGroups'][0];
+		}
+		return in_array($format, [self::DISPLAY_DN, self::DISPLAY_CN_DN]);
+	}
+
+	/**
+	 * Returns the display label for groups.
+	 *
+	 * @param string $dn DN
+	 * @return string label
+	 */
+	private function getGroupLabel(string $dn): string {
+		if (empty($dn)) {
+			return '';
+		}
+		$format = self::DISPLAY_CN_DN;
+		if (!empty($this->moduleSettings[static::class . '_displayGroups'][0])) {
+			$format = $this->moduleSettings[static::class . '_displayGroups'][0];
+		}
+		return match ($format) {
+			self::DISPLAY_CN_DN => $this->getGroupLabelCN_DN($dn),
+			self::DISPLAY_CN => $this->getGroupLabelCN($dn),
+			default => getAbstractDN($dn),
+		};
+	}
+
+	/**
+	 * Returns the display label for groups in "cn (dn)" format.
+	 *
+	 * @param string $dn DN
+	 * @return string label
+	 */
+	private function getGroupLabelCN_DN(string $dn): string {
+		if (str_starts_with($dn, 'cn=')) {
+			return extractRDNValue($dn) . ' - ' . getAbstractDN(extractDNSuffix($dn));
+		}
+		return getAbstractDN($dn);
+	}
+
+	/**
+	 * Returns the display label for groups in "cn" format.
+	 *
+	 * @param string $dn DN
+	 * @return string label
+	 */
+	private function getGroupLabelCN(string $dn): string {
+		return extractRDNValue($dn);
 	}
 
 }

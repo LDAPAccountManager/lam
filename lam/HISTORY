@@ -1,3 +1,7 @@
+December 2026 9.8
+ - General information: allow to set display format of groups (784)
+
+
 02.10.2026 9.7
  - Optional audit log can track all LDAP changes (716)
  - Windows users: list view can show flags of "userAccountControl" (735)
