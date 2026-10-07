@@ -1841,7 +1841,7 @@ class TreeView {
 			$allValues = [];
 			foreach ($attributeData as $singleData) {
 				$schemaAttribute = $schemaAttributes[$attributeName] ?? null;
-				$attributeNameSchema = ($schemaAttribute === null) ? $attributeName : $schemaAttribute->getName();
+				$attributeNameSchema = $schemaAttribute?->getName() ?? $attributeName;
 				$values = $singleData[$attributeName] ?? [''];
 				$isMultiValue = $this->isMultiValueAttribute($values, $schemaAttribute);
 				$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);

@@ -1404,7 +1404,7 @@ function compareDN(string $a, string $b): int {
 			return $len_a <=> $len_b;
 		}
 		// part is identical, check next
-		elseif ($part_a === $part_b) {
+		if ($part_a === $part_b) {
 			continue;
 		}
 		// compare first non-equal part
