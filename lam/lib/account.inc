@@ -1380,10 +1380,12 @@ function unescapeLdapSpecialCharactersCallback(array $matches): string {
  * @param string $b second argument to compare
  * @return int 0 if equal, 1 if $a is greater, -1 if $b is greater
  */
-function compareDN($a, $b): int {
+function compareDN(string $a, string $b): int {
 	// split DNs
-	$array_a = explode(",", strtolower($a));
-	$array_b = explode(",", strtolower($b));
+	$array_a = ldap_explode_dn(strtolower($a), 0);
+	unset($array_a['count']);
+	$array_b = ldap_explode_dn(strtolower($b), 0);
+	unset($array_b['count']);
 	$len_a = count($array_a);
 	$len_b = count($array_b);
 	// check how many parts to compare
@@ -1397,15 +1399,16 @@ function compareDN($a, $b): int {
 		$part_b = $array_b[$len_b - $i - 1];
 		$part_b = explode('=', $part_b);
 		$part_b = $part_b[1] ?? $part_b[0];
-		// compare parts
-		if ($part_a === $part_b) { // part is identical
-			if ($i == ($len - 1)) {
-				return $len_a <=> $len_b;
-			}
+		// if length is different then do not compare most-left part (but length of DN)
+		if (($len_a !== $len_b) && ($i === ($len - 1))) {
+			return $len_a <=> $len_b;
 		}
-		else {
-			return strnatcasecmp($part_a, $part_b);
+		// part is identical, check next
+		elseif ($part_a === $part_b) {
+			continue;
 		}
+		// compare first non-equal part
+		return strnatcasecmp($part_a, $part_b);
 	}
 	return -1;
 }

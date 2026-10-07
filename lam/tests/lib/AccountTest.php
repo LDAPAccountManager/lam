@@ -358,4 +358,51 @@ class AccountTest extends TestCase {
 		$this->assertEquals(['a', 'b', 'c'], flattenArray([0 => ['a'], 'b', 'x' => [0 => ['c']]]));
 	}
 
+	public function testCompareDN() {
+		$source = [
+			'cn=bcd,dc=aaa,o=bbb',
+			'cn=def,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=abc,dc=aaa,o=bbb',
+			'cn=ghi,dc=zzz,dc=aaa,o=bbb',
+			'cn=bcd,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=ghi,dc=aaa,o=bbb',
+			'cn=ghi,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'o=bbb',
+			'cn=def,dc=aaa,o=bbb',
+			'cn=bcd,dc=bbb,dc=aaa,o=bbb',
+			'cn=abc,dc=zzz,dc=aaa,o=bbb',
+			'cn=def,dc=bbb,dc=aaa,o=bbb',
+			'cn=abc,dc=bbb,dc=aaa,o=bbb',
+			'dc=aaa,o=bbb',
+			'cn=def,dc=zzz,dc=aaa,o=bbb',
+			'cn=abc,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=ghi,dc=bbb,dc=aaa,o=bbb',
+			'o=aaa',
+			'cn=bcd,dc=zzz,dc=aaa,o=bbb',
+		];
+		usort($source, compareDN(...));
+		$expected = [
+			'o=aaa',
+			'o=bbb',
+			'dc=aaa,o=bbb',
+			'cn=abc,dc=aaa,o=bbb',
+			'cn=bcd,dc=aaa,o=bbb',
+			'cn=def,dc=aaa,o=bbb',
+			'cn=ghi,dc=aaa,o=bbb',
+			'cn=abc,dc=bbb,dc=aaa,o=bbb',
+			'cn=bcd,dc=bbb,dc=aaa,o=bbb',
+			'cn=def,dc=bbb,dc=aaa,o=bbb',
+			'cn=ghi,dc=bbb,dc=aaa,o=bbb',
+			'cn=abc,dc=zzz,dc=aaa,o=bbb',
+			'cn=bcd,dc=zzz,dc=aaa,o=bbb',
+			'cn=def,dc=zzz,dc=aaa,o=bbb',
+			'cn=ghi,dc=zzz,dc=aaa,o=bbb',
+			'cn=abc,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=bcd,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=def,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+			'cn=ghi,dc=ccc,dc=zzz,dc=aaa,o=bbb',
+		];
+		$this->assertEquals($expected, $source);
+	}
+
 }
