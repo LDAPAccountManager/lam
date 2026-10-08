@@ -121,6 +121,9 @@ class generalInformation extends baseModule {
 			$types = $typeManager->getConfiguredTypesForScopes($scopes);
 			$suffixList = [];
 			foreach ($types as $type) {
+				if ($type->isHidden()) {
+					continue;
+				}
 				$suffix = $type->getSuffix();
 				// continue if suffixes are not unique
 				if (isset($suffixList[$suffix])) {
@@ -146,7 +149,7 @@ class generalInformation extends baseModule {
 			foreach ($memberOfList as $memberOf) {
 				$groupEntry = new htmlOutputText($this->getGroupLabel($memberOf));
 				foreach ($suffixList as $suffix => $type) {
-					if ((stripos($memberOf, $suffix) > 0) && !isAccountTypeHidden($type)) {
+					if (str_ends_with($memberOf, $suffix)) {
 						$groupEntry = new htmlLink($this->getGroupLabel($memberOf), 'edit.php?type=' . $type . '&DN=\'' . $memberOf . '\'');
 						$groupEntry->setTargetWindow('_blank');
 						break;
