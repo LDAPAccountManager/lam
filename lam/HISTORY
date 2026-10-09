@@ -1,5 +1,6 @@
 December 2026 9.8
  - General information: allow to set display format of groups (784)
+ - Login: allow to specify custom header and footer (787)
  - LAM Pro:
   -> Group of (unique) names: link members etc. to jump directly to entry (783)
 
