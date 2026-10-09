@@ -527,6 +527,9 @@ $helpArray = [
 	"526" => ["Headline" => _('Login footer'),
 		"Text" => _('This text is displayed as footer on the login page.')
 	],
+	"526a" => ["Headline" => _("Login header"),
+		"Text" => _("This text is displayed as header on the login page.")
+	],
 	"527" => ["Headline" => _('Main page footer'),
 		"Text" => _('This text is displayed as footer on the self-service main page.')
 	],

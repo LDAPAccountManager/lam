@@ -270,7 +270,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 	}
 	if (!empty($config_object)) {
 		?>
-        <br><br><br>
         <?php
         $content = new htmlResponsiveRow();
         $row = new htmlResponsiveRow();
@@ -402,9 +401,15 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 
         $shadowBoxDiv = new htmlDiv(null, $content, ['roundedShadowBox', 'limitWidth']);
         $centerDiv = new htmlDiv(null, $shadowBoxDiv, ['centeredTable']);
-        parseHtml(null, $centerDiv, [], false);
+        $loginContent = new htmlResponsiveRow();
+		$loginContent->add(new htmlOutputText($config_object->getLoginHeader(), false));
+		$loginContent->addVerticalSpacer('4rem');
+        $loginContent->add($centerDiv);
+		$loginContent->addVerticalSpacer('4rem');
+		$loginContent->add(new htmlOutputText($config_object->getLoginFooter(), false));
+        parseHtml(null, $loginContent, [], false);
 	}
-	?>
+    ?>
     <br><br>
 	<?php
 	if (isLAMProVersion() && ($licenseValidator !== null)

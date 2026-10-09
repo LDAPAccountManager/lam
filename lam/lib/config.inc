@@ -958,6 +958,12 @@ class LAMConfig {
 	/** specifies if HTTP authentication should be used */
 	private string $httpAuthentication = 'false';
 
+	/** @var string $loginHeader custom header for login */
+	private string $loginHeader = '';
+
+	/** @var string $loginFooter custom footer for login */
+	private string $loginFooter = '';
+
 	/** email address for sender of password reset mails */
 	private string $lamProMailFrom = '';
 	/** reply-to email address for password reset mails */
@@ -1039,7 +1045,7 @@ class LAMConfig {
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'twoFactorAllowToRememberDevice',
 		'twoFactorRememberDeviceDuration', 'twoFactorRememberDevicePassword', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
-		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic'
+		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic', 'loginHeader', 'loginFooter'
 	];
 
 	/**
@@ -2056,6 +2062,42 @@ class LAMConfig {
 	 */
 	public function setHttpAuthentication(string $httpAuthentication): void {
 		$this->httpAuthentication = $httpAuthentication;
+	}
+
+	/**
+	 * Sets the custom login header.
+	 *
+	 * @param string $loginHeader header HTML
+	 */
+	public function setLoginHeader(string $loginHeader): void {
+		$this->loginHeader = $loginHeader;
+	}
+
+	/**
+	 * Returns the custom login header.
+	 *
+	 * @return string header
+	 */
+	public function getLoginHeader(): string {
+		return $this->loginHeader;
+	}
+
+	/**
+	 * Sets the custom login footer.
+	 *
+	 * @param string $loginFooter footer HTML
+	 */
+	public function setLoginFooter(string $loginFooter): void {
+		$this->loginFooter = $loginFooter;
+	}
+
+	/**
+	 * Returns the custom login footer.
+	 *
+	 * @return string footer
+	 */
+	public function getLoginFooter(): string {
+		return $this->loginFooter;
 	}
 
 	/**

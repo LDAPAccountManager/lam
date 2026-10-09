@@ -525,6 +525,19 @@ class LAMConfigTest extends TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getHttpAuthentication());
 	}
 
+	public function testLoginHeaderFooter() {
+		$header = '<p>Header</p>';
+		$this->lAMConfig->setLoginHeader($header);
+		$this->assertEquals($header, $this->lAMConfig->getLoginHeader());
+		$this->doSave();
+		$this->assertEquals($header, $this->lAMConfig->getLoginHeader());
+		$footer = '<p>Footer</p>';
+		$this->lAMConfig->setLoginFooter($footer);
+		$this->assertEquals($footer, $this->lAMConfig->getLoginFooter());
+		$this->doSave();
+		$this->assertEquals($footer, $this->lAMConfig->getLoginFooter());
+	}
+
 	/**
 	 * Tests LAMConfig->getTwoFactorAuthentication() and LAMConfig->setTwoFactorAuthentication()
 	 */

@@ -306,6 +306,18 @@ $row->add($advancedOptions);
 
 $row->addVerticalSpacer('2rem');
 
+// captions, coloring, ...
+$row->add(new htmlSubTitle(_("Styling"), '../../graphics/theme.svg', null, true));
+$loginHeader = $conf->getLoginHeader();
+$loginHeaderInput = new htmlResponsiveInputTextarea('loginHeader', $loginHeader, 50, 5, _("Login header"), '526a');
+$loginHeaderInput->setIsRichEdit(true);
+$row->add($loginHeaderInput);
+$loginFooter = $conf->getLoginFooter();
+$loginFooterInput = new htmlResponsiveInputTextarea('loginFooter', $loginFooter, 50, 5, _("Login footer"), '526');
+$loginFooterInput->setIsRichEdit(true);
+$row->add($loginFooterInput);
+$row->addVerticalSpacer('2rem');
+
 // language
 $row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.svg', null, true));
 // read available languages
@@ -742,6 +754,8 @@ function checkInput(): array {
 	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = ["ERROR", _("List of admin users is empty or invalid!")];
 	}
+    $conf->setLoginHeader($_POST['loginHeader']);
+    $conf->setLoginFooter($_POST['loginFooter']);
 	if (!$conf->set_defaultLanguage($_POST['lang'])) {
 		$errors[] = ["ERROR", _("Language is not defined!")];
 	}
