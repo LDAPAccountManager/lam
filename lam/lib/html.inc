@@ -602,6 +602,8 @@ class htmlInputField extends htmlElement {
 	protected ?string $onInput = null;
 	/** password field */
 	protected bool $isPassword = false;
+	/** password can be unmasked */
+	protected bool $passwordCanBeUnmasked = false;
 	/** check password strength */
 	protected bool $checkPasswordStrength = false;
 	/** disables browser autofilling of password fields */
@@ -768,10 +770,19 @@ class htmlInputField extends htmlElement {
 		if ($this->checkPasswordStrength) {
 			echo '<div id="' . $idValue . '-pwd-strength-issues" class="lam-password-strength"></div>';
 		}
+		if ($this->passwordCanBeUnmasked) {
+			echo '<div class="password-unmaskable">';
+		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
 			. $min . $max . $step . $validationPattern . $size . $onKeyPress . $onKeyUp
 			. $onInput . $title . $disabled . $this->getAccessibilityMarkup()
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
+		if ($this->passwordCanBeUnmasked) {
+			echo '<span class="password-toggle-mask" role="button">
+					<img alt="unmask" aria-label="unmask" class="password-eye-open" onclick="window.lam.password.unmask(this);">
+					<img alt="mask" aria-label="mask" class="password-eye-closed hidden" onclick="window.lam.password.mask(this);">
+					</span></div>';
+		}
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/search-color.svg"
 					   width="16" height="16" title="' . _('Choose entry') . '"
@@ -866,11 +877,13 @@ class htmlInputField extends htmlElement {
 	 * @param bool $isPassword password field
 	 * @param bool $checkStrength check if matches password policy (default: false)
 	 * @param bool $disableAutoFill prevent autofilling by browser
+	 * @param bool $allowUnmasking allow to unmask the password
 	 */
-	public function setIsPassword(bool $isPassword, bool $checkStrength = false, bool $disableAutoFill = false): void {
+	public function setIsPassword(bool $isPassword, bool $checkStrength = false, bool $disableAutoFill = false, bool $allowUnmasking = true): void {
 		$this->isPassword = $isPassword;
 		$this->checkPasswordStrength = $checkStrength;
 		$this->disableAutoFill = $disableAutoFill;
+		$this->passwordCanBeUnmasked = $allowUnmasking;
 	}
 
 	/**

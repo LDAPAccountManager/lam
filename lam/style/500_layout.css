@@ -219,6 +219,29 @@ p.password-strength {
     color: var(--lam-text-color-error);
 }
 
+div.password-unmaskable {
+    position: relative;
+    width: 100%;
+}
+
+span.password-toggle-mask {
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+img.password-eye-open {
+    content: url("lam-images/eye.svg");
+}
+
+img.password-eye-closed {
+    content: url("lam-images/eye-slash.svg");
+}
+
 textarea {
 	border-width: 1px;
 	margin: var(--lam-small-space);

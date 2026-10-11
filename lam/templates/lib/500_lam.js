@@ -501,6 +501,34 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
     }
 }
 
+window.lam.password = window.lam.password || {};
+
+/**
+ * Unmasks a password input to see the entered value.
+ *
+ * @param image unmask image
+ */
+window.lam.password.unmask = function (image) {
+    const input = image.parentElement.parentElement.querySelector('input');
+    input.type = 'text';
+    image.classList.add('hidden');
+    const maskIcon = image.parentElement.querySelector('.password-eye-closed');
+    maskIcon.classList.remove('hidden');
+}
+
+/**
+ * Masks a password input to no longer see the entered value.
+ *
+ * @param image mask image
+ */
+window.lam.password.mask = function (image) {
+    const input = image.parentElement.parentElement.querySelector('input');
+    input.type = 'password';
+    image.classList.add('hidden');
+    const unmaskIcon = image.parentElement.querySelector('.password-eye-open');
+    unmaskIcon.classList.remove('hidden');
+}
+
 /**
  * Updates the positions of a htmlSortable list in a hidden input field.
  * The positions must be separated by comma (e.g. "0,1,2,3").
