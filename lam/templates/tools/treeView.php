@@ -54,7 +54,6 @@ setlanguage();
 include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo '<link rel="stylesheet" href="../../style/wunderbaum/wunderbaum.css" />';
 echo '<script src="../lib/extra/wunderbaum/wunderbaum.umd.js"></script>';
-echo '<link rel="stylesheet" href="../../style/bootstrap-icons/bootstrap-icons.css" />';
 echo '<div class="smallPaddingContent">';
 
 $roots = TreeViewTool::getRootDns();
@@ -126,6 +125,11 @@ function showTree(): void {
 						badgeSpan.appendChild(badgeImg);
 						return badgeSpan;
 					}
+				},
+				iconMap: {
+						loading: "lam-tree-icon lam-tree-icon-chevron-right wb-busy",
+						expanderCollapsed: "lam-tree-icon lam-tree-icon-chevron-right",
+						expanderExpanded: "lam-tree-icon lam-tree-icon-chevron-down",
 				},
 				activate: function(e) {
 					const node = e.node;
