@@ -3505,6 +3505,23 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 		// no action if already open
 		return;
 	}
+    // start timer to delay menu open if another menu was recently opened
+    if (window.lam.topmenu.active && (window.lam.topmenu.active !== layerId)) {
+        window.lam.topmenu.delayedOpen = setTimeout(() => {
+            window.lam.topmenu.active = null;
+            window.lam.topmenu.delayedOpen = null;
+            window.lam.topmenu.openSubmenu(event, layerId, listener);
+        }, 300);
+        return;
+    }
+    // mark current layer as recently opened
+    event.target.onmouseleave = function(event) {
+        window.lam.topmenu.active = layerId;
+        setTimeout(() => {
+            window.lam.topmenu.active = null;
+            event.target.onmouseleave = null;
+        }, 300);
+    };
 	document.removeEventListener("click", listener);
 	document.removeEventListener("mouseover", listener);
 	event.preventDefault();
@@ -3518,6 +3535,16 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 	window.lam.topmenu.lastOpened = new Date().getTime();
 	document.addEventListener("click", listener);
 	document.addEventListener("mouseover", listener);
+    layer.onmouseenter = window.lam.topmenu.clearDelayedOpen;
+}
+
+window.lam.topmenu.clearDelayedOpen = function() {
+    window.lam.topmenu.active = null;
+    // stop delayed open if any
+    if (window.lam.topmenu.delayedOpen) {
+        clearTimeout(window.lam.topmenu.delayedOpen);
+        window.lam.topmenu.delayedOpen = null;
+    }
 }
 
 /**
