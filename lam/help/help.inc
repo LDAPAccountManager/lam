@@ -515,7 +515,7 @@ $helpArray = [
 	"522" => ["Headline" => _('Secure login'),
 		"Text" => _('Protect the self-service login with a captcha.')
 	],
-	"523" => ["Headline" => _('Base color'),
+	"523" => ["Headline" => _('Background color'),
 		"Text" => _('Background color for self-service pages.')
 	],
 	"524" => ["Headline" => _('Client id'),

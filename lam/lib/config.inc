@@ -114,6 +114,93 @@ enum LAM_THEMES: string {
 
 }
 
+/**
+ * Creates styles for pages.
+ */
+class LamPageStyling {
+
+	/**
+	 * Creates the main style tag for the page header.
+	 *
+	 * @param string $backgroundColor background color
+	 * @param string $primaryColor primary color
+	 * @param string $secondaryColor secondary color
+	 * @param string $backgroundImage background image
+	 * @return string style tag
+	 */
+	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor, string $backgroundImage): string {
+		if (empty($backgroundImage)) {
+			$image = 'background-color: ' . $backgroundColor . ';';
+		}
+		elseif (str_starts_with($backgroundImage, 'http') || str_starts_with($backgroundImage, '/')) {
+			$image = 'background-image: url(' . htmlspecialchars($backgroundImage) . ');';
+		}
+		else {
+			$image = 'background-image: url(../../graphics/' . htmlspecialchars($backgroundImage) . ');';
+		}
+		$backgroundColorParsed = LamColorUtil::parseColor($backgroundColor);
+		return '<style>
+        :root {
+            --lam-background-color-primary: ' . htmlspecialchars($primaryColor) . ';
+            --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
+            --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
+            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.8)) . ';
+            --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
+            --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($backgroundColor)) . ';
+            --lam-whitepages-color-primary: ' . htmlspecialchars($primaryColor) . ';
+            --lam-whitepages-color-background: ' . htmlspecialchars($backgroundColor) . ';
+            --lam-whitepages-color-panel: rgba(' . $backgroundColorParsed->red . ', ' . $backgroundColorParsed->green . ', ' . $backgroundColorParsed->blue . ');
+            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 2)) . ';
+            --lam-whitepages-blur: 4px;
+			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 1.5)) . ';
+			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
+			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($backgroundColor, 0.8))) . ';
+			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+        }
+        
+		div.lam-full-size-background {
+		  ' . $image . '
+		  background-size: cover;
+		  background-repeat: no-repeat;
+		  background-position: center top;
+		  width: 100vw;
+		  height: 100vh;
+		  position: absolute;
+		  overflow: hidden;
+		  top: 0;
+		  left: 0;
+		  z-index: -1;
+		  filter: blur(var(--lam-whitepages-blur));
+		}
+    </style>';
+	}
+
+	/**
+	 * Returns a list of installed background image names.
+	 *
+	 * @return string[] image file names
+	 */
+	public static function getBackgroundImageNames(): array {
+		$dir = dir(__DIR__ . '/../graphics');
+		if ($dir === false) {
+			return [];
+		}
+		$imageNames = [];
+		$fileName = $dir->read();
+		while ($fileName !== false) {
+			if (str_starts_with($fileName, 'background_')) {
+				$imageNames[] = $fileName;
+			}
+			$fileName = $dir->read();
+		}
+		return $imageNames;
+	}
+
+}
+
 /** persistence */
 include_once __DIR__ . '/persistence.inc';
 /** Used to print messages. */
