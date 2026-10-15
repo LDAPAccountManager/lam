@@ -700,6 +700,12 @@ class selfServiceProfile {
 	/** base color */
 	public string $baseColor = '#fffde2';
 
+	public string $primaryColor = '#3daee9';
+
+	public string $secondaryColor = '#ffe233';
+
+	public string $backgroundImage = '';
+
 	/** list of additional CSS links (separated by \n) */
 	public string $additionalCSS = '';
 

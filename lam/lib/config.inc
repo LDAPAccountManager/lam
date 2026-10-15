@@ -60,6 +60,25 @@ enum LAM_THEMES: string {
 	case COAST = 'COAST';
 	case MOUNTAIN = 'MOUNTAIN';
 	case CITY = 'CITY';
+	case NEUTRAL = 'NEUTRAL';
+
+	/**
+	 * Returns the image label.
+	 *
+	 * @return string image label
+	 */
+	public function getLabel(): string {
+		return match($this) {
+			self::OCEAN => _('Ocean'),
+			self::STARS => _('Stars'),
+			self::GRAND_CANYON => _('Grand canyon'),
+			self::RAIN_FOREST => _('Rain forest'),
+			self::COAST => _('Coast'),
+			self::MOUNTAIN => _('Mountain'),
+			self::CITY => _('City'),
+			self::NEUTRAL => _('Neutral'),
+		};
+	}
 
 	/**
 	 * Returns the image name.
@@ -75,6 +94,7 @@ enum LAM_THEMES: string {
 			self::COAST => 'background_skyline.jpg',
 			self::MOUNTAIN => 'background_mountain.jpg',
 			self::CITY => 'background_city.jpg',
+			self::NEUTRAL => '',
 		};
 	}
 
@@ -92,6 +112,25 @@ enum LAM_THEMES: string {
 			self::COAST => '#03395f',
 			self::MOUNTAIN => '#45B3FA',
 			self::CITY => '#333333',
+			self::NEUTRAL => '#3daee9',
+		};
+	}
+
+	/**
+	 * Returns the secondary color.
+	 *
+	 * @return string color
+	 */
+	public function getSecondaryColor(): string {
+		return match($this) {
+			self::OCEAN => '#ffe233',
+			self::STARS => '#ffe233',
+			self::GRAND_CANYON => '#ffe233',
+			self::RAIN_FOREST => '#ffe233',
+			self::COAST => '#ffe233',
+			self::MOUNTAIN => '#ffe233',
+			self::CITY => '#ffe233',
+			self::NEUTRAL => '#ffe233',
 		};
 	}
 
@@ -109,6 +148,7 @@ enum LAM_THEMES: string {
 			self::COAST => '#f1fafc',
 			self::MOUNTAIN => '#FFFFFF',
 			self::CITY => '#F4F4ED',
+			self::NEUTRAL => '#FFFFFF',
 		};
 	}
 
