@@ -640,7 +640,7 @@ class kolabUser extends baseModule {
 					}
 				}
 			}
-			uksort($delegates, compareDN(...));
+			uasort($delegates, compareDN(...));
 			$_SESSION['kolabUser_kolabDelegate'] = $kolabDelegate;
 			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < count($kolabDelegate); $i++) {
