@@ -2370,11 +2370,21 @@ class LamColorUtil {
 	 */
 	public static function adjustBrightness(string $color, float $percentage): string {
 		$color = self::parseColor($color);
-		// darken
-		$red = max(0, min(255, $color->red * $percentage));
-		$green = max(0, min(255, $color->green * $percentage));
-		$blue = max(0, min(255, $color->blue * $percentage));
+		$red = self::adjustSingleValue($color->red, $percentage);
+		$green = self::adjustSingleValue($color->green, $percentage);
+		$blue = self::adjustSingleValue($color->blue, $percentage);
 		return sprintf("#%02x%02x%02x", $red, $green, $blue);
+	}
+
+	/**
+	 * Adjusts a single color.
+	 *
+	 * @param string $value value
+	 * @param float $percentage percentage
+	 * @return float new value
+	 */
+	private static function adjustSingleValue(string $value, float $percentage): float {
+		return max(0, min(255, $value * $percentage));
 	}
 
 	/**
@@ -2385,7 +2395,7 @@ class LamColorUtil {
 	 */
 	public static function getTextColor(string $backgroundColor): string {
 		$color = self::parseColor($backgroundColor);
-		if (($color->red + $color->blue + $color->green) > (127 * 3)) {
+		if (($color->red + $color->blue + $color->green) > (160 * 3)) {
 			return '#000000';
 		}
 		return '#FFFFFF';
