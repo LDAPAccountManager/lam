@@ -197,7 +197,7 @@ class LamPageStyling {
             --lam-whitepages-color-panel: rgba(' . $backgroundColorParsed->red . ', ' . $backgroundColorParsed->green . ', ' . $backgroundColorParsed->blue . ');
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
             --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 2)) . ';
-            --lam-whitepages-blur: 4px;
+            --lam-background-blur: 4px;
 			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 1.5)) . ';
 			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
 			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
@@ -218,7 +218,7 @@ class LamPageStyling {
 		  top: 0;
 		  left: 0;
 		  z-index: -1;
-		  filter: blur(var(--lam-whitepages-blur));
+		  filter: blur(var(--lam-background-blur));
 		}
     </style>';
 	}
