@@ -126,7 +126,7 @@ enum LAM_THEMES: string {
 			self::OCEAN => '#ffe233',
 			self::STARS => '#ffe233',
 			self::GRAND_CANYON => '#ffe233',
-			self::RAIN_FOREST => '#ffe233',
+			self::RAIN_FOREST => '#b85c38',
 			self::COAST => '#ffe233',
 			self::MOUNTAIN => '#ffe233',
 			self::CITY => '#ffe233',
@@ -182,10 +182,14 @@ class LamPageStyling {
 		return '<style>
         :root {
             --lam-background-color-primary: ' . htmlspecialchars($primaryColor) . ';
+            --lam-background-color-secondary: ' . htmlspecialchars($secondaryColor) . ';
             --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
             --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.8)) . ';
+            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, 0.8)) . ';
+            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, 0.8)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
+            --lam-text-color-secondary: ' . htmlspecialchars(LamColorUtil::getTextColor($secondaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($backgroundColor)) . ';
             --lam-whitepages-color-primary: ' . htmlspecialchars($primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($backgroundColor) . ';
