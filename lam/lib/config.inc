@@ -123,13 +123,13 @@ enum LAM_THEMES: string {
 	 */
 	public function getSecondaryColor(): string {
 		return match($this) {
-			self::OCEAN => '#ffe233',
-			self::STARS => '#ffe233',
-			self::GRAND_CANYON => '#ffe233',
+			self::OCEAN => '#0f766e',
+			self::STARS => '#4d648d',
+			self::GRAND_CANYON => '#956044',
 			self::RAIN_FOREST => '#b85c38',
-			self::COAST => '#ffe233',
-			self::MOUNTAIN => '#ffe233',
-			self::CITY => '#ffe233',
+			self::COAST => '#0f766e',
+			self::MOUNTAIN => '#e76f51',
+			self::CITY => '#52658f',
 			self::NEUTRAL => '#ffe233',
 		};
 	}
