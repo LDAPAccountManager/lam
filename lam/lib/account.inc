@@ -2379,11 +2379,11 @@ class LamColorUtil {
 	/**
 	 * Adjusts a single color.
 	 *
-	 * @param string $value value
+	 * @param int $value value
 	 * @param float $percentage percentage
 	 * @return float new value
 	 */
-	private static function adjustSingleValue(string $value, float $percentage): float {
+	private static function adjustSingleValue(int $value, float $percentage): float {
 		return max(0, min(255, $value * $percentage));
 	}
 
