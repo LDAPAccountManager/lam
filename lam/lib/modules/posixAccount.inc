@@ -1751,10 +1751,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				}
 				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-					if ($attrs['givenName'][0]) {
+					if (!empty($attrs['givenName'][0])) {
 						$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
 					}
-					elseif ($attrs['sn'][0]) {
+					elseif (!empty($attrs['sn'][0])) {
 						$this->attributes['cn'][0] = $attrs['sn'][0];
 					}
 					else {
