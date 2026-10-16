@@ -1313,12 +1313,15 @@ div.lam-data-table .tabulator-header,.tabulator-table {
     margin: unset;
 }
 
-div.whitepages-panel {
+div.colored-panel {
   background-color: var(--lam-whitepages-color-panel);
   border-color: var(--lam-whitepages-color-border);
+  opacity: 0.95;
+}
+
+div.whitepages-panel {
   padding: var(--lam-large-space) var(--lam-large-space);
   border-radius: var(--lam-default-border-radius);
-  opacity: 0.95;
 }
 
 div.whitepages-card {
