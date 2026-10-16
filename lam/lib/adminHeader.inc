@@ -27,6 +27,7 @@ use htmlGroup;
 use htmlLink;
 use LAM\TYPES\TypeManager;
 use LAMException;
+use LamPageStyling;
 use ServerProfilePersistenceManager;
 
 /**
@@ -59,7 +60,9 @@ if (isLAMProVersion()) {
 echo $_SESSION['header'];
 $title = "LDAP Account Manager" . $pro . " (" . str_replace(['ldap://', 'ldaps://'], ['', ''], $_SESSION['config']->get_ServerURL()) . ")";
 printHeaderContents($title, $headerPrefix);
-echo "</head><body>\n";
+echo LamPageStyling::getMainStyleTag($_SESSION['config']->getBackgroundColor(), $_SESSION['config']->getPrimaryColor(),
+	$_SESSION['config']->getSecondaryColor(), '');
+echo "</head><body><div class=\"lam-full-size-background\"></div>\n";
 
 // include all JavaScript files
 printJsIncludes($headerPrefix);

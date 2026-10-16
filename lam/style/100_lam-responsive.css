@@ -170,6 +170,8 @@ table.responsive-table td {
 }
 
 div.lam-header {
+    background-color: var(--lam-background-color-default);
+    border-radius: var(--lam-default-border-radius);
 	line-height: 2rem;
 	overflow: hidden;
 	margin: var(--lam-smaller-space);

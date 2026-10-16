@@ -20,6 +20,7 @@ use htmlInputCheckbox;
 use htmlButton;
 use htmlStatusMessage;
 use LAMException;
+use LamPageStyling;
 use Ldap;
 use htmlResponsiveRow;
 use htmlDiv;
@@ -237,9 +238,14 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 
 	echo $_SESSION["header"];
 	printHeaderContents('LDAP Account Manager', '..');
+	if (!empty($config_object)) {
+		echo LamPageStyling::getMainStyleTag($config_object->getBackgroundColor(), $config_object->getPrimaryColor(),
+            $config_object->getSecondaryColor(), $config_object->getBackgroundImage(), '..');
+	}
 	?>
     </head>
     <body>
+    <div class="lam-full-size-background"></div>
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');
@@ -399,7 +405,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
         $profileForm->setCSSClasses(['padding-sides-largest']);
         $content->add($profileForm);
 
-        $shadowBoxDiv = new htmlDiv(null, $content, ['roundedShadowBox', 'limitWidth']);
+        $shadowBoxDiv = new htmlDiv(null, $content, ['roundedShadowBox', 'limitWidth', 'colored-panel']);
         $centerDiv = new htmlDiv(null, $shadowBoxDiv, ['centeredTable']);
         $loginContent = new htmlResponsiveRow();
 		$loginContent->add(new htmlOutputText($config_object->getLoginHeader(), false));

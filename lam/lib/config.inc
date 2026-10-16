@@ -166,9 +166,11 @@ class LamPageStyling {
 	 * @param string $primaryColor primary color
 	 * @param string $secondaryColor secondary color
 	 * @param string $backgroundImage background image
+	 * @param string $backgroundImagePrefix folder prefix
 	 * @return string style tag
 	 */
-	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor, string $backgroundImage): string {
+	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor,
+										   string $backgroundImage, string $backgroundImagePrefix = '../..'): string {
 		if (empty($backgroundImage)) {
 			$image = 'background-color: ' . $backgroundColor . ';';
 		}
@@ -176,7 +178,7 @@ class LamPageStyling {
 			$image = 'background-image: url(' . htmlspecialchars($backgroundImage) . ');';
 		}
 		else {
-			$image = 'background-image: url(../../graphics/' . htmlspecialchars($backgroundImage) . ');';
+			$image = 'background-image: url(' . $backgroundImagePrefix . '/graphics/' . htmlspecialchars($backgroundImage) . ');';
 		}
 		$backgroundColorParsed = LamColorUtil::parseColor($backgroundColor);
 		return '<style>
@@ -186,7 +188,6 @@ class LamPageStyling {
             --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
             --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.8)) . ';
-            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, 0.8)) . ';
             --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, 0.8)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
             --lam-text-color-secondary: ' . htmlspecialchars(LamColorUtil::getTextColor($secondaryColor)) . ';
@@ -1158,6 +1159,12 @@ class LAMConfig {
 	/** @var string $loginFooter custom footer for login */
 	private string $loginFooter = '';
 
+	/// coloring
+	private string $backgroundColor = '#ffffff';
+	private string $primaryColor = '#3daee9';
+	private string $secondaryColor = '#ffe233';
+	private string $backgroundImage = '';
+
 	/** email address for sender of password reset mails */
 	private string $lamProMailFrom = '';
 	/** reply-to email address for password reset mails */
@@ -1239,7 +1246,8 @@ class LAMConfig {
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'twoFactorAllowToRememberDevice',
 		'twoFactorRememberDeviceDuration', 'twoFactorRememberDevicePassword', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
-		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic', 'loginHeader', 'loginFooter'
+		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic', 'loginHeader', 'loginFooter',
+		'backgroundColor', 'primaryColor', 'secondaryColor', 'backgroundImage'
 	];
 
 	/**
@@ -2292,6 +2300,78 @@ class LAMConfig {
 	 */
 	public function getLoginFooter(): string {
 		return $this->loginFooter;
+	}
+
+	/**
+	 * Sets the background color.
+	 *
+	 * @param string $value background color
+	 */
+	public function setBackgroundColor(string $value): void {
+		$this->backgroundColor = $value;
+	}
+
+	/**
+	 * Returns the background color.
+	 *
+	 * @return string background color
+	 */
+	public function getBackgroundColor(): string {
+		return $this->backgroundColor;
+	}
+
+	/**
+	 * Sets the primary color.
+	 *
+	 * @param string $value primary color
+	 */
+	public function setPrimaryColor(string $value): void {
+		$this->primaryColor = $value;
+	}
+
+	/**
+	 * Returns the primary color.
+	 *
+	 * @return string primary color
+	 */
+	public function getPrimaryColor(): string {
+		return $this->primaryColor;
+	}
+
+	/**
+	 * Sets the secondary color.
+	 *
+	 * @param string $value secondary color
+	 */
+	public function setSecondaryColor(string $value): void {
+		$this->secondaryColor = $value;
+	}
+
+	/**
+	 * Returns the secondary color.
+	 *
+	 * @return string secondary color
+	 */
+	public function getSecondaryColor(): string {
+		return $this->secondaryColor;
+	}
+
+	/**
+	 * Sets the background image.
+	 *
+	 * @param string $value background image
+	 */
+	public function setBackgroundImage(string $value): void {
+		$this->backgroundImage = $value;
+	}
+
+	/**
+	 * Returns the background image.
+	 *
+	 * @return string background image
+	 */
+	public function getBackgroundImage(): string {
+		return $this->backgroundImage;
 	}
 
 	/**
