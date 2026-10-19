@@ -1334,6 +1334,7 @@ div.whitepages-card {
     padding-top: var(--lam-large-space);
     padding-bottom: var(--lam-large-space);
     background-color: var(--lam-whitepages-color-card);
+    cursor: pointer;
 }
 
 div.whitepages-card div {

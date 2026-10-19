@@ -187,23 +187,23 @@ class LamPageStyling {
             --lam-background-color-secondary: ' . htmlspecialchars($secondaryColor) . ';
             --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
-            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.8)) . ';
-            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, 0.8)) . ';
+            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.3)) . ';
+            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, -0.3)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
             --lam-text-color-secondary: ' . htmlspecialchars(LamColorUtil::getTextColor($secondaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($backgroundColor)) . ';
             --lam-whitepages-color-primary: ' . htmlspecialchars($primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($backgroundColor) . ';
             --lam-whitepages-color-panel: rgba(' . $backgroundColorParsed->red . ', ' . $backgroundColorParsed->green . ', ' . $backgroundColorParsed->blue . ');
-            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 2)) . ';
+            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, -0.2)) . ';
+            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
             --lam-background-blur: 4px;
-			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 1.5)) . ';
-			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
-			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($backgroundColor, 0.8))) . ';
-			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.97)) . ';
+			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.85)) . ';
+			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.6)) . ';
+			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($primaryColor, 0.6))) . ';
+			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.2)) . ';
+			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, -0.2)) . ';
         }
         
 		div.lam-full-size-background {

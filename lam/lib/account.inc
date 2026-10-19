@@ -2384,7 +2384,10 @@ class LamColorUtil {
 	 * @return float new value
 	 */
 	private static function adjustSingleValue(int $value, float $percentage): float {
-		return max(0, min(255, $value * $percentage));
+		if ($percentage > 0) {
+			return round($value + (255 - $value) * $percentage);
+		}
+		return round($value * (1 + $percentage));
 	}
 
 	/**
