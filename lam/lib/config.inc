@@ -128,7 +128,7 @@ enum LAM_THEMES: string {
 			self::GRAND_CANYON => '#956044',
 			self::RAIN_FOREST => '#b85c38',
 			self::COAST => '#0f766e',
-			self::MOUNTAIN => '#e76f51',
+			self::MOUNTAIN => '#d58224',
 			self::CITY => '#52658f',
 			self::NEUTRAL => '#ffe233',
 		};
@@ -187,8 +187,8 @@ class LamPageStyling {
             --lam-background-color-secondary: ' . htmlspecialchars($secondaryColor) . ';
             --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
-            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.3)) . ';
-            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, -0.3)) . ';
+            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.2)) . ';
+            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, -0.2)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
             --lam-text-color-secondary: ' . htmlspecialchars(LamColorUtil::getTextColor($secondaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($backgroundColor)) . ';
