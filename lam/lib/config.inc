@@ -60,6 +60,25 @@ enum LAM_THEMES: string {
 	case COAST = 'COAST';
 	case MOUNTAIN = 'MOUNTAIN';
 	case CITY = 'CITY';
+	case NEUTRAL = 'NEUTRAL';
+
+	/**
+	 * Returns the image label.
+	 *
+	 * @return string image label
+	 */
+	public function getLabel(): string {
+		return match($this) {
+			self::OCEAN => _('Ocean'),
+			self::STARS => _('Stars'),
+			self::GRAND_CANYON => _('Grand canyon'),
+			self::RAIN_FOREST => _('Rain forest'),
+			self::COAST => _('Coast'),
+			self::MOUNTAIN => _('Mountain'),
+			self::CITY => _('City'),
+			self::NEUTRAL => _('Neutral'),
+		};
+	}
 
 	/**
 	 * Returns the image name.
@@ -75,6 +94,7 @@ enum LAM_THEMES: string {
 			self::COAST => 'background_skyline.jpg',
 			self::MOUNTAIN => 'background_mountain.jpg',
 			self::CITY => 'background_city.jpg',
+			self::NEUTRAL => '',
 		};
 	}
 
@@ -92,6 +112,25 @@ enum LAM_THEMES: string {
 			self::COAST => '#03395f',
 			self::MOUNTAIN => '#45B3FA',
 			self::CITY => '#333333',
+			self::NEUTRAL => '#3daee9',
+		};
+	}
+
+	/**
+	 * Returns the secondary color.
+	 *
+	 * @return string color
+	 */
+	public function getSecondaryColor(): string {
+		return match($this) {
+			self::OCEAN => '#0f766e',
+			self::STARS => '#4d648d',
+			self::GRAND_CANYON => '#956044',
+			self::RAIN_FOREST => '#b85c38',
+			self::COAST => '#0f766e',
+			self::MOUNTAIN => '#d58224',
+			self::CITY => '#52658f',
+			self::NEUTRAL => '#ffe233',
 		};
 	}
 
@@ -109,6 +148,7 @@ enum LAM_THEMES: string {
 			self::COAST => '#f1fafc',
 			self::MOUNTAIN => '#FFFFFF',
 			self::CITY => '#F4F4ED',
+			self::NEUTRAL => '#FFFFFF',
 		};
 	}
 
@@ -126,9 +166,11 @@ class LamPageStyling {
 	 * @param string $primaryColor primary color
 	 * @param string $secondaryColor secondary color
 	 * @param string $backgroundImage background image
+	 * @param string $backgroundImagePrefix folder prefix
 	 * @return string style tag
 	 */
-	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor, string $backgroundImage): string {
+	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor,
+										   string $backgroundImage, string $backgroundImagePrefix = '../..'): string {
 		if (empty($backgroundImage)) {
 			$image = 'background-color: ' . $backgroundColor . ';';
 		}
@@ -136,29 +178,32 @@ class LamPageStyling {
 			$image = 'background-image: url(' . htmlspecialchars($backgroundImage) . ');';
 		}
 		else {
-			$image = 'background-image: url(../../graphics/' . htmlspecialchars($backgroundImage) . ');';
+			$image = 'background-image: url(' . $backgroundImagePrefix . '/graphics/' . htmlspecialchars($backgroundImage) . ');';
 		}
 		$backgroundColorParsed = LamColorUtil::parseColor($backgroundColor);
 		return '<style>
         :root {
             --lam-background-color-primary: ' . htmlspecialchars($primaryColor) . ';
+            --lam-background-color-secondary: ' . htmlspecialchars($secondaryColor) . ';
             --lam-background-color-default: ' . htmlspecialchars($backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($backgroundColor) . ';
-            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.8)) . ';
+            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.2)) . ';
+            --lam-border-color-secondary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($secondaryColor, -0.2)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($primaryColor)) . ';
+            --lam-text-color-secondary: ' . htmlspecialchars(LamColorUtil::getTextColor($secondaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($backgroundColor)) . ';
             --lam-whitepages-color-primary: ' . htmlspecialchars($primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($backgroundColor) . ';
             --lam-whitepages-color-panel: rgba(' . $backgroundColorParsed->red . ', ' . $backgroundColorParsed->green . ', ' . $backgroundColorParsed->blue . ');
-            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 2)) . ';
-            --lam-whitepages-blur: 4px;
-			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 1.5)) . ';
-			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
-			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($backgroundColor, 0.8))) . ';
-			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
-			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.8)) . ';
+            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, -0.2)) . ';
+            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, 0.95)) . ';
+            --lam-background-blur: 4px;
+			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.97)) . ';
+			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.85)) . ';
+			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, 0.6)) . ';
+			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($primaryColor, 0.6))) . ';
+			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($primaryColor, -0.2)) . ';
+			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($backgroundColor, -0.2)) . ';
         }
         
 		div.lam-full-size-background {
@@ -173,7 +218,7 @@ class LamPageStyling {
 		  top: 0;
 		  left: 0;
 		  z-index: -1;
-		  filter: blur(var(--lam-whitepages-blur));
+		  filter: blur(var(--lam-background-blur));
 		}
     </style>';
 	}
@@ -1114,6 +1159,12 @@ class LAMConfig {
 	/** @var string $loginFooter custom footer for login */
 	private string $loginFooter = '';
 
+	/// coloring
+	private string $backgroundColor = '#ffffff';
+	private string $primaryColor = '#3daee9';
+	private string $secondaryColor = '#ffe233';
+	private string $backgroundImage = '';
+
 	/** email address for sender of password reset mails */
 	private string $lamProMailFrom = '';
 	/** reply-to email address for password reset mails */
@@ -1195,7 +1246,8 @@ class LAMConfig {
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'twoFactorAllowToRememberDevice',
 		'twoFactorRememberDeviceDuration', 'twoFactorRememberDevicePassword', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
-		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic', 'loginHeader', 'loginFooter'
+		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic', 'loginHeader', 'loginFooter',
+		'backgroundColor', 'primaryColor', 'secondaryColor', 'backgroundImage'
 	];
 
 	/**
@@ -2248,6 +2300,78 @@ class LAMConfig {
 	 */
 	public function getLoginFooter(): string {
 		return $this->loginFooter;
+	}
+
+	/**
+	 * Sets the background color.
+	 *
+	 * @param string $value background color
+	 */
+	public function setBackgroundColor(string $value): void {
+		$this->backgroundColor = $value;
+	}
+
+	/**
+	 * Returns the background color.
+	 *
+	 * @return string background color
+	 */
+	public function getBackgroundColor(): string {
+		return $this->backgroundColor;
+	}
+
+	/**
+	 * Sets the primary color.
+	 *
+	 * @param string $value primary color
+	 */
+	public function setPrimaryColor(string $value): void {
+		$this->primaryColor = $value;
+	}
+
+	/**
+	 * Returns the primary color.
+	 *
+	 * @return string primary color
+	 */
+	public function getPrimaryColor(): string {
+		return $this->primaryColor;
+	}
+
+	/**
+	 * Sets the secondary color.
+	 *
+	 * @param string $value secondary color
+	 */
+	public function setSecondaryColor(string $value): void {
+		$this->secondaryColor = $value;
+	}
+
+	/**
+	 * Returns the secondary color.
+	 *
+	 * @return string secondary color
+	 */
+	public function getSecondaryColor(): string {
+		return $this->secondaryColor;
+	}
+
+	/**
+	 * Sets the background image.
+	 *
+	 * @param string $value background image
+	 */
+	public function setBackgroundImage(string $value): void {
+		$this->backgroundImage = $value;
+	}
+
+	/**
+	 * Returns the background image.
+	 *
+	 * @return string background image
+	 */
+	public function getBackgroundImage(): string {
+		return $this->backgroundImage;
 	}
 
 	/**

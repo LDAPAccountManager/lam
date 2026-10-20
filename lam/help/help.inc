@@ -516,7 +516,7 @@ $helpArray = [
 		"Text" => _('Protect the self-service login with a captcha.')
 	],
 	"523" => ["Headline" => _('Background color'),
-		"Text" => _('Background color for self-service pages.')
+		"Text" => _('Background color for the pages.')
 	],
 	"524" => ["Headline" => _('Client id'),
 		"Text" => _('Please enter your client id for the verification API.')
@@ -583,6 +583,15 @@ $helpArray = [
 	],
 	"560" => ["Headline" => _("Remember device"),
 		"Text" => _('This will remember your current device. You will not need to provide your 2nd factor for a configured period of time.')
+	],
+	"561" => ["Headline" => _('Primary color'),
+		"Text" => _('Please select the primary color for buttons.')
+	],
+	"562" => ["Headline" => _('Secondary color'),
+		"Text" => _('Please select the secondary color for buttons.')
+	],
+	"563" => ["Headline" => _('Background image'),
+		"Text" => _('This is an optional background image for the pages.')
 	],
 	// 600 - 699
 	// OU-editor, domain page
@@ -703,15 +712,6 @@ $helpArray = [
 	],
 	"907" => ["Headline" => _("Value"),
 		"Text" => _('Please enter the LDAP attribute (e.g. "mail") for this item. Text fields support wildcards (e.g. "$gn$ $sn$"). Links support an additional text (e.g. "manager:$gn$ $sn$").')
-	],
-	"908" => ["Headline" => _('Primary color'),
-		"Text" => _('Please select the primary color for buttons in white pages.')
-	],
-	"909" => ["Headline" => _('Background color'),
-		"Text" => _('Please select the background color for panels in white pages.')
-	],
-	"910" => ["Headline" => _('Background image'),
-		"Text" => _('This is an optional background image for white pages.')
 	],
 	"911" => ["Headline" => _('Login header'),
 		"Text" => _('This text is displayed as header on the login page.')

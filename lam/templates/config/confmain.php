@@ -2,8 +2,11 @@
 
 namespace LAM\CONFIG;
 
+use htmlResponsiveInputColorPicker;
+use htmlSelect;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\REMOTE\Remote;
+use LAM_THEMES;
 use LAMCfgMain;
 use LAMConfig;
 use htmlTable;
@@ -23,6 +26,7 @@ use htmlResponsiveInputCheckbox;
 use htmlResponsiveInputTextarea;
 use htmlGroup;
 use LAMException;
+use LamPageStyling;
 use ServerProfilePersistenceManager;
 
 /*
@@ -136,7 +140,8 @@ if (isset($_SESSION['conf_messages']) && is_array($_SESSION['conf_messages'])) {
 // check if button was pressed and if we have to save the settings or go to another tab
 if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
-	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])) {
+	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])
+	|| isset($_POST['load-theme'])) {
 	$errorsToDisplay = checkInput();
 	if (count($errorsToDisplay) === 0) {
 		// go to final page
@@ -308,6 +313,31 @@ $row->addVerticalSpacer('2rem');
 
 // captions, coloring, ...
 $row->add(new htmlSubTitle(_("Styling"), '../../graphics/theme.svg', null, true));
+$row->addLabel(new htmlOutputText(_('Predefined themes')));
+$themeGroup = new htmlResponsiveRow();
+$themes = [
+	LAM_THEMES::OCEAN->getLabel() => LAM_THEMES::OCEAN->value,
+	LAM_THEMES::STARS->getLabel() => LAM_THEMES::STARS->value,
+	LAM_THEMES::GRAND_CANYON->getLabel() => LAM_THEMES::GRAND_CANYON->value,
+	LAM_THEMES::RAIN_FOREST->getLabel() => LAM_THEMES::RAIN_FOREST->value,
+	LAM_THEMES::COAST->getLabel() => LAM_THEMES::COAST->value,
+	LAM_THEMES::MOUNTAIN->getLabel() => LAM_THEMES::MOUNTAIN->value,
+	LAM_THEMES::CITY->getLabel() => LAM_THEMES::CITY->value,
+	LAM_THEMES::NEUTRAL->getLabel() => LAM_THEMES::NEUTRAL->value,
+];
+$selectedTheme = isset($_POST['theme']) ? [$_POST['theme']] : [];
+$themeSelect = new htmlSelect('theme', $themes, $selectedTheme);
+$themeSelect->setHasDescriptiveElements(true);
+$themeGroup->addLabel($themeSelect);
+$themeGroup->addField(new htmlButton('load-theme', _('Load')));
+$row->addField($themeGroup);
+$row->add(new htmlResponsiveInputColorPicker('backgroundColor', $conf->getBackgroundColor(), _('Background color'), '523'));
+$row->add(new htmlResponsiveInputColorPicker('primaryColor', $conf->getPrimaryColor(), _('Primary color'), '561'));
+$row->add(new htmlResponsiveInputColorPicker('secondaryColor', $conf->getSecondaryColor(), _('Secondary color'), '562'));
+$backgroundImage = new htmlResponsiveInputField(_('Background image'), 'backgroundImage', $conf->getBackgroundImage(), '563');
+$backgroundImage->enableAutocompletion(LamPageStyling::getBackgroundImageNames());
+$row->add($backgroundImage);
+$row->addVerticalSpacer('1rem');
 $loginHeader = $conf->getLoginHeader();
 $loginHeaderInput = new htmlResponsiveInputTextarea('loginHeader', $loginHeader, 50, 5, _("Login header"), '526a');
 $loginHeaderInput->setIsRichEdit(true);
@@ -753,6 +783,19 @@ function checkInput(): array {
 	}
 	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = ["ERROR", _("List of admin users is empty or invalid!")];
+	}
+	if (isset($_POST['load-theme'])) {
+		$theme = LAM_THEMES::from($_POST['theme']);
+		$conf->setBackgroundColor($theme->getBackgroundColor());
+		$conf->setPrimaryColor($theme->getPrimaryColor());
+		$conf->setSecondaryColor($theme->getSecondaryColor());
+		$conf->setBackgroundImage($theme->getImage());
+	}
+	else {
+		$conf->setBackgroundColor($_POST['backgroundColor']);
+		$conf->setPrimaryColor($_POST['primaryColor']);
+		$conf->setSecondaryColor($_POST['secondaryColor']);
+		$conf->setBackgroundImage($_POST['backgroundImage']);
 	}
     $conf->setLoginHeader($_POST['loginHeader']);
     $conf->setLoginFooter($_POST['loginFooter']);

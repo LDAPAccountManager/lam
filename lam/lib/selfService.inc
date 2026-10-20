@@ -698,7 +698,13 @@ class selfServiceProfile {
 	public string $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 
 	/** base color */
-	public string $baseColor = '#fffde2';
+	public string $baseColor = '#ffffff';
+
+	public string $primaryColor = '#3daee9';
+
+	public string $secondaryColor = '#ffe233';
+
+	public string $backgroundImage = '';
 
 	/** list of additional CSS links (separated by \n) */
 	public string $additionalCSS = '';

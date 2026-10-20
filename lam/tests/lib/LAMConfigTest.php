@@ -538,6 +538,26 @@ class LAMConfigTest extends TestCase {
 		$this->assertEquals($footer, $this->lAMConfig->getLoginFooter());
 	}
 
+	public function testColoring() {
+		$backgroundColor = '#fffaaa';
+		$primaryColor = '#000fff';
+		$secondaryColor = '#fff111';
+		$backgroundImage = 'ocean.png';
+		$this->lAMConfig->setBackgroundColor($backgroundColor);
+		$this->lAMConfig->setPrimaryColor($primaryColor);
+		$this->lAMConfig->setSecondaryColor($secondaryColor);
+		$this->lAMConfig->setBackgroundImage($backgroundImage);
+		$this->assertEquals($backgroundColor, $this->lAMConfig->getBackgroundColor());
+		$this->assertEquals($primaryColor, $this->lAMConfig->getPrimaryColor());
+		$this->assertEquals($secondaryColor, $this->lAMConfig->getSecondaryColor());
+		$this->assertEquals($backgroundImage, $this->lAMConfig->getBackgroundImage());
+		$this->doSave();
+		$this->assertEquals($backgroundColor, $this->lAMConfig->getBackgroundColor());
+		$this->assertEquals($primaryColor, $this->lAMConfig->getPrimaryColor());
+		$this->assertEquals($secondaryColor, $this->lAMConfig->getSecondaryColor());
+		$this->assertEquals($backgroundImage, $this->lAMConfig->getBackgroundImage());
+	}
+
 	/**
 	 * Tests LAMConfig->getTwoFactorAuthentication() and LAMConfig->setTwoFactorAuthentication()
 	 */

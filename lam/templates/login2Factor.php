@@ -14,6 +14,7 @@ use htmlInputField;
 use htmlButton;
 use LAMConfig;
 use LAMException;
+use LamPageStyling;
 
 /*
 
@@ -73,7 +74,7 @@ try {
 }
 catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to get 2-factor serials for ' . $user . ' ' . $e->getMessage());
-	printHeader();
+	printHeader($config);
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication.") . '", "", "' . _('Ok') . '", "login.php")');
 	parseHtml(null, $scriptTag, [], false);
 	printFooter();
@@ -99,7 +100,7 @@ if (empty($serials) && $config->getTwoFactorAuthenticationOptional()) {
 }
 
 if (empty($serials)) {
-    printHeader();
+    printHeader($config);
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication because no tokens were found.") . '", "", "' . _('Ok') . '", "login.php")');
 	parseHtml(null, $scriptTag, [], false);
 	printFooter();
@@ -148,11 +149,15 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
 
 /**
  * Prints the page header.
+ *
+ * @param LAMConfig $config server profile
  */
-function printHeader(): void {
+function printHeader(LAMConfig $config): void {
 	echo $_SESSION['header'];
 	printHeaderContents(_("Login"), '..');
-    echo '</head><body>';
+	echo LamPageStyling::getMainStyleTag($config->getBackgroundColor(), $config->getPrimaryColor(),
+		$config->getSecondaryColor(), '');
+    echo '</head><body><div class="lam-full-size-background"></div>';
     // include all JavaScript files
 	printJsIncludes('..');
 	?>
@@ -178,7 +183,7 @@ function printFooter(): void {
     echo '</body></html>';
 }
 
-printHeader();
+printHeader($config);
 
 
 ?>
@@ -189,7 +194,7 @@ echo $config->getTwoFactorAuthenticationCaption();
 
 ?>
 	<div class="centeredTable">
-	<div class="roundedShadowBox limitWidth">
+	<div class="roundedShadowBox limitWidth colored-panel">
 <?php
 
 	$group = new htmlGroup();
