@@ -100,7 +100,7 @@ elseif (!empty($servers)) {
 	$container->addVerticalSpacer('1rem');
 
 	$okButton = new htmlButton('runTest', _("Ok"));
-	$okButton->colspan = 2;
+	$okButton->setCSSClasses(['lam-primary']);
 	$container->addLabel($okButton);
 	$container->addField(new htmlOutputText('&nbsp;', false));
 }

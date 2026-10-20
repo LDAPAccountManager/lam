@@ -249,7 +249,9 @@ function display_main(?string $message, ?string $error, array $optionsToInsert, 
 		$container->add($parentOUSelect);
 		$container->add(new htmlResponsiveInputField(_('Name'), 'newOU'));
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
-		$container->addField(new htmlButton('createOU', _("Ok")));
+		$createButton = new htmlButton('createOU', _("Ok"));
+		$createButton->setCSSClasses(['lam-primary']);
+		$container->addField($createButton);
 		$container->addVerticalSpacer('2rem');
 	}
 	if (!empty($optionsToDelete)) {
@@ -262,7 +264,9 @@ function display_main(?string $message, ?string $error, array $optionsToInsert, 
 		$deleteableOUSelect->setSortElements(false);
 		$container->add($deleteableOUSelect);
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
-		$container->addField(new htmlButton('deleteOU', _("Ok")));
+		$deleteButton = new htmlButton('deleteOU', _("Ok"));
+		$deleteButton->setCSSClasses(['lam-danger']);
+		$container->addField($deleteButton);
 	}
 
 	addSecurityTokenToMetaHTML($container);
