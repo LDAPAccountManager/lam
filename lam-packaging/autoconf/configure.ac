@@ -3,8 +3,6 @@
 #
 #	Tim Rice <tim@multitalents.net>
 #
-# $Id$
-#
 # Copyright (c) 2005, 2006, 2010 Tim Rice
 #
 # This program is free software; you can redistribute it and/or modify
@@ -56,6 +54,8 @@ if test x$COPY = x ; then
 	if test -f conf-cp-tst2 ; then
 		COPY_PROG="$CP --preserve=timestamps"
 		rm conf-cp-tst2
+    else
+        COPY_PROG="$CP -p"
 	fi
 	rm conf-cp-tst
 else
