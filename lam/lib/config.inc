@@ -171,6 +171,10 @@ class LamPageStyling {
 	 */
 	public static function getMainStyleTag(string $backgroundColor, string $primaryColor, string $secondaryColor,
 										   string $backgroundImage, string $backgroundImagePrefix = '../..'): string {
+		$backgroundColor = htmlspecialchars($backgroundColor);
+		$primaryColor = htmlspecialchars($primaryColor);
+		$secondaryColor = htmlspecialchars($secondaryColor);
+		$backgroundImage = htmlspecialchars($backgroundImage);
 		if (empty($backgroundImage)) {
 			$image = 'background-color: ' . $backgroundColor . ';';
 		}
