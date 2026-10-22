@@ -322,7 +322,7 @@
         </table></para>
     </section>
 
-    <section>
+    <section id="whitepages_styling">
       <title>Styling</title>
 
       <para>LAM provides some predefined themes for the white pages. You are

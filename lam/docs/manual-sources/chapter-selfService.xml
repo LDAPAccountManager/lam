@@ -235,73 +235,6 @@
               emails for password self reset and user self
               registration.</entry>
             </row>
-
-            <row>
-              <entry>Login attribute label</entry>
-
-              <entry>This is the description for the LDAP search attribute.
-              Set it to something which your users are familiar with.</entry>
-            </row>
-
-            <row>
-              <entry>Password field label</entry>
-
-              <entry>This text is placed as label for the password field on
-              the login page. LAM will use "Password" if you do not enter any
-              text.</entry>
-            </row>
-
-            <row>
-              <entry>Login caption</entry>
-
-              <entry>This text is displayed on the login page inside the login
-              mask.</entry>
-            </row>
-
-            <row>
-              <entry>Login footer</entry>
-
-              <entry>This text is displayed on the login page below the login
-              mask.</entry>
-            </row>
-
-            <row>
-              <entry>Main page caption</entry>
-
-              <entry>This text is displayed on the self-service main page
-              where your users change their data.</entry>
-            </row>
-
-            <row>
-              <entry>Main page footer</entry>
-
-              <entry>This text is displayed as footer on the self-service main
-              page where your users change their data.</entry>
-            </row>
-
-            <row>
-              <entry>Page header</entry>
-
-              <entry>This HTML code will be placed on top of all self-service
-              pages. E.g. you can use this to place your custom logo. Any HTML
-              code is permitted.</entry>
-            </row>
-
-            <row>
-              <entry>Base color</entry>
-
-              <entry>Here you can change the background color for the user
-              pages.</entry>
-            </row>
-
-            <row>
-              <entry>Additional CSS links</entry>
-
-              <entry>Here you can specify additional CSS links to change the
-              layout of the self-service pages. This is useful to adapt them
-              to your corporate design. Please enter one link per
-              line.</entry>
-            </row>
           </tbody>
         </tgroup>
       </table>
@@ -395,6 +328,136 @@
         </mediaobject>
 
         <para/>
+      </section>
+
+      <section>
+        <title>Captions and labels</title>
+
+        <para>This allows you to overwrite some labels and add custom content
+        to the pages.</para>
+
+        <table border="1">
+          <caption>Captions and labels</caption>
+
+          <tr>
+            <td>Login attribute label</td>
+
+            <td>This is the description for the LDAP search attribute. Set it
+            to something which your users are familiar with.</td>
+          </tr>
+
+          <tr>
+            <td>Password field label</td>
+
+            <td>This text is placed as label for the password field on the
+            login page. LAM will use "Password" if you do not enter any
+            text.</td>
+          </tr>
+
+          <tr>
+            <td>Login caption</td>
+
+            <td>This text is displayed on the login page inside the login
+            mask.</td>
+          </tr>
+
+          <tr>
+            <td>Login footer</td>
+
+            <td>This text is displayed on the login page below the login
+            mask.</td>
+          </tr>
+
+          <tr>
+            <td>Main page caption</td>
+
+            <td>This text is displayed on the self-service main page where
+            your users change their data.</td>
+          </tr>
+
+          <tr>
+            <td>Main page footer</td>
+
+            <td>This text is displayed as footer on the self-service main page
+            where your users change their data.</td>
+          </tr>
+
+          <tr>
+            <td>Page header</td>
+
+            <td>This HTML code will be placed on top of all self-service
+            pages. E.g. you can use this to place your custom logo. Any HTML
+            code is permitted.</td>
+          </tr>
+        </table>
+
+        <screenshot>
+          <graphic fileref="images/selfServiceLabels.png"/>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Styling</title>
+
+        <para>Here you can change the color scheme of the pages and integrate
+        your own CSS files. LAM provides some predefined schemes that can be
+        adapted as you need.</para>
+
+        <table>
+          <title>Styling</title>
+
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Predefined themes</entry>
+
+                <entry>Allows to load a predefined scheme. See <link
+                linkend="whitepages_styling">white pages styling</link> for
+                example images.</entry>
+              </row>
+
+              <row>
+                <entry>Background color</entry>
+
+                <entry>Here you can change the background color for the
+                pages.</entry>
+              </row>
+
+              <row>
+                <entry>Primary color</entry>
+
+                <entry>This color is used for primary buttons and
+                tables.</entry>
+              </row>
+
+              <row>
+                <entry>Secondary color</entry>
+
+                <entry>This color is used for secondary buttons.</entry>
+              </row>
+
+              <row>
+                <entry>Background image</entry>
+
+                <entry>The background image is shown on the login
+                page.</entry>
+              </row>
+
+              <row>
+                <entry>Additional CSS links</entry>
+
+                <entry>Here you can specify additional CSS links to change the
+                layout of the self-service pages. This is useful to adapt them
+                to your corporate design. Please enter one link per
+                line.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <screenshot>
+          <graphic fileref="images/selfServiceStyling.png"/>
+        </screenshot>
       </section>
 
       <section id="selfservice_lamdaemon">

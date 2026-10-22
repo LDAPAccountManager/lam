@@ -698,6 +698,21 @@
         <literallayout>
 </literallayout>
 
+        <para><emphasis role="bold">Styling</emphasis></para>
+
+        <para>Here you can define a custom color scheme. LAM provides some
+        predefined schemes that can be adapted as you need.</para>
+
+        <para>You can also set custom header and footer content for the login
+        page. See <link linkend="whitepages_styling">white pages
+        styling</link> for example images.</para>
+
+        <screenshot>
+          <graphic fileref="images/configProfiles16.png"/>
+        </screenshot>
+
+        <para><emphasis role="bold">Language settings</emphasis></para>
+
         <para>LAM is translated to many different languages. Here you can
         select the default language for this server profile. The language
         setting may be overridden at the LAM login page.</para>
