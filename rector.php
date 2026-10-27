@@ -3,8 +3,7 @@
 use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
-use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
-use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
@@ -35,11 +34,10 @@ return RectorConfig::configure()
 		ClassPropertyAssignToConstructorPromotionRector::class,
 		StringifyStrNeedlesRector::class,
 		RestoreDefaultNullToNullableTypePropertyRector::class,
-		ForRepeatedCountToOwnVariableRector::class,
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
-		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
 		SafeDeclareStrictTypesRector::class,
+		ExplicitNullableObjectInstanceRector::class,
 		// TODO unreliable, recheck with newer rector version
 		ExplicitReturnNullRector::class,
 		RemoveParentCallWithoutParentRector::class,
