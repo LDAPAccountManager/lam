@@ -995,7 +995,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	private function setExopPassword($settings): array {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
+			$success = ldapChangePasswordExop($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $this->clearTextPassword);
 			if (!$success) {
 				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
@@ -3150,7 +3150,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$data = $temp['exop'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes']) - count($temp['dn_gon'])];
 			$dn = $data[0];
 			$password = $data[1];
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, '', $password);
+			$success = ldapChangePasswordExop($_SESSION['ldap']->server(), $dn, $password);
 			$errors = [];
 			if (!$success) {
 				$errors[] = [
@@ -3487,7 +3487,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			&& ($attributes['INFO.userPasswordModify'][0] === 'exop')) {
 			$password = $attributes['INFO.userPasswordClearText'][0];
 			$dn = $attributes['dn'][0];
-			$success = ldap_exop_passwd($_SESSION['ldapHandle']->getServer(), $dn, '', $password);
+			$success = ldapChangePasswordExop($_SESSION['ldapHandle']->getServer(), $dn, $password);
 			if (!$success) {
 				StatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			}

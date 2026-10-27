@@ -936,7 +936,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	private function setExopPassword($settings): array {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
+			$success = ldapChangePasswordExop($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $this->clearTextPassword);
 			if (!$success) {
 				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
@@ -2602,7 +2602,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				&& !empty($data[$temp['counter']][$ids['inetOrgPerson_userPassword']])) {
 				$dn = $accounts[$temp['counter']]['dn'];
 				$password = $data[$temp['counter']][$ids['inetOrgPerson_userPassword']];
-				$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, '', $password);
+				$success = ldapChangePasswordExop($_SESSION['ldap']->server(), $dn, $password);
 				if (!$success) {
 					$errors[] = [
 						"ERROR",

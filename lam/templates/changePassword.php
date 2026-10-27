@@ -91,7 +91,7 @@ if (isset($_POST['changePassword'])) {
 		exit();
 	}
 	// set new password
-	$modifyResult = @ldap_exop_passwd($_SESSION['ldap']->server(), $userDn, $_SESSION['ldap']->getPassword(), $password1);
+	$modifyResult = ldapChangePasswordExop($_SESSION['ldap']->server(), $userDn, $password1, $_SESSION['ldap']->getPassword());
 	if ($modifyResult === true) {
 		$_SESSION['ldap']->tryAndApplyNewPassword($password1);
 		$message = new htmlStatusMessage('INFO', _('Password changed.'));

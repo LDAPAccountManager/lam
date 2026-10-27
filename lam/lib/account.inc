@@ -1272,6 +1272,24 @@ function ldapModifyAttributesBatch(Connection $connection, string $dn, array $at
 }
 
 /**
+ * Changes the password of a user via LDAP EXOP password command.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param string $newPassword new password
+ * @param string $oldPassword old password
+ * @return bool result
+ */
+function ldapChangePasswordExop(Connection $connection, string $dn, string $newPassword, string $oldPassword = ''): bool {
+	logNewMessage(LOG_DEBUG, 'Setting new password (exop) for ' . $dn);
+	logAuditMessage('Setting new password (exop) for ' . $dn);
+	$result = ldap_exop_passwd($connection, $dn, $oldPassword, $newPassword);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array<string|string[]>|null parameters for StatusMessage or null if all was ok
