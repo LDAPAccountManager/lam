@@ -999,6 +999,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if (!$success) {
 				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
+			elseif (strtolower($_SESSION['ldap']->getUserName()) === strtolower($this->getAccountContainer()->finalDN)) {
+				$_SESSION['ldap']->tryAndApplyNewPassword($this->clearTextPassword);
+			}
 		}
 		return [];
 	}
