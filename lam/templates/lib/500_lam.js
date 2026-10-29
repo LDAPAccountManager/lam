@@ -3214,7 +3214,8 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		window.scrollTo(0, 0);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -3397,7 +3398,8 @@ window.lam.treeview.openComparison = function(tokenName, tokenValue, dn) {
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		window.scrollTo(0, 0);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -3476,7 +3478,8 @@ window.lam.treeview.checkPassword = function(event, element, tokenName, tokenVal
 					outputDiv.innerHTML = jsonData.resultHtml;
 					window.lam.dialog.showSimpleDialog(null, null, okText, null, 'lam-pwd-check-dialog-result');
 				}
-			});
+			})
+            .catch(error => console.log(error));
 		}
 	});
 }
