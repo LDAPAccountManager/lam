@@ -112,6 +112,21 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(['mobile', 'pager'], $this->conf->getSmsAttributes());
 	}
 
+	public function testLogging() {
+		$this->conf->logLevel = LOG_ERR;
+		$this->conf->logDestination = 'SYSLOG';
+		$this->conf->auditLogType = LOG_FILE_TARGET::SYSLOG->name;
+		$this->conf->auditMaskedAttributeNames = ['test1', 'test2'];
+
+		$this->conf->save();
+		$this->conf = new LAMCfgMain($this->file);
+
+		$this->assertEquals(LOG_ERR, $this->conf->logLevel);
+		$this->assertEquals('SYSLOG', $this->conf->logDestination);
+		$this->assertEquals(LOG_FILE_TARGET::SYSLOG->name, $this->conf->auditLogType);
+		$this->assertEquals(['test1', 'test2'], $this->conf->auditMaskedAttributeNames);
+	}
+
 	/**
 	 * License related settings.
 	 * @throws LAMException error saving config

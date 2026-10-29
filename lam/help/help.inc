@@ -223,6 +223,9 @@ $helpArray = [
 	"251" => ["Headline" => _("Remote server"),
 		"Text" => _("Please enter the syslog remote server in format \"server:port\".")
 	],
+	"251a" => ["Headline" => _("Masked attributes"),
+		"Text" => _("Please provide a list of LDAP attribute names that should be masked before being written to the audit log.")
+	],
 	"252" => ["Headline" => _("User DN"),
 		"Text" => _("Please enter a part of the user's DN to search for registered devices.")
 	],
