@@ -406,6 +406,33 @@ function logAuditMessage(string $message): void {
 }
 
 /**
+ * Masks the configured attributes to not show up in audit log.
+ *
+ * @param array<string, string|string[]> $attributes LDAP attributes
+ * @return array<string, string|string[]> masked attributes
+ */
+function maskAttributesForAuditLog(array $attributes): array {
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+		$_SESSION['cfgMain'] = $cfg;
+	}
+	$attributesToMask = $cfg->auditMaskedAttributeNames;
+	$result = $attributes;
+	foreach ($result as $attributeName => $value) {
+		if (in_array_ignore_case($attributeName, $attributesToMask)) {
+			$result[$attributeName] = ['******'];
+		}
+		elseif (isset($value['modtype'])) {
+			$result[$attributeName]['values'] = ['******'];
+		}
+	}
+	return $result;
+}
+
+/**
  * Checks if write access to LDAP is allowed.
  *
  * @param String $scope account type (e.g. user)

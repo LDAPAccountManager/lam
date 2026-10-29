@@ -257,6 +257,12 @@
         </listitem>
       </itemizedlist>
 
+      <para><emphasis role="bold">Audit log</emphasis></para>
+
+      <para>You can activate a separate audit logging. Here, all LDAP
+      modifications and logins are logged. To avoid that sensitive data (e.g.
+      passwords) is logged, you can mask certain attributes in the log.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>

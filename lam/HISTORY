@@ -7,6 +7,7 @@ December 2026 9.8
   -> Group of (unique) names: link members etc. to jump directly to entry (783)
  Fixed bugs:
   -> LDAP_EXOP password change does not refresh session credentials (862)
+  -> Audit log needs to mask credentials (872)
 
 
 02.10.2026 9.7

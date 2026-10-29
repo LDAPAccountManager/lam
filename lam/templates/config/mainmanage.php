@@ -324,6 +324,9 @@ if (isset($_POST['submitFormData'])) {
 				$cfg->auditLogTarget = $_POST['auditLogRemote'];
             }
 		}
+        if ($cfg->auditLogType !== LOG_FILE_TARGET::NONE->name) {
+			$cfg->auditMaskedAttributeNames = array_map(trim(...), explode("\n", $_POST['auditMaskedAttributeNames']));
+        }
     }
 
 	// password policies
@@ -727,7 +730,7 @@ if (isset($_POST['submitFormData'])) {
 	];
 	$auditLogDestinationSelect = new htmlResponsiveSelect('auditLogType', $auditDestinationOptions, [$cfg->auditLogType], _("Audit log destination"), '240');
 	$auditLogDestinationSelect->setTableRowsToHide([
-		LOG_FILE_TARGET::NONE->name => ['auditLogFile', 'auditLogRemote'],
+		LOG_FILE_TARGET::NONE->name => ['auditLogFile', 'auditLogRemote', 'auditMaskedAttributeNames'],
 		LOG_FILE_TARGET::SYSLOG->name => ['auditLogFile', 'auditLogRemote'],
 		LOG_FILE_TARGET::REMOTE->name => ['auditLogFile'],
 		LOG_FILE_TARGET::FILE->name => ['auditLogRemote']
@@ -742,6 +745,7 @@ if (isset($_POST['submitFormData'])) {
 	$row->add(new htmlResponsiveInputField(_('File'), 'auditLogFile', $auditLogFile));
 	$auditLogRemote = $cfg->auditLogType === LOG_FILE_TARGET::REMOTE->name ? $cfg->auditLogTarget : '';
 	$row->add(new htmlResponsiveInputField(_('Remote server'), 'auditLogRemote', $auditLogRemote, '251'));
+    $row->add(new htmlResponsiveInputTextarea('auditMaskedAttributeNames', implode("\r\n", $cfg->auditMaskedAttributeNames), 50, 5, _('Masked attributes'), '251a'));
 
 	// mail options
 	if (isLAMProVersion()) {

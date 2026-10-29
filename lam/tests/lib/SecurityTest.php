@@ -136,6 +136,57 @@ class SecurityTest extends TestCase {
 			['first', 'last']);
 	}
 
+	public function testMaskAttributesForAuditLog() {
+		$this->cfg->auditMaskedAttributeNames = ['secretAttribute'];
+		$attrs = [
+			'dn' => 'cn=test,dc=example,dc=com',
+			'uid' => ['123'],
+			'secretAttribute' => 'secret',
+			'cn' => ['test']
+		];
+		$expected = [
+			'dn' => 'cn=test,dc=example,dc=com',
+			'uid' => ['123'],
+			'secretAttribute' => ['******'],
+			'cn' => ['test']
+		];
+		$this->assertEquals($expected, maskAttributesForAuditLog($attrs));
+
+		$attrs = [
+			'dn' => 'cn=test,dc=example,dc=com',
+			'uid' => ['123'],
+			'secretAttribute' => ['secret'],
+			'cn' => ['test']
+		];
+		$this->assertEquals($expected, maskAttributesForAuditLog($attrs));
+
+		$attrs = [
+			[
+				'attrib' => 'secretAttribute',
+				'modtype' => LDAP_MODIFY_BATCH_REMOVE,
+				'values' => ['secret'],
+			],
+			[
+				'attrib' => 'secretAttribute',
+				'modtype' => LDAP_MODIFY_BATCH_ADD,
+				'values' => ['secretNew'],
+			],
+		];
+		$expected = [
+			[
+				'attrib' => 'secretAttribute',
+				'modtype' => LDAP_MODIFY_BATCH_REMOVE,
+				'values' => ['******'],
+			],
+			[
+				'attrib' => 'secretAttribute',
+				'modtype' => LDAP_MODIFY_BATCH_ADD,
+				'values' => ['******'],
+			],
+		];
+		$this->assertEquals($expected, maskAttributesForAuditLog($attrs));
+	}
+
 	/**
 	 * Resets the password rules to do no checks at all.
 	 */

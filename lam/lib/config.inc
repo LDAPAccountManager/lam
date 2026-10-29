@@ -3196,6 +3196,13 @@ class LAMCfgMain {
 	/** target of audit log */
 	public string $auditLogTarget = '';
 
+	/** @var string[] $auditMaskedAttributeNames masked attributes */
+	public array $auditMaskedAttributeNames = [
+		'userPassword', 'unicodePwd', 'sambaNTPassword',
+		'AstAccountRealmedPassword', 'AstVoicemailPassword',
+		'passwordSelfResetAnswer'
+	];
+
 	/** list of hosts which may access LAM */
 	public string $allowedHosts = "";
 
@@ -3337,7 +3344,7 @@ class LAMCfgMain {
 	/** @var string[] $settings list of data fields to save in config file */
 	private array $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
-		'auditLogType', 'auditLogTarget',
+		'auditLogType', 'auditLogTarget', 'auditMaskedAttributeNames',
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
