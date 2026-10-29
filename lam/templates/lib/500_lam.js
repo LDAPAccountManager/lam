@@ -263,7 +263,8 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 			confirmButtonText: okText,
 			html: jsonData.messages
 		});
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -461,7 +462,8 @@ function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
 			.then(async response => {
 				const jsonData = await response.json();
 				checkPasswordStrengthHandleReply(jsonData, fieldID);
-			});
+			})
+            .catch(error => console.log(error));
 		};
 	field.addEventListener('keyup', check);
 }
@@ -961,7 +963,8 @@ window.lam.upload.continueUpload = function(url, tokenName, tokenValue) {
 		else {
 			window.lam.upload.uploadDone(jsonData);
 		}
-	});
+	})
+    .catch(error => console.log(error));
 };
 
 /**
@@ -1383,7 +1386,8 @@ window.lam.tools.webcam.init = function() {
 						contentDiv.classList.remove('hidden');
 					}
 				}
-			});
+			})
+            .catch(error => console.log(error));
 	}
 };
 
@@ -1476,7 +1480,8 @@ window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValu
 			msg.querySelector('.statusTitle').innerText = jsonData.error;
 			msg.classList.remove('hidden');
 		}
-	});
+	})
+    .catch(error => console.log(error));
 	document.getElementById('btn_lam-webcam-capture').classList.remove('hidden');
 	document.getElementById('btn-lam-webcam-upload').classList.add('hidden');
 	return false;
@@ -1567,7 +1572,8 @@ window.lam.importexport.startImport = function(tokenName, tokenValue) {
 			window.lam.progressbar.setProgress('progressbarImport', jsonData.progress);
 			window.lam.importexport.startImport(tokenName, tokenValue);
 		}
-	});
+	})
+    .catch(error => console.log(error));
 };
 
 /**
@@ -1650,20 +1656,22 @@ window.lam.multiedit.runActions = function() {
 	.then(async response => {
 		const jsonData = await response.json();
 		window.lam.multiedit.runActionsHandleReply(jsonData);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 window.lam.multiedit.runActionsHandleReply = function(data) {
 	window.lam.progressbar.setProgress('progressBar', data.progress);
 	document.getElementById('progressArea').innerHTML = data.content;
-	if (data.status != "finished") {
+	if (data.status !== "finished") {
 		fetch('multiEdit.php?ajaxStatus', {
 			method: 'GET'
 		})
 		.then(async response => {
 			const jsonData = await response.json();
 			window.lam.multiedit.runActionsHandleReply(jsonData);
-		});
+		})
+        .catch(error => console.log(error));
 	}
 	else {
 		document.querySelectorAll('input, select, button').forEach(function (item) {
@@ -1953,6 +1961,7 @@ window.lam.whitePages.showDetailView = function (dn, tabIndex, okText, tokenName
             }
         });
     })
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2550,7 +2559,8 @@ window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenNa
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		window.lam.treeview.addFileInputListeners();
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2596,7 +2606,8 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 			node.loadLazy(true);
 		}
 		window.scrollTo(0, 0);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2652,7 +2663,8 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okTe
 				}
 			});
 		}
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2708,7 +2720,8 @@ window.lam.treeview.restoreNode = function (tokenName, tokenValue, dn, text, okT
 					textSpanErrorText.innerText = errText;
 					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
 				}
-			});
+			})
+            .catch(error => console.log(error));
 		}
 	});
 }
@@ -2743,7 +2756,8 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		window.lam.treeview.addFileInputListeners();
 		window.lam.treeview.activateSortableInputs();
 		window.lam.treeview.setActionButtonsVisibility(dn);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2758,8 +2772,7 @@ window.lam.treeview.addFileInputListeners = function () {
 			}
 			const reader = new FileReader();
 			reader.onload = function () {
-				const content = btoa(reader.result);
-				input.dataset.dataBinary = content;
+                input.dataset.dataBinary = btoa(reader.result);
 			};
 			reader.readAsBinaryString(files[0]);
 		});
@@ -2862,7 +2875,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		else {
 			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
 		}
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
