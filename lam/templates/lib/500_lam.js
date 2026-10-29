@@ -1715,7 +1715,8 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 			html: dlgHtml,
 			width: 'auto'
 		});
-	});
+	})
+    .catch(error => console.log(error));
 };
 
 /**
@@ -2529,7 +2530,8 @@ window.lam.treeview.createNode = function (tokenName, tokenValue, dn) {
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -2661,7 +2663,8 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okTe
 					textSpanErrorText.innerText = errText;
 					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
 				}
-			});
+			})
+            .catch(error => console.log(error));
 		}
 	})
     .catch(error => console.log(error));
@@ -3091,7 +3094,8 @@ window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue
 			select.appendChild(option);
 		}
 		window.lam.treeview.updatePossibleNewAttributesRequest = null;
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 window.lam.treeview.updatePossibleNewAttributesRequest = null;
@@ -3154,7 +3158,8 @@ window.lam.treeview.getInternalAttributesContent = function (event, tokenName, t
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('actionarea-internal-attributes').innerHTML = jsonData.content;
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -3177,7 +3182,8 @@ window.lam.treeview.search = function (tokenName, tokenValue, dn) {
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		window.scrollTo(0, 0);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -3319,7 +3325,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
 		const oldNode = tree.findKey(dn);
-		if (action == 'CUT') {
+		if (action === 'CUT') {
 			const parentNode = oldNode.parent;
 			parentNode.loadLazy(true);
 		}
@@ -3332,7 +3338,8 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		newParentNode.expanded = true;
 		newParentNode.loadLazy(true);
 		window.lam.treeview.setActionButtonsVisibility(dn);
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -3829,7 +3836,8 @@ window.lam.smtp.test = function(event, tokenName, tokenValue, okText, cancelText
 				window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
 			}
 			document.getElementById('btn_testSmtp').disabled = false;
-		});
+		})
+        .catch(error => console.log(error));
 	}
 	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smtpTestDialogDiv', runTestCallback, runTestPreCallback);
 }
@@ -3883,7 +3891,8 @@ window.lam.sms.test = function(event, tokenName, tokenValue, okText, cancelText,
 				window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
 			}
 			document.getElementById('btn_testSms').disabled = false;
-		});
+		})
+        .catch(error => console.log(error));
 	}
 	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smsTestDialogDiv', runTestCallback, runTestPreCallback);
 }
@@ -3973,7 +3982,8 @@ window.lam.datatable.refreshTableData = function(id) {
 		else {
 			window.lam.datatable.setData(id, jsonData);
 		}
-	});
+	})
+    .catch(error => console.log(error));
 }
 
 /**
@@ -4168,6 +4178,7 @@ if ("serviceWorker" in navigator) {
         const workerJS = basePath + '/../../pwa_worker.js';
         navigator.serviceWorker.register(workerJS, {
 			scope : basePath + "../../"
-		});
+		})
+        .catch(error => console.log(error));
 	}
 }
