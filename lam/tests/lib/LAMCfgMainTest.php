@@ -236,4 +236,13 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals($settings, $this->conf->getModuleSettings());
 	}
 
+	public function testActivateMcp() {
+		$this->conf->activateMcp = false;
+
+		$this->conf->save();
+		$this->conf = new LAMCfgMain($this->file);
+
+		$this->assertFalse($this->conf->activateMcp);
+	}
+
 }

@@ -385,6 +385,9 @@ $helpArray = [
 	"299d" => ["Headline" => _("Subject"),
 		"Text" => _("Please enter the text for the email subject.")
 	],
+	"299e" => ["Headline" => _("Activate MCP server"),
+		"Text" => _("Activates the built-in MCP server to allow AI agents access to LAM.")
+	],
 	// 300 - 399
 	// profile/PDF editor, file upload
 	"301" => ["Headline" => _("RDN identifier"),
