@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e0eea3aef9e33f5dcaa5f6fc9a3af302",
+    "content-hash": "7d26a0d7b28edf7848f009f1e97dca3f",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -58,20 +58,21 @@
                 "issues": "https://github.com/awslabs/aws-crt-php/issues",
                 "source": "https://github.com/awslabs/aws-crt-php/tree/v1.2.7"
             },
-            "time": "2024-10-18T22:15:13+00:00"
+            "time": "2024-10-18T22:15:13+00:00",
+            "published-time": "2024-10-23T18:30:53+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.395.4",
+            "version": "3.402.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0756c511a913b57ab5415db6136d8c0c250ace15"
+                "reference": "ffff4dbeda1c386f66e7e819afbd55406aa9799b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0756c511a913b57ab5415db6136d8c0c250ace15",
-                "reference": "0756c511a913b57ab5415db6136d8c0c250ace15",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ffff4dbeda1c386f66e7e819afbd55406aa9799b",
+                "reference": "ffff4dbeda1c386f66e7e819afbd55406aa9799b",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +84,7 @@
                 "guzzlehttp/promises": "^2.0.3 || ^3.0",
                 "guzzlehttp/psr7": "^2.6.3 || ^3.0",
                 "mtdowling/jmespath.php": "^2.9.1",
-                "php": ">=8.1",
+                "php": ">=8.2",
                 "psr/http-message": "^1.0 || ^2.0",
                 "symfony/filesystem": "^v5.4.45 || ^v6.4.3 || ^v7.1.0 || ^v8.0.0"
             },
@@ -153,9 +154,10 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.395.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.402.5"
             },
-            "time": "2026-09-16T18:39:53+00:00"
+            "time": "2026-10-30T18:04:02+00:00",
+            "published-time": "2026-10-30T18:12:54+00:00"
         },
         {
             "name": "brick/math",
@@ -894,7 +896,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-06T13:55:09+00:00"
+            "time": "2026-09-06T13:55:09+00:00",
+            "published-time": "2026-09-06T13:55:38+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -977,7 +980,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T10:00:26+00:00"
+            "time": "2026-08-24T10:00:26+00:00",
+            "published-time": "2026-08-24T10:00:48+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1096,7 +1100,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T11:02:13+00:00"
+            "time": "2026-08-24T11:02:13+00:00",
+            "published-time": "2026-08-24T11:03:23+00:00"
         },
         {
             "name": "illuminate/collections",
@@ -1648,7 +1653,8 @@
                 "issues": "https://github.com/jmespath/jmespath.php/issues",
                 "source": "https://github.com/jmespath/jmespath.php/tree/2.9.2"
             },
-            "time": "2026-07-06T18:56:19+00:00"
+            "time": "2026-07-06T18:56:19+00:00",
+            "published-time": "2026-07-06T18:56:41+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -2661,7 +2667,8 @@
             "support": {
                 "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-09-23T14:17:50+00:00"
+            "time": "2023-09-23T14:17:50+00:00",
+            "published-time": "2023-09-23T14:18:12+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -2716,7 +2723,8 @@
             "support": {
                 "source": "https://github.com/php-fig/http-factory"
             },
-            "time": "2024-04-15T12:06:14+00:00"
+            "time": "2024-04-15T12:06:14+00:00",
+            "published-time": "2024-05-10T07:32:19+00:00"
         },
         {
             "name": "psr/http-message",
@@ -2769,7 +2777,8 @@
             "support": {
                 "source": "https://github.com/php-fig/http-message/tree/2.0"
             },
-            "time": "2023-04-04T09:54:51+00:00"
+            "time": "2023-04-04T09:54:51+00:00",
+            "published-time": "2023-04-04T09:55:35+00:00"
         },
         {
             "name": "psr/http-server-handler",
@@ -3455,7 +3464,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T06:23:12+00:00"
+            "time": "2026-06-05T06:23:12+00:00",
+            "published-time": "2026-06-27T21:46:34+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -3525,7 +3535,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-23T10:03:40+00:00"
+            "time": "2026-08-23T10:03:40+00:00",
+            "published-time": "2026-08-30T21:39:09+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -3873,7 +3884,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
+            "time": "2026-04-10T16:19:22+00:00",
+            "published-time": "2026-04-26T14:44:50+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -4040,7 +4052,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-07T06:33:24+00:00"
+            "time": "2026-08-07T06:33:24+00:00",
+            "published-time": "2026-08-24T11:45:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -4125,7 +4138,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-27T06:59:30+00:00"
+            "time": "2026-05-27T06:59:30+00:00",
+            "published-time": "2026-06-09T06:07:20+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -4209,7 +4223,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
+            "time": "2026-04-10T16:19:22+00:00",
+            "published-time": "2026-04-26T14:44:45+00:00"
         },
         {
             "name": "symfony/polyfill-php81",
@@ -4369,7 +4384,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-26T12:45:58+00:00"
+            "time": "2026-05-26T12:45:58+00:00",
+            "published-time": "2026-05-26T13:40:37+00:00"
         },
         {
             "name": "symfony/polyfill-php83",
@@ -6985,5 +7001,5 @@
     "platform-overrides": {
         "php": "8.2"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.11.0"
 }
