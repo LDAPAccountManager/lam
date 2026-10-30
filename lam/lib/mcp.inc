@@ -23,7 +23,13 @@ namespace LAM\MCP;
 
 */
 
+use LAM\WHITE_PAGES\WhitePagesPersistence;
+use stdClass;
+
 include_once __DIR__ . "/security.inc";
+if (isLAMProVersion()) {
+	include_once __DIR__ . "/whitePages.inc";
+}
 
 const MCP_VERSION = '2026-07-28';
 
@@ -45,6 +51,7 @@ function validateRequestFormat(): void {
  * @param array<string, string|array<string, string[]|array<string, string[]>>> $jsonData data
  */
 function validateJsonData(array $jsonData): void {
+	logNewMessage(LOG_DEBUG, print_r($jsonData, true));
 	$id = $jsonData['id'] ?? '-';
 	if (empty($jsonData['jsonrpc']) || ($jsonData['jsonrpc'] !== '2.0')) {
 		badMcpRequest($id, -1, 'Invalid JSON-RPC version');
@@ -98,12 +105,6 @@ function getResponseTemplate(string|int $id) {
 	return [
 		'jsonrpc' => '2.0',
 		'id' => $id,
-		'_meta' => [
-			'io.modelcontextprotocol/serverInfo' => [
-				'name' => 'LAM',
-				'version' => LAMVersion()
-			]
-		]
 	];
 }
 
@@ -120,6 +121,9 @@ function routeRequest(array $jsonData): void {
 			break;
 		case 'tools/list':
 			answerToolList($id);
+			break;
+		case 'tools/call':
+			answerToolCall($id, $jsonData['params']);
 			break;
 		default:
 			badMcpRequest($id, -10, 'Invalid request');
@@ -138,15 +142,16 @@ function answerDiscovery(string|int $id): void {
 		'resultType' => 'complete',
 		'supportedVersions' => [MCP_VERSION],
 		'capabilities' => [
-			'tools' => getToolList(),
+			'tools' => new stdClass(),
 		],
 		'_meta' => [
 			'io.modelcontextprotocol/serverInfo' => [
-				'name' => 'LAM',
+				'name' => 'LDAP Account Manager',
 				'version' => LAMVersion(),
 			],
 		],
-		'instructions' => 'This server exposes functionality of LDAP Account Manager.',
+		'instructions' => 'This server exposes functionality of LDAP Account Manager. ' .
+			'White pages tools are used to provide e.g. contact details about employees but can also be used to expose other data.',
 		'ttlMs' => 60000,
 		'cacheScope' => 'public',
 	];
@@ -183,7 +188,9 @@ function getToolList(): array {
 				'name' => 'listWhitePagesProfiles',
 				'title' => 'List all available white pages profiles',
 				'description' => 'White pages profiles define how LDAP data is exposed and searchable.',
-				'inputSchema' => [],
+				'inputSchema' => [
+					"type" => "object",
+				],
 				'outputSchema' => [
 					'type' => 'object',
 					'properties' => [
@@ -198,4 +205,55 @@ function getToolList(): array {
 		];
 	}
 	return $data;
+}
+
+/**
+ * Answers to a tool call.
+ *
+ * @param string|int $id request id
+ * @param array<string, string|array<string, string>> $params parameters
+ */
+function answerToolCall(string|int $id, array $params): void {
+	sendDefaultHeaders();
+	$data = getResponseTemplate($id);
+	$command = $params['name'] ?? null;
+	if ($command === null) {
+		badMcpRequest($id, -11, 'Missing parameter "name"');
+	}
+	$arguments = $params['arguments'] ?? [];
+	if (isLAMProVersion()) {
+		switch ($command) {
+			case 'listWhitePagesProfiles':
+				listWhitePagesProfiles($id);
+				return;
+		}
+	}
+	badMcpRequest($id, -12, 'Unknown tool ' . $command);
+}
+
+/**
+ * Lists the white pages profiles.
+ *
+ * @param int|string $id request ID
+ */
+function listWhitePagesProfiles(int|string $id): void {
+	$wpPersistence = new WhitePagesPersistence();
+	sendDefaultHeaders();
+	$data = getResponseTemplate($id);
+	$profiles = $wpPersistence->getProfiles();
+	$data['result'] = [
+		'resultType' => 'complete',
+		'content' => [
+			[
+				'type' => 'text',
+				'text' => json_encode($profiles)
+			]
+		],
+		'structuredContent' => [
+			'profiles' => $profiles
+		],
+		'ttlMs' => 60000,
+		'cacheScope' => 'public',
+	];
+	echo json_encode($data);
 }
