@@ -24,6 +24,8 @@ namespace LAM\MCP;
 */
 
 use LAM\WHITE_PAGES\WhitePagesPersistence;
+use LAM\WHITE_PAGES\WP_AUTHENTICATION;
+use LAMException;
 use stdClass;
 
 include_once __DIR__ . "/security.inc";
@@ -186,7 +188,7 @@ function getToolList(): array {
 		$data += [
 			[
 				'name' => 'listWhitePagesProfiles',
-				'title' => 'List all available white pages profiles',
+				'title' => 'List all available white pages profiles.',
 				'description' => 'White pages profiles define how LDAP data is exposed and searchable.',
 				'inputSchema' => [
 					"type" => "object",
@@ -201,7 +203,42 @@ function getToolList(): array {
 					],
 					'required' => ['profiles']
 				],
-			]
+			],
+			[
+				'name' => 'listWhitePagesProfileSections',
+				'title' => 'List all available sections within a white pages profile.',
+				'description' => 'White pages profile sections define which kind of LDAP data is exposed (e.g. users or groups).',
+				'inputSchema' => [
+					"type" => "object",
+					"properties" => [
+						'profileName' => [
+							'type' => 'string',
+						]
+					]
+				],
+				'outputSchema' => [
+					'type' => 'object',
+					'properties' => [
+						'sections' => [
+							'type' => 'array',
+							'items' => [
+								'type' => 'object',
+								'properties' => [
+									'sectionIndex' => [
+										'type' => 'integer',
+										'description' => 'Section index id'
+									],
+									'label' => [
+										'type' => 'string',
+										'description' => 'Section label'
+									]
+								]
+							]
+						]
+					],
+					'required' => ['sections']
+				],
+			],
 		];
 	}
 	return $data;
@@ -226,6 +263,9 @@ function answerToolCall(string|int $id, array $params): void {
 			case 'listWhitePagesProfiles':
 				listWhitePagesProfiles($id);
 				return;
+			case 'listWhitePagesProfileSections':
+				listWhitePagesProfileSections($id, $params);
+				return;
 		}
 	}
 	badMcpRequest($id, -12, 'Unknown tool ' . $command);
@@ -240,7 +280,14 @@ function listWhitePagesProfiles(int|string $id): void {
 	$wpPersistence = new WhitePagesPersistence();
 	sendDefaultHeaders();
 	$data = getResponseTemplate($id);
-	$profiles = $wpPersistence->getProfiles();
+	$allProfiles = $wpPersistence->getProfiles();
+	$profiles = [];
+	foreach ($allProfiles as $profileName) {
+		$profile = $wpPersistence->load($profileName);
+		if ($profile->authenticationType === WP_AUTHENTICATION::AUTH_ANONYMOUS->name) {
+			$profiles[] = $profileName;
+		}
+	}
 	$data['result'] = [
 		'resultType' => 'complete',
 		'content' => [
@@ -256,4 +303,48 @@ function listWhitePagesProfiles(int|string $id): void {
 		'cacheScope' => 'public',
 	];
 	echo json_encode($data);
+}
+
+/**
+ * Lists the sections of a given white pages profile.
+ *
+ * @param int|string $id request ID
+ * @param array<string, string|array<string, string>> $params parameters
+ */
+function listWhitePagesProfileSections(int|string $id, array $params): void {
+	$profileName = $params['arguments']['profileName'] ?? null;
+	if ($profileName === null) {
+		badMcpRequest($id, -20, 'Missing parameter "profileName"');
+	}
+	$wpPersistence = new WhitePagesPersistence();
+	try {
+		$profile = $wpPersistence->load($profileName);
+		sendDefaultHeaders();
+		$sections = [];
+		foreach ($profile->tabs as $index => $tab) {
+			$sections[] = [
+				'sectionIndex' => $index,
+				'label' => $tab->label,
+			];
+		}
+		$data = getResponseTemplate($id);
+		$data['result'] = [
+			'resultType' => 'complete',
+			'content' => [
+				[
+					'type' => 'text',
+					'text' => json_encode($sections)
+				]
+			],
+			'structuredContent' => [
+				'sections' => $sections
+			],
+			'ttlMs' => 60000,
+			'cacheScope' => 'public',
+		];
+		echo json_encode($data);
+	}
+	catch (LAMException) {
+		badMcpRequest($id, -21, 'Invalid profile name');
+	}
 }
