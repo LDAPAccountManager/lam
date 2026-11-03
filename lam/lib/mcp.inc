@@ -23,7 +23,12 @@ namespace LAM\MCP;
 
 */
 
+use LAM\WHITE_PAGES\WhitePagesImageJpgItemRenderer;
+use LAM\WHITE_PAGES\WhitePagesItemRenderer;
+use LAM\WHITE_PAGES\WhitePagesLdapCache;
+use LAM\WHITE_PAGES\WhitePagesLdapConnection;
 use LAM\WHITE_PAGES\WhitePagesPersistence;
+use LAM\WHITE_PAGES\WhitePagesProfile;
 use LAM\WHITE_PAGES\WP_AUTHENTICATION;
 use LAMException;
 use stdClass;
@@ -31,6 +36,7 @@ use stdClass;
 include_once __DIR__ . "/security.inc";
 if (isLAMProVersion()) {
 	include_once __DIR__ . "/whitePages.inc";
+	include_once __DIR__ . "/whitePagesData.inc";
 }
 
 const MCP_VERSION = '2026-07-28';
@@ -221,6 +227,7 @@ function getToolList(): array {
 					'properties' => [
 						'sections' => [
 							'type' => 'array',
+							'description' => 'Sections',
 							'items' => [
 								'type' => 'object',
 								'properties' => [
@@ -237,6 +244,35 @@ function getToolList(): array {
 						]
 					],
 					'required' => ['sections']
+				],
+			],
+			[
+				'name' => 'getWhitePagesProfileSectionEntries',
+				'title' => 'Returns all entries in a given section of a white pages profile.',
+				'description' => 'White pages entries can be any LDAP objects like users or groups. They belong to a section of a given profile. This tool returns basic information about the entry. For more details use the getWhitePagesProfileSectionEntryDetails tool.',
+				'inputSchema' => [
+					"type" => "object",
+					"properties" => [
+						'profileName' => [
+							'type' => 'string',
+						],
+						'sectionIndex' => [
+							'type' => 'integer',
+						]
+					]
+				],
+				'outputSchema' => [
+					'type' => 'object',
+					'properties' => [
+						'entries' => [
+							'type' => 'array',
+							'description' => 'Section entries',
+							'items' => [
+								'type' => 'object',
+							]
+						]
+					],
+					'required' => ['entries']
 				],
 			],
 		];
@@ -266,6 +302,9 @@ function answerToolCall(string|int $id, array $params): void {
 			case 'listWhitePagesProfileSections':
 				listWhitePagesProfileSections($id, $params);
 				return;
+			case 'getWhitePagesProfileSectionEntries':
+				getWhitePagesProfileSectionEntries($id, $params);
+				return;
 		}
 	}
 	badMcpRequest($id, -12, 'Unknown tool ' . $command);
@@ -277,17 +316,9 @@ function answerToolCall(string|int $id, array $params): void {
  * @param int|string $id request ID
  */
 function listWhitePagesProfiles(int|string $id): void {
-	$wpPersistence = new WhitePagesPersistence();
 	sendDefaultHeaders();
 	$data = getResponseTemplate($id);
-	$allProfiles = $wpPersistence->getProfiles();
-	$profiles = [];
-	foreach ($allProfiles as $profileName) {
-		$profile = $wpPersistence->load($profileName);
-		if ($profile->authenticationType === WP_AUTHENTICATION::AUTH_ANONYMOUS->name) {
-			$profiles[] = $profileName;
-		}
-	}
+	$profiles = getValidWhitePagesProfileNames();
 	$data['result'] = [
 		'resultType' => 'complete',
 		'content' => [
@@ -306,6 +337,24 @@ function listWhitePagesProfiles(int|string $id): void {
 }
 
 /**
+ * Returns a list of all valid profile names.
+ *
+ * @return string[] profile names
+ */
+function getValidWhitePagesProfileNames(): array {
+	$wpPersistence = new WhitePagesPersistence();
+	$allProfiles = $wpPersistence->getProfiles();
+	$profiles = [];
+	foreach ($allProfiles as $profileName) {
+		$profile = $wpPersistence->load($profileName);
+		if ($profile->authenticationType === WP_AUTHENTICATION::AUTH_ANONYMOUS->name) {
+			$profiles[] = $profileName;
+		}
+	}
+	return $profiles;
+}
+
+/**
  * Lists the sections of a given white pages profile.
  *
  * @param int|string $id request ID
@@ -313,8 +362,9 @@ function listWhitePagesProfiles(int|string $id): void {
  */
 function listWhitePagesProfileSections(int|string $id, array $params): void {
 	$profileName = $params['arguments']['profileName'] ?? null;
-	if ($profileName === null) {
-		badMcpRequest($id, -20, 'Missing parameter "profileName"');
+	$profileNames = getValidWhitePagesProfileNames();
+	if (($profileName === null) || (!in_array($profileName, $profileNames))) {
+		badMcpRequest($id, -20, 'Missing or invalid parameter "profileName"');
 	}
 	$wpPersistence = new WhitePagesPersistence();
 	try {
@@ -340,11 +390,88 @@ function listWhitePagesProfileSections(int|string $id, array $params): void {
 				'sections' => $sections
 			],
 			'ttlMs' => 60000,
-			'cacheScope' => 'public',
+			'cacheScope' => 'private',
 		];
 		echo json_encode($data);
 	}
 	catch (LAMException) {
 		badMcpRequest($id, -21, 'Invalid profile name');
 	}
+}
+
+/**
+ * Lists the entries of a section of a given white pages profile.
+ *
+ * @param int|string $id request ID
+ * @param array<string, string|array<string, string>> $params parameters
+ */
+function getWhitePagesProfileSectionEntries(int|string $id, array $params): void {
+	$profileName = $params['arguments']['profileName'] ?? null;
+	$profileNames = getValidWhitePagesProfileNames();
+	if (($profileName === null) || (!in_array($profileName, $profileNames))) {
+		badMcpRequest($id, -30, 'Missing or invalid parameter "profileName"');
+	}
+	$sectionIndex = $params['arguments']['sectionIndex'] ?? null;
+	if ($sectionIndex === null) {
+		badMcpRequest($id, -31, 'Missing parameter "sectionIndex"');
+	}
+	$wpPersistence = new WhitePagesPersistence();
+	try {
+		$profile = $wpPersistence->load($profileName);
+		if (!isset($profile->tabs[$sectionIndex])) {
+			badMcpRequest($id, -32, 'Invalid parameter "sectionIndex"');
+		}
+		$tab = $profile->tabs[$sectionIndex];
+		initLdapConnection($id, $profile);
+		$ldapData = WhitePagesLdapCache::readLdapData($tab, $sectionIndex);
+		$listItems = $tab->listItems;
+		$renderers = array_map(fn($item) => WhitePagesItemRenderer::fromItemType($item->type, $item->value), $listItems);
+		$renderedData = [];
+		foreach ($ldapData as $ldapEntry) {
+			$resultEntry = [];
+			foreach ($listItems as $itemIndex => $item) {
+				if ($renderers[$itemIndex] instanceof WhitePagesImageJpgItemRenderer) {
+					continue;
+				}
+				$resultEntry[$item->label] = $renderers[$itemIndex]->renderData($ldapEntry, $sectionIndex);
+			}
+			$resultEntry['ID'] = $ldapEntry['dn'];
+			$renderedData[] = $resultEntry;
+		}
+		sendDefaultHeaders();
+		$data = getResponseTemplate($id);
+		$data['result'] = [
+			'resultType' => 'complete',
+			'structuredContent' => [
+				'entries' => $renderedData
+			],
+			'content' => [
+				[
+					'type' => 'text',
+					'text' => json_encode($renderedData, JSON_INVALID_UTF8_IGNORE)
+				]
+			],
+			'ttlMs' => 60000,
+			'cacheScope' => 'private',
+		];
+		echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+	}
+	catch (LAMException) {
+		badMcpRequest($id, -21, 'Invalid profile name');
+	}
+}
+
+/**
+ * Opens the LDAP connection.
+ *
+ * @param int|string $id request ID
+ * @param WhitePagesProfile $profile profile
+ */
+function initLdapConnection(int|string $id, WhitePagesProfile $profile): void {
+	$_SESSION['whitePagesProfile'] = $profile;
+	$connection = new WhitePagesLdapConnection($profile);
+	if ($connection->getServer() === null) {
+		badMcpRequest($id, -13, 'LDAP connection failed');
+	}
+	$_SESSION['ldapHandle'] = $connection;
 }
