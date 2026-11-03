@@ -59,4 +59,4 @@ jobs:
       run: ./vendor/bin/phpstan
 
     - name: Rector
-      run: ./vendor/bin/rector process --dry-run
+      run: ./vendor/bin/rector process --dry-run --debug
