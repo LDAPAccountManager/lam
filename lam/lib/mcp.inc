@@ -249,7 +249,7 @@ function getToolList(): array {
 			[
 				'name' => 'getWhitePagesProfileSectionEntries',
 				'title' => 'Returns all entries in a given section of a white pages profile.',
-				'description' => 'White pages entries can be any LDAP objects like users or groups. They belong to a section of a given profile. This tool returns basic information about the entry. For more details use the getWhitePagesProfileSectionEntryDetails tool.',
+				'description' => 'White pages entries can be any LDAP objects like users or groups. They belong to a section of a given profile. This tool returns basic information about each entry. For more details use the getWhitePagesProfileSectionEntryDetails tool.',
 				'inputSchema' => [
 					"type" => "object",
 					"properties" => [
@@ -273,6 +273,35 @@ function getToolList(): array {
 						]
 					],
 					'required' => ['entries']
+				],
+			],
+			[
+				'name' => 'getWhitePagesProfileSectionEntryDetails',
+				'title' => 'Returns the detail information of a single white pages entry.',
+				'description' => 'White pages entries can be any LDAP objects like users or groups. They belong to a section of a given profile. This tool returns detailed information about the entry. Use the id from "getWhitePagesProfileSectionEntries" to select the entry.',
+				'inputSchema' => [
+					"type" => "object",
+					"properties" => [
+						'profileName' => [
+							'type' => 'string',
+						],
+						'sectionIndex' => [
+							'type' => 'integer',
+						],
+						'id' => [
+							'type' => 'string',
+						]
+					]
+				],
+				'outputSchema' => [
+					'type' => 'object',
+					'properties' => [
+						'entry' => [
+							'type' => 'object',
+							'description' => 'Section entry',
+						],
+					],
+					'required' => ['entry']
 				],
 			],
 		];
@@ -304,6 +333,9 @@ function answerToolCall(string|int $id, array $params): void {
 				return;
 			case 'getWhitePagesProfileSectionEntries':
 				getWhitePagesProfileSectionEntries($id, $params);
+				return;
+			case 'getWhitePagesProfileSectionEntryDetails':
+				getWhitePagesProfileSectionEntryDetails($id, $params);
 				return;
 		}
 	}
@@ -454,6 +486,89 @@ function getWhitePagesProfileSectionEntries(int|string $id, array $params): void
 			'ttlMs' => 60000,
 			'cacheScope' => 'private',
 		];
+		echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+	}
+	catch (LAMException) {
+		badMcpRequest($id, -21, 'Invalid profile name');
+	}
+}
+
+/**
+ * Returns the details of an entry of a section of a given white pages profile.
+ *
+ * @param int|string $id request ID
+ * @param array<string, string|array<string, string>> $params parameters
+ */
+function getWhitePagesProfileSectionEntryDetails(int|string $id, array $params): void {
+	$profileName = $params['arguments']['profileName'] ?? null;
+	$profileNames = getValidWhitePagesProfileNames();
+	if (($profileName === null) || (!in_array($profileName, $profileNames))) {
+		badMcpRequest($id, -30, 'Missing or invalid parameter "profileName"');
+	}
+	$sectionIndex = $params['arguments']['sectionIndex'] ?? null;
+	if ($sectionIndex === null) {
+		badMcpRequest($id, -31, 'Missing parameter "sectionIndex"');
+	}
+	$entryId = $params['arguments']['id'] ?? null;
+	if ($entryId === null) {
+		badMcpRequest($id, -33, 'Missing parameter entry "id"');
+	}
+	$wpPersistence = new WhitePagesPersistence();
+	try {
+		$profile = $wpPersistence->load($profileName);
+		if (!isset($profile->tabs[$sectionIndex])) {
+			badMcpRequest($id, -32, 'Invalid parameter "sectionIndex"');
+		}
+		$tab = $profile->tabs[$sectionIndex];
+		initLdapConnection($id, $profile);
+		$ldapData = WhitePagesLdapCache::readLdapData($tab, $sectionIndex);
+		$detailEntry = null;
+		foreach ($ldapData as $entry) {
+			if (strtolower($entry['dn']) === strtolower($entryId)) {
+				$detailEntry = $entry;
+				break;
+			}
+		}
+		if ($detailEntry === null) {
+			echo json_encode(['error' => _('Unable to read the data.')]);
+			return;
+		}
+		$detailViewItems = $tab->detailViewItems;
+		$renderers = array_map(fn($item) => WhitePagesItemRenderer::fromItemType($item->type, $item->value), $detailViewItems);
+		$resultEntry = [];
+		$imageData = null;
+		foreach ($detailViewItems as $itemIndex => $item) {
+			if ($renderers[$itemIndex] instanceof WhitePagesImageJpgItemRenderer) {
+				$imageData = $renderers[$itemIndex]->renderData($detailEntry, $sectionIndex);
+			}
+			else {
+				$resultEntry[$item->label] = $renderers[$itemIndex]->renderData($detailEntry, $sectionIndex);
+			}
+		}
+		$resultEntry['ID'] = $detailEntry['dn'];
+		sendDefaultHeaders();
+		$data = getResponseTemplate($id);
+		$data['result'] = [
+			'resultType' => 'complete',
+			'structuredContent' => [
+				'entry' => $resultEntry
+			],
+			'content' => [
+				[
+					'type' => 'text',
+					'text' => json_encode($resultEntry, JSON_INVALID_UTF8_IGNORE)
+				]
+			],
+			'ttlMs' => 60000,
+			'cacheScope' => 'private',
+		];
+		if ($imageData !== null) {
+			$data['result']['content'][] = [
+				'type' => 'image',
+        		'data' => str_replace('data:image/jpeg;base64,', '', $imageData),
+        		'mimeType' => "image/jpeg"
+			];
+		}
 		echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
 	}
 	catch (LAMException) {
