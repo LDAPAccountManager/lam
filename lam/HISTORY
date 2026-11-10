@@ -9,7 +9,7 @@ December 2026 9.8
  Fixed bugs:
   -> LDAP_EXOP password change does not refresh session credentials (862)
   -> Audit log needs to mask credentials (872)
-  -> Debian: fix phpseclib dependency (880)
+  -> Debian: fixed phpseclib dependency, requires to install php-phpseclib4 from Debian Testing (880)
 
 
 02.10.2026 9.7
