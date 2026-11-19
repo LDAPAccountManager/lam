@@ -113,8 +113,9 @@
       activate "Hide LDAP details on failed logins". This way users will not
       see if their account was not found or is e.g. locked.</para>
 
-      <para>By default, the internal MCP server is activated. You can disable
-      it here.</para>
+      <para id="mcp_config">By default, the internal <link
+      linkend="mcp_server">MCP server</link> is activated. You can disable it
+      here.</para>
 
       <para>You may also set a list of IP addresses which are allowed to
       access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
@@ -2506,11 +2507,13 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
     </screenshot>
   </section>
 
-  <section>
+  <section id="mcp_server">
     <title>MCP server</title>
 
     <para>LAM includes an MCP server to connect it to AI clients such as
-    Claude Code, Cline, OpenCode, ...</para>
+    Claude Code, Cline, OpenCode, ... The server can be activate and
+    deactivated in <link linkend="mcp_config">LAM's main
+    configuration</link>.</para>
 
     <para>Currently, only white pages data (LAM Pro) is exposed via MCP. Also,
     the white pages profile must allow anonymous access.</para>
@@ -2536,7 +2539,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
 
     <para>claude_desktop_config.json</para>
 
-    <literallayout>  "mcpServers": {
+    <programlisting>"mcpServers": {
     "LAM": {
       "command": "npx",
       "args": [
@@ -2547,14 +2550,13 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       ]
       }
     },
-    "preferences": {
-</literallayout>
+    "preferences": {</programlisting>
 
     <para>OpenCode:</para>
 
     <para>opencode.jsonc</para>
 
-    <literallayout>{
+    <programlisting>{
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "servers": {
@@ -2564,9 +2566,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       },
     },
   },
-}
-
-</literallayout>
+}</programlisting>
 
     <para/>
   </section>
