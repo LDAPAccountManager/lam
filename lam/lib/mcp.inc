@@ -521,7 +521,7 @@ function getWhitePagesProfileSectionEntryDetails(int|string $id, array $params):
 		}
 		$tab = $profile->tabs[$sectionIndex];
 		initLdapConnection($id, $profile);
-		$ldapData = WhitePagesLdapCache::readLdapData($tab, $sectionIndex);
+		$ldapData = WhitePagesLdapCache::readLdapData($tab, $sectionIndex, $entryId);
 		$detailEntry = null;
 		foreach ($ldapData as $entry) {
 			if (strtolower($entry['dn']) === strtolower($entryId)) {
