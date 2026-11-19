@@ -7,3 +7,6 @@
 <Files ~ "\.json$">
   Require all denied
 </Files>
+
+RewriteEngine On
+RewriteRule ^mcp/?$ templates/misc/mcp.php [QSA,END]

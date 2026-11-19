@@ -113,6 +113,10 @@
       activate "Hide LDAP details on failed logins". This way users will not
       see if their account was not found or is e.g. locked.</para>
 
+      <para id="mcp_config">By default, the internal <link
+      linkend="mcp_server">MCP server</link> is activated. You can disable it
+      here.</para>
+
       <para>You may also set a list of IP addresses which are allowed to
       access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
       or with the "*" wildcard (e.g. 123.123.123.*). Users which try to access
@@ -122,7 +126,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral1.png"/>
+            <imagedata fileref="images/configGeneralSecurity.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -2501,5 +2505,69 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
     <screenshot>
       <graphic fileref="images/confImportExport2.png"/>
     </screenshot>
+  </section>
+
+  <section id="mcp_server">
+    <title>MCP server</title>
+
+    <para>LAM includes an MCP server to connect it to AI clients such as
+    Claude Code, Cline, OpenCode, ... The server can be activate and
+    deactivated in <link linkend="mcp_config">LAM's main
+    configuration</link>.</para>
+
+    <para>Currently, only white pages data (LAM Pro) is exposed via MCP. Also,
+    the white pages profile must allow anonymous access.</para>
+
+    <para>You can query the white pages profiles and their data on the
+    different tabs. See here for an example:</para>
+
+    <screenshot>
+      <graphic fileref="images/mcp1.png"/>
+    </screenshot>
+
+    <para><emphasis role="bold">Requirements:</emphasis> the client needs to
+    support MCP with protocol version <emphasis
+    role="bold">2026-07-28</emphasis>. The older protocol versions are not
+    supported.</para>
+
+    <para><emphasis role="bold">Configuration:</emphasis></para>
+
+    <para>These are example configurations. Please adapt if your AI tool is
+    not listed here.</para>
+
+    <para>Claude Desktop:</para>
+
+    <para>claude_desktop_config.json</para>
+
+    <programlisting>"mcpServers": {
+    "LAM": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://example.com/lam/mcp",
+        "--protocol",
+        "auto"
+      ]
+      }
+    },
+    "preferences": {</programlisting>
+
+    <para>OpenCode:</para>
+
+    <para>opencode.jsonc</para>
+
+    <programlisting>{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "LAM": {
+        "type": "local",
+        "command": ["npx", "mcp-remote", "https://example.com/lam/mcp", "--protocol", "auto"],
+      },
+    },
+  },
+}</programlisting>
+
+    <para/>
   </section>
 </chapter>

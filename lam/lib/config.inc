@@ -3341,6 +3341,9 @@ class LAMCfgMain {
 	/** database password */
 	private string $moduleSettings = '';
 
+	/** activates the built-in MCP server */
+	public bool $activateMcp = true;
+
 	/** @var string[] $settings list of data fields to save in config file */
 	private array $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
@@ -3356,7 +3359,8 @@ class LAMCfgMain {
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings',
-		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsSubject', 'smsAttributes', 'smsDefaultCountryPrefix'
+		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsSubject', 'smsAttributes',
+		'smsDefaultCountryPrefix', 'activateMcp'
 	];
 
 	/** @var string[] $persistenceSettings persistence settings are always stored on local file system */
