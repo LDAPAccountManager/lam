@@ -202,13 +202,10 @@ class ddns extends baseModule {
 	 * @return bool is enabled
 	 */
 	private function check_if_ddns_is_enable(): bool {
-		if ($this->getAccountContainer() == null) {
+		if ($this->getAccountContainer() === null) {
 			return false;
 		}
 		$type = $this->getAccountContainer()->get_type();
-		if ($type == null) {
-			return false;
-		}
 		$suffix = $type->getSuffix();
 
 		$results = searchLDAP($suffix, "dhcpStatements=ddns-update-style interim", ['dn']);

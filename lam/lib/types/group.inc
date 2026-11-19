@@ -48,7 +48,7 @@ class group extends baseType {
 		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
-		if ($this->getType() != null) {
+		if ($this->getType() !== null) {
 			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another role');
@@ -61,7 +61,7 @@ class group extends baseType {
 	 * {@inheritDoc}
 	 */
 	public function getAlias(): string {
-		if ($this->getType() != null) {
+		if ($this->getType() !== null) {
 			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				return _('Roles');

@@ -689,7 +689,7 @@ class fixed_ip extends baseModule {
 				if (!empty($arr['description'])) {
 					$attr['dhcpComments'][] = $arr['description'];
 				}
-				if ($attr['cn'] != "") {
+				if (!empty($attr['cn'][0])) {
 					ldapAddNewEntry($_SESSION['ldap']->server(), 'cn=' . $arr['cn'] . $ldapSuffix, $attr);
 				}
 			}

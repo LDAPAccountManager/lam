@@ -815,7 +815,7 @@ class accountContainer {
 	 *
 	 * @return ConfiguredType account type
 	 */
-	public function get_type() {
+	public function get_type(): ConfiguredType {
 		return $this->type;
 	}
 

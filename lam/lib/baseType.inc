@@ -415,9 +415,9 @@ class baseType {
 	/**
 	 * Returns the type configuration.
 	 *
-	 * @return ConfiguredType type configuration
+	 * @return ConfiguredType|null type configuration
 	 */
-	protected function getType() {
+	protected function getType(): ?ConfiguredType {
 		return $this->type;
 	}
 

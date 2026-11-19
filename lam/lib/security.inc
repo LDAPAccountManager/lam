@@ -243,7 +243,7 @@ function logoffAndBackToLoginPage(): void {
 		}
 	}
 	$page .= $pageSuffix;
-	echo $_SESSION['header'];
+	echo $_SESSION['header'] ?? '';
 	echo "<title></title>\n";
 	echo "</head>\n";
 	echo "<body>\n";
