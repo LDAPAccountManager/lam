@@ -562,7 +562,7 @@ function getWhitePagesProfileSectionEntryDetails(int|string $id, array $params):
 			'ttlMs' => 60000,
 			'cacheScope' => 'private',
 		];
-		if ($imageData !== null) {
+		if (($imageData !== null) && (str_starts_with($imageData, 'data:image/jpeg;base64,'))) {
 			$data['result']['content'][] = [
 				'type' => 'image',
         		'data' => str_replace('data:image/jpeg;base64,', '', $imageData),
