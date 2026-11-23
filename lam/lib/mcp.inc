@@ -108,8 +108,9 @@ function sendDefaultHeaders(): void {
  * Returns the basic response data structure.
  *
  * @param string|int $id request id
+ * @return array<string, string|int> response template
  */
-function getResponseTemplate(string|int $id) {
+function getResponseTemplate(string|int $id): array {
 	return [
 		'jsonrpc' => '2.0',
 		'id' => $id,
@@ -435,7 +436,7 @@ function listWhitePagesProfileSections(int|string $id, array $params): void {
  * Lists the entries of a section of a given white pages profile.
  *
  * @param int|string $id request ID
- * @param array<string, string|array<string, string>> $params parameters
+ * @param array<string, string|array<string, string|int>> $params parameters
  */
 function getWhitePagesProfileSectionEntries(int|string $id, array $params): void {
 	$profileName = $params['arguments']['profileName'] ?? null;
@@ -497,7 +498,7 @@ function getWhitePagesProfileSectionEntries(int|string $id, array $params): void
  * Returns the details of an entry of a section of a given white pages profile.
  *
  * @param int|string $id request ID
- * @param array<string, string|array<string, string>> $params parameters
+ * @param array<string, string|array<string, string|int>> $params parameters
  */
 function getWhitePagesProfileSectionEntryDetails(int|string $id, array $params): void {
 	$profileName = $params['arguments']['profileName'] ?? null;
