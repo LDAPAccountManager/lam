@@ -1,7 +1,7 @@
 /*!
  * jodit - Jodit is an awesome and useful wysiwyg editor with filebrowser
  * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/jodit/)
- * Version: v4.14.7
+ * Version: v4.21.0
  * Url: https://xdsoft.net/jodit/
  * License(s): MIT
  */
@@ -355,7 +355,10 @@
   opacity: 1;
   outline: 0;
 }
-.jodit-ui-button:active:not([disabled]),
+.jodit-ui-button:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-ui-button[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -1369,6 +1372,15 @@
   --jd-em-font-size: 1rem;
 }
 .jodit-ui-messages {
+  font-family: var(--jd-font-default);
+  font-size: var(--jd-font-size-default);
+  color: var(--jd-color-text);
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: normal;
+  text-align: start;
+  text-transform: none;
   position: absolute;
   z-index: 3;
   right: 0;
@@ -1449,6 +1461,13 @@
 .jodit-dialog {
   font-family: var(--jd-font-default);
   font-size: var(--jd-font-size-default);
+  color: var(--jd-color-text);
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: normal;
+  text-align: start;
+  text-transform: none;
   position: absolute;
   display: none;
   width: 0;
@@ -2717,6 +2736,13 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-toolbar-button_variant_danger:focus:not([disabled]) {
   outline: 1px dashed #bd2130;
 }
+.jodit-toolbar-button_activated_true .jodit-toolbar-button__button:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
+.jodit-toolbar-button_activated_true .jodit-toolbar-button__button:hover:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity60);
+}
 .jodit-toolbar-button__button {
   cursor: pointer;
   position: relative;
@@ -2745,7 +2771,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-button__button:active:not([disabled]),
+.jodit-toolbar-button__button:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-button__button[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -2757,16 +2786,27 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 0.3;
   pointer-events: none;
 }
+.jodit-toolbar-button__button:focus:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  opacity: 1;
+  outline: 0;
+}
 .jodit-toolbar-button__trigger {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
   border-radius: 0 var(--jd-border-radius-default) var(--jd-border-radius-default) 0;
+  color: var(--jd-color-icon);
   opacity: 0.4;
   cursor: pointer;
   --jd-button-trigger-size: 14px;
   width: calc(var(--jd-button-trigger-size, 14px) + 2px);
+}
+.jodit-toolbar-button__trigger:focus:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  opacity: 1;
+  outline: 0;
 }
 .jodit-toolbar-button__trigger:hover:not([disabled]),
 .jodit-toolbar-button__trigger:focus-visible:not([disabled]) {
@@ -2774,7 +2814,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-button__trigger:active:not([disabled]),
+.jodit-toolbar-button__trigger:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-button__trigger[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -2863,7 +2906,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-content:active:not([disabled]),
+.jodit-toolbar-content:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-content[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -3159,6 +3205,7 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-toolbar-select {
   --jd-color-button-background-hover-opacity40: rgba(220, 220, 220, 0.2);
   --jd-color-button-background-hover-opacity60: rgba(220, 220, 220, 0.1);
+  --jd-toolbar-select-own-width: var(--jd-toolbar-select-width);
   display: flex;
   overflow: hidden;
   align-items: center;
@@ -3169,7 +3216,8 @@ a + .jodit-file-browser-tree__source-title {
   height: 34px;
   justify-content: space-between;
   cursor: pointer;
-  min-width: 100px;
+  min-width: var(--jd-toolbar-select-own-width, 100px);
+  max-width: var(--jd-toolbar-select-own-width, none);
 }
 .jodit-toolbar-select__icon {
   display: none;
@@ -3446,6 +3494,13 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-toolbar-select_variant_danger:focus:not([disabled]) {
   outline: 1px dashed #bd2130;
 }
+.jodit-toolbar-select_activated_true .jodit-toolbar-select__button:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
+.jodit-toolbar-select_activated_true .jodit-toolbar-select__button:hover:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity60);
+}
 .jodit-toolbar-select__button {
   cursor: pointer;
   position: relative;
@@ -3474,7 +3529,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-select__button:active:not([disabled]),
+.jodit-toolbar-select__button:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-select__button[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -3486,16 +3544,27 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 0.3;
   pointer-events: none;
 }
+.jodit-toolbar-select__button:focus:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  opacity: 1;
+  outline: 0;
+}
 .jodit-toolbar-select__trigger {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
   border-radius: 0 var(--jd-border-radius-default) var(--jd-border-radius-default) 0;
+  color: var(--jd-color-icon);
   opacity: 0.4;
   cursor: pointer;
   --jd-button-trigger-size: 14px;
   width: calc(var(--jd-button-trigger-size, 14px) + 2px);
+}
+.jodit-toolbar-select__trigger:focus:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  opacity: 1;
+  outline: 0;
 }
 .jodit-toolbar-select__trigger:hover:not([disabled]),
 .jodit-toolbar-select__trigger:focus-visible:not([disabled]) {
@@ -3503,7 +3572,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-select__trigger:active:not([disabled]),
+.jodit-toolbar-select__trigger:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-select__trigger[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -3561,7 +3633,10 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 1;
   outline: 0;
 }
-.jodit-toolbar-select:active:not([disabled]),
+.jodit-toolbar-select:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
 .jodit-toolbar-select[aria-pressed='true']:not([disabled]) {
   background-color: var(--jd-color-button-background-hover-opacity40);
   outline: 0;
@@ -3573,11 +3648,30 @@ a + .jodit-file-browser-tree__source-title {
   opacity: 0.3;
   pointer-events: none;
 }
+.jodit-toolbar-select_activated_true:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
+.jodit-toolbar-select_activated_true:hover:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity60);
+}
+.jodit-toolbar-select_font {
+  --jd-toolbar-select-own-width: var(--jd-toolbar-select-font-width, var(--jd-toolbar-select-width));
+}
+.jodit-toolbar-select_fontsize {
+  --jd-toolbar-select-own-width: var(--jd-toolbar-select-fontsize-width, var(--jd-toolbar-select-width));
+}
+.jodit-toolbar-select_paragraph {
+  --jd-toolbar-select-own-width: var(--jd-toolbar-select-paragraph-width, var(--jd-toolbar-select-width));
+}
 .jodit-toolbar-select__text:not(:empty) {
-  justify-content: left;
+  display: block;
+  text-align: start;
+  white-space: nowrap;
 }
 .jodit-toolbar-select__button {
   flex: 1;
+  min-width: 0;
 }
 
 /*!
@@ -3790,6 +3884,7 @@ a + .jodit-file-browser-tree__source-title {
  */
 :root {
   --jd-color-picker-cell-size: 24px;
+  --jd-color-picker-columns: 10;
 }
 .jodit-color-picker {
   margin: 0;
@@ -3798,7 +3893,7 @@ a + .jodit-file-browser-tree__source-title {
 }
 .jodit-color-picker__group {
   display: flex;
-  max-width: calc(var(--jd-color-picker-cell-size) * 10);
+  max-width: calc(var(--jd-color-picker-cell-size) * var(--jd-color-picker-columns));
   flex-wrap: wrap;
   margin-bottom: calc(var(--jd-padding-default) / 2);
   white-space: normal;
@@ -3807,13 +3902,15 @@ a + .jodit-file-browser-tree__source-title {
   display: block;
   width: var(--jd-color-picker-cell-size);
   height: var(--jd-color-picker-cell-size);
+  padding: 0;
   border: 1px solid transparent;
+  appearance: none;
   text-align: center;
   text-decoration: none;
   vertical-align: middle;
 }
 .jodit-color-picker__color-item:hover {
-  border-color: #000;
+  border-color: var(--jd-color-text);
 }
 .jodit-color-picker__color-item_active_true,
 .jodit-color-picker__color-item:active {
@@ -3823,6 +3920,34 @@ a + .jodit-file-browser-tree__source-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: calc(var(--jd-padding-default) / 2);
+}
+.jodit-color-picker__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin-left: auto;
+  border: 1px solid transparent;
+  appearance: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+.jodit-color-picker__remove:hover {
+  border-color: var(--jd-color-text);
+}
+.jodit-color-picker__remove svg {
+  width: 16px;
+  height: 16px;
+}
+.jodit-color-picker__color-item:focus-visible,
+.jodit-color-picker__remove:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--jd-color-text);
+  outline-offset: 1px;
 }
 .jodit-color-picker__hex input {
   width: 80px;
@@ -3937,11 +4062,12 @@ a + .jodit-file-browser-tree__source-title {
   min-height: 100px;
 }
 /*
- * Insert-image / insert-file popup (see FileSelectorWidget): size the tab
- * buttons to their labels so long localized captions — e.g. the German
- * "Datei hochladen" / "Durchsuchen" — are not clipped and the popup widens to
- * fit. Scoped to `.jodit-file-selector`, so other tab popups (link, video …)
- * keep their fixed equal-column layout.
+ * Insert-image / insert-file popup (see FileSelectorWidget), and the video
+ * popup, which has an Upload tab too: size the tab buttons to their labels so
+ * long localized captions — e.g. the German "Datei hochladen" / "Durchsuchen"
+ * — are not clipped and the popup widens to fit. Scoped to
+ * `.jodit-file-selector`, so other tab popups (link …) keep their fixed
+ * equal-column layout.
  */
 .jodit-file-selector .jodit-tabs__button {
   flex: none;
@@ -3964,6 +4090,79 @@ a + .jodit-file-browser-tree__source-title {
 .jodit-dialog_theme_dark .jodit-tabs .jodit-tabs__buttons .jodit-ui-button[aria-pressed='true']:not([disabled]) svg,
 .jodit_theme_dark .jodit-tabs .jodit-tabs__buttons .jodit-ui-button[aria-pressed='true']:not([disabled]) svg {
   fill: var(--jd-color-text-icons);
+}
+
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */
+.jodit-ui-font-picker {
+  width: 240px;
+}
+.jodit-ui-font-picker__group + .jodit-ui-font-picker__group {
+  margin-top: var(--jd-padding-default);
+}
+.jodit-ui-font-picker__heading {
+  padding: var(--jd-padding-default) var(--jd-padding-default) calc(var(--jd-padding-default) / 4);
+  color: var(--jd-color-label);
+  font-size: var(--jd-font-size-small);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.jodit-ui-font-picker__item {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: 0 0;
+  box-shadow: none;
+  font-style: normal;
+  outline: 0;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  user-select: none;
+  cursor: pointer;
+  font-family: var(--jd-font-default);
+  font-size: var(--jd-font-size-default);
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  min-height: var(--jd-button-size);
+  padding: 0 var(--jd-padding-default);
+  margin: var(--jd-margin-v) 0;
+  border-radius: var(--jd-border-radius-default);
+  color: var(--jd-color-text);
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.jodit-ui-font-picker__item:hover:not([disabled]),
+.jodit-ui-font-picker__item:focus-visible:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  opacity: 1;
+  outline: 0;
+}
+.jodit-ui-font-picker__item:active:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
+.jodit-ui-font-picker__item[aria-pressed='true']:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity40);
+  outline: 0;
+}
+.jodit-ui-font-picker__item[aria-pressed='true']:hover:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover-opacity60);
+}
+.jodit-ui-font-picker__item[disabled] {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.jodit-ui-font-picker__item:focus:not([disabled]) {
+  background-color: var(--jd-color-button-background-hover);
+  outline: 0;
 }
 
 /*!
@@ -4004,6 +4203,12 @@ html.jodit_fullsize-box_true {
  * Released under MIT see LICENSE.txt in the project root for license information.
  * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */
+.jodit-ui-image-position-tab__lockMargin,
+.jodit-ui-image-properties-form__lockMargin,
+.jodit-ui-image-position-tab__lockSize,
+.jodit-ui-image-properties-form__lockSize {
+  color: inherit;
+}
 .jodit-ui-image-position-tab__lockMargin > svg,
 .jodit-ui-image-properties-form__lockMargin > svg,
 .jodit-ui-image-position-tab__lockSize > svg,
@@ -4111,6 +4316,91 @@ html.jodit_fullsize-box_true {
   min-width: 700px;
 }
 
+.jodit-link-anchors {
+  max-width: 360px;
+  max-height: min(260px, 40vh);
+  box-sizing: border-box;
+  padding-bottom: calc(var(--jd-padding-default) / 2);
+  overflow-y: auto;
+}
+.jodit-link-anchors__toggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  padding: 0 var(--jd-padding-default);
+  border: 0;
+  background: none;
+  color: var(--jd-color-icon);
+  cursor: pointer;
+}
+.jodit-link-anchors__toggle:hover,
+.jodit-link-anchors__toggle[aria-expanded='true'] {
+  background-color: var(--jd-color-background-button-hover);
+}
+.jodit-link-anchors__toggle svg {
+  width: 10px;
+  height: 10px;
+}
+.jodit-link-anchors__heading {
+  padding: var(--jd-padding-default) var(--jd-padding-default) calc(var(--jd-padding-default) / 4);
+  color: var(--jd-color-label);
+  font-size: var(--jd-font-size-small);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.jodit-link-anchors__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: calc(var(--jd-padding-default) / 2) var(--jd-padding-default);
+  border: 0;
+  background: none;
+  color: var(--jd-color-default);
+  cursor: pointer;
+  font: inherit;
+  gap: var(--jd-padding-default);
+  text-align: left;
+}
+.jodit-link-anchors__item:hover,
+.jodit-link-anchors__item:focus-visible {
+  background-color: var(--jd-color-background-button-hover);
+}
+.jodit-link-anchors__item[aria-current='true'] {
+  font-weight: bold;
+}
+.jodit-link-anchors__item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--jd-color-icon);
+}
+.jodit-link-anchors__text,
+.jodit-link-anchors__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.jodit-link-anchors__text {
+  flex: 1;
+}
+.jodit-link-anchors__name {
+  max-width: 35%;
+  flex-shrink: 0;
+  color: var(--jd-color-placeholder);
+  font-size: var(--jd-font-size-small);
+}
+
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */
+.jodit-popup .jodit-toolbar-button_start {
+  border-top: 1px solid var(--jd-color-separator);
+  margin-top: calc(var(--jd-padding-default) / 2);
+}
+
 .jodit-table-resizer {
   position: absolute;
   z-index: 3;
@@ -4133,35 +4423,21 @@ html.jodit_fullsize-box_true {
 .jodit-table-resizer_moved::after {
   border-right: 1px solid var(--jd-color-border) moved;
 }
+.jodit-table-resizer_row {
+  padding: calc(var(--jd-padding-default) / 2) 0;
+  margin: calc(var(--jd-padding-default) / -2) 0 0;
+  cursor: row-resize;
+}
+.jodit-table-resizer_row::after {
+  width: 100%;
+  height: 0;
+}
 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
  * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */
-[data-jodit_iframe_wrapper] {
-  position: relative;
-  display: block;
-  user-select: none;
-}
-[data-jodit_iframe_wrapper] iframe {
-  position: relative;
-}
-[data-jodit_iframe_wrapper]::after {
-  position: absolute;
-  z-index: 1;
-  display: block;
-  background: rgba(0, 0, 0, 0);
-  content: '';
-  cursor: pointer;
-  inset: 0;
-}
-[data-jodit_iframe_wrapper][data-jodit-wrapper_active='true'] iframe {
-  z-index: 2;
-}
-.jodit_lock [data-jodit-wrapper_active='true'] iframe {
-  z-index: 1;
-}
 :root {
   --jd-viewer-width: 70px;
   --jd-viewer-height: 24px;
@@ -4169,6 +4445,12 @@ html.jodit_fullsize-box_true {
   --jd-resizer-border-color: #98c1f1;
   --jd-resizer-handle-color: #5ba4f3;
   --jd-resizer-handle-hover-color: #537ebb;
+}
+.jodit-resizer-layer {
+  position: absolute;
+  overflow: hidden;
+  inset: 0;
+  pointer-events: none;
 }
 .jodit-resizer {
   position: absolute;
@@ -4306,11 +4588,11 @@ html.jodit_fullsize-box_true {
  * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-symbols {
-  width: 460px;
   padding: var(--jd-padding-default);
 }
 .jodit-symbols__container {
   display: flex;
+  width: calc((460px - 2 * var(--jd-padding-default)) * var(--jd-symbols-columns, 17) / 17);
 }
 .jodit-symbols__container_table {
   width: 88%;
@@ -4341,6 +4623,7 @@ html.jodit_fullsize-box_true {
   color: var(--jd-color-text);
   cursor: pointer;
   font-size: 16px;
+  font-weight: normal;
   line-height: calc(var(--jd-height-element-default) * 1.2);
   text-align: center;
   text-decoration: none;
@@ -4661,6 +4944,14 @@ html.jodit_fullsize-box_true {
   border-color: #66afe9;
   outline: 0;
 }
+.jodit .jodit-select {
+  padding-right: calc(var(--jd-padding-default) * 3);
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%09%3Cg%20fill%3D%22none%22%3E%0A%09%09%3Cpath%20d%3D%22m9%209%203-3%203%203m-6%206%203%203%203-3%22%2F%3E%0A%09%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A");
+  background-position: right calc(var(--jd-padding-default) / 2) center;
+  background-repeat: no-repeat;
+  background-size: var(--jd-icon-middle-size) var(--jd-icon-middle-size);
+  text-overflow: ellipsis;
+}
 .jodit-checkbox {
   position: relative;
   z-index: 2;
@@ -4671,12 +4962,6 @@ html.jodit_fullsize-box_true {
   margin: 0 calc(var(--jd-padding-default) / 2) 0 0;
   cursor: pointer;
   outline: none;
-}
-.jodit-select {
-  padding-right: calc(var(--jd-padding-default) * 2);
-  background-image: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%204.95%2010%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23fff%3B%7D.cls-2%7Bfill%3A%23444%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Earrows%3C%2Ftitle%3E%3Crect%20class%3D%22cls-1%22%20width%3D%224.95%22%20height%3D%2210%22%2F%3E%3Cpolygon%20class%3D%22cls-2%22%20points%3D%221.41%204.67%202.48%203.18%203.54%204.67%201.41%204.67%22%2F%3E%3Cpolygon%20class%3D%22cls-2%22%20points%3D%223.54%205.33%202.48%206.82%201.41%205.33%203.54%205.33%22%2F%3E%3C%2Fsvg%3E");
-  background-position: 98% 50%;
-  background-repeat: no-repeat;
 }
 .jodit-textarea {
   min-width: var(--jd-width-input-min);
@@ -4705,6 +4990,7 @@ html.jodit_fullsize-box_true {
   background-color: var(--jd-color-background-gray);
   color: var(--jd-color-default);
   cursor: pointer;
+  font-weight: normal;
   line-height: 1;
   text-decoration: none;
   user-select: none;
@@ -5106,6 +5392,13 @@ svg.jodit-icon {
   background: 0 0;
   float: none;
   outline: 0;
+  color: var(--jd-color-text);
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: normal;
+  text-align: start;
+  text-transform: none;
 }
 .jodit {
   --jd-slot-top-height: auto;
@@ -5354,6 +5647,7 @@ svg.jodit-icon {
 .jodit_theme_dark .jodit-wysiwyg_iframe,
 .jodit-dialog_theme_dark .jodit-wysiwyg,
 .jodit_theme_dark .jodit-wysiwyg {
+  --jd-color-icon: var(--jd-dark-icon-color);
   background-color: var(--jd-dark-background-color);
   color: var(--jd-dark-text-color);
 }
