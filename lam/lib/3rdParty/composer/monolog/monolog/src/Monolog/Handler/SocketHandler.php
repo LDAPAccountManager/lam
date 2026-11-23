@@ -45,6 +45,8 @@ class SocketHandler extends AbstractProcessingHandler
      * @param int|null   $chunkSize         Sets the chunk size. Only has effect during connection in the writing cycle
      *
      * @throws \InvalidArgumentException If an invalid timeout value (less than 0) is passed.
+     *
+     * @psalm-taint-sink ssrf $connectionString
      */
     public function __construct(
         string $connectionString,
@@ -385,18 +387,23 @@ class SocketHandler extends AbstractProcessingHandler
         $length = \strlen($data);
         $sent = 0;
         $this->lastSentBytes = $sent;
+        $this->lastWritingAt = microtime(true);
         while ($this->isConnected() && $sent < $length) {
             if (0 === $sent) {
                 $chunk = $this->fwrite($data);
             } else {
                 $chunk = $this->fwrite(substr($data, $sent));
             }
+            // PHP leaves the stream's timed_out flag set after a write times out,
+            // so a failed socket is closed and the next write reconnects
             if ($chunk === false) {
+                $this->closeSocket();
                 throw new \RuntimeException("Could not write to socket");
             }
             $sent += $chunk;
             $socketInfo = $this->streamGetMetadata();
             if (\is_array($socketInfo) && (bool) $socketInfo['timed_out']) {
+                $this->closeSocket();
                 throw new \RuntimeException("Write timed-out");
             }
 

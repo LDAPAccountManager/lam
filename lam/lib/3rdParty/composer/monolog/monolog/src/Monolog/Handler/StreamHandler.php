@@ -47,6 +47,8 @@ class StreamHandler extends AbstractProcessingHandler
      * @param string          $fileOpenMode   The fopen() mode used when opening a file, if $stream is a file path
      *
      * @throws \InvalidArgumentException If stream is not a resource or string
+     *
+     * @psalm-taint-sink file $stream
      */
     public function __construct($stream, int|string|Level $level = Level::Debug, bool $bubble = true, ?int $filePermission = null, bool $useLocking = false, string $fileOpenMode = 'a')
     {
@@ -151,7 +153,7 @@ class StreamHandler extends AbstractProcessingHandler
             // forwarding to $this->customErrorHandler using a closure to make the
             // private method accessible, see https://github.com/Seldaek/monolog/issues/1866
             set_error_handler(function (int $code, string $msg) {
-                return $this->customErrorHandler($code, $msg);
+                return $this->customErrorHandler($msg);
             });
 
             try {
@@ -182,7 +184,7 @@ class StreamHandler extends AbstractProcessingHandler
         // forwarding to $this->customErrorHandler using a closure to make the
         // private method accessible, see https://github.com/Seldaek/monolog/issues/1866
         set_error_handler(function (int $code, string $msg) {
-            return $this->customErrorHandler($code, $msg);
+            return $this->customErrorHandler($msg);
         });
         try {
             $this->streamWrite($stream, $record);
@@ -240,7 +242,7 @@ class StreamHandler extends AbstractProcessingHandler
     /**
      * @return true
      */
-    private function customErrorHandler(int $code, string $msg): bool
+    private function customErrorHandler(string $msg): bool
     {
         $this->errorMessage = preg_replace('{^(fopen|mkdir|fwrite)\(.*?\): }', '', $msg);
 
@@ -274,7 +276,7 @@ class StreamHandler extends AbstractProcessingHandler
             // forwarding to $this->customErrorHandler using a closure to make the
             // private method accessible, see https://github.com/Seldaek/monolog/issues/1866
             set_error_handler(function (int $code, string $msg) {
-                return $this->customErrorHandler($code, $msg);
+                return $this->customErrorHandler($msg);
             });
             $status = mkdir($dir, 0777, true);
             restore_error_handler();

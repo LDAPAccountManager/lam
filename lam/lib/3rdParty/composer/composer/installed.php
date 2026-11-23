@@ -209,9 +209,9 @@
             'dev_requirement' => false,
         ),
         'monolog/monolog' => array(
-            'pretty_version' => '3.12.0',
-            'version' => '3.12.0.0',
-            'reference' => '72c534fc0ab181ef52d92a68382318631e301608',
+            'pretty_version' => '3.13.0',
+            'version' => '3.13.0.0',
+            'reference' => '1f5f55bb4a9a230ff6d8a4ceccea31d10b0142ac',
             'type' => 'library',
             'install_path' => __DIR__ . '/../monolog/monolog',
             'aliases' => array(),
