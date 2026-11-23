@@ -14,27 +14,8 @@
   --wb-header-color: #dedede;
   --wb-background-color: #ffffff;
   --wb-alternate-row-color: #f7f7f7;
-  --wb-alternate-row-color-hover: #f3f3f3;
   --wb-focus-border-color: #275dc5;
-  --wb-drop-source-color: rgb(211.3703703704, 209.6481481481, 205.6296296296);
-  --wb-drop-target-color: rgb(212.2834645669, 236.2992125984, 247.7165354331);
-  --wb-dim-color: rgb(139.5925925926, 135.037037037, 124.4074074074);
-  --wb-error-background-color: rgb(244.6292372881, 220.8707627119, 221.625);
-  --wb-hover-color: rgb(247.1401574803, 251.5590551181, 253.6598425197);
-  --wb-hover-border-color: rgb(247.1401574803, 251.5590551181, 253.6598425197);
   --wb-grid-color: #dedede;
-  --wb-active-color: #e5f3fb;
-  --wb-active-cell-color: rgb(125.1417322835, 198.1496062992, 232.8582677165);
-  --wb-active-border-color: #70c0e7;
-  --wb-active-hover-color: #dceff8;
-  --wb-active-hover-border-color: #26a0da;
-  --wb-active-column-color: rgb(247.1401574803, 251.5590551181, 253.6598425197);
-  --wb-active-header-column-color: rgb(196.5, 196.5, 196.5);
-  --wb-active-color-grayscale: #f0f0f0;
-  --wb-active-border-color-grayscale: rgb(171.5, 171.5, 171.5);
-  --wb-active-hover-color-grayscale: #eaeaea;
-  --wb-active-cell-color-grayscale: #b3b3b3;
-  --wb-grid-color-grayscale: #dedede;
   --wb-filter-dim-color: #dedede;
   --wb-filter-submatch-color: #868581;
   --wb-row-outer-height: 22px;
@@ -50,6 +31,29 @@
   --wb-header-height: 22px;
 }
 
+@supports not (color: color-mix(in srgb, red, red)) {
+  :root,
+  :host {
+    --wb-alternate-row-color-hover: #f3f3f3;
+    --wb-drop-source-color: rgb(211.3703703704, 209.6481481481, 205.6296296296);
+    --wb-drop-target-color: rgb(212.2834645669, 236.2992125984, 247.7165354331);
+    --wb-dim-color: rgb(139.5925925926, 135.037037037, 124.4074074074);
+    --wb-error-background-color: rgb(244.6292372881, 220.8707627119, 221.625);
+    --wb-hover-color: rgb(247.1401574803, 251.5590551181, 253.6598425197);
+    --wb-active-color: #e5f3fb;
+    --wb-active-cell-color: rgb(125.1417322835, 198.1496062992, 232.8582677165);
+    --wb-active-border-color: #70c0e7;
+    --wb-active-hover-color: #dceff8;
+    --wb-active-hover-border-color: #26a0da;
+    --wb-active-column-color: rgb(247.1401574803, 251.5590551181, 253.6598425197);
+    --wb-active-header-column-color: rgb(196.5, 196.5, 196.5);
+    --wb-active-color-grayscale: #f0f0f0;
+    --wb-active-border-color-grayscale: rgb(171.5, 171.5, 171.5);
+    --wb-active-hover-color-grayscale: #eaeaea;
+    --wb-active-cell-color-grayscale: #b3b3b3;
+    --wb-grid-color-grayscale: #dedede;
+  }
+}
 div.wunderbaum * {
   box-sizing: border-box;
 }
@@ -114,53 +118,53 @@ div.wunderbaum.wb-fixed-col div.wb-header span.wb-col:first-of-type {
   background-color: var(--wb-header-color);
 }
 div.wunderbaum.wb-fixed-col div.wb-node-list div.wb-row.wb-active span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col div.wb-node-list div.wb-row.wb-selected span.wb-col:first-of-type {
-  background-color: var(--wb-active-color);
+  background-color: var(--wb-active-color, color-mix(in srgb, var(--wb-bg-highlight-color) 12%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-fixed-col div.wb-node-list div.wb-row.wb-active:hover span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col div.wb-node-list div.wb-row.wb-selected:hover span.wb-col:first-of-type {
-  background-color: var(--wb-active-hover-color);
+  background-color: var(--wb-active-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 16%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-fixed-col div.wb-node-list div.wb-row:hover span.wb-col:first-of-type {
-  background-color: var(--wb-hover-color);
+  background-color: var(--wb-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 4%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-fixed-col:not(:focus-within) div.wb-node-list div.wb-row.wb-active span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus-within) div.wb-node-list div.wb-row.wb-selected span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus) div.wb-node-list div.wb-row.wb-active span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus) div.wb-node-list div.wb-row.wb-selected span.wb-col:first-of-type {
-  background-color: var(--wb-active-color-grayscale);
-  border-color: var(--wb-active-border-color-grayscale);
+  background-color: var(--wb-active-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 9%, var(--wb-background-color)));
+  border-color: var(--wb-active-border-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 48%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-fixed-col:not(:focus-within) div.wb-node-list div.wb-row.wb-active span.wb-col:first-of-type:hover span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus-within) div.wb-node-list div.wb-row.wb-selected span.wb-col:first-of-type:hover span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus) div.wb-node-list div.wb-row.wb-active span.wb-col:first-of-type:hover span.wb-col:first-of-type, div.wunderbaum.wb-fixed-col:not(:focus) div.wb-node-list div.wb-row.wb-selected span.wb-col:first-of-type:hover span.wb-col:first-of-type {
-  background-color: var(--wb-active-hover-color-grayscale);
+  background-color: var(--wb-active-hover-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 12%, var(--wb-background-color)));
 }
 div.wunderbaum:not(:focus-within) div.wb-node-list div.wb-row.wb-active, div.wunderbaum:not(:focus-within) div.wb-node-list div.wb-row.wb-selected, div.wunderbaum:not(:focus) div.wb-node-list div.wb-row.wb-active, div.wunderbaum:not(:focus) div.wb-node-list div.wb-row.wb-selected {
-  background-color: var(--wb-active-color-grayscale);
-  border-color: var(--wb-active-border-color-grayscale);
+  background-color: var(--wb-active-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 9%, var(--wb-background-color)));
+  border-color: var(--wb-active-border-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 48%, var(--wb-background-color)));
 }
 div.wunderbaum:not(:focus-within) div.wb-node-list div.wb-row.wb-active:hover, div.wunderbaum:not(:focus-within) div.wb-node-list div.wb-row.wb-selected:hover, div.wunderbaum:not(:focus) div.wb-node-list div.wb-row.wb-active:hover, div.wunderbaum:not(:focus) div.wb-node-list div.wb-row.wb-selected:hover {
-  background-color: var(--wb-active-hover-color-grayscale);
+  background-color: var(--wb-active-hover-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 12%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-alternate div.wb-node-list div.wb-row:nth-of-type(even):not(.wb-active):not(.wb-selected) {
   background-color: var(--wb-alternate-row-color);
 }
 div.wunderbaum.wb-alternate div.wb-node-list div.wb-row:nth-of-type(even):not(.wb-active):not(.wb-selected):hover {
-  background-color: var(--wb-alternate-row-color-hover);
+  background-color: var(--wb-alternate-row-color-hover, color-mix(in srgb, var(--wb-node-text-color) 3%, var(--wb-alternate-row-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row:hover {
-  background-color: var(--wb-hover-color);
+  background-color: var(--wb-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 4%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-active, div.wunderbaum div.wb-node-list div.wb-row.wb-selected {
-  background-color: var(--wb-active-color);
+  background-color: var(--wb-active-color, color-mix(in srgb, var(--wb-bg-highlight-color) 12%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-active:hover, div.wunderbaum div.wb-node-list div.wb-row.wb-selected:hover {
-  background-color: var(--wb-active-hover-color);
+  background-color: var(--wb-active-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 16%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-focus:not(.wb-active) {
   border-style: dotted;
-  border-color: var(--wb-active-border-color);
+  border-color: var(--wb-active-border-color, color-mix(in srgb, var(--wb-bg-highlight-color) 66%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-active {
   border-style: solid;
-  border-color: var(--wb-active-border-color);
+  border-color: var(--wb-active-border-color, color-mix(in srgb, var(--wb-bg-highlight-color) 66%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-active:hover {
-  border-color: var(--wb-active-hover-border-color);
+  border-color: var(--wb-active-hover-border-color, var(--wb-bg-highlight-color));
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-loading {
   font-style: italic;
@@ -174,6 +178,11 @@ div.wunderbaum div.wb-node-list div.wb-row .wb-col.wb-busy {
 }
 div.wunderbaum div.wb-node-list div.wb-row.wb-error, div.wunderbaum div.wb-node-list div.wb-row.wb-status-error {
   color: var(--wb-error-color);
+}
+div.wunderbaum div.wb-node-list div.wb-row.wb-status-paging span.wb-title {
+  cursor: pointer;
+  color: var(--wb-focus-border-color);
+  text-decoration: underline;
 }
 div.wunderbaum div.wb-header {
   position: sticky;
@@ -278,19 +287,19 @@ div.wunderbaum {
   /* --- GRID --- */
 }
 div.wunderbaum.wb-grid div.wb-header div.wb-row span.wb-col:hover {
-  background-color: var(--wb-active-header-column-color);
+  background-color: var(--wb-active-header-column-color, color-mix(in srgb, var(--wb-node-text-color) 18%, var(--wb-header-color)));
 }
 div.wunderbaum.wb-grid.wb-cell-mode div.wb-header div.wb-row span.wb-col.wb-active {
-  background-color: var(--wb-active-hover-color);
+  background-color: var(--wb-active-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 16%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row {
   border-bottom-color: var(--wb-grid-color);
 }
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row:hover:not(.wb-active):not(.wb-selected) {
-  background-color: var(--wb-hover-color);
+  background-color: var(--wb-hover-color, color-mix(in srgb, var(--wb-bg-highlight-color) 4%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row.wb-active {
-  border-bottom-color: var(--wb-active-border-color);
+  border-bottom-color: var(--wb-active-border-color, color-mix(in srgb, var(--wb-bg-highlight-color) 66%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row span.wb-col {
   border-right: 1px solid var(--wb-grid-color);
@@ -317,28 +326,28 @@ div.wunderbaum.wb-grid div.wb-node-list div.wb-row span.wb-col > select {
 }
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row span.wb-col > input:focus,
 div.wunderbaum.wb-grid div.wb-node-list div.wb-row span.wb-col > select:focus {
-  border: 1px dashed #70c0e7;
+  border: 1px dashed var(--wb-active-border-color, color-mix(in srgb, var(--wb-bg-highlight-color) 66%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid.wb-cell-mode div.wb-row:not(.wb-colspan).wb-active span.wb-col.wb-active {
-  background-color: var(--wb-active-cell-color-grayscale);
+  background-color: var(--wb-active-cell-color-grayscale, color-mix(in srgb, var(--wb-node-text-color) 44%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid.wb-cell-mode:focus-within div.wb-row:not(.wb-colspan):not(.wb-selected) span.wb-col.wb-active, div.wunderbaum.wb-grid.wb-cell-mode:focus div.wb-row:not(.wb-colspan):not(.wb-selected) span.wb-col.wb-active {
-  background-color: var(--wb-active-column-color);
+  background-color: var(--wb-active-column-color, color-mix(in srgb, var(--wb-bg-highlight-color) 4%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid.wb-cell-mode:focus-within div.wb-row:not(.wb-colspan):not(.wb-selected).wb-active, div.wunderbaum.wb-grid.wb-cell-mode:focus div.wb-row:not(.wb-colspan):not(.wb-selected).wb-active {
-  background-color: var(--wb-active-column-color);
+  background-color: var(--wb-active-column-color, color-mix(in srgb, var(--wb-bg-highlight-color) 4%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid.wb-cell-mode:focus-within div.wb-row:not(.wb-colspan):not(.wb-selected).wb-active span.wb-col.wb-active, div.wunderbaum.wb-grid.wb-cell-mode:focus div.wb-row:not(.wb-colspan):not(.wb-selected).wb-active span.wb-col.wb-active {
-  background-color: var(--wb-active-cell-color);
+  background-color: var(--wb-active-cell-color, color-mix(in srgb, var(--wb-bg-highlight-color) 60%, var(--wb-background-color)));
 }
 div.wunderbaum.wb-grid.wb-alternate div.wb-node-list div.wb-row:nth-of-type(even):not(.wb-active):not(.wb-selected) {
   background-color: var(--wb-alternate-row-color);
 }
 div.wunderbaum.wb-grid.wb-alternate div.wb-node-list div.wb-row:nth-of-type(even):not(.wb-active):not(.wb-selected):hover {
-  background-color: var(--wb-alternate-row-color-hover);
+  background-color: var(--wb-alternate-row-color-hover, color-mix(in srgb, var(--wb-node-text-color) 3%, var(--wb-alternate-row-color)));
 }
 div.wunderbaum.wb-grid:not(:focus-within) div.wb-node-list div.wb-row, div.wunderbaum.wb-grid:not(:focus) div.wb-node-list div.wb-row {
-  border-bottom-color: var(--wb-grid-color-grayscale);
+  border-bottom-color: var(--wb-grid-color-grayscale, var(--wb-grid-color));
 }
 div.wunderbaum {
   /* --- FILTER --- */
@@ -362,13 +371,13 @@ div.wunderbaum div.wb-row.wb-drag-source {
   opacity: 0.5;
 }
 div.wunderbaum div.wb-row.wb-drag-source .wb-node {
-  background-color: var(--wb-drop-source-color);
+  background-color: var(--wb-drop-source-color, color-mix(in srgb, var(--wb-node-text-color) 26%, var(--wb-background-color)));
 }
 div.wunderbaum div.wb-row.wb-drop-target {
   overflow: visible;
 }
 div.wunderbaum div.wb-row.wb-drop-target .wb-node {
-  background-color: var(--wb-drop-target-color);
+  background-color: var(--wb-drop-target-color, color-mix(in srgb, var(--wb-bg-highlight-color) 20%, var(--wb-background-color)));
   overflow: visible;
 }
 div.wunderbaum div.wb-row.wb-drop-target .wb-node .wb-icon {
@@ -458,7 +467,7 @@ a.wb-breadcrumb {
 }
 
 .wb-helper-disabled {
-  color: var(--wb-dim-color);
+  color: var(--wb-dim-color, color-mix(in srgb, var(--wb-node-text-color) 70%, var(--wb-background-color)));
 }
 
 .wb-helper-hidden {
@@ -534,12 +543,12 @@ i.wb-icon > span.wb-badge {
  *   indeterminate -> checked -> unchecked -> indeterminate ...
  */
 .wb-col input[type=checkbox]:indeterminate {
-  color: var(--wb-dim-color);
+  color: var(--wb-dim-color, color-mix(in srgb, var(--wb-node-text-color) 70%, var(--wb-background-color)));
   background-color: red;
 }
 
 .wb-col input:invalid {
-  background-color: var(--wb-error-background-color);
+  background-color: var(--wb-error-background-color, color-mix(in srgb, var(--wb-error-color) 17%, var(--wb-background-color)));
 }
 
 .wb-col.wb-invalid {

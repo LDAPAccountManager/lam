@@ -1000,6 +1000,7 @@ div.confModList {
 
 div.tree-view--tree {
 	overflow: auto;
+    background-color: transparent !important;
 }
 
 div.tree-view--actionarea {

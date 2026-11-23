@@ -7,7 +7,7 @@
     /*!
      * Wunderbaum - debounce.ts
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /*
      * debounce & throttle, taken from https://github.com/lodash/lodash v4.17.21
@@ -299,7 +299,7 @@
     /*!
      * Wunderbaum - util
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /** @module util */
     /** Readable names for `MouseEvent.button` */
@@ -1201,7 +1201,7 @@
     /*!
      * Wunderbaum - types
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Possible values for {@link WunderbaumNode.update} and {@link Wunderbaum.update}.
@@ -1269,7 +1269,7 @@
     /*!
      * Wunderbaum - wb_extension_base
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     class WunderbaumExtension {
         constructor(tree, id, defaults) {
@@ -1328,7 +1328,7 @@
     /*!
      * Wunderbaum - ext-filter
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     const START_MARKER = "\uFFF7";
     const END_MARKER = "\uFFF8";
@@ -1723,7 +1723,7 @@
     /*!
      * Wunderbaum - ext-keynav
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     const QUICKSEARCH_DELAY = 500;
     class KeynavExtension extends WunderbaumExtension {
@@ -1798,6 +1798,13 @@
                 }
             }
             const isColspan = node.isColspan();
+            // Paging nodes ("More..."): Enter and Space load the next page (row and
+            // cell mode)
+            if (node.isPagingNode() && (eventName === "Enter" || eventName === " ")) {
+                node._clickPaging(event);
+                event.preventDefault();
+                return;
+            }
             if (tree.isRowNav()) {
                 // -----------------------------------------------------------------------
                 // --- Row Mode ---
@@ -1819,9 +1826,15 @@
                     return;
                 }
                 // --- Quick-Search
+                // A space typed quickly continues a running quick-search term ("lab c"),
+                // if a title matches. Otherwise it toggles the selection as usual.
+                const continuesTerm = eventName === " " &&
+                    !!tree.lastQuicksearchTerm &&
+                    Date.now() - tree.lastQuicksearchTime <= QUICKSEARCH_DELAY &&
+                    !!tree.findNextNode(tree.lastQuicksearchTerm + " ", tree.getActiveNode());
                 if (opts.quicksearch &&
                     eventName.length === 1 &&
-                    /^\w$/.test(eventName) &&
+                    (/^\w$/.test(eventName) || continuesTerm) &&
                     !curInput) {
                     // Allow to search for longer streaks if typed in quickly
                     const stamp = Date.now();
@@ -1832,6 +1845,8 @@
                     tree.lastQuicksearchTerm += eventName;
                     const matchNode = tree.findNextNode(tree.lastQuicksearchTerm, tree.getActiveNode());
                     if (matchNode) {
+                        // Move the focus node too, like keyboard navigation does
+                        matchNode.setFocus();
                         matchNode.setActive(true, { event: event });
                     }
                     event.preventDefault();
@@ -1878,9 +1893,6 @@
                         node.setExpanded(false);
                         break;
                     case " ": // Space
-                        // if (node.isPagingNode()) {
-                        //   tree._triggerNodeEvent("clickPaging", ctx, event);
-                        // } else
                         if (node.getOption("checkbox")) {
                             node.toggleSelected();
                         }
@@ -1896,8 +1908,6 @@
                     case "ArrowRight":
                     case "ArrowUp":
                     case "Backspace":
-                    case "End":
-                    case "Home":
                     case "Control+End":
                     case "Control+Home":
                     case "Meta+ArrowDown":
@@ -1905,6 +1915,16 @@
                     case "PageDown":
                     case "PageUp":
                         node.navigate(eventName, { activate: activate, event: event });
+                        break;
+                    case "End":
+                    case "Home":
+                        // Row mode has no current column, so Home/End move to the first/last
+                        // visible row (WAI-ARIA tree grid pattern, row focus). In cell mode
+                        // they keep moving to the first/last column.
+                        node.navigate(eventName === "Home" ? "first" : "last", {
+                            activate: activate,
+                            event: event,
+                        });
                         break;
                     default:
                         handled = false;
@@ -2087,7 +2107,7 @@
     /*!
      * Wunderbaum - ext-logger
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     class LoggerExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -2129,7 +2149,7 @@
     /*!
      * Wunderbaum - ext-dnd
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     const nodeMimeType = "application/x-wunderbaum-node";
     class DndExtension extends WunderbaumExtension {
@@ -2580,7 +2600,7 @@
     /*!
      * Wunderbaum - drag_observer
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Convert mouse- and touch events to 'dragstart', 'drag', and 'dragstop'.
@@ -2729,7 +2749,7 @@
     /*!
      * Wunderbaum - common
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     const DEFAULT_DEBUGLEVEL = 3; // Replaced by rollup script
     /**
@@ -3093,7 +3113,7 @@
     /*!
      * Wunderbaum - ext-grid
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     class GridExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -3184,7 +3204,7 @@
     /*!
      * Wunderbaum - deferred
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Implement a ES6 Promise, that exposes a resolve() and reject() method.
@@ -3237,7 +3257,7 @@
     /*!
      * Wunderbaum - wunderbaum_node
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     /** WunderbaumNode properties that can be passed with source data.
      * (Any other source properties will be stored as `node.data.PROP`.)
@@ -3419,6 +3439,69 @@
                 node: this,
                 typeInfo: this.type ? this.tree.types[this.type] : {},
             }, extra));
+        }
+        /**
+         * Append a 'paging' status node ("More...") after the loaded children,
+         * replacing an existing one.
+         *
+         * Clicking it, or pressing Enter or Space on it, fires the `clickPaging`
+         * event. The handler typically fetches the next page, removes the paging
+         * node, calls `addChildren()` and adds a new paging node if more items
+         * remain:
+         * ```js
+         * clickPaging: async (e) => {
+         *   const parent = e.node.parent;
+         *   const page = await fetchPage(parent.key, parent.children.length - 1);
+         *   e.node.remove();
+         *   parent.addChildren(page.items);
+         *   if (page.more) {
+         *     parent.addPagingNode();
+         *   }
+         * },
+         * ```
+         * If the handler returns a promise (e.g. an `async` function), the paging
+         * node shows its loading state and ignores further clicks until it settles.
+         * Paging nodes are status nodes, so they are not registered by key, and
+         * `sort()` keeps them at the end.
+         *
+         * @param node title string or node data (`statusNodeType` is forced to 'paging')
+         * @returns the new paging node
+         */
+        addPagingNode(node, options) {
+            var _a, _b, _c, _d;
+            const given = typeof node === "string" ? { title: node } : { ...(node !== null && node !== void 0 ? node : {}) };
+            const data = {
+                ...given,
+                title: (_b = (_a = given.title) !== null && _a !== void 0 ? _a : this.tree.options.strings.moreItems) !== null && _b !== void 0 ? _b : "More...",
+                checkbox: false,
+                colspan: (_c = given.colspan) !== null && _c !== void 0 ? _c : true,
+                statusNodeType: NodeStatusType.paging,
+            };
+            (_d = this.children) === null || _d === void 0 ? void 0 : _d.filter((n) => n.statusNodeType === NodeStatusType.paging).forEach((n) => n.remove());
+            return this.addChildren(data, options);
+        }
+        /**
+         * Fire the `clickPaging` event for a paging node (click, Enter, or Space).
+         * If the handler returns a promise, the node shows its loading state and
+         * ignores further clicks until the promise settles.
+         * @internal
+         */
+        _clickPaging(event) {
+            if (this._isLoading) {
+                return;
+            }
+            const res = this._callEvent("clickPaging", { event: event });
+            if (res instanceof Promise) {
+                this._isLoading = true;
+                this.update(ChangeType.status);
+                res.finally(() => {
+                    this._isLoading = false;
+                    if (this.tree) {
+                        // (the handler may have removed this node)
+                        this.update(ChangeType.status);
+                    }
+                });
+            }
         }
         /**
          * Append (or insert) a list of child nodes.
@@ -4508,6 +4591,15 @@
         remove() {
             const tree = this.tree;
             const pos = this.parent.children.indexOf(this);
+            // Like removeChildren(): don't keep a reference to a removed node (e.g. a
+            // paging node that was clicked and is replaced by the next page)
+            const isRemoved = (n) => !!n && (n === this || n.isDescendantOf(this));
+            if (isRemoved(tree.activeNode)) {
+                tree._setActiveNode(null);
+            }
+            if (isRemoved(tree.focusNode)) {
+                tree._setFocusNode(null);
+            }
             this.triggerModify("remove");
             this.parent.children.splice(pos, 1);
             this.visit((n) => {
@@ -4552,6 +4644,12 @@
         /** Remove all HTML markup from the DOM. */
         removeMarkup() {
             if (this._rowElem) {
+                // Don't leave `aria-activedescendant` pointing to a removed row.
+                // (`this.tree` may already be reset, see `_unregisterNode()`.)
+                const container = this._rowElem.closest("[aria-activedescendant]");
+                if ((container === null || container === void 0 ? void 0 : container.getAttribute("aria-activedescendant")) === this._rowElem.id) {
+                    container.removeAttribute("aria-activedescendant");
+                }
                 delete this._rowElem._wb_node;
                 this._rowElem.remove();
                 this._rowElem = undefined;
@@ -4617,17 +4715,26 @@
             assert(!this.isRootNode(), "Root node not allowed");
             rowDiv = document.createElement("div");
             rowDiv.classList.add("wb-row");
+            rowDiv.setAttribute("role", "row");
+            // Referenced by the container's `aria-activedescendant` (no whitespace)
+            rowDiv.id = `${tree.id}-row-${encodeURIComponent(this.key)}`;
             rowDiv.style.top = this._rowIdx * rowHeight + "px";
             this._rowElem = rowDiv;
             // Attach a node reference to the DOM Element:
             rowDiv._wb_node = this;
             const nodeElem = document.createElement("span");
             nodeElem.classList.add("wb-node", "wb-col");
+            nodeElem.setAttribute("role", "gridcell");
+            nodeElem.setAttribute("aria-colindex", "1");
+            if (this.isColspan() && columns.length > 1) {
+                nodeElem.setAttribute("aria-colspan", "" + columns.length);
+            }
             rowDiv.appendChild(nodeElem);
             let ofsTitlePx = 0;
             if (checkbox) {
                 checkboxSpan = document.createElement("i");
                 checkboxSpan.classList.add("wb-checkbox");
+                checkboxSpan.setAttribute("aria-hidden", "true");
                 if (checkbox === "radio" || this.parent.radiogroup) {
                     checkboxSpan.classList.add("wb-radio");
                 }
@@ -4637,12 +4744,14 @@
             for (let i = level - 1; i > 0; i--) {
                 elem = document.createElement("i");
                 elem.classList.add("wb-indent");
+                elem.setAttribute("aria-hidden", "true");
                 nodeElem.appendChild(elem);
                 ofsTitlePx += ICON_WIDTH;
             }
             if (!treeOptions.minExpandLevel || level > treeOptions.minExpandLevel) {
                 expanderSpan = document.createElement("i");
                 expanderSpan.classList.add("wb-expander");
+                expanderSpan.setAttribute("aria-hidden", "true");
                 nodeElem.appendChild(expanderSpan);
                 ofsTitlePx += ICON_WIDTH;
             }
@@ -4676,6 +4785,8 @@
                     else {
                         colElem = document.createElement("span");
                         colElem.classList.add("wb-col");
+                        colElem.setAttribute("role", "gridcell");
+                        colElem.setAttribute("aria-colindex", "" + colIdx);
                         rowDiv.appendChild(colElem);
                     }
                     if (colIdx === activeColIdx) {
@@ -4725,7 +4836,9 @@
             // Row markup already exists
             const nodeElem = rowDiv.querySelector("span.wb-node");
             const titleSpan = nodeElem.querySelector("span.wb-title");
-            const scrollTop = tree.element.scrollTop;
+            // Reading scrollTop forces a synchronous layout. Only do it when we need
+            // to restore the position, otherwise rendering N rows costs N layouts.
+            const scrollTop = preventScroll ? tree.element.scrollTop : 0;
             if (this.titleWithHighlight) {
                 titleSpan.innerHTML = this.titleWithHighlight;
             }
@@ -4780,6 +4893,50 @@
             }
         }
         /**
+         * Update the ARIA tree grid state of a rendered row: level, position in the
+         * sibling set, expansion, selection, busy state and virtual row index.
+         * @internal
+         */
+        _render_aria(rowDiv) {
+            const tree = this.tree;
+            const setOrRemove = (name, value) => value == null
+                ? rowDiv.removeAttribute(name)
+                : rowDiv.setAttribute(name, value);
+            rowDiv.setAttribute("aria-level", "" + this.getLevel());
+            rowDiv.setAttribute("aria-rowindex", "" + (this._rowIdx + 1 + tree._ariaHeaderRows));
+            if (this.statusNodeType) {
+                setOrRemove("aria-setsize", null);
+                setOrRemove("aria-posinset", null);
+                setOrRemove("aria-expanded", null);
+                setOrRemove("aria-selected", null);
+            }
+            else {
+                // Compute the sibling positions once per parent and render pass.
+                // Status nodes (loading, paging, ...) are not part of the sibling set.
+                const parent = this.parent;
+                if (parent._ariaSetPass !== tree._ariaRenderPass ||
+                    this._ariaPosInSet == null) {
+                    let size = 0;
+                    for (const n of parent.children) {
+                        n._ariaPosInSet = n.statusNodeType ? undefined : ++size;
+                    }
+                    parent._ariaSetSize = size;
+                    parent._ariaSetPass = tree._ariaRenderPass;
+                }
+                rowDiv.setAttribute("aria-setsize", "" + parent._ariaSetSize);
+                rowDiv.setAttribute("aria-posinset", "" + this._ariaPosInSet);
+                setOrRemove("aria-expanded", this.isExpandable() ? "" + !!this.expanded : null);
+                // Only expose the selection state if nodes can be selected
+                setOrRemove("aria-selected", this.selected || this.getOption("checkbox")
+                    ? "" + !!this.selected
+                    : null);
+            }
+            setOrRemove("aria-busy", this._isLoading ? "true" : null);
+            if (this === tree.focusNode) {
+                tree._updateActiveDescendant();
+            }
+        }
+        /**
          * Update row classes to reflect active, focuses, etc.
          * @see {@link WunderbaumNode._render}
          */
@@ -4812,6 +4969,7 @@
             treeOptions.skeleton ? rowClasses.push("wb-skeleton") : 0;
             // Replace previous classes:
             rowDiv.className = rowClasses.join(" ");
+            this._render_aria(rowDiv);
             // Add classes from `node.classes`
             this.classes ? rowDiv.classList.add(...this.classes) : 0;
             // Add classes from `tree.types[node.type]`
@@ -5177,8 +5335,10 @@
             assert(!!flag, "Blur is not yet implemented");
             const prev = this.tree.focusNode;
             this.tree._setFocusNode(this);
-            prev === null || prev === void 0 ? void 0 : prev.update();
-            this.update();
+            // Only the row classes change, so don't re-render the row content (which
+            // would also discard an embedded title editor).
+            prev === null || prev === void 0 ? void 0 : prev.update(ChangeType.status);
+            this.update(ChangeType.status);
         }
         /** Set a new icon path or class. */
         setIcon(icon) {
@@ -5680,7 +5840,8 @@
                 if (!cl) {
                     return;
                 }
-                cl.sort(cmp);
+                // Paging nodes ("More...") stay at the end
+                cl.sort((a, b) => Number(a.isPagingNode()) - Number(b.isPagingNode()) || cmp(a, b));
                 if (deep) {
                     for (let i = 0, l = cl.length; i < l; i++) {
                         if (cl[i].children) {
@@ -5825,7 +5986,7 @@
     /*!
      * Wunderbaum - ext-edit
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
+     * v0.15.0, Sat, 24 Oct 2026 10:46:09 GMT (https://github.com/mar10/wunderbaum)
      */
     // const START_MARKER = "\uFFF7";
     class EditExtension extends WunderbaumExtension {
@@ -6160,8 +6321,8 @@
      * https://github.com/mar10/wunderbaum
      *
      * Released under the MIT license.
-     * @version v0.14.1
-     * @date Sun, 22 Mar 2026 05:52:05 GMT
+     * @version v0.15.0
+     * @date Sat, 24 Oct 2026 10:46:09 GMT
      */
     // import "./wunderbaum.scss";
     class WbSystemRoot extends WunderbaumNode {
@@ -6206,6 +6367,10 @@
             this.keyMap = new Map();
             this.refKeyMap = new Map();
             this.treeRowCount = 0;
+            /** Number of visible header rows (0 or 1), used for `aria-rowindex`. @internal */
+            this._ariaHeaderRows = 1;
+            /** Incremented for every `_updateRows()` pass (caches ARIA set sizes). @internal */
+            this._ariaRenderPass = 0;
             this._disableUpdateCount = 0;
             this._disableUpdateIgnoreCount = 0;
             this._activeNode = null;
@@ -6286,6 +6451,7 @@
                     queryResult: "Found ${matches} of ${count}",
                     noMatch: "No results",
                     matchIndex: "${match} of ${matches}",
+                    moreItems: "More...",
                 },
             }, options);
             const opts = initOptions;
@@ -6345,6 +6511,17 @@
             if (!this.element.getAttribute("tabindex")) {
                 this.element.tabIndex = 0;
             }
+            // ARIA: expose the control as a tree grid. DOM focus stays on this element
+            // and `aria-activedescendant` points at the focused row (see _setFocusNode).
+            this.element.setAttribute("role", "treegrid");
+            if (opts.checkbox &&
+                opts.checkbox !== "radio" &&
+                (opts.selectMode === "multi" || opts.selectMode === "hier")) {
+                this.element.setAttribute("aria-multiselectable", "true");
+            }
+            else {
+                this.element.removeAttribute("aria-multiselectable");
+            }
             if (opts.rowHeightPx !== DEFAULT_ROW_HEIGHT) {
                 this.element.style.setProperty("--wb-row-outer-height", opts.rowHeightPx + "px");
                 this.element.style.setProperty("--wb-row-inner-height", opts.rowHeightPx - 2 + "px");
@@ -6394,6 +6571,12 @@
                 this.listContainerElement.querySelector("div.wb-node-list");
             this.headerElement =
                 this.element.querySelector("div.wb-header");
+            // ARIA: header row and node list are row groups of the tree grid
+            this.headerElement.setAttribute("role", "rowgroup");
+            const headerRowElem = this.headerElement.querySelector("div.wb-row");
+            headerRowElem === null || headerRowElem === void 0 ? void 0 : headerRowElem.setAttribute("role", "row");
+            headerRowElem === null || headerRowElem === void 0 ? void 0 : headerRowElem.setAttribute("aria-rowindex", "1");
+            this.nodeListElement.setAttribute("role", "rowgroup");
             this.element.classList.toggle("wb-grid", this.columns.length > 1);
             if (this.options.connectTopBreadcrumb) {
                 this.breadcrumb = elemFromSelector(this.options.connectTopBreadcrumb);
@@ -6484,6 +6667,12 @@
                     this.lastClickTime = Date.now();
                     return false;
                 }
+                if (node && node.isPagingNode()) {
+                    node.setFocus();
+                    node._clickPaging(e);
+                    this.lastClickTime = Date.now();
+                    return;
+                }
                 if (node) {
                     if (mouseEvent.ctrlKey) {
                         node.toggleSelected();
@@ -6513,6 +6702,10 @@
                         else {
                             node.setActive(true, { event: e });
                         }
+                        // Keyboard navigation continues from the clicked node (#129).
+                        // `setFocus()` only updates the row status, so a title edit that
+                        // was just started by 'clickActive' is kept (#141).
+                        node.setFocus();
                     }
                 }
                 this.lastClickTime = Date.now();
@@ -7830,6 +8023,23 @@
         /* Set or remove keyboard focus to the tree container. @internal */
         _setFocusNode(node) {
             this._focusNode = node;
+            this._updateActiveDescendant();
+        }
+        /**
+         * Point `aria-activedescendant` at the focused row, if it is rendered.
+         * (Rows outside the viewport are not in the DOM; the attribute is restored
+         * when the row is rendered again.)
+         * @internal
+         */
+        _updateActiveDescendant() {
+            var _a;
+            const rowElem = (_a = this._focusNode) === null || _a === void 0 ? void 0 : _a._rowElem;
+            if (rowElem && rowElem.id) {
+                this.element.setAttribute("aria-activedescendant", rowElem.id);
+            }
+            else {
+                this.element.removeAttribute("aria-activedescendant");
+            }
         }
         /** Return the current selection/expansion/activation status. @experimental */
         getState(options = {}) {
@@ -8202,6 +8412,7 @@
             assert(this.headerElement, "Expected a headerElement");
             const wantHeader = this.hasHeader();
             setElemDisplay(this.headerElement, wantHeader);
+            this._ariaHeaderRows = wantHeader ? 1 : 0;
             if (!wantHeader) {
                 return;
             }
@@ -8215,6 +8426,15 @@
                 const colElem = headerRow.children[i];
                 colElem.style.left = col._ofsPx + "px";
                 colElem.style.width = col._widthPx + "px";
+                colElem.setAttribute("role", "columnheader");
+                colElem.setAttribute("aria-colindex", "" + (i + 1));
+                if (toBool(col.sortable, this.options.columnsSortable, false)) {
+                    colElem.setAttribute("aria-sort", col.sortOrder === "asc"
+                        ? "ascending"
+                        : col.sortOrder === "desc"
+                            ? "descending"
+                            : "none");
+                }
                 // Add classes from `columns` definition to `<div.wb-col>` cells
                 if (typeof col.headerClasses === "string") {
                     col.headerClasses
@@ -8236,7 +8456,7 @@
                 // reverse order
                 if (toBool(col.menu, this.options.columnsMenu, false)) {
                     const iconClass = "wb-col-icon-menu " + iconMap.colMenu;
-                    const icon = `<i data-command=menu class="wb-col-icon ${iconClass}"></i>`;
+                    const icon = `<i data-command=menu class="wb-col-icon ${iconClass}" aria-hidden="true"></i>`;
                     addMarkup += icon;
                 }
                 if (toBool(col.sortable, this.options.columnsSortable, false)) {
@@ -8246,7 +8466,7 @@
                         iconClass +=
                             col.sortOrder === "asc" ? iconMap.colSortAsc : iconMap.colSortDesc;
                     }
-                    const icon = `<i data-command=sort class="wb-col-icon ${iconClass}"></i>`;
+                    const icon = `<i data-command=sort class="wb-col-icon ${iconClass}" aria-hidden="true"></i>`;
                     addMarkup += icon;
                 }
                 if (toBool(col.filterable, this.options.columnsFilterable, false)) {
@@ -8255,17 +8475,18 @@
                     if (col.filterActive) {
                         iconClass += iconMap.colFilterActive;
                     }
-                    const icon = `<i data-command=filter class="wb-col-icon ${iconClass}"></i>`;
+                    const icon = `<i data-command=filter class="wb-col-icon ${iconClass}" aria-hidden="true"></i>`;
                     addMarkup += icon;
                 }
                 // Add resizer to all but the last column
                 if (i < colCount - 1) {
                     if (toBool(col.resizable, this.options.columnsResizable, false)) {
                         addMarkup +=
-                            '<span class="wb-col-resizer wb-col-resizer-active"></span>';
+                            '<span class="wb-col-resizer wb-col-resizer-active" aria-hidden="true"></span>';
                     }
                     else {
-                        addMarkup += '<span class="wb-col-resizer"></span>';
+                        addMarkup +=
+                            '<span class="wb-col-resizer" aria-hidden="true"></span>';
                     }
                 }
                 // Create column header
@@ -8494,6 +8715,7 @@
             // this.log("_updateRows", opts)
             options = Object.assign({ newNodesOnly: false }, options);
             const newNodesOnly = !!options.newNodesOnly;
+            this._ariaRenderPass++;
             const rowHeight = this.options.rowHeightPx;
             const vpHeight = this.element.clientHeight;
             const prefetch = RENDER_MAX_PREFETCH;
@@ -8553,6 +8775,8 @@
                 top += rowHeight;
             });
             this.treeRowCount = idx;
+            // ARIA: rows are virtualized, so announce the full count (incl. header)
+            this.element.setAttribute("aria-rowcount", "" + (idx + this._ariaHeaderRows));
             for (const n of obsoleteNodes) {
                 n._callEvent("discard");
                 n.removeMarkup();
@@ -8875,7 +9099,7 @@
     }
     Wunderbaum.sequence = 0;
     /** Wunderbaum release version number "MAJOR.MINOR.PATCH". */
-    Wunderbaum.version = "v0.14.1"; // Set to semver by 'grunt release'
+    Wunderbaum.version = "v0.15.0"; // Set to semver by 'grunt release'
     /** Expose some useful methods of the util.ts module as `Wunderbaum.util`. */
     Wunderbaum.util = util;
     /** A map of default iconMaps.
