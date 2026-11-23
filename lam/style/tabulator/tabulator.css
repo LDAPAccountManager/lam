@@ -300,7 +300,6 @@
 }
 
 .tabulator .tabulator-header .tabulator-frozen-rows-holder {
-  padding-top: 1em;
   display: inline-block;
 }
 
@@ -368,7 +367,7 @@
 .tabulator .tabulator-tableholder .tabulator-range-overlay {
   position: absolute;
   inset: 0;
-  z-index: 10;
+  z-index: 11;
   pointer-events: none;
 }
 
@@ -378,15 +377,8 @@
   border: 1px solid #2975DD;
 }
 
-.tabulator .tabulator-tableholder .tabulator-range-overlay .tabulator-range.tabulator-range-active::after {
-  content: "";
-  position: absolute;
-  right: -3px;
-  bottom: -3px;
-  width: 6px;
-  height: 6px;
-  background-color: #2975DD;
-  border-radius: 999px;
+.tabulator .tabulator-tableholder .tabulator-range-overlay .tabulator-range.tabulator-range-fill-preview {
+  border-style: dashed;
 }
 
 .tabulator .tabulator-tableholder .tabulator-range-overlay .tabulator-range-cell-active {
@@ -976,6 +968,18 @@
   color: #d00;
 }
 
+.tabulator-range-fill-handle {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  background-color: #2975DD;
+  border-radius: 999px;
+  cursor: crosshair;
+  pointer-events: auto;
+}
+
 .tabulator-toggle {
   box-sizing: border-box;
   display: flex;
@@ -1160,16 +1164,9 @@
   right: initial;
 }
 
-.tabulator.tabulator-rtl .tabulator-tableholder .tabulator-range-overlay .tabulator-range.tabulator-range-active::after {
-  content: "";
-  position: absolute;
+.tabulator.tabulator-rtl .tabulator-range-fill-handle {
   left: -3px;
   right: initial;
-  bottom: -3px;
-  width: 6px;
-  height: 6px;
-  background-color: #2975DD;
-  border-radius: 999px;
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell {
