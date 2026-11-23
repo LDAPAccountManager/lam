@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "tecnickcom/tc-font-mirror": "^2.4"
+    "tecnickcom/tc-font-mirror": "^2.5"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -30,10 +30,10 @@
       "type": "package",
       "package": {
         "name": "tecnickcom/tc-font-mirror",
-        "version": "2.4.0",
+        "version": "2.5.0",
         "dist": {
           "type": "zip",
-          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.4.0.zip"
+          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.5.0.zip"
         },
         "autoload": {
           "classmap": [

@@ -177,17 +177,24 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\EncodeTxt
         string $data,
     ): bool {
         if ($epos === $data_length) {
-            $enc = Data::ENC_ASCII;
-            $params = Data::getPaddingSize($this->shape, $cdw_num + $field_length, $this->size);
-            if (($params[11] - $cdw_num) > 2) {
-                $cdw[] = $this->getSwitchEncodingCodeword($enc);
-                ++$cdw_num;
+            if ($field_length < 3 || $this->getAsciiCodewordCount($data, $pos, $data_length) < $field_length) {
+                $enc = Data::ENC_ASCII;
+                $params = Data::getPaddingSize($this->shape, $cdw_num + $field_length, $this->size);
+                if (($params[11] - $cdw_num) > 2) {
+                    $cdw[] = $this->getSwitchEncodingCodeword($enc);
+                    ++$cdw_num;
+                }
+
+                return true;
             }
 
-            return true;
-        }
-
-        if ($field_length < 4) {
+            // the last three or four characters take fewer codewords in EDIFACT
+            if ($field_length === 3) {
+                // the unlatch fills the fourth value of the group
+                $enc = Data::ENC_ASCII;
+                $temp_cw[] = 0x1f;
+            }
+        } elseif ($field_length < 4) {
             $enc = Data::ENC_ASCII;
             $this->last_enc = $enc;
             $params = Data::getPaddingSize(

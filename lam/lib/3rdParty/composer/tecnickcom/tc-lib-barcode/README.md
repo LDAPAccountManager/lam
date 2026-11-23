@@ -34,8 +34,8 @@
   UPC-A and a Han Xin Code; the same `getInlineSvgCode()`, `getPngData()`,
   `getGrid()` and `getArray()` methods work across all 73 types.
 - **Pure PHP, one runtime dependency.** Only `tecnickcom/tc-lib-color`, plus the
-  `gd`, `ctype` and `pcre` extensions. `bcmath` and `imagick` are optional
-  accelerators, never required.
+  `ctype` and `pcre` extensions. `gd` and `imagick` are only needed for raster
+  (PNG and GD) output, and `bcmath` is an optional accelerator.
 - **Written to the published standards.** Each symbology follows its own
   published specification, named alongside the format where one applies.
 - **Covered by tests.** Per-format encoding, ECC, size and input-validation
@@ -154,8 +154,8 @@ Width, height, padding, foreground and background color are set per barcode.
 ## Requirements
 
 - PHP 8.2 or later
-- Extensions: `gd`
-- Optional extensions: `bcmath` (speeds up the arbitrary precision arithmetic used by the IMB and PDF417 types, a pure-PHP implementation is used when it is missing)
+- Extensions: `ctype`, `pcre`
+- Optional extensions: `gd` (required by `getGd()`, and by `getPngData()` and `getPng()` when `imagick` is not used), `imagick` (alternative PNG renderer), `bcmath` (speeds up the arbitrary precision arithmetic used by the IMB and PDF417 types, a pure-PHP implementation is used when it is missing)
 - Composer
 
 ---

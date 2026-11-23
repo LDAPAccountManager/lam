@@ -397,7 +397,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
         }
 
         if (array_key_exists('miterLimit', $style)) {
-            $out .= \sprintf('%F M' . "\n", $style['miterLimit'] * $this->kunit);
+            // The miter limit is a ratio of lengths, so it carries no unit, and
+            // PDF32000-1:2008 table 52 gives it a minimum of 1.
+            $out .= \sprintf('%F M' . "\n", \max(1.0, $style['miterLimit']));
         }
 
         if (array_key_exists('dashArray', $style)) {

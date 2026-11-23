@@ -194,7 +194,7 @@ abstract class Convert
     protected function getRawCodeRows(string $data): array
     {
         $search = [
-            '/[\s]*/s', // remove spaces and newlines
+            '/[\t\n\x0B\f\r ]*/s', // remove spaces and newlines
             '/^[\[,]+/', // remove leading brackets or commas
             '/[\],]+$/', // remove trailing brackets or commas
             '/[\]][\[]/', // convert bracket-separated rows to comma-separated

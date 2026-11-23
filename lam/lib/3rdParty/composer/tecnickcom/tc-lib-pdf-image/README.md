@@ -32,7 +32,7 @@
 
 ### Import
 - Native PNG and JPEG parsing
-- Other formats re-encoded to PNG or JPEG through GD
+- Other formats re-encoded to PNG or JPEG through GD (`gd` extension)
 - Transparency, palette and ICC profile handling
 
 ### PDF integration
@@ -45,7 +45,8 @@
 ## Requirements
 
 - PHP 8.2 or later
-- Extensions: `gd`, `zlib`
+- Extensions: `zlib`
+- Optional extension: `gd`, required to import the images that need a conversion (resizing, alpha channel extraction, and the formats other than JPEG and PNG); without it such an import throws an exception naming the extension
 - Composer
 
 ---

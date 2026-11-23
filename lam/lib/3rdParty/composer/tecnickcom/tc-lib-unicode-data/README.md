@@ -41,6 +41,7 @@
 | `Mirror` | Mirrored form of the characters mirrored in a right-to-left context |
 | `Bracket` | Paired brackets, by opening and by closing code point |
 | `Arabic` | Joining types, presentation forms and ligatures, with `getJoiningType()` |
+| `LineBreak` | Line_Break class (UAX #14) of the ideographic, Hangul and punctuation code points that take part in ideographic line breaking, with `getClass()` |
 | `Encoding` | Character code to glyph name maps of 22 font encodings |
 | `Latin` | Unicode to Latin1 character substitutions |
 | `Identity` | CMap stream for the Identity-H encoding |
@@ -80,7 +81,7 @@ echo \Com\Tecnick\Unicode\Data\Encoding::MAP['cp1252'][128];   // Euro
 
 ## Generated data
 
-`Type`, `Pattern`, `Mirror`, `Bracket` and `Arabic` are generated from the Unicode Character Database by `tools/generate.php`; `Type::UNICODE_VERSION` reports the version they derive from.
+`Type`, `Pattern`, `Mirror`, `Bracket`, `Arabic` and `LineBreak` are generated from the Unicode Character Database by `tools/generate.php`; `Type::UNICODE_VERSION` reports the version they derive from.
 
 | Class | UCD source |
 |---|---|
@@ -89,6 +90,7 @@ echo \Com\Tecnick\Unicode\Data\Encoding::MAP['cp1252'][128];   // Euro
 | `Mirror` | `BidiMirroring.txt` |
 | `Bracket` | `BidiBrackets.txt` |
 | `Arabic` | `ArabicShaping.txt`, `UnicodeData.txt` |
+| `LineBreak` | `LineBreak.txt` |
 
 `Type::UNI` only lists the code points whose Bidi_Class is not `L`; `Type::getType()` resolves any code point, including the blocks whose unassigned code points default to `R`, `AL` or `ET`.
 

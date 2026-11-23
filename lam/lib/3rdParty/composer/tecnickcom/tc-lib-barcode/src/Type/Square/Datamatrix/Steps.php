@@ -61,26 +61,78 @@ abstract class Steps extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Modes
             default => [0.0, 1.0, 1.0, 1.0, 1.0, 1.25],
         };
 
+        // EDIFACT cannot start on a character outside its set: an EDIFACT result is then
+        // replaced by the result obtained with EDIFACT left out of the comparison
+        $edifact = $this->isCharMode(\ord($data[$pos]), Data::ENC_EDF);
+        $ret = -1; // result of steps K and R
+        $alt = -1; // result of steps K and R without EDIFACT
         while (true) {
-            if (($pos + $charscount) === $data_length) {
-                return $this->stepK($numch);
+            $end = ($pos + $charscount) === $data_length;
+            if (!$end) {
+                $chr = \ord($data[$pos + $charscount]);
+                ++$charscount;
+                $this->stepL($chr, $numch);
+                $this->stepM($chr, $numch);
+                $this->stepN($chr, $numch);
+                $this->stepO($chr, $numch);
+                $this->stepP($chr, $numch);
+                $this->stepQ($chr, $numch);
             }
 
-            $chr = \ord($data[$pos + $charscount]);
-            ++$charscount;
-            $this->stepL($chr, $numch);
-            $this->stepM($chr, $numch);
-            $this->stepN($chr, $numch);
-            $this->stepO($chr, $numch);
-            $this->stepP($chr, $numch);
-            $this->stepQ($chr, $numch);
-            if ($charscount >= 4) {
-                $ret = $this->stepR($numch, $pos, $data_length, $charscount, $data);
-                if ($ret >= 0) {
-                    return $ret;
-                }
+            if ($ret < 0) {
+                $ret = $this->getLookAheadMode($numch, $end, $pos, $data_length, $charscount, $data);
+            }
+
+            if ($ret >= 0 && ($edifact || $ret !== Data::ENC_EDF)) {
+                return $ret;
+            }
+
+            if ($edifact) {
+                continue;
+            }
+
+            if ($alt < 0) {
+                $excl = $numch;
+                $this->setNumch($excl, Data::ENC_EDF, \INF);
+                $alt = $this->getLookAheadMode($excl, $end, $pos, $data_length, $charscount, $data);
+            }
+
+            if ($ret >= 0 && $alt >= 0) {
+                return $alt;
             }
         }
+    }
+
+    /**
+     * Mode selected by step K at the end of the data, or by step R after at least four characters.
+     * Step R is not applied to the last character, so that step K decides at the end of the data.
+     *
+     * @param array{0: float, 1: float, 2: float, 3: float, 4: float, 5: float} $numch Number of characters
+     * @param bool   $end         True at the end of the data
+     * @param int    $pos         Current position
+     * @param int    $data_length Data length
+     * @param int    $charscount  Number of processed characters
+     * @param string $data        Data to encode
+     *
+     * @return int Encoding mode, or -1 if no mode is selected yet
+     */
+    protected function getLookAheadMode(
+        array $numch,
+        bool $end,
+        int $pos,
+        int $data_length,
+        int $charscount,
+        string $data,
+    ): int {
+        if ($end) {
+            return $this->stepK($numch);
+        }
+
+        if ($charscount < 4 || ($pos + $charscount) === $data_length) {
+            return -1;
+        }
+
+        return $this->stepR($numch, $pos, $data_length, $charscount, $data);
     }
 
     /**
@@ -204,11 +256,15 @@ abstract class Steps extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Modes
     }
 
     /**
+     * Every count is a multiple of 1/12: the sum is snapped to that grid, so that
+     * equal counts compare equal and whole counts are not rounded up by step K.
+     *
      * @param array{0: float, 1: float, 2: float, 3: float, 4: float, 5: float} $numch
      */
     protected function addNumch(array &$numch, int $mode, float $value): void
     {
-        $this->setNumch($numch, $mode, $this->getNumch($numch, $mode) + $value);
+        $sum = \round(($this->getNumch($numch, $mode) + $value) * 12.0) / 12.0;
+        $this->setNumch($numch, $mode, $sum);
     }
 
     /**
@@ -360,14 +416,16 @@ abstract class Steps extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Modes
             }
 
             if (($numch[Data::ENC_C40] ?? 0.0) === ($numch[Data::ENC_X12] ?? 0.0)) {
-                $ker = $pos + $charscount + 1;
+                // X12 if a terminator or separator (CR, *, >) comes in the unprocessed data
+                // before a character outside the X12 set
+                $ker = $pos + $charscount;
                 while ($ker < $data_length) {
                     $tmpchr = \ord($data[$ker]);
                     if ($this->isCharMode($tmpchr, Data::ENC_X12)) {
                         return Data::ENC_X12;
                     }
 
-                    if ($this->isCharMode($tmpchr, Data::ENC_C40)) {
+                    if (!$this->isCharMode($tmpchr, Data::ENC_C40)) {
                         break;
                     }
 

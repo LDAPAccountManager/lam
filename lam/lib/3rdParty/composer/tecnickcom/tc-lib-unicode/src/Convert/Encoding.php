@@ -36,6 +36,25 @@ use Com\Tecnick\Unicode\Data\Latin as Latin;
 class Encoding
 {
     /**
+     * Map of ASCII lower-cased encoding names and aliases to the mbstring canonical names.
+     *
+     * @var array<string, string>
+     */
+    protected static array $canonicalEncoding = [];
+
+    /**
+     * Encodings whose mb_encoding_aliases() call raises a deprecation notice.
+     *
+     * @var array<string, true>
+     */
+    protected const DEPRECATED_ALIAS_LOOKUP = [
+        'BASE64' => true,
+        'HTML-ENTITIES' => true,
+        'Quoted-Printable' => true,
+        'UUENCODE' => true,
+    ];
+
+    /**
      * Converts UTF-8 code array to Latin1 codes.
      * A code point that has no Latin1 counterpart is replaced with '?', except
      * U+FFFD REPLACEMENT CHARACTER, which is dropped: the returned array is then
@@ -135,6 +154,12 @@ class Encoding
             $enc = \mb_detect_order();
         }
 
+        if (\is_string($enc)) {
+            $enc = \explode(',', $enc);
+        }
+
+        $enc = \array_map(fn(string $name): string => $this->getCanonicalEncoding(\trim($name)), $enc);
+
         $chrenc = \mb_detect_encoding($str, $enc);
         if ($chrenc === false) {
             $chrenc = null;
@@ -142,6 +167,30 @@ class Encoding
 
         $result = \mb_convert_encoding($str, 'UTF-8', $chrenc);
         return $result === false ? '' : $result;
+    }
+
+    /**
+     * Returns the mbstring canonical name of an encoding name or alias, matched without case.
+     * The lookup does not depend on LC_CTYPE. Unknown names are returned unchanged.
+     *
+     * @param string $name Encoding name or alias.
+     */
+    public function getCanonicalEncoding(string $name): string
+    {
+        if (static::$canonicalEncoding === []) {
+            foreach (\mb_list_encodings() as $canonical) {
+                static::$canonicalEncoding[\strtolower($canonical)] = $canonical;
+                if (isset(self::DEPRECATED_ALIAS_LOOKUP[$canonical])) {
+                    continue;
+                }
+
+                foreach (\mb_encoding_aliases($canonical) as $alias) {
+                    static::$canonicalEncoding[\strtolower($alias)] ??= $canonical;
+                }
+            }
+        }
+
+        return static::$canonicalEncoding[\strtolower($name)] ?? $name;
     }
 
     /**

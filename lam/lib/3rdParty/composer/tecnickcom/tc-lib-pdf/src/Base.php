@@ -166,6 +166,7 @@ use Com\Tecnick\Unicode\Convert as ObjUniConvert;
  *    annots?: int[],
  *    attr?: array<string, string>,
  *    bbox?: TFourFloat,
+ *    lang?: string,
  *    refpid?: int,
  *    required?: bool,
  * }
@@ -458,8 +459,8 @@ use Com\Tecnick\Unicode\Convert as ObjUniConvert;
  *        'subtype': string,
  *        'h'?: string,
  *        'mk'?: array<array-key, mixed>,
- *        'a'?: TAnnotActionDict,
- *        'aa'?: TAnnotAdditionalActionDict,
+ *        'a'?: TAnnotActionDict|string,
+ *        'aa'?: TAnnotAdditionalActionDict|string,
  *        'bs'?: TAnnotBorderStyle,
  *        'parent'?: array<mixed>,
  *        'border'?: array<mixed>,
@@ -534,7 +535,9 @@ use Com\Tecnick\Unicode\Convert as ObjUniConvert;
  * @phpstan-type TXOBject array{
  *         'spot_colors': array<string>,
  *         'extgstate': array<int>,
+ *         'gsnames': array<string>,
  *         'gradient': array<int>,
+ *         'pattern': array<string>,
  *         'font': array<string>,
  *         'image': array<int>,
  *         'xobject': array<string>,
@@ -714,7 +717,7 @@ abstract class Base
     /**
      * TCPDF version.
      */
-    protected string $version = '8.75.0';
+    protected string $version = '8.85.1';
 
     /**
      * Encrypt object.
@@ -877,6 +880,7 @@ abstract class Base
      *     'info': string,
      *     'registry': string,
      *     'iccfile': string,
+     *     'icc': string,
      * }
      */
     protected array $outputintent = [
@@ -885,11 +889,14 @@ abstract class Base
         'info' => '',
         'registry' => '',
         'iccfile' => '',
+        // Contents of the profile, read when it is supplied so that the colour
+        // policy is known before any content stream is generated.
+        'icc' => '',
     ];
 
     /**
      * Number of colour components of the embedded output intent profile,
-     * or 0 when no profile was supplied. Set when the profile is serialized.
+     * or 0 when no profile was supplied.
      */
     protected int $outputintentComponents = 0;
 
@@ -1349,7 +1356,8 @@ abstract class Base
     protected array $svgmasks = [];
 
     /**
-     * Stack of Unit bounding boxes [x, y, w, h] in user units.
+     * Last Unit bounding box [x, y, w, h] in user units, under a key that increases
+     * with each new box.
      *
      * @var TStackUnitBBox
      */
@@ -1361,7 +1369,8 @@ abstract class Base
     ]];
 
     /**
-     * Stack of Text bounding boxes [x, y, w, h] in user units.
+     * Last Text bounding box [x, y, w, h] in user units, under a key that increases
+     * with each new box.
      *
      * @var TStackTextBBox
      */
@@ -1373,7 +1382,8 @@ abstract class Base
     ]];
 
     /**
-     * Stack of Cell bounding boxes [x, y, w, h] in user units.
+     * Last Cell bounding box [x, y, w, h] in user units, under a key that increases
+     * with each new box.
      *
      * @var TStackCellBBox
      */
@@ -1875,6 +1885,23 @@ abstract class Base
     }
 
     /**
+     * Return the string with each invalid UTF-8 sequence replaced by U+FFFD.
+     */
+    protected function getValidUtf8(string $str): string
+    {
+        if (\mb_check_encoding($str, 'UTF-8')) {
+            return $str;
+        }
+
+        $substitute = \mb_substitute_character();
+        \mb_substitute_character(0xfffd);
+        $converted = \mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+        \mb_substitute_character($substitute);
+
+        return \is_string($converted) ? $converted : '';
+    }
+
+    /**
      * Return true when the active conformance mode forbids optional content.
      *
      * ISO 19005-1 is based on PDF 1.4, which has no optional content: clause 6.1.13
@@ -1948,7 +1975,13 @@ abstract class Base
      * Return true when the active PDF/X variant should avoid DeviceRGB process colors.
      *
      * PDF/X-1a and PDF/X-3 are treated as restrictive process-color variants in this
-     * implementation. PDF/X-4 and PDF/X-5 remain unrestricted.
+     * implementation. PDF/X-4 and PDF/X-5 admit DeviceRGB only when the output intent
+     * is an RGB printing condition (ISO 15930-7 clause 6.2), so a CMYK output intent
+     * makes them restrictive too.
+     *
+     * A grayscale printing condition admits neither DeviceRGB nor DeviceCMYK, so
+     * converting to DeviceCMYK would not make the document conformant: a DeviceRGB
+     * paint is emitted as it is and reported by checkDeviceRgbOutputIntent().
      */
     protected function requiresPdfxDeviceCmyk(): bool
     {
@@ -1956,7 +1989,11 @@ abstract class Base
             return false;
         }
 
-        return !\in_array($this->pdfxMode, ['pdfx4', 'pdfx5'], true);
+        if (!\in_array($this->pdfxMode, ['pdfx4', 'pdfx5'], true)) {
+            return true;
+        }
+
+        return $this->outputintentComponents === 4;
     }
 
     /**
@@ -2121,7 +2158,9 @@ abstract class Base
             curlopts: $fileOptions['curlopts'] ?? [],
             defaultCurlOpts: $fileOptions['defaultCurlOpts'] ?? null,
             fixedCurlOpts: $fileOptions['fixedCurlOpts'] ?? null,
-            allowedPaths: $fileOptions['markupAllowedPaths'] ?? $fileOptions['allowedPaths'] ?? $this->defaultMarkupAllowedPaths(),
+            allowedPaths: $fileOptions['markupAllowedPaths']
+            ?? $fileOptions['allowedPaths']
+            ?? $this->defaultMarkupAllowedPaths(),
         );
 
         $this->cache = new ObjCache();
@@ -2184,6 +2223,32 @@ abstract class Base
             imageCache: $this->imageCacheAdapter(),
             notransparency: $notransparency,
         );
+    }
+
+    /**
+     * Returns a bounding box list holding only the given box, under the key that
+     * follows the last key of the current list.
+     *
+     * @param array<int, TBBox> $list Current bounding box list.
+     * @param TBBox             $box  New bounding box.
+     *
+     * @return array<int, TBBox>
+     */
+    protected function getNextBBoxList(array $list, array $box): array
+    {
+        $last = \array_key_last($list);
+
+        return [($last ?? -1) + 1 => $box];
+    }
+
+    /**
+     * Add the bounding box of a drawn cell to the cell bounding box list.
+     *
+     * @param TBBox $box Cell bounding box in user units.
+     */
+    protected function pushCellBBox(array $box): void
+    {
+        $this->cellbbox = $this->getNextBBoxList($this->cellbbox, $box);
     }
 
     /**

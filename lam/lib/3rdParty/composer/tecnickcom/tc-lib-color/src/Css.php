@@ -57,12 +57,12 @@ abstract class Css
     /**
      * The separator between two CSS component values: a comma or a space run.
      */
-    private const REX_SEP = '(?:\s*,\s*|\s+)';
+    private const REX_SEP = '(?:[\t\n\x0B\f\r ]*,[\t\n\x0B\f\r ]*|[\t\n\x0B\f\r ]+)';
 
     /**
      * The optional alpha component: a comma or a slash, then a value.
      */
-    private const REX_ALPHA = '(?:\s*[\/,]\s*(' . self::REX_VALUE . '))?';
+    private const REX_ALPHA = '(?:[\t\n\x0B\f\r ]*[\/,][\t\n\x0B\f\r ]*(' . self::REX_VALUE . '))?';
 
     /**
      * Scales a parsed component value into the [0..1] range.
@@ -130,12 +130,16 @@ abstract class Css
     protected function getColorObjFromJs(string $color): ?\Com\Tecnick\Color\Model
     {
         // the model is the quoted name (the input is lowercased by the caller)
-        $col = $this->matchColor('/^\[\s*[\'"](t|g|rgb|cmyk)[\'"]/', $color, 'invalid javascript color: ');
-        $num = '\s*,\s*(' . self::REX_NUMBER . ')';
+        $col = $this->matchColor('/^\[[\t\n\x0B\f\r ]*[\'"](t|g|rgb|cmyk)[\'"]/', $color, 'invalid javascript color: ');
+        $num = '[\t\n\x0B\f\r ]*,[\t\n\x0B\f\r ]*(' . self::REX_NUMBER . ')';
 
         switch ($col[1] ?? '') {
             case 'g':
-                $col = $this->matchColor('/^\[\s*[\'"]g[\'"]' . $num . '\s*\]$/', $color, 'invalid javascript color: ');
+                $col = $this->matchColor(
+                    '/^\[[\t\n\x0B\f\r ]*[\'"]g[\'"]' . $num . '[\t\n\x0B\f\r ]*\]$/',
+                    $color,
+                    'invalid javascript color: ',
+                );
 
                 return new \Com\Tecnick\Color\Model\Gray([
                     'gray' => $col[1] ?? '0',
@@ -143,7 +147,7 @@ abstract class Css
                 ]);
             case 'rgb':
                 $col = $this->matchColor(
-                    '/^\[\s*[\'"]rgb[\'"]' . $num . $num . $num . '\s*\]$/',
+                    '/^\[[\t\n\x0B\f\r ]*[\'"]rgb[\'"]' . $num . $num . $num . '[\t\n\x0B\f\r ]*\]$/',
                     $color,
                     'invalid javascript color: ',
                 );
@@ -156,7 +160,7 @@ abstract class Css
                 ]);
             case 'cmyk':
                 $col = $this->matchColor(
-                    '/^\[\s*[\'"]cmyk[\'"]' . $num . $num . $num . $num . '\s*\]$/',
+                    '/^\[[\t\n\x0B\f\r ]*[\'"]cmyk[\'"]' . $num . $num . $num . $num . '[\t\n\x0B\f\r ]*\]$/',
                     $color,
                     'invalid javascript color: ',
                 );
@@ -171,7 +175,7 @@ abstract class Css
         }
 
         // case 't': the transparent form carries no components
-        $this->matchColor('/^\[\s*[\'"]t[\'"]\s*\]$/', $color, 'invalid javascript color: ');
+        $this->matchColor('/^\[[\t\n\x0B\f\r ]*[\'"]t[\'"][\t\n\x0B\f\r ]*\]$/', $color, 'invalid javascript color: ');
         return null;
     }
 
@@ -204,7 +208,7 @@ abstract class Css
         }
 
         // case 't': the transparent form carries no components
-        $this->matchColor('/^t\s*\(\s*\)$/', $color, 'invalid css color: ');
+        $this->matchColor('/^t[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*\)$/', $color, 'invalid css color: ');
         return null;
     }
 
@@ -225,7 +229,7 @@ abstract class Css
             return;
         }
 
-        $mixed = str_contains($color, '/') || \preg_match('/[0-9%a-z]\s+[0-9.+-]/', $color) === 1;
+        $mixed = str_contains($color, '/') || \preg_match('/[0-9%a-z][\t\n\x0B\f\r ]+[0-9.+-]/', $color) === 1;
         if ($mixed) {
             throw new ColorException('mixed css color separators: ' . $color);
         }
@@ -240,7 +244,7 @@ abstract class Css
      */
     private function getColorObjFromCssGray(string $color): \Com\Tecnick\Color\Model\Gray
     {
-        $rex = '/^g\s*\(\s*(' . self::REX_VALUE . ')\s*\)$/';
+        $rex = '/^g[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*(' . self::REX_VALUE . ')[\t\n\x0B\f\r ]*\)$/';
         $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Gray([
@@ -259,7 +263,7 @@ abstract class Css
     private function getColorObjFromCssRgb(string $color): \Com\Tecnick\Color\Model\Rgb
     {
         $rex =
-            '/^rgba?\s*\(\s*('
+            '/^rgba?[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*('
             . self::REX_VALUE
             . ')'
             . self::REX_SEP
@@ -271,7 +275,7 @@ abstract class Css
             . self::REX_VALUE
             . ')'
             . self::REX_ALPHA
-            . '\s*\)$/';
+            . '[\t\n\x0B\f\r ]*\)$/';
         $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Rgb([
@@ -292,7 +296,7 @@ abstract class Css
     private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
         $rex =
-            '/^hsla?\s*\(\s*('
+            '/^hsla?[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*('
             . self::REX_NUMBER
             . '(?:%|deg|grad|rad|turn)?)'
             . self::REX_SEP
@@ -304,7 +308,7 @@ abstract class Css
             . self::REX_VALUE
             . ')'
             . self::REX_ALPHA
-            . '\s*\)$/';
+            . '[\t\n\x0B\f\r ]*\)$/';
         $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         // saturation and lightness are percentages: a bare number is divided by 100
@@ -358,7 +362,7 @@ abstract class Css
     private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
         $rex =
-            '/^cmyka?\s*\(\s*('
+            '/^cmyka?[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*('
             . self::REX_VALUE
             . ')'
             . self::REX_SEP
@@ -374,7 +378,7 @@ abstract class Css
             . self::REX_VALUE
             . ')'
             . self::REX_ALPHA
-            . '\s*\)$/';
+            . '[\t\n\x0B\f\r ]*\)$/';
         $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         return new \Com\Tecnick\Color\Model\Cmyk([
@@ -396,7 +400,7 @@ abstract class Css
     private function getColorObjFromCssLab(string $color): \Com\Tecnick\Color\Model\Lab
     {
         $rex =
-            '/^lab\s*\(\s*('
+            '/^lab[\t\n\x0B\f\r ]*\([\t\n\x0B\f\r ]*('
             . self::REX_VALUE
             . ')'
             . self::REX_SEP
@@ -408,7 +412,7 @@ abstract class Css
             . self::REX_NUMBER
             . ')'
             . self::REX_ALPHA
-            . '\s*\)$/';
+            . '[\t\n\x0B\f\r ]*\)$/';
         $col = $this->matchColor($rex, $color, 'invalid css color: ');
 
         $lstarRaw = $col[1] ?? '0';

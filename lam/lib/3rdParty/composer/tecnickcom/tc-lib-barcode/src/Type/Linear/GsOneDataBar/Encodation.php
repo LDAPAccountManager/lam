@@ -297,9 +297,9 @@ class Encodation
 
         if ($rest !== [] && $first[1][0] === $this::INDICATOR) {
             $encodation =
-                $this->getWeightEncodation($elements) ?? $this->getDateEncodation(
-                    $elements,
-                ) ?? $this->getPriceEncodation($elements);
+                $this->getWeightEncodation($elements)
+                ?? $this->getDateEncodation($elements)
+                ?? $this->getPriceEncodation($elements);
             if ($encodation !== null) {
                 return $encodation;
             }

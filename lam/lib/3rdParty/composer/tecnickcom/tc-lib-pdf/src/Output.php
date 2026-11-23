@@ -20,6 +20,7 @@ namespace Com\Tecnick\Pdf;
 
 use Com\Tecnick\Color\Exception as ColorException;
 use Com\Tecnick\File\Exception as FileException;
+use Com\Tecnick\File\File as ObjFile;
 use Com\Tecnick\Pdf\Encrypt\Exception as EncryptException;
 use Com\Tecnick\Pdf\Exception as PdfException;
 use Com\Tecnick\Pdf\Font\Exception as FontException;
@@ -117,6 +118,13 @@ use OpenSSLAsymmetricKey;
 abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 {
     /**
+     * Appearance dictionary keys: normal, rollover, down.
+     *
+     * @var array<int, string>
+     */
+    protected const AP_MODES = ['N', 'R', 'D'];
+
+    /**
      * Object to export font data.
      *
      * @var OutFont
@@ -194,6 +202,29 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     }
 
     /**
+     * Records a warning when a DeviceRGB colour is emitted in a PDF/X document
+     * whose output intent is not an RGB printing condition.
+     *
+     * ISO 15930 admits a device colour space only when the output intent defines
+     * the same space.
+     */
+    protected function checkDeviceRgbOutputIntent(): void
+    {
+        if (!$this->pdfx || $this->outputintentComponents === 3) {
+            return;
+        }
+
+        if (!$this->color->hasEmittedDeviceRgb()) {
+            return;
+        }
+
+        $this->addWarning(
+            'PDF/X: a DeviceRGB colour is emitted while the output intent is not an RGB printing condition;'
+            . ' call setOutputIntent() with an RGB ICC profile or use another colour space',
+        );
+    }
+
+    /**
      * Record, for each page, whether it actually uses transparency, so the page
      * layer can decide whether to emit the per-page transparency /Group.
      *
@@ -257,7 +288,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         $matchGs = [];
-        $gsCount = $transpNames === [] ? 0 : \preg_match_all('/\/([A-Za-z0-9_]+)\s+gs\b/', $stream, $matchGs);
+        $gsCount = $transpNames === []
+            ? 0
+            : \preg_match_all('/\/([A-Za-z0-9_]+)[\t\n\x0B\f\r ]+gs(?![0-9A-Za-z_])/', $stream, $matchGs);
         if ($gsCount !== false && $gsCount > 0) {
             foreach ($matchGs[1] ?? [] as $name) {
                 if (isset($transpNames[$name])) {
@@ -267,7 +300,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         $matchDo = [];
-        $doCount = \preg_match_all('/\/([A-Za-z0-9_]+)\s+Do\b/', $stream, $matchDo);
+        $doCount = \preg_match_all('/\/([A-Za-z0-9_]+)[\t\n\x0B\f\r ]+Do(?![0-9A-Za-z_])/', $stream, $matchDo);
         if ($doCount !== false && $doCount > 0) {
             foreach ($matchDo[1] ?? [] as $name) {
                 if (
@@ -415,6 +448,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         $this->detectPageTransparency();
+        $this->page->setPageNumberResolver($this->pageAliasMarks === [] ? null : $this->resolvePageAliasMarks(...));
         $out = $this->page->getPdfPages($this->pon);
         $this->objid['pages'] = $this->page->getRootObjID();
         if ($this->isTaggedMode()) {
@@ -431,6 +465,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $this->encrypt,
             fileHelper: $this->file,
             subsetCache: $this->fontSubsetCacheAdapter(),
+            cidset: $this->pdfa === 1,
         );
         $out .= $this->outfont->getFontsBlock();
         $this->pon = $this->outfont->getObjectNumber();
@@ -440,11 +475,13 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $out .= $this->color->getPdfSpotObjects($this->pon);
         $out .= $this->graph->getOutGradientShaders($this->pon);
         $this->pon = $this->graph->getObjectNumber();
+        // The patterns and the SVG masks are emitted first because a Form
+        // XObject resource dictionary references them by object number.
+        $out .= $this->getOutPatterns();
+        $out .= $this->getOutSVGMasks();
         $out .= $this->getOutXObjects();
         $out .= $this->getOutImportedObjects();
         $this->collectImportWarnings();
-        $out .= $this->getOutPatterns();
-        $out .= $this->getOutSVGMasks();
         $out .= $this->getOutResourcesDict();
         $out .= $this->getOutEmbeddedFiles();
         $out .= $this->getOutStructTreeRoot();
@@ -470,6 +507,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $out .= $this->getOutXMP();
         $out .= $this->getOutICC();
         $this->checkDeviceCmykOutputIntent();
+        $this->checkDeviceRgbOutputIntent();
         $result = $out . $this->getOutCatalog();
         $this->importer?->cleanUp();
         return $result;
@@ -485,7 +523,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected function getPDFObjectOffsets(string $data): array
     {
         $matches = [];
-        \preg_match_all('/(([0-9]+)[\s][0-9]+[\s]obj[\n])/i', $data, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        \preg_match_all(
+            '/(([0-9]+)[\t\n\x0B\f\r ][0-9]+[\t\n\x0B\f\r ][Oo][Bb][Jj][\n])/',
+            $data,
+            $matches,
+            PREG_SET_ORDER | PREG_OFFSET_CAPTURE,
+        );
         $offset = [];
         foreach ($matches as $match) {
             $m2 = $match[2] ?? [];
@@ -687,6 +730,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     /**
      * Returns the PDF object to include a standard sRGB_IEC61966-2.1 blackscaled ICC colour profile.
      *
+     * The bundled profile is read through a file helper whose allowlist is the profile file
+     * itself, so it does not depend on the 'allowedPaths' file option.
+     *
      * @return string ICC profile PDF object or empty string.
      *
      * @throws PdfException
@@ -702,8 +748,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $oid = ++$this->pon;
         $this->objid['srgbicc'] = $oid;
+        $iccfile = __DIR__ . '/include/sRGB.icc.z';
         try {
-            $icc = $this->file->getLocalFileData(__DIR__ . '/include/sRGB.icc.z');
+            $icc = (new ObjFile(allowedPaths: [$iccfile]))->getLocalFileData($iccfile);
         } catch (FileException $e) {
             throw new PdfException('Unable to read sRGB.icc.z file', 0, $e);
         }
@@ -744,27 +791,33 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected function getOutOutputIntentICC(): string
     {
         $this->objid['outputintenticc'] = 0;
-        $this->outputintentComponents = 0;
         $iccfile = $this->outputintent['iccfile'];
         if ($iccfile === '') {
+            $this->outputintentComponents = 0;
             return '';
         }
 
-        try {
-            $icc = $this->file->fileGetContents($iccfile);
-        } catch (FileException $e) {
-            throw new PdfException('Unable to read the output intent ICC profile: ' . $iccfile, 0, $e);
+        // setOutputIntent() already read the profile to determine the colour
+        // policy; read it again only when that attempt failed.
+        $icc = $this->outputintent['icc'];
+        if ($icc === '') {
+            try {
+                $icc = $this->file->fileGetContents($iccfile);
+            } catch (FileException $e) {
+                throw new PdfException('Unable to read the output intent ICC profile: ' . $iccfile, 0, $e);
+            }
         }
 
-        // The number of colour components is taken from the ICC colour space
-        // signature at offset 16 of the profile header.
-        $components = match (\substr($icc, 16, 4)) {
-            'GRAY' => 1,
-            'CMYK' => 4,
-            default => 3,
-        };
+        $components = $this->outputintentComponents;
+        if ($components === 0) {
+            $components = match (\substr($icc, 16, 4)) {
+                'GRAY' => 1,
+                'CMYK' => 4,
+                default => 3,
+            };
+            $this->outputintentComponents = $components;
+        }
 
-        $this->outputintentComponents = $components;
         $oid = ++$this->pon;
         $this->objid['outputintenticc'] = $oid;
         $stream = $this->encrypt->encryptString($icc, $oid);
@@ -990,6 +1043,15 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     }
 
     /**
+     * Returns the document language (BCP 47 tag): the one set by setLanguage(),
+     * 'en-US' in tagged mode when none is set, or ''.
+     */
+    protected function getDocumentLanguage(): string
+    {
+        return $this->lang['a_meta_language'] ?? ($this->isTaggedMode() ? 'en-US' : '');
+    }
+
+    /**
      * Returns the PDF Catalog entry.
      *
      * @return string PDF Catalog object.
@@ -1119,7 +1181,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out .= ' /MarkInfo << /Marked true >>';
         }
 
-        $language = $this->lang['a_meta_language'] ?? ($this->isTaggedMode() ? 'en-US' : '');
+        $language = $this->getDocumentLanguage();
 
         if ($language !== '') {
             $out .= ' /Lang ' . $this->getOutTextString($language, $oid, true);
@@ -1313,14 +1375,16 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutAPXObjects(float $width = 0, float $height = 0, string $stream = ''): string
     {
-        $stream = \trim($stream);
+        $stream = \trim($this->resolvePageAliasMarks($stream));
         $oid = ++$this->pon;
         $out = $oid . ' 0 obj' . "\n";
         $tid = 'AX' . $oid;
         $this->xobjects[$tid] = [
             'spot_colors' => [],
             'extgstate' => [],
+            'gsnames' => [],
             'gradient' => [],
+            'pattern' => [],
             'font' => [],
             'image' => [],
             'xobject' => [],
@@ -1400,7 +1464,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
 
             $out .= $data['n'] . ' 0 obj' . "\n" . '<< /Type /XObject /Subtype /Form /FormType 1';
-            $stream = \trim($data['outdata']);
+            $stream = \trim($this->resolvePageAliasMarks($data['outdata']));
             if ($this->compress) {
                 $stream = \gzcompress($stream);
                 if ($stream === false) {
@@ -1419,8 +1483,21 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
             $out .= ' /Matrix [1 0 0 1 0 0] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI]';
 
-            $out .= $this->graph->getOutExtGStateResourcesByKeys($data['extgstate']);
-            $out .= $this->graph->getOutGradientResourcesByKeys($data['gradient']);
+            // The named ExtGState resources come either from the SVG masks or,
+            // like the gradient soft masks, from the graph dictionary.
+            $out .= $this->mergeResourceEntries(
+                $this->graph->getOutExtGStateResourcesByKeys($data['extgstate']),
+                'ExtGState',
+                $this->getSVGMaskExtGStateEntriesByKeys($data['gsnames'])
+                    . $this->extractNamedResourceRefs($this->graph->getOutExtGStateResources(), $data['gsnames']),
+            );
+            // The gradients bring their own /Pattern dictionary, so the SVG
+            // pattern entries are merged into it.
+            $out .= $this->mergeResourceEntries(
+                $this->graph->getOutGradientResourcesByKeys($data['gradient']),
+                'Pattern',
+                $this->getPatternEntriesByKeys($data['pattern']),
+            );
             $out .= $this->color->getPdfSpotResourcesByKeys($data['spot_colors']);
             $out .= $this->outfont->getOutFontDictByKeys($data['font']);
 
@@ -1446,8 +1523,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 // set transparency group
                 $out .= ' /Group << /Type /Group /S /Transparency';
                 $out .= ' /CS /' . $data['transparency']['CS'];
-                $out .= ' /I /' . ($data['transparency']['I'] ? 'true' : 'false');
-                $out .= ' /K /' . ($data['transparency']['K'] ? 'true' : 'false');
+                $out .= ' /I ' . ($data['transparency']['I'] ? 'true' : 'false');
+                $out .= ' /K ' . ($data['transparency']['K'] ? 'true' : 'false');
                 $out .= ' >>';
             }
 
@@ -1477,17 +1554,18 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected function getOutResourcesDict(): string
     {
         $this->objid['resdic'] = $this->page->getResourceDictObjID();
-        // Merge SVG mask ExtGState entries into the /ExtGState resource dict.
-        $gsResources = $this->graph->getOutExtGStateResources();
-        $maskGsEntries = $this->getSVGMaskExtGStateEntries();
-        if ($maskGsEntries !== '') {
-            if ($gsResources === '') {
-                $gsResources = ' /ExtGState <<' . $maskGsEntries . ' >>' . "\n";
-            } else {
-                // Strip closing ' >>\n' and re-append with mask entries.
-                $gsResources = \substr(\rtrim($gsResources), 0, -2) . $maskGsEntries . ' >>' . "\n";
-            }
-        }
+        $gsResources = $this->mergeResourceEntries(
+            $this->graph->getOutExtGStateResources(),
+            'ExtGState',
+            $this->getSVGMaskExtGStateEntries(),
+        );
+        // The gradients bring their own /Pattern dictionary, so the SVG pattern
+        // entries are merged into it.
+        $gradientResources = $this->mergeResourceEntries(
+            $this->graph->getOutGradientResources(),
+            'Pattern',
+            $this->getPatternEntriesByKeys(\array_keys($this->patterns)),
+        );
 
         return (
             $this->objid['resdic']
@@ -1497,10 +1575,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             . ' /ProcSet [/PDF /Text /ImageB /ImageC /ImageI]'
             . $this->outfont->getOutFontDict()
             . $this->getXObjectDict()
-            . $this->getPatternDict()
             . $this->getLayerDict()
             . $gsResources
-            . $this->graph->getOutGradientResources()
+            . $gradientResources
             . $this->color->getPdfSpotResources()
             . ' >>'
             . "\n"
@@ -1529,7 +1606,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
 
             $oid = $this->patterns[$pid]['n'];
-            $stream = \trim($data['outdata']);
+            $stream = \trim($this->resolvePageAliasMarks($data['outdata']));
             $out .= $oid . ' 0 obj' . "\n";
             $out .= \sprintf(
                 '<< /Type /Pattern /PatternType 1 /PaintType 1 /TilingType 1'
@@ -1590,6 +1667,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      *
      * @return string Raw PDF objects.
      *
+     * @throws ColorException
      * @throws EncryptException
      */
     protected function getOutSVGMasks(): string
@@ -1600,7 +1678,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 continue;
             }
 
-            $stream = $data['stream'];
+            $stream = $this->resolvePageAliasMarks($data['stream']);
             $bbox = $data['bbox'];
             $bboxStr = \sprintf('%F %F %F %F', $bbox[0], $bbox[1], $bbox[2], $bbox[3]);
 
@@ -1618,6 +1696,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 . ' /BBox ['
                 . $bboxStr
                 . ']'
+                . ' /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI]'
+                . $this->getPatternStreamResourceDict($stream)
+                . ' >>'
                 . ' /Group << /Type /Group /S /Transparency /CS /DeviceGray /I true >>';
             if ($this->compress) {
                 $comp = \gzcompress($formStream);
@@ -1685,13 +1766,69 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getSVGMaskExtGStateEntries(): string
     {
+        return $this->getSVGMaskExtGStateEntriesByKeys(\array_keys($this->svgmasks));
+    }
+
+    /**
+     * Returns ExtGState resource-dict entries for the given SVG masks.
+     *
+     * @param array<string> $keys SVG mask keys.
+     */
+    protected function getSVGMaskExtGStateEntriesByKeys(array $keys): string
+    {
         $out = '';
-        foreach ($this->svgmasks as $key => $mask) {
-            if ($mask['gs_n'] <= 0) {
+        foreach ($keys as $key) {
+            $gsOid = $this->svgmasks[$key]['gs_n'] ?? 0;
+            if ($gsOid <= 0) {
                 continue;
             }
 
-            $out .= ' /' . $key . ' ' . $mask['gs_n'] . ' 0 R';
+            $out .= ' /' . $key . ' ' . $gsOid . ' 0 R';
+        }
+
+        return $out;
+    }
+
+    /**
+     * Merge extra entries into a named dictionary of a resources fragment.
+     *
+     * The named dictionary is created when the fragment does not hold it yet.
+     *
+     * @param string $dict Resources fragment, possibly empty.
+     * @param string $name Name of the dictionary, e.g. 'ExtGState'.
+     * @param string $entries Entries to add, e.g. ' /MSK_A0 7 0 R'.
+     */
+    protected function mergeResourceEntries(string $dict, string $name, string $entries): string
+    {
+        if ($entries === '') {
+            return $dict;
+        }
+
+        $open = ' /' . $name . ' <<';
+        $pos = \strpos($dict, $open);
+        $close = $pos === false ? false : \strpos($dict, '>>', $pos + \strlen($open));
+        if ($close === false) {
+            return $dict . $open . $entries . ' >>' . "\n";
+        }
+
+        return \rtrim(\substr($dict, 0, $close)) . $entries . ' ' . \substr($dict, $close);
+    }
+
+    /**
+     * Get the PDF output string for the entries of the given Pattern resources.
+     *
+     * @param array<string> $keys Pattern IDs.
+     */
+    protected function getPatternEntriesByKeys(array $keys): string
+    {
+        $out = '';
+        foreach ($keys as $pid) {
+            $patternN = $this->patterns[$pid]['n'] ?? 0;
+            if ($patternN === 0) {
+                continue;
+            }
+
+            $out .= ' /' . $pid . ' ' . $patternN . ' 0 R';
         }
 
         return $out;
@@ -1706,7 +1843,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     {
         $fontNames = [];
         $matchFont = [];
-        $fontMatchCount = \preg_match_all('/\/(F[0-9]+)\s+[0-9\.\-]+\s+Tf\b/', $stream, $matchFont);
+        $fontMatchCount = \preg_match_all(
+            '/\/(F[0-9]+)[\t\n\x0B\f\r ]+[0-9\.\-]+[\t\n\x0B\f\r ]+Tf(?![0-9A-Za-z_])/',
+            $stream,
+            $matchFont,
+        );
         if ($fontMatchCount !== false && $fontMatchCount > 0) {
             foreach ($matchFont[1] ?? [] as $name) {
                 $fontNames[$name] = true;
@@ -1715,16 +1856,48 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $extgstate = [];
         $matchGs = [];
-        $gsMatchCount = \preg_match_all('/\/GS([0-9]+)\s+gs\b/', $stream, $matchGs);
+        $gsMatchCount = \preg_match_all('/\/GS([0-9]+)[\t\n\x0B\f\r ]+gs(?![0-9A-Za-z_])/', $stream, $matchGs);
         if ($gsMatchCount !== false && $gsMatchCount > 0) {
             foreach ($matchGs[1] ?? [] as $idx) {
                 $extgstate[(int) $idx] = true;
             }
         }
 
+        // The ExtGState resources that carry a name of their own: the SVG masks
+        // and the soft masks of the gradients.
+        $gsNames = [];
+        $matchGsName = [];
+        $gsNameCount = \preg_match_all(
+            '/\/([A-Za-z][A-Za-z0-9_]*)[\t\n\x0B\f\r ]+gs(?![0-9A-Za-z_])/',
+            $stream,
+            $matchGsName,
+        );
+        if ($gsNameCount !== false && $gsNameCount > 0) {
+            foreach ($matchGsName[1] ?? [] as $name) {
+                if (\preg_match('/^GS[0-9]+$/', $name) === 1) {
+                    continue;
+                }
+
+                $gsNames[$name] = true;
+            }
+        }
+
+        $patternNames = [];
+        $matchPtn = [];
+        $ptnCount = \preg_match_all(
+            '/\/Pattern[\t\n\x0B\f\r ]+cs[\t\n\x0B\f\r ]+\/(PTN_[0-9A-F]+)[\t\n\x0B\f\r ]+scn(?![0-9A-Za-z_])/',
+            $stream,
+            $matchPtn,
+        );
+        if ($ptnCount !== false && $ptnCount > 0) {
+            foreach ($matchPtn[1] ?? [] as $name) {
+                $patternNames[$name] = true;
+            }
+        }
+
         $gradient = [];
         $matchSh = [];
-        $shMatchCount = \preg_match_all('/\/Sh([0-9]+)\s+sh\b/', $stream, $matchSh);
+        $shMatchCount = \preg_match_all('/\/Sh([0-9]+)[\t\n\x0B\f\r ]+sh(?![0-9A-Za-z_])/', $stream, $matchSh);
         if ($shMatchCount !== false && $shMatchCount > 0) {
             foreach ($matchSh[1] ?? [] as $idx) {
                 $gradient[(int) $idx] = true;
@@ -1733,7 +1906,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $spotNames = [];
         $matchCs = [];
-        $csMatchCount = \preg_match_all('/\/(CS[0-9]+)\s+[cC]s\b/', $stream, $matchCs);
+        // The stroking operator is the upper-case form of the non-stroking one.
+        $csMatchCount = \preg_match_all('/\/(CS[0-9]+)[\t\n\x0B\f\r ]+(?:cs|CS)(?![0-9A-Za-z_])/', $stream, $matchCs);
         if ($csMatchCount !== false && $csMatchCount > 0) {
             foreach ($matchCs[1] ?? [] as $name) {
                 $spotNames[$name] = true;
@@ -1743,11 +1917,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         $imageKeys = [];
         $xobjectKeys = [];
         $matchDo = [];
-        $doMatchCount = \preg_match_all('/\/([A-Za-z0-9_]+)\s+Do\b/', $stream, $matchDo);
+        $doMatchCount = \preg_match_all('/\/([A-Za-z0-9_]+)[\t\n\x0B\f\r ]+Do(?![0-9A-Za-z_])/', $stream, $matchDo);
         if ($doMatchCount !== false && $doMatchCount > 0) {
             foreach ($matchDo[1] ?? [] as $key) {
                 $imgm = [];
-                if (\preg_match('/^I([0-9]+)$/', $key, $imgm) === 1) {
+                if (\preg_match('/^IMG(?:plain|mask)?([0-9]+)$/', $key, $imgm) === 1) {
                     $imageKeys[(int) ($imgm[1] ?? '0')] = true;
                     continue;
                 }
@@ -1764,12 +1938,17 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $out .= ' /Font <<' . $fontEntries . ' >>';
             }
         }
-        if ($extgstate !== []) {
-            $out .= $this->graph->getOutExtGStateResourcesByKeys(\array_map('intval', \array_keys($extgstate)));
-        }
-        if ($gradient !== []) {
-            $out .= $this->graph->getOutGradientResourcesByKeys(\array_map('intval', \array_keys($gradient)));
-        }
+        $out .= $this->mergeResourceEntries(
+            $this->graph->getOutExtGStateResourcesByKeys(\array_map('intval', \array_keys($extgstate))),
+            'ExtGState',
+            $this->getSVGMaskExtGStateEntriesByKeys(\array_keys($gsNames))
+                . $this->extractNamedResourceRefs($this->graph->getOutExtGStateResources(), \array_keys($gsNames)),
+        );
+        $out .= $this->mergeResourceEntries(
+            $this->graph->getOutGradientResourcesByKeys(\array_map('intval', \array_keys($gradient))),
+            'Pattern',
+            $this->getPatternEntriesByKeys(\array_keys($patternNames)),
+        );
         if ($spotNames !== []) {
             $spotEntries = $this->extractNamedResourceRefs(
                 $this->color->getPdfSpotResources(),
@@ -1815,7 +1994,13 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             }
 
             $match = [];
-            $ok = \preg_match('/\/' . \preg_quote($name, '/') . '\s+([0-9]+)\s+0\s+R\b/', $dict, $match);
+            $ok = \preg_match(
+                '/\/'
+                . \preg_quote($name, '/')
+                . '[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+0[\t\n\x0B\f\r ]+R(?![0-9A-Za-z_])/',
+                $dict,
+                $match,
+            );
             if ($ok === 1 && isset($match[1])) {
                 $out .= ' /' . $name . ' ' . (int) $match[1] . ' 0 R';
             }
@@ -2121,6 +2306,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         foreach ($entryOrder as $entryIdx => $entry) {
+            $entryLang = $entry['lang'] ?? null;
             $entry += ['annots' => [], 'alt' => '', 'attr' => [], 'bbox' => [], 'refpid' => -1];
             $entryPageOid = $pidToOid[$entry['pid']] ?? 0;
             $kidsOut = '';
@@ -2135,7 +2321,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 // Each MCID belongs to the page it was emitted on, which may differ from
                 // the element's own page when the element's content wraps across a page
                 // break. Use the kid's page so the MCR /Pg and ParentTree key are correct.
-                $kidPageOid = $pidToOid[$kid['pid']] ?? $entryPageOid;
+                $kidPageOid = isset($kid['pid']) ? $pidToOid[$kid['pid']] ?? $entryPageOid : $entryPageOid;
                 if ($kidPageOid > 0) {
                     $parentTreeMap[$kidPageOid][$mcid] = $elemOids[$entryIdx] ?? 0;
                 }
@@ -2163,9 +2349,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             // page, so it is skipped when the element content is split by a page break.
             $bboxPairs = '';
             $bbox = $entry['bbox'];
-            if (\count($bbox) === 4 && $this->isSinglePageStructElem($structLog, $entryIdx)) {
-                [$bllx, $blly, $burx, $bury] = $bbox;
-                $bboxPairs = \sprintf(' /O /Layout /BBox [%F %F %F %F]', $bllx, $blly, $burx, $bury);
+            if (isset($bbox[0], $bbox[1], $bbox[2], $bbox[3]) && $this->isSinglePageStructElem($structLog, $entryIdx)) {
+                $bboxPairs = \sprintf(' /O /Layout /BBox [%F %F %F %F]', $bbox[0], $bbox[1], $bbox[2], $bbox[3]);
             }
 
             $attrOut = '';
@@ -2188,7 +2373,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     }
 
                     if ($akey === 'Headers') {
-                        $headerIds = \preg_split('/[\s,]+/', \trim($aval));
+                        $headerIds = \preg_split('/[\t\n\x0B\f\r ,]+/', \trim($aval));
                         if ($headerIds === false) {
                             continue;
                         }
@@ -2217,7 +2402,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                         continue;
                     }
 
-                    $attrPairs .= ' /' . $akey . ' /' . $aval;
+                    $attrPairs .=
+                        ' /' . $this->encrypt->encodeNameObject($akey) . ' /' . $this->encrypt->encodeNameObject($aval);
                 }
             }
 
@@ -2238,6 +2424,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 $refOut = ' /Ref [' . $refElemOid . ' 0 R]';
             }
 
+            $langOut = '';
+            if ($entryLang !== null) {
+                $langOut = ' /Lang ' . $this->getOutTextString($entryLang, $elemOids[$entryIdx] ?? 0, true);
+            }
+
             $parentOid = $entryParentOid[$entryIdx] ?? $documentStructElemOid;
             $structElemsOut .=
                 ($elemOids[$entryIdx] ?? 0)
@@ -2251,6 +2442,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 . ' /Pg '
                 . $entryPageOid
                 . ' 0 R'
+                . $langOut
                 . $altOut
                 . $idOut
                 . $attrOut
@@ -2708,7 +2900,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $out .= ' ]';
         if ($defval !== '') {
-            $out .= ' /V /' . $defval;
+            $out .= ' /V /' . $this->encrypt->encodeNameObject($defval);
         }
 
         $out .= ' >>' . "\n" . 'endobj' . "\n";
@@ -2733,7 +2925,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     {
         $out = '';
         if (isset($annot['opt']['as']) && \is_string($annot['opt']['as']) && $annot['opt']['as'] !== '') {
-            $out .= ' /AS /' . $annot['opt']['as'];
+            $out .= ' /AS /' . $this->encrypt->encodeNameObject($annot['opt']['as']);
         }
 
         if (!$this->hasAnnotationAppearance($annot['opt']) || !isset($annot['opt']['ap'])) {
@@ -2746,25 +2938,20 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $out .= (string) $annot['opt']['ap'];
         } else {
             foreach (\array_keys($annot['opt']['ap']) as $mode) {
-                if (!\is_string($mode)) {
+                // $mode can be: n = normal; r = rollover; d = down;
+                if (!\is_string($mode) || !\in_array(\strtoupper($mode), self::AP_MODES, true)) {
                     continue;
                 }
 
-                // $mode can be: n = normal; r = rollover; d = down;
-                $out .= ' /' . \strtoupper($mode);
                 if (\is_array($annot['opt']['ap'][$mode] ?? null)) {
-                    $out .= ' <<';
+                    $out .= ' /' . \strtoupper($mode) . ' <<';
                     foreach (\array_keys($annot['opt']['ap'][$mode]) as $apstate) {
-                        if (!\is_string($apstate)) {
-                            continue;
-                        }
-
                         if (!\is_string($annot['opt']['ap'][$mode][$apstate] ?? null)) {
                             continue;
                         }
                         // reference to XObject that define the appearance for this mode-state
                         $apxout .= $this->getOutAPXObjects($width, $height, $annot['opt']['ap'][$mode][$apstate]);
-                        $out .= ' /' . $apstate . ' ' . $this->pon . ' 0 R';
+                        $out .= ' /' . $this->encrypt->encodeNameObject((string) $apstate) . ' ' . $this->pon . ' 0 R';
                     }
 
                     $out .= ' >>';
@@ -2775,7 +2962,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
                     // reference to XObject that define the appearance for this mode
                     $apxout .= $this->getOutAPXObjects($width, $height, $annot['opt']['ap'][$mode]);
-                    $out .= ' ' . $this->pon . ' 0 R';
+                    $out .= ' /' . \strtoupper($mode) . ' ' . $this->pon . ' 0 R';
                 }
             }
         }
@@ -3036,6 +3223,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected function getAnnotationBorder(array $annot): string
     {
         $out = '';
+        // @mago-expect analysis:redundant-comparison
+        // @mago-expect analysis:redundant-logical-operation
         if (isset($annot['opt']['bs']) && $annot['opt']['bs'] !== []) {
             $out .= ' /BS << /Type /Border';
             $out .= ' /W ' . (int) $annot['opt']['bs']['w'];
@@ -3356,8 +3545,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     break;
                 case '%': // embedded PDF file
                     if (!$this->pdfx) {
-                        $filename = \basename(\substr($annot['txt'], 1));
-                        $embeddedAction = $this->embeddedfiles[$filename]['a'] ?? null;
+                        $filename = $this->getEmbeddedFileKey(\substr($annot['txt'], 1));
+                        $embeddedAction = $filename === null ? null : $this->embeddedfiles[$filename]['a'] ?? null;
                         if (!\is_numeric($embeddedAction)) {
                             break;
                         }
@@ -3371,15 +3560,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     }
                     break;
                 case '*': // embedded generic file
-                    $filename = \basename(\substr($annot['txt'], 1));
-                    $jsa =
-                        'var D=event.target.doc;var MyData=D.dataObjects;for (var i in MyData) if (MyData[i].path=="'
-                        . $filename
-                        . '")'
-                        . ' D.exportDataObject( { cName : MyData[i].name, nLaunch : 2});';
+                    $filename = $this->getEmbeddedFileKey(\substr($annot['txt'], 1));
                     // ISO 19005 permits no JavaScript action: PDF/A-1 and PDF/A-2 refuse
                     // embedded files altogether, PDF/A-3 accepts them but not this action.
-                    if (!$this->pdfx && $this->pdfa === 0 && $this->pdfuaMode === '') {
+                    if ($filename !== null && !$this->pdfx && $this->pdfa === 0 && $this->pdfuaMode === '') {
+                        $jsa = $this->getEmbeddedFileLaunchJs($filename);
                         $out .= ' /A << /S /JavaScript /JS ' . $this->getOutTextString($jsa, $oid, true) . ' >>';
                     }
                     break;
@@ -3394,7 +3579,10 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                         if (isset($parsedUrl['fragment'])) {
                             // check for named destination
                             $tmp = \explode('=', $parsedUrl['fragment']);
-                            $dest = '(' . (\count($tmp) === 2 ? $tmp[1] ?? '' : $tmp[0]) . ')';
+                            $dest = $this->encrypt->escapeDataString(
+                                \count($tmp) === 2 ? $tmp[1] ?? '' : $tmp[0],
+                                $oid,
+                            );
                         }
 
                         if (!$this->pdfx) {
@@ -3703,11 +3891,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $measure = '';
             $measureOpt = $annot['opt']['measure'];
             if (isset($measureOpt['type']) && $measureOpt['type'] !== '') {
-                $measure .= ' /Type /' . $measureOpt['type'];
+                $measure .= ' /Type /' . $this->encrypt->encodeNameObject($measureOpt['type']);
             }
 
             if (isset($measureOpt['subtype']) && $measureOpt['subtype'] !== '') {
-                $measure .= ' /Subtype /' . $measureOpt['subtype'];
+                $measure .= ' /Subtype /' . $this->encrypt->encodeNameObject($measureOpt['subtype']);
             }
 
             if ($measure !== '') {
@@ -3771,11 +3959,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             $measure = '';
             $measureOpt = $annot['opt']['measure'];
             if (isset($measureOpt['type']) && $measureOpt['type'] !== '') {
-                $measure .= ' /Type /' . $measureOpt['type'];
+                $measure .= ' /Type /' . $this->encrypt->encodeNameObject($measureOpt['type']);
             }
 
             if (isset($measureOpt['subtype']) && $measureOpt['subtype'] !== '') {
-                $measure .= ' /Subtype /' . $measureOpt['subtype'];
+                $measure .= ' /Subtype /' . $this->encrypt->encodeNameObject($measureOpt['subtype']);
             }
 
             if ($measure !== '') {
@@ -4754,13 +4942,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $root_oid = $this->processPrevNextBookmarks();
         $first_oid = $this->pon + 1;
-        $nltags = '/<br[\s]?\/>|<\/(blockquote|dd|dl|div|dt|h1|h2|h3|h4|h5|h6|hr|li|ol|p|pre|ul|tcpdf|table|tr|td)>/si';
+        $nltags = '/<br[\t\n\x0B\f\r ]?\/>|<\/(blockquote|dd|dl|div|dt|h1|h2|h3|h4|h5|h6|hr|li|ol|p|pre|ul|tcpdf|table|tr|td)>/s';
         $out = '';
         foreach ($this->outlines as $outline) {
             // covert HTML title to string
-            $search = [$nltags, "/[\r]+/si", "/[\n]+/si"];
-            $replace = ["\n", '', "\n"];
-            $title = \preg_replace($search, $replace, $outline['t']);
+            $title = AsciiPattern::replaceFolded($nltags, static fn(): string => "\n", $outline['t']);
+            $title = $title === null ? null : \preg_replace(["/[\r]+/s", "/[\n]+/s"], ['', "\n"], $title);
             if ($title === null) {
                 $title = '';
             }
@@ -4819,8 +5006,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                     case '%':
                         // embedded PDF file
                         if (!$this->pdfx) {
-                            $filename = \basename(\substr($outline['u'], 1));
-                            $embeddedAction = $this->embeddedfiles[$filename]['a'] ?? null;
+                            $filename = $this->getEmbeddedFileKey(\substr($outline['u'], 1));
+                            $embeddedAction = $filename === null ? null : $this->embeddedfiles[$filename]['a'] ?? null;
                             if (!\is_numeric($embeddedAction)) {
                                 break;
                             }
@@ -4835,14 +5022,9 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                         break;
                     case '*':
                         // embedded generic file
-                        $filename = \basename(\substr($outline['u'], 1));
-                        $jsa =
-                            'var D=event.target.doc;var MyData=D.dataObjects;'
-                            . 'for (var i in MyData) if (MyData[i].path=="'
-                            . $filename
-                            . '")'
-                            . ' D.exportDataObject( { cName : MyData[i].name, nLaunch : 2});';
-                        if (!$this->pdfx && $this->pdfuaMode === '') {
+                        $filename = $this->getEmbeddedFileKey(\substr($outline['u'], 1));
+                        if ($filename !== null && !$this->pdfx && $this->pdfa === 0 && $this->pdfuaMode === '') {
+                            $jsa = $this->getEmbeddedFileLaunchJs($filename);
                             $out .= ' /A <</S /JavaScript /JS ' . $this->getOutTextString($jsa, $oid, true) . '>>';
                         }
                         break;
@@ -4918,6 +5100,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getOutSignatureFields(): string
     {
+        // @mago-expect analysis:impossible-condition
+        // @mago-expect analysis:redundant-comparison
         if ($this->signature === []) {
             return '';
         }
@@ -4957,6 +5141,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getSignatureWidgetFields(): array
     {
+        // @mago-expect analysis:impossible-condition
+        // @mago-expect analysis:redundant-comparison
         if ($this->signature === []) {
             return [];
         }
@@ -4982,6 +5168,8 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getSignatureWidgetDescriptions(): array
     {
+        // @mago-expect analysis:impossible-condition
+        // @mago-expect analysis:redundant-comparison
         if ($this->signature === []) {
             return [];
         }
@@ -5269,7 +5457,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function certificatePemToDer(string $pem): string
     {
-        $stripped = (string) \preg_replace('/-----[^-]+-----|\s+/', '', $pem);
+        $stripped = (string) \preg_replace('/-----[^-]+-----|[\t\n\x0B\f\r ]+/', '', $pem);
         $der = \base64_decode($stripped, true);
         if ($der === false) {
             throw new PdfException('Unable to decode a certificate');
@@ -5487,7 +5675,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $unique = [];
         foreach ($inputs as $pem) {
-            $unique[\preg_replace('/\s+/', '', $pem) ?? $pem] = $pem;
+            $unique[\preg_replace('/[\t\n\x0B\f\r ]+/', '', $pem) ?? $pem] = $pem;
         }
 
         return \array_values($unique);
@@ -5697,7 +5885,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
     protected function extractPemCertificates(string $content): array
     {
         $matches = [];
-        $pattern = '/-----BEGIN CERTIFICATE-----(?:.|\n|\r)+?-----END CERTIFICATE-----/';
+        $pattern = '/-----BEGIN CERTIFICATE-----.+?-----END CERTIFICATE-----/s';
         $ok = \preg_match_all($pattern, $content, $matches);
         if ($ok === false) {
             throw new PdfException('Unable to parse certificate bundle');
@@ -5782,6 +5970,11 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
             throw new PdfException('Invalid TSA host');
         }
 
+        // Both transports only reach an allowlisted HTTP(S) host.
+        if (!$this->file->isValidURL($host)) {
+            throw new PdfException('invalid URL');
+        }
+
         $timeout = (int) $this->sigtimestamp['timeout'];
         if ($timeout < 1) {
             $timeout = 5;
@@ -5812,7 +6005,16 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 CURLOPT_CONNECTTIMEOUT => $timeout,
                 CURLOPT_SSL_VERIFYPEER => $this->sigtimestamp['verify_peer'],
                 CURLOPT_SSL_VERIFYHOST => $this->sigtimestamp['verify_peer'] ? 2 : 0,
+                // Do not follow redirects: only the initial host is validated
+                // against the allowlist.
+                CURLOPT_FOLLOWLOCATION => false,
             ];
+
+            if (\defined('CURLOPT_PROTOCOLS_STR')) {
+                $opts[CURLOPT_PROTOCOLS_STR] = 'http,https';
+            } else {
+                $opts[CURLOPT_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+            }
 
             if ($this->sigtimestamp['cert'] !== '') {
                 $opts[CURLOPT_CAINFO] = $this->sigtimestamp['cert'];
@@ -5846,10 +6048,6 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
                 'cafile' => $this->sigtimestamp['cert'],
             ],
         ]);
-
-        if (!$this->file->isValidURL($host)) {
-            throw new PdfException('invalid URL');
-        }
 
         \set_error_handler(static fn(): bool => true);
         $response = \file_get_contents($host, false, $context);
@@ -5933,7 +6131,7 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
      */
     protected function getSignatureRectSize(string $rect): array
     {
-        $coords = \preg_split('/\s+/', \trim($rect));
+        $coords = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($rect));
         if ($coords === false || \count($coords) < 4) {
             return [0.0, 0.0];
         }
@@ -5993,12 +6191,12 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
 
         $out = '';
         if (isset($appearance['as']) && $appearance['as'] !== '') {
-            $out .= ' /AS /' . $appearance['as'];
+            $out .= ' /AS /' . $this->encrypt->encodeNameObject($appearance['as']);
         }
 
         if (!$this->hasAnnotationAppearance($appearance) && isset($appearance['xobj']) && $appearance['xobj'] !== '') {
             $xobjid = $appearance['xobj'];
-            if (isset($this->xobjects[$xobjid]) && $this->xobjects[$xobjid] !== []) {
+            if (isset($this->xobjects[$xobjid])) {
                 $xobjw = $this->xobjects[$xobjid]['w'];
                 $xobjh = $this->xobjects[$xobjid]['h'];
                 if ($xobjw > 0.0 && $xobjh > 0.0) {
@@ -6028,12 +6226,16 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         foreach ($apValue as $mode => $def) {
+            if (!\in_array(\strtoupper($mode), self::AP_MODES, true)) {
+                continue;
+            }
+
             $out .= ' /' . \strtoupper($mode);
             if (\is_array($def)) {
                 $out .= ' <<';
                 foreach ($def as $apstate => $stream) {
                     $apxout .= $this->getOutAPXObjects($width, $height, $stream);
-                    $out .= ' /' . $apstate . ' ' . $this->pon . ' 0 R';
+                    $out .= ' /' . $this->encrypt->encodeNameObject(\strval($apstate)) . ' ' . $this->pon . ' 0 R';
                 }
 
                 $out .= ' >>';
@@ -6117,28 +6319,6 @@ abstract class Output extends \Com\Tecnick\Pdf\MetaInfo
         }
 
         $out .= $this->image->getXobjectDict();
-
-        return $out . ' >>';
-    }
-
-    /**
-     * Get the PDF output string for Pattern resources dictionary.
-     */
-    protected function getPatternDict(): string
-    {
-        if ($this->patterns === []) {
-            return '';
-        }
-
-        $out = ' /Pattern <<';
-        foreach ($this->patterns as $pid => $pattern) {
-            $pattern += ['n' => 0];
-            $patternN = $pattern['n'];
-            if ($patternN === 0) {
-                continue;
-            }
-            $out .= ' /' . $pid . ' ' . $patternN . ' 0 R';
-        }
 
         return $out . ' >>';
     }

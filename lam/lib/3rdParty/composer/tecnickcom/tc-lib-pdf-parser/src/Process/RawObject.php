@@ -484,7 +484,7 @@ abstract class RawObject
                 $this->streamDataStart = $offset;
                 if (
                     \preg_match(
-                        '/(endstream)[\x09\x0a\x0c\x0d\x20]/isU',
+                        '/([Ee][Nn][Dd][Ss][Tt][Rr][Ee][Aa][Mm])[\x09\x0a\x0c\x0d\x20]/sU',
                         $this->pdfdata,
                         $matches,
                         PREG_OFFSET_CAPTURE,
@@ -520,7 +520,11 @@ abstract class RawObject
     {
         $matches = [];
         if (
-            \preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+R/iU', \substr($this->pdfdata, $offset, 33), $matches) === 1
+            \preg_match(
+                '/^([0-9]+)[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+[Rr]/U',
+                \substr($this->pdfdata, $offset, 33),
+                $matches,
+            ) === 1
             && ($matches[0] ?? null) !== null
             && ($matches[1] ?? null) !== null
             && ($matches[2] ?? null) !== null
@@ -530,7 +534,11 @@ abstract class RawObject
             $offset += \strlen($matches[0]);
             $objval = (int) $matches[1] . '_' . (int) $matches[2];
         } elseif (
-            \preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+obj/iU', \substr($this->pdfdata, $offset, 33), $matches) === 1
+            \preg_match(
+                '/^([0-9]+)[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+[Oo][Bb][Jj]/U',
+                \substr($this->pdfdata, $offset, 33),
+                $matches,
+            ) === 1
             && ($matches[0] ?? null) !== null
             && ($matches[1] ?? null) !== null
             && ($matches[2] ?? null) !== null

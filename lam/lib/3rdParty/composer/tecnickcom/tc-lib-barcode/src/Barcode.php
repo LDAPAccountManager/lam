@@ -168,15 +168,9 @@ class Barcode
         $type = \array_shift($params);
 
         return (
-            $this->getLinearObj($type, $code, $width, $height, $color, $params, $padding) ?? $this->getSquareObj(
-                $type,
-                $code,
-                $width,
-                $height,
-                $color,
-                $params,
-                $padding,
-            ) ?? throw new BarcodeException('Unsupported barcode type: ' . $type)
+            $this->getLinearObj($type, $code, $width, $height, $color, $params, $padding)
+            ?? $this->getSquareObj($type, $code, $width, $height, $color, $params, $padding)
+            ?? throw new BarcodeException('Unsupported barcode type: ' . $type)
         );
     }
 

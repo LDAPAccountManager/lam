@@ -143,7 +143,7 @@ class RCFour
             $posb = ($posb + $val) & 255;
             $rc4[$posa] = $rc4[$posb] ?? 0;
             $rc4[$posb] = $val;
-            $chunk[] = $rc4[(($rc4[$posa] ?? 0) + $val) & 255] ?? 0;
+            $chunk[] = $rc4[($rc4[$posa] + $val) & 255] ?? 0;
             if (\count($chunk) === self::CHUNKSIZE) {
                 $keystream .= \pack('C*', ...$chunk);
                 $chunk = [];

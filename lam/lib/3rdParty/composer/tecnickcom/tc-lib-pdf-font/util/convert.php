@@ -132,12 +132,12 @@ if (empty($argv)) {
 $autoloadFound = false;
 foreach (
     array(
-        \dirname(__DIR__) . '/vendor/autoload.php',    // standalone repository checkout
-        \dirname(__DIR__, 4) . '/vendor/autoload.php', // installed under <project>/vendor/tecnickcom/tc-lib-pdf-font
-    ) as $autoloadFile
+        \dirname(__DIR__) . '/vendor', // standalone repository checkout
+        \dirname(__DIR__, 3),          // installed under <vendor-dir>/tecnickcom/tc-lib-pdf-font
+    ) as $vendorDir
 ) {
-    if (\is_file($autoloadFile)) {
-        require_once $autoloadFile;
+    if (\is_file($vendorDir . '/autoload.php') && \is_file($vendorDir . '/composer/installed.json')) {
+        require_once $vendorDir . '/autoload.php';
         $autoloadFound = true;
         break;
     }

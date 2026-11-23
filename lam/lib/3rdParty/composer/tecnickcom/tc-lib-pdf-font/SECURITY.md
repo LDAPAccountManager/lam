@@ -49,6 +49,8 @@ Integrators are responsible for sanitising input **before** passing it to the li
 - **Validate and sanitise all user-supplied data**. Use a dedicated sanitiser when accepting content from end users.
 - **Keep dependencies up to date.** Run `composer update` regularly and monitor advisories via [Packagist Security Advisories](https://packagist.org/packages/tecnickcom/tc-lib-pdf-font) or tools such as `composer audit`.
 - **Pin versions in production.** Use `composer.lock` and review changes on every update.
+- **Restrict font file access.** Font files outside the package font directories are read through the file helper passed to the library, which only reads paths inside its allowlist. Files inside the package input directory (`fonts/`) and the generated font set (`target/fonts/`) are read through a separate file helper whose allowlist is those two directories; it is used only to read font files and does not change the allowlist of the file helper passed to the library. Font family names are reduced to `[a-z0-9_,]` before lookup, so they cannot carry a path.
+- **Choose where imported fonts are written.** `Import` writes only to the given output path or to a writable `K_PATH_FONTS`; it does not fall back to another directory.
 
 ---
 

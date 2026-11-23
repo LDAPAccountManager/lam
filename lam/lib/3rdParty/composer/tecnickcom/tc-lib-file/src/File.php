@@ -569,7 +569,7 @@ class File
             return false;
         }
 
-        if (\preg_match('%^https?://%i', $location) === 1) {
+        if (\preg_match('%^[Hh][Tt][Tt][Pp][Ss]?://%', $location) === 1) {
             return $location;
         }
 

@@ -19,7 +19,6 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\Font;
 
 use Com\Tecnick\File\Byte;
-use Com\Tecnick\File\Dir;
 use Com\Tecnick\File\Exception as FileException;
 use Com\Tecnick\File\File as ObjFile;
 use Com\Tecnick\Pdf\Font\Exception as FontException;
@@ -78,7 +77,7 @@ class Import
      *
      * @param string $file        Font file to process
      * @param string $output_path Output path for generated font files (must be writeable by the web server).
-     *                            Leave empty for the default font folder.
+     *                            Leave empty for the K_PATH_FONTS directory, which must then be writable.
      * @param string|FontType $type Font type (or FontType enum case). Leave empty for autodetect mode.
      *                            Valid values are:
      *                            Core (AFM - Adobe Font Metrics) TrueTypeUnicode TrueType
@@ -527,6 +526,8 @@ class Import
             $out .= ',"ctgu":{' . \substr($ctgustr, 1) . '}';
         }
 
+        $out .= $this->getVariationSequencesJson();
+
         // store compressed CIDToGIDMap
         FileWriter::write(
             $this->fileHelper,
@@ -535,6 +536,37 @@ class Import
         );
 
         return $out;
+    }
+
+    /**
+     * Returns the definition file members of the variation sequences: the glyph count of
+     * the font, the sequences and the widths of their glyphs, or an empty string when the
+     * font maps no sequence.
+     */
+    private function getVariationSequencesJson(): string
+    {
+        if ($this->fdt['uvs'] === []) {
+            return '';
+        }
+
+        $out = '';
+        foreach ($this->fdt['uvs'] as $base => $selectors) {
+            $seq = '';
+            foreach ($selectors as $selector => $gid) {
+                $seq .= ',"' . $selector . '":' . $gid;
+            }
+
+            $out .= ',"' . $base . '":{' . \substr($seq, 1) . '}';
+        }
+
+        return (
+            ',"numGlyphs":'
+            . $this->fdt['numGlyphs']
+            . ',"uvs":{'
+            . \substr($out, 1)
+            . '}'
+            . self::getWidthMapJson('gw', $this->fdt['gw'])
+        );
     }
 
     /**
@@ -606,9 +638,10 @@ class Import
      * Find the path where to store the processed font.
      *
      * @param string $output_path Output path for generated font files (must be writeable by the web server).
-     *                            Leave empty for the default font folder (K_PATH_FONTS).
+     *                            Leave empty for the K_PATH_FONTS directory.
      *
-     * @throws FontException if an explicit output path cannot be written to.
+     * @throws FontException if the explicit output path, or K_PATH_FONTS when no path is given,
+     *                       is not a writable directory.
      */
     protected function findOutputPath(string $output_path = ''): string
     {
@@ -621,20 +654,12 @@ class Import
             return self::withTrailingSlash($output_path);
         }
 
-        if (\defined('K_PATH_FONTS')) {
-            $kpathfonts = (string) \constant('K_PATH_FONTS');
-            if ($kpathfonts !== '' && \is_writable($kpathfonts)) {
-                return self::withTrailingSlash($kpathfonts);
-            }
+        $kpathfonts = FontPaths::getConfigPath();
+        if ($kpathfonts !== '' && \is_dir($kpathfonts) && \is_writable($kpathfonts)) {
+            return self::withTrailingSlash($kpathfonts);
         }
 
-        $dirobj = new Dir();
-        $dir = $dirobj->findParentDir('fonts', __DIR__);
-        if ($dir === '') {
-            $dir = \sys_get_temp_dir();
-        }
-
-        return self::withTrailingSlash($dir);
+        throw new FontException('No output path given and K_PATH_FONTS is not a writable directory');
     }
 
     /**

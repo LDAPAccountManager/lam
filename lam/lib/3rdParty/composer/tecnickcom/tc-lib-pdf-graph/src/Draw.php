@@ -753,7 +753,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
             'lineWidth' => \max(0.5 / $this->kunit, $rad / 30),
             'lineCap' => 'butt',
             'lineJoin' => 'miter',
-            'miterLimit' => 10.0 / $this->kunit,
+            'miterLimit' => 10.0,
             'dashArray' => [],
             'dashPhase' => 0.0,
             'lineColor' => $lineColor,

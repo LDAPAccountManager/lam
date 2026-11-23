@@ -59,6 +59,16 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
     protected array $xrefdone = [];
 
     /**
+     * Return the integer value of a raw token value, or 0 when it is not a string.
+     *
+     * @param mixed $val Raw token value.
+     */
+    protected function tokenToInt(mixed $val): int
+    {
+        return \is_string($val) ? (int) $val : 0;
+    }
+
+    /**
      * Store a cross-reference entry, unless a newer section already decided the object.
      *
      * A section overrides the sections it chains to via /Prev (PDF 32000-1 7.5.6) and the
@@ -225,16 +235,16 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
                     break;
                 case 'Size':
                     if (\is_array($next) && $next[0] === 'numeric') {
-                        $state['size'] = (int) $next[1];
+                        $state['size'] = $this->tokenToInt($next[1]);
                     }
 
                     break;
                 case 'W':
                     // number of bytes (in the decoded stream) of the corresponding field
                     if (\is_array($next)) {
-                        $wbt[0] = (int) ($next[1][0][1] ?? 0);
-                        $wbt[1] = (int) ($next[1][1][1] ?? 0);
-                        $wbt[2] = (int) ($next[1][2][1] ?? 0);
+                        $wbt[0] = $this->tokenToInt($next[1][0][1] ?? null);
+                        $wbt[1] = $this->tokenToInt($next[1][1][1] ?? null);
+                        $wbt[2] = $this->tokenToInt($next[1][2][1] ?? null);
                     }
                     break;
                 case 'DecodeParms':
@@ -286,8 +296,8 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
                 throw new PPException('Invalid xref stream Index array: expected numeric values');
             }
 
-            $startObj = (int) $startToken[1];
-            $count = (int) $countToken[1];
+            $startObj = $this->tokenToInt($startToken[1]);
+            $count = $this->tokenToInt($countToken[1]);
             if ($startObj < 0 || $count < 0) {
                 throw new PPException('Invalid xref stream Index array: values must be non-negative');
             }
@@ -330,7 +340,7 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
     {
         if (\is_array($next) && $next[0] === 'numeric') {
             // get previous xref offset
-            $prevxref = (int) $next[1];
+            $prevxref = $this->tokenToInt($next[1]);
         }
     }
 
@@ -374,7 +384,7 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
                 default => null,
             };
             if ($key !== null) {
-                $state[$key] = (int) $nextDecpar[1];
+                $state[$key] = $this->tokenToInt($nextDecpar[1]);
             }
         }
 
@@ -402,7 +412,7 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
         switch ($type) {
             case 'Size':
                 if (\is_array($next) && $next[0] === 'numeric') {
-                    $xref['trailer']['size'] = (int) $next[1];
+                    $xref['trailer']['size'] = $this->tokenToInt($next[1]);
                 }
 
                 break;

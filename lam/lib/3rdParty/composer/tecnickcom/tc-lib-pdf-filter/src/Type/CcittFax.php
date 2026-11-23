@@ -164,12 +164,38 @@ class CcittFax implements \Com\Tecnick\Pdf\Filter\Type\Template
             $tiff = $this->buildTiffHeader($data);
 
             $imagick = $this->newImagick();
-            $imagick->readImageBlob($tiff);
+            $this->readTiffBlob($imagick, $tiff);
             $imagick->setImageFormat('png');
 
             return $imagick->getImageBlob();
         } catch (\ImagickException $e) {
             throw new PPException('CCITTFaxDecode: Imagick failed to decode the stream: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
+     * Read a TIFF blob into the Imagick object with LC_CTYPE set to C, then restore LC_CTYPE.
+     *
+     * ImageMagick lower-cases the format name with the C library to locate the TIFF coder module.
+     *
+     * @param \Imagick $imagick Imagick object.
+     * @param string   $tiff    Binary TIFF data.
+     *
+     * @throws \ImagickException if Imagick cannot read the data.
+     */
+    protected function readTiffBlob(\Imagick $imagick, string $tiff): void
+    {
+        $locale = \setlocale(\LC_CTYPE, '0');
+        if ($locale === false || $locale === 'C' || $locale === 'POSIX') {
+            $imagick->readImageBlob($tiff);
+            return;
+        }
+
+        \setlocale(\LC_CTYPE, 'C');
+        try {
+            $imagick->readImageBlob($tiff);
+        } finally {
+            \setlocale(\LC_CTYPE, $locale);
         }
     }
 

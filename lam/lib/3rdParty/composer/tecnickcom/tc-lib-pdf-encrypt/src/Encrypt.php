@@ -59,8 +59,8 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *                            dictionary and leaves metadata streams unencrypted. Requires mode
      *                            2, 3 or 4: for modes 0 and 1 the value is forced back to true with
      *                            an E_USER_WARNING.
-     * @param bool   $encryptEmbeddedFiles  Selects the /EFF crypt filter for V 4 and V 5. True points
-     *                            /EFF at the same filter as the other streams; false writes
+     * @param bool   $encryptEmbeddedFiles  Selects the /EFF crypt filter for V 4 and V 5. True omits
+     *                            /EFF, so embedded file streams use the /StmF filter; false writes
      *                            /EFF /Identity, and the caller must then write embedded file streams
      *                            without calling encryptString() on them.
      *
@@ -100,10 +100,10 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
         $this->encryptdata['EncryptMetadata'] = $this->resolveEncryptMetadata($encryptMetadata, $mode);
         $this->validateAndApplyMode($mode);
 
-        // ISO 32000-1 Table 21 defines EFF for V 4 and V 5 only. A reader that
-        // finds no EFF entry falls back to StmF.
-        if ($this->encryptdata['V'] >= 4) {
-            $this->encryptdata['EFF'] = $encryptEmbeddedFiles ? $this->encryptdata['StmF'] : 'Identity';
+        // ISO 32000-1 Table 20 defines EFF for V 4 and V 5 only. A reader that
+        // finds no EFF entry falls back to StmF, so EFF is written only for /Identity.
+        if ($this->encryptdata['V'] >= 4 && !$encryptEmbeddedFiles) {
+            $this->encryptdata['EFF'] = 'Identity';
         }
 
         if ($file_id === '') {

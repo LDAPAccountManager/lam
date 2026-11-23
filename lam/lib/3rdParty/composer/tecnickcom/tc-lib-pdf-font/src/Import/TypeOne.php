@@ -152,8 +152,8 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
     {
         $matches = [];
         if (
-            \preg_match('#/FontName[\s]*+\/([^\s]*+)#', $this->clearText(), $matches) !== 1
-            && \preg_match('#/FullName[\s]*+\(([^\)]*+)#', $this->clearText(), $matches) !== 1
+            \preg_match('#/FontName[\t\n\x0B\f\r ]*+\/([^\t\n\x0B\f\r ]*+)#', $this->clearText(), $matches) !== 1
+            && \preg_match('#/FullName[\t\n\x0B\f\r ]*+\(([^\)]*+)#', $this->clearText(), $matches) !== 1
         ) {
             throw new FontException('Unable to extract font name');
         }
@@ -166,9 +166,9 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
         $this->fdt['name'] = $name;
 
         $bvl = [0, 0, 0, 0];
-        if (\preg_match('#/FontBBox[\s]*+{([^}]*+)#', $this->clearText(), $matches) === 1) {
+        if (\preg_match('#/FontBBox[\t\n\x0B\f\r ]*+{([^}]*+)#', $this->clearText(), $matches) === 1) {
             // the four values may be separated by any run of whitespace, newlines included
-            $split = \preg_split('/\s+/', \trim($matches[1]), -1, PREG_SPLIT_NO_EMPTY);
+            $split = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($matches[1]), -1, PREG_SPLIT_NO_EMPTY);
             $rawbvl = \is_array($split) ? $split : [];
             $bvl = [
                 (int) ($rawbvl[0] ?? 0),
@@ -183,8 +183,11 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
         $this->fdt['Descent'] = $bvl[1];
 
         // the italic angle is a real number, so the decimal point is part of the pattern
-        $this->fdt['italicAngle'] = \preg_match('#/ItalicAngle[\s]*+([0-9\+\-\.]*+)#', $this->clearText(), $matches)
-        === 1
+        $this->fdt['italicAngle'] = \preg_match(
+            '#/ItalicAngle[\t\n\x0B\f\r ]*+([0-9\+\-\.]*+)#',
+            $this->clearText(),
+            $matches,
+        ) === 1
             ? self::roundedValue($matches[1])
             : 0;
 
@@ -193,14 +196,14 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
         }
 
         $this->fdt['underlinePosition'] = \preg_match(
-            '#/UnderlinePosition[\s]*+([0-9\+\-]*+)#',
+            '#/UnderlinePosition[\t\n\x0B\f\r ]*+([0-9\+\-]*+)#',
             $this->clearText(),
             $matches,
         ) === 1
             ? (int) $matches[1]
             : 0;
         $this->fdt['underlineThickness'] = \preg_match(
-            '#/UnderlineThickness[\s]*+([0-9\+\-]*+)#',
+            '#/UnderlineThickness[\t\n\x0B\f\r ]*+([0-9\+\-]*+)#',
             $this->clearText(),
             $matches,
         ) === 1
@@ -208,14 +211,17 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
             : 0;
 
         if (
-            \preg_match('#/isFixedPitch[\s]*+([^\s]*+)#', $this->clearText(), $matches) === 1
+            \preg_match('#/isFixedPitch[\t\n\x0B\f\r ]*+([^\t\n\x0B\f\r ]*+)#', $this->clearText(), $matches) === 1
             && $matches[1] === 'true'
         ) {
             $this->fdt['Flags'] = (int) $this->fdt['Flags'] | 1;
         }
 
         $this->fdt['weight'] = 'Book';
-        if (\preg_match('#/Weight[\s]*+\(([^\)]*+)#', $this->clearText(), $matches) === 1 && $matches[1] !== '') {
+        if (
+            \preg_match('#/Weight[\t\n\x0B\f\r ]*+\(([^\)]*+)#', $this->clearText(), $matches) === 1
+            && $matches[1] !== ''
+        ) {
             $this->fdt['weight'] = \strtolower($matches[1]);
         }
 
@@ -234,7 +240,7 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
         $matches = \preg_match_all(
             // the separators are runs of whitespace: an entry written as 'dup  32 /space put'
             // is as valid as 'dup 32/space put'
-            '#dup[\s]++([0-9]++)[\s]*+/([^\s]*+)[\s]++put#s',
+            '#dup[\t\n\x0B\f\r ]++([0-9]++)[\t\n\x0B\f\r ]*+/([^\t\n\x0B\f\r ]*+)[\t\n\x0B\f\r ]++put#s',
             $this->clearText(),
             $fmap,
             PREG_SET_ORDER,
@@ -276,14 +282,17 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
     {
         $eplain = $this->getEplain();
         $matches = [];
-        if (\preg_match('#/ForceBold[\s]*+([^\s]*+)#', $eplain, $matches) === 1 && $matches[1] === 'true') {
+        if (
+            \preg_match('#/ForceBold[\t\n\x0B\f\r ]*+([^\t\n\x0B\f\r ]*+)#', $eplain, $matches) === 1
+            && $matches[1] === 'true'
+        ) {
             $this->fdt['Flags'] |= 0x4_0000;
         }
 
         $this->extractStem($eplain);
-        if (\preg_match('#/BlueValues[\s]*+\[([^\]]*+)#', $eplain, $matches) === 1) {
+        if (\preg_match('#/BlueValues[\t\n\x0B\f\r ]*+\[([^\]]*+)#', $eplain, $matches) === 1) {
             // the values may be separated by any run of whitespace
-            $split = \preg_split('/\s+/', \trim($matches[1]), -1, PREG_SPLIT_NO_EMPTY);
+            $split = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($matches[1]), -1, PREG_SPLIT_NO_EMPTY);
             $bvl = \is_array($split) ? $split : [];
             // the blue zones only apply when the Private dict declares no height
             if (\count($bvl) >= 6 && !$this->hasDeclaredHeights) {
@@ -306,17 +315,18 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
     protected function extractStem(string $eplain): void
     {
         $matches = [];
-        $this->fdt['StemV'] = \preg_match('#/StdVW[\s]*+\[([^\]]*+)#', $eplain, $matches) === 1
+        $this->fdt['StemV'] = \preg_match('#/StdVW[\t\n\x0B\f\r ]*+\[([^\]]*+)#', $eplain, $matches) === 1
             ? (int) $matches[1]
             : $this->getDefaultStemV();
 
-        $this->fdt['StemH'] = \preg_match('#/StdHW[\s]*+\[([^\]]*+)#', $eplain, $matches) === 1
+        $this->fdt['StemH'] = \preg_match('#/StdHW[\t\n\x0B\f\r ]*+\[([^\]]*+)#', $eplain, $matches) === 1
             ? (int) $matches[1]
             : 30;
 
         // '/CapHeight' is written as a plain number ('/CapHeight 700 def'), unlike the
         // '/StdVW' and '/StdHW' arrays above; both spellings are accepted here
-        $this->hasDeclaredHeights = \preg_match('#/CapHeight[\s]*+\[?[\s]*+([-+]?[0-9]++)#', $eplain, $matches) === 1;
+        $this->hasDeclaredHeights =
+            \preg_match('#/CapHeight[\t\n\x0B\f\r ]*+\[?[\t\n\x0B\f\r ]*+([-+]?[0-9]++)#', $eplain, $matches) === 1;
         $this->fdt['CapHeight'] = $this->hasDeclaredHeights ? (int) $matches[1] : (int) $this->fdt['Ascent'];
 
         $this->fdt['XHeight'] = (int) $this->fdt['Ascent'] + (int) $this->fdt['Descent'];
@@ -334,7 +344,7 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
         $this->fdt['lenIV'] = 4;
         $matches = [];
         // an entry without a non-negative value keeps the default
-        if (\preg_match('#/lenIV[\s]++([\d]++)#', $eplain, $matches) === 1) {
+        if (\preg_match('#/lenIV[\t\n\x0B\f\r ]++([\d]++)#', $eplain, $matches) === 1) {
             $this->fdt['lenIV'] = (int) $matches[1];
         }
     }
@@ -393,7 +403,7 @@ class TypeOne extends \Com\Tecnick\Pdf\Font\Import\Core
             // a PostScript name is any run of characters other than whitespace and the
             // delimiters, '_' and '-' included (ligature names such as 'f_i')
             $res = \preg_match(
-                '#/([^\s/{}\[\]()<>%]*+)[\s]([0-9]++)[\s](?:RD|-\|)[\s]#',
+                '#/([^\t\n\x0B\f\r /{}\[\]()<>%]*+)[\t\n\x0B\f\r ]([0-9]++)[\t\n\x0B\f\r ](?:RD|-\|)[\t\n\x0B\f\r ]#',
                 $eplain,
                 $found,
                 PREG_OFFSET_CAPTURE,

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "url": "https://context7.com/tecnickcom/tc-lib-barcode",
+  "public_key": "pk_AINs7SRNYi4YSEfbyLFuQ",
+  "projectTitle": "tc-lib-barcode",
+  "description": "Pure-PHP library to generate 73 types of linear, 2D and postal barcodes (QR Code, Data Matrix, PDF417, Aztec, EAN, UPC, CODE 128, GS1 DataBar, IMB) as SVG, PNG, HTML, GD images or coordinate arrays.",
+  "branch": "main",
+  "excludeFolders": [
+    ".github",
+    ".phpdoc",
+    "vendor",
+    "target",
+    "test",
+    "resources"
+  ],
+  "excludeFiles": [
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "composer.lock"
+  ],
+  "rules": [
+    "The Composer package is tecnickcom/tc-lib-barcode, the namespace is \\Com\\Tecnick\\Barcode and the entry class is \\Com\\Tecnick\\Barcode\\Barcode. It requires PHP 8.2 or later and the gd extension.",
+    "Every format uses the same API: (new \\Com\\Tecnick\\Barcode\\Barcode())->getBarcodeObj(type, code, width, height, color, padding) returns a Model object, and the same output methods work for all 73 types.",
+    "Output methods on the returned object: getInlineSvgCode(), getSvgCode(), getSvg(), getPngData(), getPng(), getGd(), getHtmlDiv(), getGrid(), getArray(), getBarsArrayXYXY(), getBarsArrayXYWH(), setSize(), setColor(), setBackgroundColor().",
+    "The type argument is the format code, optionally followed by comma-separated extra parameters, for example 'QRCODE,H', 'C39+' or 'PDF417,2,4'.",
+    "Supported format codes are the keys of Barcode::BARCODETYPES, also available as the \\Com\\Tecnick\\Barcode\\BarcodeType enum, which getBarcodeObj() accepts in place of a string.",
+    "Negative width and height values are multiplication factors per column and per row rather than absolute sizes; positive values are absolute user units excluding padding. Padding is [top, right, bottom, left] and follows the same sign convention.",
+    "Colors are given in web notation (color name, hexadecimal code or CSS syntax) or as a PDF spot color name.",
+    "tecnickcom/tc-lib-color is the only Composer dependency. bcmath and imagick are optional accelerators for the IMB and PDF417 arithmetic and for PNG rendering; the library never requires them.",
+    "Payloads longer than Barcode::MAX_CODE_LENGTH (30000 bytes) are rejected by getBarcodeObj(), which throws \\Com\\Tecnick\\Barcode\\Exception on any encoding error.",
+    "The library encodes the data it is given. Formats such as EAN, UPC, ITF-14, GS1-128, HIBC, MAILMARK, PZN, IDENTCODE and LEITCODE carry numbers that only their registration body can issue."
+  ]
+}

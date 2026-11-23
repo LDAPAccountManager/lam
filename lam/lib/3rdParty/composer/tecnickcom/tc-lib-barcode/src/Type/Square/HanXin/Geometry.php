@@ -352,8 +352,8 @@ class Geometry
         $points = [];
         $bounds = [$ends[0] ?? [0, 0], $ends[\count($ends) - 1] ?? [0, 0]];
         foreach ($bounds as $point) {
-            $row = $point[0] ?? 0;
-            $col = $point[1] ?? 0;
+            $row = $point[0];
+            $col = $point[1];
             if ($row === 0 || $row === $edge || $col === 0 || $col === $edge) {
                 $points[] = [$row, $col];
             }

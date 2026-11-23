@@ -111,11 +111,17 @@ class Subset
      * @param TFontData        $fdt        Extracted font metrics
      * @param ObjFile          $fileHelper File helper for font loading.
      * @param array<int, bool> $subchars   Array containing subset chars
+     * @param array<int, bool> $subgids    Glyph indices to keep in addition to those of the subset chars
      *
      * @throws FontException in case of error
      */
-    public function __construct(string $font, array $fdt, ObjFile $fileHelper, array $subchars = [])
-    {
+    public function __construct(
+        string $font,
+        array $fdt,
+        ObjFile $fileHelper,
+        array $subchars = [],
+        array $subgids = [],
+    ) {
         $this->fileHelper = $fileHelper;
         $this->font = $font;
         $this->fbyte = new Byte($font);
@@ -140,6 +146,14 @@ class Subset
             }
 
             $this->subglyphs = $trueType->getSubGlyphs();
+            foreach ($subgids as $gid => $enabled) {
+                if (!$enabled || $gid < 0 || $gid >= $this->fdt['tot_num_glyphs']) {
+                    continue;
+                }
+
+                $this->subglyphs[$gid] = true;
+            }
+
             $this->addCompositeGlyphs();
             $this->addProcessedTables();
             $this->removeUnusedTables();

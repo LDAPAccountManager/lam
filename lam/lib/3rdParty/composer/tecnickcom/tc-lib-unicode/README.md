@@ -38,6 +38,8 @@
 - Unicode Bidirectional Algorithm (UAX #9), verified against the official `BidiCharacterTest.txt` and `BidiTest.txt` conformance suites
 - Right-to-left and mixed-direction text processing
 - Arabic shaping driven by the Joining_Type property
+- Shaped logical order with the resolved levels (`getLogicalOrdArray()`, `getLogicalLevels()`, `getLogicalParagraphLevels()`) and per-line reordering (`Bidi::reorderLine()`), to apply rules L1 to L4 after line breaking
+- Optional retention of the line break controls (soft hyphen, zero width space, word joiner and zero width no-break space) in the logical order (`$keepbreaks` constructor argument)
 
 ### Character Substitution
 - Context-sensitive codepoint-level substitution via `Substitution::replaceChars()`

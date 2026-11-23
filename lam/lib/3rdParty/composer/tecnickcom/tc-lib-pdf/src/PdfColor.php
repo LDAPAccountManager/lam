@@ -51,6 +51,11 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
     protected bool $deviceCmykEmitted = false;
 
     /**
+     * True when a DeviceRGB color operator was emitted.
+     */
+    protected bool $deviceRgbEmitted = false;
+
+    /**
      * Names of the emitted spot colors whose Separation alternate space is DeviceCMYK.
      *
      * @var array<string, true>
@@ -63,6 +68,14 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
     public function hasEmittedDeviceCmyk(): bool
     {
         return $this->deviceCmykEmitted;
+    }
+
+    /**
+     * Return true when a DeviceRGB color operator was emitted.
+     */
+    public function hasEmittedDeviceRgb(): bool
+    {
+        return $this->deviceRgbEmitted;
     }
 
     /**
@@ -110,8 +123,8 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
         }
 
         $match = [];
-        $ok = \preg_match(
-            '/^spot\(\s*("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\'|[^,\)]+?)\s*(?:,\s*([^\)]+?)\s*)?\)$/i',
+        $ok = AsciiPattern::matchFolded(
+            '/^spot\([\t\n\x0B\f\r ]*("(?:[^"\\\\]++|\\\\.)*+"|\'(?:[^\'\\\\]++|\\\\.)*+\'|[^,\)]+?)[\t\n\x0B\f\r ]*(?:,[\t\n\x0B\f\r ]*([^\)]+?)[\t\n\x0B\f\r ]*)?\)$/',
             $trimmed,
             $match,
         );
@@ -308,6 +321,9 @@ class PdfColor extends \Com\Tecnick\Color\Pdf
 
         if ($model instanceof \Com\Tecnick\Color\Model\Cmyk) {
             $this->deviceCmykEmitted = true;
+        } elseif (!$model instanceof \Com\Tecnick\Color\Model\Gray) {
+            // Every remaining process model is emitted as a DeviceRGB operator.
+            $this->deviceRgbEmitted = true;
         }
 
         return $model->getPdfColor($stroke);

@@ -35,17 +35,17 @@
     "ext-pcre": "*",
     "ext-xml": "*",
     "ext-zlib": "*",
-    "tecnickcom/tc-lib-barcode": "^2.16",
-    "tecnickcom/tc-lib-color": "^3.0",
-    "tecnickcom/tc-lib-pdf-image": "^3.14",
-    "tecnickcom/tc-lib-pdf-font": "^4.3",
+    "tecnickcom/tc-lib-barcode": "^2.17",
+    "tecnickcom/tc-lib-color": "^3.1",
+    "tecnickcom/tc-lib-pdf-image": "^3.15",
+    "tecnickcom/tc-lib-pdf-font": "^4.9",
     "tecnickcom/tc-lib-file": "^3.9",
-    "tecnickcom/tc-lib-pdf-encrypt": "^2.11",
+    "tecnickcom/tc-lib-pdf-encrypt": "^2.12",
     "tecnickcom/tc-lib-pdf-sign": "^2.0",
-    "tecnickcom/tc-lib-unicode-data": "^3.0",
-    "tecnickcom/tc-lib-unicode": "^3.0",
-    "tecnickcom/tc-lib-pdf-page": "^4.16",
-    "tecnickcom/tc-lib-pdf-graph": "^2.17",
+    "tecnickcom/tc-lib-unicode-data": "^3.1",
+    "tecnickcom/tc-lib-unicode": "^3.3",
+    "tecnickcom/tc-lib-pdf-page": "^4.18",
+    "tecnickcom/tc-lib-pdf-graph": "^2.18",
     "tecnickcom/tc-lib-pdf-parser": "^3.16"
   },
   "suggest": {
@@ -55,9 +55,10 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "require-dev": {
-    "carthage-software/mago": "1.47.6",
-    "pdepend/pdepend": "^2.16",
-    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.3"
+    "ext-gd": "*",
+    "carthage-software/mago": "1.60.2",
+    "pdepend/pdepend": "^3.1",
+    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.4"
   },
   "autoload": {
     "psr-4": {
@@ -99,8 +100,9 @@
     "report": "mkdir -p target/report && vendor/bin/pdepend --jdepend-xml=target/report/dependencies.xml --summary-xml=target/report/metrics.xml --jdepend-chart=target/report/dependencies.svg --overview-pyramid=target/report/overview-pyramid.svg --ignore=vendor ./src",
     "check-deps": ["@composer validate --strict --no-check-lock", "@composer audit"],
     "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"],
-    "fonts": "cd vendor/tecnickcom/tc-lib-pdf-font/ && make fonts",
+    "fonts": "@php vendor/tecnickcom/tc-lib-pdf-font/util/build_fonts.php",
     "post-install-cmd": ["@fonts"],
     "post-update-cmd": ["@fonts"]
   }
 }
+

@@ -72,8 +72,8 @@ abstract class OutUtil
     /**
      * Outputs the font widths of a CID keyed font whose character codes are glyph indices.
      *
-     * Only the glyphs used by the document are listed, as no other code can
-     * appear in a content stream.
+     * Only the codes used by the document are listed, as no other code can
+     * appear in a content stream. An alias code takes the width of its glyph.
      *
      * @param TFontData $font Font to process
      *
@@ -82,12 +82,37 @@ abstract class OutUtil
     protected function getGidWidths(array $font): string
     {
         $widths = [];
-        foreach ($font['usedgid'] as $gid => $ord) {
-            $widths[(int) $gid] = self::normalizeWidth($font['cw'][$ord] ?? $font['dw']);
+        foreach ($font['usedgid'] as $code => $ord) {
+            $gid = $font['usedalias'][$code] ?? $code;
+            $widths[(int) $code] = self::normalizeWidth($font['gw'][$gid] ?? $font['cw'][$ord] ?? $font['dw']);
         }
 
         \ksort($widths);
         return $this->formatWidthRanges($this->buildWidthRanges($widths, self::normalizeWidth($font['dw'])));
+    }
+
+    /**
+     * Returns the CIDSet bit string of the given CIDs.
+     *
+     * The high-order bit of the first byte is CID 0, which is always set (.notdef).
+     * CIDs outside the 0..65535 range are ignored.
+     *
+     * @param array<int, bool> $cids CIDs to flag.
+     */
+    protected function getCidSetBits(array $cids): string
+    {
+        $bits = "\x80";
+        foreach ($cids as $cid => $enabled) {
+            if (!$enabled || $cid < 1 || $cid > 0xFFFF) {
+                continue;
+            }
+
+            $idx = $cid >> 3;
+            $bits = \str_pad($bits, $idx + 1, "\0");
+            $bits[$idx] = \chr(\ord($bits[$idx]) | (0x80 >> ($cid & 7)));
+        }
+
+        return $bits;
     }
 
     /**

@@ -81,7 +81,7 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
         }
 
         $ifile = \trim($ifile);
-        if ($ifile !== '' && !$this->fileHelper->isAllowedFile($ifile)) {
+        if ($ifile !== '' && !FontPaths::isPackageFile($ifile) && !$this->fileHelper->isAllowedFile($ifile)) {
             throw new FontException('Invalid font ifile: ' . $ifile);
         }
 

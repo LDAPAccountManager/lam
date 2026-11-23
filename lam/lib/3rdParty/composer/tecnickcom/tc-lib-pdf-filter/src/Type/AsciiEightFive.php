@@ -72,7 +72,7 @@ class AsciiEightFive implements \Com\Tecnick\Pdf\Filter\Type\Template
     private function normalizeInput(string $data): string
     {
         // all white-space characters shall be ignored (PDF 32000-1:2008 Table 1 also lists NUL)
-        $data = \preg_replace('/[\x00\s]+/', '', $data);
+        $data = \preg_replace('/[\x00\t\n\x0B\f\r ]+/', '', $data);
         if ($data === null) {
             throw new PPException('invalid code: white-space removal failed');
         }

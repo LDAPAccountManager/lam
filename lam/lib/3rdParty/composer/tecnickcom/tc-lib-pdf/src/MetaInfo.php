@@ -263,13 +263,16 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
      * Sets the document modification date.
      *
      * Drives the Info dictionary /ModDate entry and the xmp:ModifyDate and
-     * xmp:MetadataDate XMP properties.
+     * xmp:MetadataDate XMP properties. It is also the /LastModified time of the
+     * pages added afterwards without an explicit 'time', including the pages added
+     * automatically by a page break.
      *
      * @param int|\DateTimeInterface $time Seconds since the Unix epoch, or a date object.
      */
     public function setDocModificationDate(int|\DateTimeInterface $time): static
     {
         $this->docmodtime = $time instanceof \DateTimeInterface ? $time->getTimestamp() : $time;
+        $this->page->setDefaultPageTime($this->docmodtime);
         return $this;
     }
 
@@ -412,10 +415,10 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
      * @param string $iccfile    Path of the ICC profile to embed as /DestOutputProfile.
      *                           Subject to the same allowlist as every other local file
      *                           read: the path must be covered by the 'allowedPaths'
-     *                           entry of the constructor fileOptions. Note that setting
-     *                           'allowedPaths' replaces the package defaults, so the
-     *                           bundled font directory has to be listed again alongside
-     *                           the profile location.
+     *                           entry of the constructor fileOptions. Setting
+     *                           'allowedPaths' replaces the package defaults; the bundled
+     *                           sRGB profile and the tc-lib-pdf-font package fonts are
+     *                           read without it.
      * @param string $info       Human readable value of /Info. Defaults to $identifier.
      * @param string $registry   Value of /RegistryName.
      * @param string $condition  Human readable value of /OutputCondition.
@@ -437,9 +440,62 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
             'info' => $info === '' ? $identifier : $info,
             'registry' => $registry,
             'iccfile' => $iccfile,
+            'icc' => '',
         ];
 
+        $this->readOutputIntentProfile($iccfile);
+
+        // The colour policy of PDF/X-4 and PDF/X-5 depends on the output intent,
+        // so it is re-evaluated here rather than only at construction time. In
+        // the other modes the policy is the caller's, and is left alone.
+        if (!$this->pdfx) {
+            return $this;
+        }
+
+        $wasForced = $this->color->isForceDeviceCmyk();
+        $this->color->setForceDeviceCmyk($this->requiresPdfxDeviceCmyk());
+        if (!$wasForced && $this->color->isForceDeviceCmyk() && $this->color->hasEmittedDeviceRgb()) {
+            $this->addWarning(
+                'PDF/X: a DeviceRGB colour was emitted before setOutputIntent() supplied a CMYK profile;'
+                . ' call setOutputIntent() before generating content',
+            );
+        }
+
         return $this;
+    }
+
+    /**
+     * Read the output intent ICC profile and record its number of colour components.
+     *
+     * The profile is cached so that the colour space of the printing condition is
+     * known before any content stream is generated. A profile that cannot be read
+     * is reported here and raises the error when the document is written.
+     *
+     * @param string $iccfile Path of the ICC profile, or an empty string.
+     */
+    protected function readOutputIntentProfile(string $iccfile): void
+    {
+        $this->outputintentComponents = 0;
+        if ($iccfile === '') {
+            return;
+        }
+
+        try {
+            $icc = $this->file->fileGetContents($iccfile);
+        } catch (\Com\Tecnick\File\Exception $e) {
+            unset($e);
+            $this->addWarning('Unable to read the output intent ICC profile: ' . $iccfile);
+            return;
+        }
+
+        $this->outputintent['icc'] = $icc;
+        // The number of colour components is taken from the ICC colour space
+        // signature at offset 16 of the profile header.
+        $this->outputintentComponents = match (\substr($icc, 16, 4)) {
+            'GRAY' => 1,
+            'CMYK' => 4,
+            default => 3,
+        };
     }
 
     /**
@@ -673,22 +729,16 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
     /**
      * Escape a string for XML output in the XMP packet.
      *
-     * Invalid UTF-8 sequences and the control characters that XML 1.0 does not
-     * permit are removed before the markup characters (&lt; &gt; &amp;) are
-     * escaped, so that arbitrary caller input cannot make the metadata stream
-     * unparseable.
+     * Invalid UTF-8 sequences are replaced with U+FFFD and the control characters
+     * that XML 1.0 does not permit are removed before the markup characters
+     * (&lt; &gt; &amp;) are escaped, so that arbitrary caller input cannot make
+     * the metadata stream unparseable.
      *
      * @param string $str Input string to escape.
      */
     protected function getEscapedXML(string $str): string
     {
-        if (!\mb_check_encoding($str, 'UTF-8')) {
-            $substitute = \mb_substitute_character();
-            \mb_substitute_character(0xfffd);
-            $converted = \mb_convert_encoding($str, 'UTF-8', 'UTF-8');
-            \mb_substitute_character($substitute);
-            $str = \is_string($converted) ? $converted : '';
-        }
+        $str = $this->getValidUtf8($str);
 
         // XML 1.0 allows only tab, line feed, carriage return and code points >= 0x20.
         $stripped = \preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $str);
@@ -775,7 +825,7 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
      */
     protected function checkCustomXMP(string $key, string $xmp): void
     {
-        if (\preg_match('/<!(?:DOCTYPE|ENTITY)/i', $xmp) === 1) {
+        if (AsciiPattern::matchFolded('/<!(?:doctype|entity)/', $xmp) === 1) {
             throw new PdfException(
                 'Custom XMP fragment for "' . $key . '" must not contain a DOCTYPE or ENTITY declaration',
             );
@@ -1265,7 +1315,7 @@ abstract class MetaInfo extends \Com\Tecnick\Pdf\HTML
      */
     protected function getOutXMPKeywordItems(): string
     {
-        $keywords = \preg_split('/\s+/', \trim($this->keywords), -1, PREG_SPLIT_NO_EMPTY);
+        $keywords = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($this->keywords), -1, PREG_SPLIT_NO_EMPTY);
         if ($keywords === false || $keywords === []) {
             return '';
         }

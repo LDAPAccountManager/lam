@@ -625,6 +625,9 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     private function enrichMaskData(array $data, int $width, int $height, int $quality, bool $ismask): array
     {
         $basedata = $this->getBaseData($data);
+        if ($data['splitalpha']) {
+            $this->requireGd('split its alpha channel');
+        }
 
         if ($ismask) {
             if ($data['splitalpha']) {
@@ -941,6 +944,28 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
+     * Throw an exception naming the gd extension when it is not loaded.
+     *
+     * @param string $action Conversion that needs the extension.
+     *
+     * @throws \Com\Tecnick\Pdf\Image\Exception If the gd extension is not loaded.
+     */
+    protected function requireGd(string $action): void
+    {
+        if (!$this->isGdLoaded()) {
+            throw new ImageException('The gd extension is required to ' . $action . ': unable to import the image');
+        }
+    }
+
+    /**
+     * Returns true if the gd extension is loaded.
+     */
+    protected function isGdLoaded(): bool
+    {
+        return \extension_loaded('gd');
+    }
+
+    /**
      * Get the resized image raw data
      * (always convert the image type to a native format: PNG or JPEG).
      *
@@ -971,6 +996,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
         $this->checkPixelBudget($data['width'], $data['height']);
         $this->checkPixelBudget($width, $height);
+        $this->requireGd('resize or re-encode it');
 
         $img = \imagecreatefromstring($data['raw']);
         if ($img === false) {
@@ -1042,6 +1068,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     protected function getAlphaChannelRawData(array $data): array
     {
         $this->checkPixelBudget($data['width'], $data['height']);
+        $this->requireGd('split its alpha channel');
 
         $img = \imagecreatefromstring($data['raw']);
         if ($img === false) {

@@ -13,6 +13,8 @@ $sourceId = $pdf->setImportSourceFile('/path/to/source.pdf');
 $count = $pdf->getSourcePageCount($sourceId);
 ```
 
+`setImportSourceFile()` reads the file through the same local-path allowlist as other resources: the path must be inside one of the `allowedPaths` file options (see [REMOTE_RESOURCES.md](REMOTE_RESOURCES.md)). A path outside the allowlist raises `ImportSourceNotFoundException`, as a missing file does. `setImportSourceData()` takes the bytes directly and performs no path check.
+
 The page count is derived from the page tree actually reachable through `/Kids`; the declared `/Count` entry of the `/Pages` dictionary is ignored, so a forged or wrong `/Count` cannot influence how many pages are counted or imported. Structurally broken page trees (missing `/Kids`, unexpected node types, duplicate or cyclic references) raise `ImportCorruptedSourceException`.
 
 The reachable-page walk runs once per registered source and produces a flattened page index (one effective page dictionary per page, with inherited attributes resolved) that is cached and reused by `getSourcePageCount()`, `importPage()`, and `importPages()`.
@@ -132,4 +134,5 @@ $tpl = $pdf->addPageFromImport($sourceId, 2);
 - Multi-stream page contents are normalized by decoding and concatenating the stream bytes; this changes the low-level byte representation while preserving the rendered appearance.
 - Transparency-group behavior is conformance-aware: when transparency is disallowed by the active PDF mode (PDF/A-1, PDF/X-1a or PDF/X-3), import suppresses transparency groups to remain compliant.
 - Stream filters are conformance-aware: a source stream compressed with `LZWDecode`, which ISO 19005 forbids, is decoded and re-encoded with `FlateDecode`. When the stream cannot be re-encoded (an undecodable filter chain), a PDF/A destination raises `ImportUnsupportedFeatureException` and any other mode keeps the source stream unchanged. Importing a `JPXDecode` stream into a PDF/A-1 document raises the same exception, since ISO 19005-1 does not allow that filter.
+- Tagged structure (`StructTreeRoot`, structure elements, `StructParents` and marked-content IDs) of the source is not imported. Conformance awareness covers only the filter and transparency rules above. Imported pages are untagged, so a PDF/UA destination that contains imported pages is not PDF/UA compliant for that content.
 - Setting `groupXObject` to `false` can reduce output size, but may change compositing on source pages that rely on transparency blending.

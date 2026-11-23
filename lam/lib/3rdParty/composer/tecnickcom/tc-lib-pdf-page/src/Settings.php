@@ -142,6 +142,18 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     protected string $transparencygroupmode = 'auto';
 
     /**
+     * Modification time (UTC seconds) of the pages added without one, or null for the current time.
+     */
+    protected ?int $deftime = null;
+
+    /**
+     * Callback applied to the content of each page after the page templates are replaced.
+     *
+     * @var ?\Closure(string, int, int): string
+     */
+    protected ?\Closure $pagenumresolver = null;
+
+    /**
      * Reserved Object ID for the resource dictionary.
      */
     protected int $rdoid = 1;
@@ -176,11 +188,14 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page modification time.
      *
+     * A missing time is set to the default page time, or to the current time when
+     * no default is set. Negative values are set to 0.
+     *
      * @param PageInputData $data Page data.
      */
     public function sanitizeTime(array &$data): void
     {
-        $data['time'] = empty($data['time']) ? \time() : \max(0, (int) $data['time']);
+        $data['time'] = isset($data['time']) ? \max(0, (int) $data['time']) : $this->deftime ?? \time();
     }
 
     /**
@@ -615,7 +630,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
         // The regions are collected into a fresh list: 'columns' is their count and
         // selectRegion() addresses them by an index in the [0, columns - 1] range.
         $regions = [];
-        foreach ($data['region'] ?? [] as $val) {
+        foreach ($data['region'] as $val) {
             $regions[] = $this->normalizeRegionData(
                 $val,
                 $contentWidth,
@@ -719,7 +734,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
             $data['orientation'] = $orientation;
         }
 
-        if (($data['orientation'] ?? '') !== $orientation) {
+        if ($data['orientation'] !== $orientation) {
             $data['box'] = $this->swapCoordinates($box);
         }
     }
@@ -776,7 +791,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
      */
     protected function completeBoxChain(array $box, float $pwidth, float $pheight): array
     {
-        if (empty($box['MediaBox'])) {
+        if (($box['MediaBox'] ?? []) === []) {
             $box = $this->setBox($box, 'MediaBox', 0, 0, $pwidth, $pheight);
         }
 

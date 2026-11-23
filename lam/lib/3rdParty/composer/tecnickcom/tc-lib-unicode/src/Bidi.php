@@ -34,7 +34,8 @@ use Com\Tecnick\Unicode\Exception as UnicodeException;
  * Com\Tecnick\Unicode\Bidi
  *
  * Unicode Bidirectional Algorithm (UAX #9): reorders each paragraph of the input from
- * logical to visual order and applies the Arabic shaping.
+ * logical to visual order and applies the Arabic shaping. The shaped logical order with
+ * the resolved levels is also available, to reorder each line after line breaking.
  * https://www.unicode.org/reports/tr9/
  *
  * @since     2015-07-13
@@ -44,6 +45,8 @@ use Com\Tecnick\Unicode\Exception as UnicodeException;
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
+ *
+ * @phpstan-import-type CharData from \Com\Tecnick\Unicode\Bidi\Shaping\Arabic
  */
 class Bidi
 {
@@ -68,6 +71,20 @@ class Bidi
      * (ZWJ, ZWNJ, ZWNBSP, SOFT HYPHEN and most of the control characters)
      */
     public const CONTAINS_REMOVED = 8;
+
+    /**
+     * Characters of bidi class BN that control line breaking and that are kept in the
+     * logical output when the constructor is called with $keepbreaks set to true:
+     * SOFT HYPHEN, ZERO WIDTH SPACE, WORD JOINER and ZERO WIDTH NO-BREAK SPACE.
+     *
+     * @var array<int, true>
+     */
+    public const LINE_BREAK_CONTROLS = [
+        0x00AD => true,
+        0x200B => true,
+        0x2060 => true,
+        0xFEFF => true,
+    ];
 
     /**
      * String to process
@@ -108,14 +125,22 @@ class Bidi
     protected array $bidiordarr = [];
 
     /**
+     * Logical order output, after rule X9 and the shaping: codepoints ('ord'), resolved
+     * embedding levels ('level') and paragraph embedding levels ('pel'), one entry per
+     * codepoint.
+     *
+     * @var array{ord: array<int>, level: array<int>, pel: array<int>}
+     */
+    protected array $logical = [
+        'ord' => [],
+        'level' => [],
+        'pel' => [],
+    ];
+
+    /**
      * If 'R' forces RTL, if 'L' forces LTR
      */
     protected string $forcedir = '';
-
-    /**
-     * If true enable shaping
-     */
-    protected bool $shaping = true;
 
     /**
      * Content flags of the input, as a combination of the CONTAINS_* constants
@@ -135,8 +160,14 @@ class Bidi
      * @param ?array<int>  $ordarr   Array of UTF-8 codepoints (if empty it will be generated from $str or $chrarr)
      * @param string|TextDirection $forcedir If 'R' forces RTL, if 'L' forces LTR ('' auto), or a TextDirection case
      * @param bool   $shaping  If true enable the shaping algorithm
+     * @param bool   $keepbreaks If true the LINE_BREAK_CONTROLS characters are kept in the
+     *                           logical output (getLogicalOrdArray()), each with the level of
+     *                           the character before it, or the paragraph level at the start.
+     *                           They take no part in the resolution of the levels.
      *
      * @throws UnicodeException
+     *
+     * @mago-expect lint:excessive-parameter-list
      */
     public function __construct(
         ?string $str = null,
@@ -144,6 +175,7 @@ class Bidi
         ?array $ordarr = null,
         string|TextDirection $forcedir = '',
         bool $shaping = true,
+        bool $keepbreaks = false,
     ) {
         if ($str === null && ($chrarr === null || $chrarr === []) && ($ordarr === null || $ordarr === [])) {
             throw new UnicodeException('empty input');
@@ -151,7 +183,7 @@ class Bidi
 
         $this->conv = new Convert();
         $this->setInput($str, $chrarr, $ordarr, $forcedir);
-        $this->scanInput();
+        $this->scanInput($keepbreaks);
 
         // The algorithm is the identity on left-to-right text with nothing for rule X9 to
         // remove: the explicit formatting characters and the characters of bidi class BN
@@ -160,12 +192,16 @@ class Bidi
             $this->bidistr = $this->str;
             $this->bidichrarr = $this->chrarr;
             $this->bidiordarr = $this->ordarr;
+            $levels = \array_fill(0, \count($this->ordarr), 0);
+            $this->logical = [
+                'ord' => $this->ordarr,
+                'level' => $levels,
+                'pel' => $levels,
+            ];
             return;
         }
 
-        $this->shaping = $shaping && $this->isArabic();
-
-        $this->process();
+        $this->process($shaping && $this->isArabic(), $keepbreaks);
     }
 
     /**
@@ -216,8 +252,10 @@ class Bidi
     /**
      * Classify the input once into the content flags used to decide whether the
      * bidirectional algorithm and the shaping have to run.
+     *
+     * @param bool $keepbreaks True if the LINE_BREAK_CONTROLS characters are kept.
      */
-    protected function scanInput(): void
+    protected function scanInput(bool $keepbreaks = false): void
     {
         foreach ($this->ordarr as $ord) {
             if (
@@ -239,7 +277,7 @@ class Bidi
                 continue;
             }
 
-            if ($type === 'BN') {
+            if ($type === 'BN' && !($keepbreaks && isset(self::LINE_BREAK_CONTROLS[$ord]))) {
                 $this->content |= self::CONTAINS_REMOVED;
             }
         }
@@ -253,6 +291,86 @@ class Bidi
     public function getOrdArray(): array
     {
         return $this->bidiordarr;
+    }
+
+    /**
+     * Returns the codepoints in logical order, without the characters removed by rule X9
+     * and with the Arabic shaping applied (rules L1 to L4 not applied).
+     *
+     * @return array<int>
+     */
+    public function getLogicalOrdArray(): array
+    {
+        return $this->logical['ord'];
+    }
+
+    /**
+     * Returns the resolved embedding level of each entry of getLogicalOrdArray().
+     *
+     * @return array<int>
+     */
+    public function getLogicalLevels(): array
+    {
+        return $this->logical['level'];
+    }
+
+    /**
+     * Returns the paragraph embedding level of each entry of getLogicalOrdArray().
+     *
+     * @return array<int>
+     */
+    public function getLogicalParagraphLevels(): array
+    {
+        return $this->logical['pel'];
+    }
+
+    /**
+     * Reorders one line of one paragraph from logical to visual order (rules L1, L2 and L4).
+     *
+     * @param array<int> $ordarr Codepoints of the line in logical order
+     * @param array<int> $levels Resolved embedding level of each codepoint
+     * @param int        $pel    Paragraph embedding level
+     *
+     * @return array<int> Codepoints in visual order
+     *
+     * @throws UnicodeException
+     */
+    public static function reorderLine(array $ordarr, array $levels, int $pel): array
+    {
+        $ordarr = \array_values($ordarr);
+        $levels = \array_values($levels);
+        if (\count($ordarr) !== \count($levels)) {
+            throw new UnicodeException('the codepoints and the levels have a different number of entries');
+        }
+
+        $maxlevel = $pel;
+        $chardata = [];
+        foreach ($ordarr as $idx => $ord) {
+            $level = $levels[$idx] ?? $pel;
+            $type = UniType::getType($ord);
+            $chardata[] = [
+                'char' => $ord,
+                'i' => $idx,
+                'level' => $level,
+                'otype' => $type,
+                'pdimatch' => -1,
+                'pos' => $idx,
+                'type' => $type,
+                'x' => $level,
+            ];
+
+            if ($level > $maxlevel) {
+                $maxlevel = $level;
+            }
+        }
+
+        $stepl = new StepL($chardata, $pel, $maxlevel);
+        $visual = [];
+        foreach ($stepl->getChrData() as $chardatum) {
+            $visual[] = $chardatum['char'];
+        }
+
+        return $visual;
     }
 
     /**
@@ -331,9 +449,12 @@ class Bidi
     /**
      * Process the string
      *
+     * @param bool $shaping If true apply the Arabic shaping
+     * @param bool $keepbreaks True to keep the LINE_BREAK_CONTROLS characters
+     *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
-    protected function process(): void
+    protected function process(bool $shaping, bool $keepbreaks = false): void
     {
         // split the text into separate paragraphs.
         $paragraph = $this->getParagraphs();
@@ -351,7 +472,7 @@ class Bidi
             $ilrs = $stepx10->getIsolatedLevelRunSequences();
             // The joining context depends only on the paragraph, so it is shared by all
             // the isolating run sequences of that paragraph.
-            $joining = $this->shaping ? Shaping::getJoiningTypes($par) : [];
+            $joining = $shaping ? Shaping::getJoiningTypes($par) : [];
             $chardata = [];
             $maxlevel = 0;
             foreach ($ilrs as $ilr) {
@@ -359,9 +480,8 @@ class Bidi
                 $stepn = new StepN($stepw->getSequence());
                 $stepi = new StepI($stepn->getSequence());
                 $ilr = $stepi->getSequence();
-                if ($this->shaping) {
-                    $shaping = new Shaping($ilr, $par, $joining);
-                    $ilr = $shaping->getSequence();
+                if ($shaping) {
+                    $ilr = (new Shaping($ilr, $par, $joining))->getSequence();
                 }
 
                 \array_push($chardata, ...$ilr['item']);
@@ -370,6 +490,10 @@ class Bidi
                     $maxlevel = $ilr['maxlevel'];
                 }
             }
+
+            // logical order, before the L rules
+            \usort($chardata, static fn($apos, $bpos): int => $apos['pos'] - $bpos['pos']);
+            $this->addLogicalChars($par, $chardata, $pel, $keepbreaks);
 
             $stepl = new StepL($chardata, $pel, $maxlevel);
             $chardata = $stepl->getChrData();
@@ -388,7 +512,60 @@ class Bidi
             }
 
             $this->bidiordarr[] = $lastchar;
+            $this->logical['ord'][] = $lastchar;
+            $this->logical['level'][] = $pel;
+            $this->logical['pel'][] = $pel;
         }
+    }
+
+    /**
+     * Append the characters of a paragraph to the logical output, with the kept line
+     * break controls inserted back at their positions.
+     *
+     * @param array<int> $par      Paragraph codepoints.
+     * @param array<int, CharData> $chardata Resolved characters in logical order.
+     * @param int        $pel      Paragraph embedding level.
+     * @param bool       $keepbreaks True to insert the kept line break controls.
+     */
+    protected function addLogicalChars(array $par, array $chardata, int $pel, bool $keepbreaks): void
+    {
+        $kept = [];
+        if ($keepbreaks) {
+            foreach ($par as $pos => $ord) {
+                if (!isset(self::LINE_BREAK_CONTROLS[$ord])) {
+                    continue;
+                }
+
+                $kept[] = [$pos, $ord];
+            }
+        }
+
+        $level = $pel;
+        $next = 0;
+        foreach ($chardata as $chardatum) {
+            while (isset($kept[$next]) && $kept[$next][0] < $chardatum['pos']) {
+                $this->addLogicalChar($kept[$next][1], $level, $pel);
+                ++$next;
+            }
+
+            $this->addLogicalChar($chardatum['char'], $chardatum['level'], $pel);
+            $level = $chardatum['level'];
+        }
+
+        while (isset($kept[$next])) {
+            $this->addLogicalChar($kept[$next][1], $level, $pel);
+            ++$next;
+        }
+    }
+
+    /**
+     * Append one character to the logical output.
+     */
+    protected function addLogicalChar(int $ord, int $level, int $pel): void
+    {
+        $this->logical['ord'][] = $ord;
+        $this->logical['level'][] = $level;
+        $this->logical['pel'][] = $pel;
     }
 
     /**

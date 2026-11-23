@@ -148,6 +148,19 @@ abstract class Buffer
     }
 
     /**
+     * Set the default subset mode.
+     *
+     * It applies to the fonts loaded afterwards with no explicit mode; the fonts already
+     * in the buffer keep their recorded mode.
+     *
+     * @param bool $subset If true, embed only the characters used by the document.
+     */
+    public function setSubsetMode(bool $subset): void
+    {
+        $this->subset = $subset;
+    }
+
+    /**
      * Returns the fonts buffer
      *
      * @return array<string, TFontData>
@@ -243,7 +256,7 @@ abstract class Buffer
         }
 
         $fileHelper = $this->fileHelper ?? new ObjFile(allowedPaths: FontPaths::buildAllowedPaths());
-        $content = $fileHelper->getLocalFileData($ctgfile);
+        $content = FontPaths::readFontFile($fileHelper, $ctgfile);
         if ($content === false) {
             throw new FontException('Unable to read font file: ' . $ctgfile);
         }
@@ -307,6 +320,99 @@ abstract class Buffer
     }
 
     /**
+     * Record a glyph used by the document and the text it was selected for, and return the
+     * character code that shows it.
+     *
+     * The code is the glyph index, and the first text recorded for a glyph is kept for it.
+     * When a glyph is used for two texts and one of them is a sequence of codepoints (a
+     * variation sequence), the other text gets an alias code that shows the same glyph,
+     * so each code extracts its own text. Alias codes start at the glyph count of the
+     * font; with no glyph count, or when the codes are exhausted, the glyph index is
+     * returned.
+     *
+     * @param string          $key  The font key
+     * @param int             $gid  The glyph index, in the 0..65535 range
+     * @param array<int, int> $text The Unicode codepoints the glyph was selected for
+     *
+     * @return int The character code.
+     *
+     * @throws FontException if the font is not loaded, the glyph index is out of range or
+     *                       the text is empty
+     */
+    public function addUsedGlyph(string $key, int $gid, array $text): int
+    {
+        if (!isset($this->font[$key])) {
+            throw new FontException('The font ' . $key . ' has not been loaded');
+        }
+
+        if ($gid < 0 || $gid > self::MAX_GID) {
+            throw new FontException('The glyph index ' . $gid . ' is outside the 0..65535 range');
+        }
+
+        $text = \array_values($text);
+        if ($text === []) {
+            throw new FontException('The text of the glyph ' . $gid . ' is empty');
+        }
+
+        if (!isset($this->font[$key]['usedgid'][$gid])) {
+            $this->setUsedCodeText($key, $gid, $text);
+            return $gid;
+        }
+
+        $first = $this->getUsedCodeText($key, $gid);
+        if ($first === $text || \count($first) < 2 && \count($text) < 2) {
+            return $gid;
+        }
+
+        foreach ($this->font[$key]['usedalias'] as $code => $aliasgid) {
+            if ($aliasgid === $gid && $this->getUsedCodeText($key, $code) === $text) {
+                return $code;
+            }
+        }
+
+        $aliases = $this->font[$key]['usedalias'];
+        $code = $aliases === [] ? $this->font[$key]['numGlyphs'] : \max(\array_keys($aliases)) + 1;
+        if ($this->font[$key]['numGlyphs'] < 1 || $code > self::MAX_GID) {
+            return $gid;
+        }
+
+        $this->font[$key]['usedalias'][$code] = $gid;
+        $this->setUsedCodeText($key, $code, $text);
+        return $code;
+    }
+
+    /**
+     * Returns the codepoints recorded for a character code of a GID encoded font.
+     *
+     * @param string $key  The font key
+     * @param int    $code A recorded character code
+     *
+     * @return array<int, int>
+     */
+    protected function getUsedCodeText(string $key, int $code): array
+    {
+        return $this->font[$key]['usedseq'][$code] ?? [$this->font[$key]['usedgid'][$code] ?? 0];
+    }
+
+    /**
+     * Record the codepoints of a character code of a GID encoded font.
+     *
+     * 'usedgid' holds the first codepoint of every code, 'usedseq' the full text of the
+     * codes shown for more than one codepoint.
+     *
+     * @param string          $key  The font key
+     * @param int             $code Character code
+     * @param array<int, int> $text Codepoints, at least one
+     */
+    protected function setUsedCodeText(string $key, int $code, array $text): void
+    {
+        $this->font[$key]['usedgid'][$code] = $text[0] ?? 0;
+        if (\count($text) > 1) {
+            $this->font[$key]['usedseq'][$code] = $text;
+        }
+    }
+
+    /**
      * Add a new font to the fonts buffer
      *
      * The definition file (and the font file itself when embedding) must be present either in the current directory
@@ -327,7 +433,8 @@ abstract class Buffer
      *                       By default, the name is built from the family and style, in lower case with no spaces.
      * @param ?bool  $subset If true, embed only the characters used by the document.
      *                       Valid only for TrueTypeUnicode fonts.
-     *                       Set to null to use the default value.
+     *                       Set to null to use the default value for a new font,
+     *                       or to keep the mode of a font already in the buffer.
      *                       Subsetting is computational and memory intensive.
      *
      * @return string Font key
@@ -341,9 +448,51 @@ abstract class Buffer
         string $ifile = '',
         ?bool $subset = null,
     ): string {
-        if ($subset === null) {
-            $subset = $this->subset;
-        }
+        return $this->addFont($objnum, $font, $style, $ifile, $subset)['key'];
+    }
+
+    /**
+     * Add a new font to the fonts buffer and report the style it provides.
+     *
+     * A family that ships no definition file for the requested variation is loaded from
+     * the file of its base family and buffered under the base key, so the same glyph
+     * program is neither held nor embedded twice. The variation is then reported as
+     * synthetic and is painted by the caller when it draws the text.
+     *
+     * @param int    $objnum Current PDF object number
+     * @param string $font   Font family.
+     * @param string $style  Font style (see add()).
+     * @param string $ifile  The font definition file (or empty for autodetect).
+     * @param ?bool  $subset If true, embed only the characters used by the document.
+     *                       Set to null to use the default value for a new font,
+     *                       or to keep the mode of a font already in the buffer.
+     *
+     * @return array{key: string, style: string, fakestyle: string} Font key, requested
+     *                                                             style, and the part of
+     *                                                             it the font does not
+     *                                                             provide ('', 'B', 'I'
+     *                                                             or 'BI').
+     *
+     * @throws FontException in case of error
+     */
+    public function addFont(
+        int &$objnum,
+        string $font,
+        string $style = '',
+        string $ifile = '',
+        ?bool $subset = null,
+    ): array {
+        $fobj = new Font(
+            $font,
+            $style,
+            $ifile,
+            $subset ?? $this->subset,
+            $this->unicode,
+            $this->pdfa,
+            true,
+            $this->fileHelper,
+        );
+        $reqstyle = $fobj->getFontData()['style'];
 
         // the font key depends only on (family, style, unicode, pdfa), so an already
         // resolved key is reused when the definition file is autodetected
@@ -351,42 +500,86 @@ abstract class Buffer
             $cachedKey = $this->fontKeyCache[$font][$style];
             if (isset($this->font[$cachedKey])) {
                 $this->aggregateSubset($cachedKey, $subset);
-                return $cachedKey;
+                return $this->getStyledFont($cachedKey, $reqstyle);
             }
         }
 
-        $fobj = new Font($font, $style, $ifile, $subset, $this->unicode, $this->pdfa, true, $this->fileHelper);
         $key = $fobj->getFontkey();
+        if (isset($this->font[$key])) {
+            $this->aggregateSubset($key, $subset);
+            if ($ifile === '') {
+                $this->fontKeyCache[$font][$style] = $key;
+            }
+
+            return $this->getStyledFont($key, $reqstyle);
+        }
+
+        $fobj->load();
+        $fdata = $fobj->getFontData();
+        // the loaded font reports the key it is buffered under: a missing style
+        // variation falls back to the base family and is buffered under its key
+        $key = $fdata['key'];
         if ($ifile === '') {
             $this->fontKeyCache[$font][$style] = $key;
         }
 
         if (isset($this->font[$key])) {
             $this->aggregateSubset($key, $subset);
-            return $key;
+            return $this->getStyledFont($key, $reqstyle);
         }
 
-        $fobj->load();
-        $this->font[$key] = $fobj->getFontData();
+        $this->font[$key] = $fdata;
 
         $this->setFontDiff($key);
 
         $this->font[$key]['i'] = ++$this->numfonts;
         $this->font[$key]['n'] = ++$objnum;
 
-        return $key;
+        return $this->getStyledFont($key, $reqstyle);
+    }
+
+    /**
+     * Returns a buffered font with the style that was asked of it.
+     *
+     * @param string $key      Font key.
+     * @param string $reqstyle Requested style.
+     *
+     * @return array{key: string, style: string, fakestyle: string}
+     */
+    protected function getStyledFont(string $key, string $reqstyle): array
+    {
+        $provided = $this->font[$key]['style'] ?? '';
+        $fakestyle = '';
+        foreach (['B', 'I'] as $variation) {
+            if (!\str_contains($reqstyle, $variation) || \str_contains($provided, $variation)) {
+                continue;
+            }
+
+            $fakestyle .= $variation;
+        }
+
+        return [
+            'key' => $key,
+            'style' => $reqstyle,
+            'fakestyle' => $fakestyle,
+        ];
     }
 
     /**
      * Record the subsetting mode requested for a font that is already in the buffer.
      *
-     * The font is subset only when every request for it asked for a subset.
+     * The font is subset only when every request that states a mode asked for a subset.
+     * A request that states no mode keeps the recorded one.
      *
      * @param string $key    Font key.
-     * @param bool   $subset True if this request asked for a subset.
+     * @param ?bool  $subset True if this request asked for a subset, null if it stated no mode.
      */
-    protected function aggregateSubset(string $key, bool $subset): void
+    protected function aggregateSubset(string $key, ?bool $subset): void
     {
+        if ($subset === null) {
+            return;
+        }
+
         $this->font[$key]['subset'] = $this->font[$key]['subset'] && $subset;
     }
 

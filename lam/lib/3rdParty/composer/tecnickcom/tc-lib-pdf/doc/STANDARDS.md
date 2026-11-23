@@ -125,6 +125,8 @@ When a PDF/UA mode is active the library:
 - Nests every annotation in a structure element with an `OBJR` reference and a `/StructParent`: `Form` for a widget, `Link` for a link, `Annot` for the rest. `PrinterMark` and `Popup` annotations take none
 - Gives a form field a `/TU` description, falling back to the field name when the `tu` option is not set
 
+Pages imported from another PDF are not tagged: the source structure tree is not copied (see [PDF_IMPORT.md](PDF_IMPORT.md)), so imported content is not PDF/UA compliant.
+
 To provide the document language explicitly:
 
 ```php
@@ -157,6 +159,8 @@ $pdf->setDocCreationDate(1600000000);
 $pdf->setDocModificationDate(1600000000);
 $pdf->setFileId('any string, or 32 hexadecimal digits');
 ```
+
+Reproducibility holds for a fixed installation: the same versions of tc-lib-pdf and its dependencies, the same PHP and zlib builds, and the same input assets such as fonts and images. The `/Producer` entry and the XMP `pdf:Producer` property include the library version, and any release can change layout, object numbering or font subsetting, so upgrading can change the output bytes.
 
 `setFileId()` drives the trailer `/ID` array and the XMP `xmpMM:InstanceID` property. A value that is not 32 hexadecimal digits is hashed to that form. It cannot be called on an encrypted document, because the encryption key is derived from the identifier chosen at construction time.
 

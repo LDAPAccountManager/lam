@@ -12,7 +12,7 @@ Composer does not execute scripts declared by dependencies, so add the font gene
 {
   "scripts": {
     "tc-lib-pdf-fonts": [
-      "[ -d vendor/tecnickcom/tc-lib-pdf-font ] && make -C vendor/tecnickcom/tc-lib-pdf-font deps fonts || true"
+      "@php vendor/tecnickcom/tc-lib-pdf-font/util/build_fonts.php"
     ],
     "post-install-cmd": [
       "@tc-lib-pdf-fonts"
@@ -40,18 +40,13 @@ To also cover `composer dump-autoload` (used in many CI pipelines), add the hook
 ]
 ```
 
-If you prefer to generate fonts manually, run the build in the `tc-lib-pdf-font` package:
+To generate fonts manually, run from your project root:
 
 ```bash
-cd vendor/tecnickcom/tc-lib-pdf-font
-make fonts
+php vendor/tecnickcom/tc-lib-pdf-font/util/build_fonts.php
 ```
 
-Equivalent one-liner from your project root:
-
-```bash
-make -C vendor/tecnickcom/tc-lib-pdf-font deps fonts
-```
+The build requires only PHP and Composer (no `make` or POSIX shell), so it also runs on Windows.
 
 Generated fonts are kept in `vendor/tecnickcom/tc-lib-pdf-font/target/fonts/` and are not regenerated unless explicitly rebuilt.
 
@@ -114,7 +109,7 @@ php vendor/tecnickcom/tc-lib-pdf-font/util/convert.php \
 
 The fonts bundled with `tc-lib-pdf-font` are converted with `--encoding_id=1` and therefore cover the BMP only. To use a supplementary-plane character, convert a font that contains it with `--encoding_id=10` and point `K_PATH_FONTS` to the output directory.
 
-A character with no glyph in the font is drawn as `.notdef`, as with any other missing character.
+A character with no glyph in the font is drawn as `.notdef`, as with any other missing character. PDF/UA and the PDF/A levels A and U forbid `.notdef`: in these modes the character is left out of the text and takes no space in the line layout, and `getWarnings()` reports it.
 
 ### Font Selection and the Current Font
 
@@ -141,17 +136,56 @@ $pdf->page->addContent($pdf->getTextCell(txt: 'Heading', posx: 15, posy: 20, wid
 
 With a byte font (Core, TrueType, Type1) a mismatch only affects the metrics used for layout, since the character codes mean the same thing in every font. With a `TrueTypeUnicode` font the codes are the glyph indices of the font that encoded them, so a mismatch would draw unrelated glyphs: a text object using such a font therefore selects it explicitly, and the current font of the stack wins over any operator previously added to the page.
 
+### Missing Style Variations
+
+A family ships one definition file per style variation, named after the font key: `unifont.json`, `unifontb.json`, `unifonti.json`, `unifontbi.json`. When the file of the requested style is absent the regular one is loaded in its place and the style is painted by the text operators:
+
+| Style | Rendering |
+|-------|-----------|
+| bold | the glyphs are stroked as well as filled (text rendering mode 2), with a stroke width of a thirtieth of the font size |
+| italic | the text matrix is sheared by the italic angle of the fallback descriptor (11 degrees) |
+
+Nothing has to be enabled. `<b>`, `<i>`, the CSS `font-weight` and `font-style` properties and the `B` / `I` style arguments of `font->insert()` work the same whether the variation exists or not. GNU Unifont, which has no bold and no italic, is the case this covers. See [examples/E052_custom_fonts_fallback.php](../examples/E052_custom_fonts_fallback.php).
+
+Every style of such a family resolves to the one font it does ship, so the glyph program is held in memory once and embedded once no matter how many styles the document uses, and `/BaseFont` names the font that is actually embedded. `font->insert()` returns the requested style in `style` and the part of it being synthesized in `fakestyle`:
+
+```php
+$bold = $pdf->font->insert($pdf->pon, 'unifont', 'B', 12);
+// $bold['key'] === 'unifont', $bold['style'] === 'B', $bold['fakestyle'] === 'B'
+```
+
+A font that does provide the requested variation is never synthesized, and `fakestyle` is then empty.
+
+Limitations:
+
+- **The painted glyphs are wider than the advance they were measured with.** Only the drawing changes; the advance widths that drive line breaking, justification and cell fitting come from the font definition and are untouched, so a synthetic style lays out exactly like the regular one and a document does not reflow. The cost is that the ink spills past the box it was measured in: a stroked stem by half the stroke width on each edge, and a sheared ascender by the slant times the ascent, which at 18 pt Unifont is about 1.2 mm at the end of a run. A synthetic italic run can therefore touch the run that follows it, and an inline background, border or link rectangle can stop short of the ink. A designed italic absorbs this in its side bearings; a synthesized one cannot.
+- **A synthetic bold is stroked with the current stroke colour.** The HTML renderer sets it to the text colour. A caller of `getTextCell()` or `getTextLine()` sets the fill colour itself and must set the stroke colour alongside it, otherwise a coloured synthetic bold is outlined in the stroke colour left by an earlier operation:
+
+```php
+$pdf->page->addContent($pdf->color->getPdfFillColor('red') . $pdf->color->getPdfStrokeColor('red'));
+```
+
+- **Underline, overline and line-through are drawn as rectangles after the text object**, so they are neither sheared with a synthetic italic nor thickened with a synthetic bold.
+- **Text that is neither filled nor stroked is left alone**, so invisible text and text used as a clipping source are not emboldened.
+
+Text extraction, search, `ActualText` and tagging are unaffected: the glyph codes do not change. A real bold or italic font is always preferable; the synthesis is a fallback.
+
 ## Third-Party Fonts
 
-PHP font metadata files under the fonts directory are covered by the project license (GNU LGPL v3). They can be regenerated with the built-in font utilities.
+The font files and data generated by tc-lib-pdf-font are distributed under the terms of their source. Each family directory contains a `LICENSE` file with the full terms, including any notice and exception, and a `README` file with the source and an `SPDX-License-Identifier:` line.
 
 Original source files are renamed for compatibility and compressed with PHP `gzcompress` (`.z` extension) where applicable.
 
-| Prefix | Source | License |
-|--------|--------|---------|
-| `freefont` | [GNU FreeFont](https://ftp.gnu.org/gnu/freefont/freefont-ttf-20120503.zip) | GNU GPL v3 |
-| `pdfa` | [tc-font-pdfa](https://github.com/tecnickcom/tc-font-pdfa) (derived from GNU FreeFont) | GNU GPL v3 |
-| `dejavu` | [DejaVu Fonts 2.35](https://sourceforge.net/projects/dejavu/files/dejavu/2.35/dejavu-fonts-ttf-2.35.zip) | Bitstream Vera (with DejaVu public-domain changes) |
-| `unifont` | [GNU Unifont 15.1.03](https://www.unifoundry.com/pub/unifont/unifont-15.1.03/unifont-15.1.03.tar.gz) | GPL v2+ with font embedding exception (also distributed under SIL OFL 1.1) |
-| `cid0` | [GNU Unifont](http://unifoundry.com/unifont.html) (CID mappings) | GPL v2+ with font embedding exception |
-| `core` | [Adobe Core14 AFM](https://partners.adobe.com/public/developer/en/pdf/Core14_AFMs.zip) | Adobe copyright terms (see AFM notices) |
+| Prefix | Source | SPDX expression |
+|--------|--------|-----------------|
+| `freefont` | [GNU FreeFont](https://ftp.gnu.org/gnu/freefont/freefont-ttf-20120503.zip) | `GPL-3.0-or-later WITH Font-exception-2.0` |
+| `pdfa` | [tc-font-pdfa](https://github.com/tecnickcom/tc-font-pdfa) (derived from GNU FreeFont, with the font embedding exception extended to it) | `GPL-3.0-or-later WITH Font-exception-2.0` |
+| `dejavu` | [DejaVu Fonts 2.35](https://sourceforge.net/projects/dejavu/files/dejavu/2.35/dejavu-fonts-ttf-2.35.zip) | `Bitstream-Vera AND LicenseRef-Arev` (DejaVu changes are public domain) |
+| `unifont` | [GNU Unifont 17.0.05](https://www.unifoundry.com/pub/unifont/unifont-17.0.05/unifont-17.0.05.tar.gz) | `GPL-2.0-or-later WITH Font-exception-2.0 OR OFL-1.1` |
+| `cid0` | [GNU Unifont](http://unifoundry.com/unifont.html) (CID mappings) | `GPL-2.0-or-later WITH Font-exception-2.0` |
+| `core` | [Adobe Core14 AFM](https://github.com/tecnickcom/tc-font-core14-afms) (metrics only, no font programs) | `APAFML` |
+
+With the font embedding exception, embedding a font, or unaltered portions of it, in a document does not by itself cause the document to be covered by the GNU General Public License.
+
+In PDF/A, PDF/X and PDF/UA modes the standard 14 fonts are replaced by the `pdfa` fonts, which are embedded.
+

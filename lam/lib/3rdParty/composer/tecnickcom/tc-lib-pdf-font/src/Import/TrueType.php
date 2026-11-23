@@ -250,6 +250,10 @@ class TrueType implements ProcessorInterface
         $this->getCIDToGIDMap();
         $this->getHeights();
         $this->getWidths();
+        // the variation sequences are font metrics, not needed to subset the glyph program
+        if (!$this->subsetting) {
+            $this->getVariationSequences();
+        }
     }
 
     /**
@@ -1744,5 +1748,215 @@ class TrueType implements ProcessorInterface
                 $this->addCtgItem($chr, $glyphID);
             }
         }
+    }
+
+    /**
+     * Read the Unicode Variation Sequences subtable of the cmap table, if any, into 'uvs',
+     * and the advance widths of the glyphs it selects into 'gw', keyed by glyph index.
+     *
+     * @throws FontException
+     */
+    protected function getVariationSequences(): void
+    {
+        $this->fdt['uvs'] = [];
+        $this->fdt['gw'] = [];
+        $uvstable = $this->findTableEntry(0, 5);
+        if ($uvstable === null) {
+            return;
+        }
+
+        $this->processFormat14($this->fdt['table']['cmap']['offset'] + $uvstable['offset']);
+        foreach ($this->fdt['uvs'] as $selectors) {
+            foreach ($selectors as $gid) {
+                $this->fdt['gw'][$gid] = $this->getGlyphAdvance($gid);
+            }
+        }
+
+        \ksort($this->fdt['gw']);
+    }
+
+    /**
+     * Returns the advance width of a glyph from the hmtx table, in the units of the font
+     * metrics. A glyph past the last metric takes the advance of the last one.
+     *
+     * @param int $gid Glyph index.
+     */
+    protected function getGlyphAdvance(int $gid): int
+    {
+        $metric = \min($gid, $this->fdt['numHMetrics'] - 1);
+
+        return (int) \round(
+            $this->fbyte->getUFWord($this->fdt['table']['hmtx']['offset'] + ($metric * 4)) * $this->fdt['urk'],
+        );
+    }
+
+    /**
+     * Process Format 14: Unicode Variation Sequences
+     *   0 - uint16                                 format                 (unused) Always 14 for subtable format 14
+     *   2 - uint32                                 length                 (unused) Byte length of this subtable
+     *   6 - uint32                                 numVarSelectorRecords  Number of variation selector records
+     *  10 - VariationSelector[numVarSelectorRecords] varSelector          Array of VariationSelector records
+     *
+     *  VariationSelector Record (11 bytes):
+     *   0 - uint24     varSelector          Variation selector
+     *   3 - Offset32   defaultUVSOffset     Offset from the start of the subtable to the Default UVS table, or 0
+     *   7 - Offset32   nonDefaultUVSOffset  Offset from the start of the subtable to the Non-Default UVS table, or 0
+     *
+     *  Default UVS table: uint32 numUnicodeValueRanges, then UnicodeRange records (4 bytes):
+     *   0 - uint24     startUnicodeValue    First base character in this range
+     *   3 - uint8      additionalCount      Number of additional base characters in this range
+     *
+     *  Non-Default UVS table: uint32 numUVSMappings, then UVSMapping records (5 bytes):
+     *   0 - uint24     unicodeValue         Base character of the sequence
+     *   3 - uint16     glyphID              Glyph index of the sequence
+     *
+     * The sequences are stored in 'uvs' as base => [selector => glyph index]. A Default UVS
+     * sequence takes the glyph the base character maps to; a sequence with no glyph is skipped.
+     *
+     * @param int $start Offset of the subtable in the font file.
+     *
+     * @throws FontException
+     */
+    protected function processFormat14(int $start): void
+    {
+        $this->fdt['uvs'] = [];
+        $this->offset = $start;
+        if ($this->getCmapCapacity(10) < 1 || $this->fbyte->getUShort($this->offset) !== 14) {
+            return;
+        }
+
+        $this->offset += 6; // skip format and length
+        $numRecords = $this->fbyte->getULong($this->offset);
+        $this->offset += 4;
+        // each record is 11 bytes, and the array stops at the end of the cmap table
+        $numRecords = \min($numRecords, $this->getCmapCapacity(11));
+        $records = [];
+        for ($idx = 0; $idx < $numRecords; ++$idx) {
+            $records[] = [
+                'selector' => $this->getUInt24($this->offset),
+                'default' => $this->fbyte->getULong($this->offset + 3),
+                'nondefault' => $this->fbyte->getULong($this->offset + 7),
+            ];
+            $this->offset += 11;
+        }
+
+        $budget = $this->getCmapEntryBudget();
+        foreach ($records as $record) {
+            if ($record['default'] > 0) {
+                $budget = $this->processDefaultUVS($start + $record['default'], $record['selector'], $budget);
+            }
+
+            if ($record['nondefault'] > 0) {
+                $budget = $this->processNonDefaultUVS($start + $record['nondefault'], $record['selector'], $budget);
+            }
+        }
+
+        \ksort($this->fdt['uvs']);
+    }
+
+    /**
+     * Read a Default UVS table of a cmap format 14 subtable.
+     *
+     * @param int $offset   Offset of the table in the font file.
+     * @param int $selector Variation selector of the table.
+     * @param int $budget   Number of sequences still allowed.
+     *
+     * @return int Number of sequences still allowed after this table.
+     *
+     * @throws FontException
+     */
+    protected function processDefaultUVS(int $offset, int $selector, int $budget): int
+    {
+        $this->offset = $offset;
+        if ($this->getCmapCapacity(4) < 1) {
+            return $budget;
+        }
+
+        $numRanges = $this->fbyte->getULong($this->offset);
+        $this->offset += 4;
+        // each record is 4 bytes, and the array stops at the end of the cmap table
+        $numRanges = \min($numRanges, $this->getCmapCapacity(4));
+        for ($idx = 0; $idx < $numRanges; ++$idx) {
+            $first = $this->getUInt24($this->offset);
+            $count = $this->fbyte->getByte($this->offset + 3);
+            $this->offset += 4;
+            $budget -= $count + 1;
+            if ($budget < 0) {
+                throw new FontException('cmap format 14 subtable maps too many variation sequences');
+            }
+
+            $last = \min($first + $count, self::MAX_UNICODE_CODEPOINT);
+            for ($base = $first; $base <= $last; ++$base) {
+                $this->addUvsItem($base, $selector, $this->fdt['ctgdata'][$base] ?? 0);
+            }
+        }
+
+        return $budget;
+    }
+
+    /**
+     * Read a Non-Default UVS table of a cmap format 14 subtable.
+     *
+     * @param int $offset   Offset of the table in the font file.
+     * @param int $selector Variation selector of the table.
+     * @param int $budget   Number of sequences still allowed.
+     *
+     * @return int Number of sequences still allowed after this table.
+     *
+     * @throws FontException
+     */
+    protected function processNonDefaultUVS(int $offset, int $selector, int $budget): int
+    {
+        $this->offset = $offset;
+        if ($this->getCmapCapacity(4) < 1) {
+            return $budget;
+        }
+
+        $numMappings = $this->fbyte->getULong($this->offset);
+        $this->offset += 4;
+        // each record is 5 bytes, and the array stops at the end of the cmap table
+        $numMappings = \min($numMappings, $this->getCmapCapacity(5));
+        $budget -= $numMappings;
+        if ($budget < 0) {
+            throw new FontException('cmap format 14 subtable maps too many variation sequences');
+        }
+
+        for ($idx = 0; $idx < $numMappings; ++$idx) {
+            $base = $this->getUInt24($this->offset);
+            $gid = $this->fbyte->getUShort($this->offset + 3);
+            $this->offset += 5;
+            $this->addUvsItem($base, $selector, $gid);
+        }
+
+        return $budget;
+    }
+
+    /**
+     * Record the glyph of a variation sequence.
+     *
+     * A sequence whose base is not a Unicode code point, or whose glyph is .notdef or
+     * outside the glyph count of the font, is skipped.
+     *
+     * @param int $base     Base character.
+     * @param int $selector Variation selector.
+     * @param int $gid      Glyph index.
+     */
+    protected function addUvsItem(int $base, int $selector, int $gid): void
+    {
+        if ($base > self::MAX_UNICODE_CODEPOINT || $gid < 1 || $gid >= $this->fdt['numGlyphs']) {
+            return;
+        }
+
+        $this->fdt['uvs'][$base][$selector] = $gid;
+    }
+
+    /**
+     * Returns the unsigned 24-bit big-endian integer at the given offset.
+     *
+     * @param int $offset Offset in the font file.
+     */
+    protected function getUInt24(int $offset): int
+    {
+        return ($this->fbyte->getByte($offset) << 16) | $this->fbyte->getUShort($offset + 1);
     }
 }

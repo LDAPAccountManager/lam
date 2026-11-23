@@ -43,7 +43,7 @@ abstract class Layers extends \Com\Tecnick\Barcode\Type\Square\Aztec\Codeword
         }
 
         $last = \array_values($data)[\count($data) - 1] ?? [0, 0, 0, 0, 0, 0, 0];
-        return $last[3] ?? 0;
+        return $last[3];
     }
 
     /**

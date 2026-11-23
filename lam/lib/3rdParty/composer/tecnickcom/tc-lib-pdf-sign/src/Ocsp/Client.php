@@ -892,7 +892,7 @@ final class Client
     }
 
     /**
-     * Resolve the certificate a ResponderID names to the DER that verifies the response.
+     * Check that a certificate the ResponderID names verifies the response.
      *
      * certs [0] is outside tbsResponseData and so covered by no signature, so every
      * candidate is tried and the rejection is reported only once none is left.
@@ -915,7 +915,7 @@ final class Client
         string $issuerDer,
         int $now,
         callable $verify,
-    ): string {
+    ): void {
         // ResponderID ::= CHOICE { byName [1] Name, byKey [2] KeyHash }, both EXPLICIT.
         $choice = $responderId['tag'];
         if ($choice !== 0xA1 && $choice !== 0xA2) {
@@ -940,7 +940,7 @@ final class Client
             try {
                 $verify($issuerDer);
 
-                return $issuerDer;
+                return;
             } catch (Exception $e) {
                 $rejection = $e;
             }
@@ -955,7 +955,7 @@ final class Client
                 $this->authorisedResponder($cert, $issuerDer, $now);
                 $verify($cert);
 
-                return $cert;
+                return;
             } catch (Exception $e) {
                 $rejection ??= $e;
             }

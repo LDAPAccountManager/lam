@@ -141,6 +141,22 @@ abstract class Modes extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Placeme
         };
     }
 
+    /**
+     * Returns true if the encodation can start on the character.
+     * C40, Text and Base 256 encode every character; X12 and EDIFACT only their own sets.
+     *
+     * @param int $chr  Character (byte) to check.
+     * @param int $mode Encoding mode.
+     */
+    public function canStartEncodation(int $chr, int $mode): bool
+    {
+        return match ($mode) {
+            Data::ENC_X12 => $this->isX12Mode($chr) || $this->isC40Mode($chr),
+            Data::ENC_EDF => $this->isEDFMode($chr),
+            default => true,
+        };
+    }
+
     ///**
     // * Tell if char is ASCII character 0 to 127
     // *

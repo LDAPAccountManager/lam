@@ -33,8 +33,8 @@
     "ext-pcre": "*",
     "ext-zlib": "*",
     "tecnickcom/tc-lib-file": "^3.9",
-    "tecnickcom/tc-lib-unicode-data": "^3.0",
-    "tecnickcom/tc-lib-pdf-encrypt": "^2.11"
+    "tecnickcom/tc-lib-unicode-data": "^3.1",
+    "tecnickcom/tc-lib-pdf-encrypt": "^2.12"
   },
   "suggest": {
     "ext-iconv": "Decodes legacy Macintosh (MacRoman) TrueType name strings",
@@ -43,9 +43,9 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "require-dev": {
-    "carthage-software/mago": "1.47.6",
-    "pdepend/pdepend": "^2.16",
-    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.3"
+    "carthage-software/mago": "1.60.2",
+    "pdepend/pdepend": "^3.1",
+    "phpunit/phpunit": "^11.5 || ^12.5 || ^13.4"
   },
   "autoload": {
     "psr-4": {
@@ -78,6 +78,7 @@
     "cs-fix:test": "vendor/bin/mago --config mago.test.toml fmt test",
     "report": "mkdir -p target/report && vendor/bin/pdepend --jdepend-xml=target/report/dependencies.xml --summary-xml=target/report/metrics.xml --jdepend-chart=target/report/dependencies.svg --overview-pyramid=target/report/overview-pyramid.svg --ignore=vendor ./src",
     "check-deps": ["@composer validate --strict --no-check-lock", "@composer audit"],
-    "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"]
+    "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"],
+    "fonts": "@php util/build_fonts.php"
   }
 }

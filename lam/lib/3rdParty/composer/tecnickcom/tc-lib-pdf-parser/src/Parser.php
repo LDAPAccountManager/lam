@@ -741,7 +741,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     private function readObjectStreamIndex(string $decodedData, int $n, int $first): ?array
     {
         $header = \substr($decodedData, 0, $first);
-        $meta = \preg_split('/\s+/', \trim($header));
+        $meta = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($header));
         if (!\is_array($meta) || \count($meta) < (2 * $n)) {
             return null;
         }

@@ -79,7 +79,7 @@ class EncodeTxt extends \Com\Tecnick\Barcode\Type\Square\Datamatrix\Steps
      * @param int             $from    First data index to encode
      * @param int             $to      Last data index to encode
      */
-    protected function encodeAsciiRange(array &$cdw, int &$cdw_num, string $data, int $from, int $to): void
+    public function encodeAsciiRange(array &$cdw, int &$cdw_num, string $data, int $from, int $to): void
     {
         for ($idx = $from; $idx <= $to; ++$idx) {
             $chr = \ord($data[$idx]);

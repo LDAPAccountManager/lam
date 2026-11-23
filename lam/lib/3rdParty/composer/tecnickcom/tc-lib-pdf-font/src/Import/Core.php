@@ -605,7 +605,7 @@ class Core implements ProcessorInterface
         foreach ($lines as $line) {
             // the ';' terminating each key/value group needs no surrounding whitespace, so
             // it is isolated into its own token before splitting on any run of whitespace
-            $col = \preg_split('/\s+/', \trim(\str_replace(';', ' ; ', $line)), -1, PREG_SPLIT_NO_EMPTY);
+            $col = \preg_split('/[\t\n\x0B\f\r ]+/', \trim(\str_replace(';', ' ; ', $line)), -1, PREG_SPLIT_NO_EMPTY);
             if ($col !== false && \count($col) > 1) {
                 $this->processMetricRow($col, $cwd);
             }
@@ -625,7 +625,7 @@ class Core implements ProcessorInterface
     private function readCodeSpaceFields(array $lines): void
     {
         foreach ($lines as $line) {
-            $col = \preg_split('/\s+/', \trim($line), -1, PREG_SPLIT_NO_EMPTY);
+            $col = \preg_split('/[\t\n\x0B\f\r ]+/', \trim($line), -1, PREG_SPLIT_NO_EMPTY);
             if ($col === false || \count($col) < 2) {
                 continue;
             }

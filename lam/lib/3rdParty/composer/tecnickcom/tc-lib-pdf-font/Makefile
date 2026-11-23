@@ -83,29 +83,33 @@ endif
 # PHP binary
 PHP=$(shell which php)
 
+# Composer binary
+COMPOSER_BINARY=$(shell which composer)
+
 # Composer executable (APC disabled to work around a bug)
-COMPOSER=$(PHP) -d "apc.enable_cli=0" $(shell which composer)
+COMPOSER=$(PHP) -d "apc.enable_cli=0" $(COMPOSER_BINARY)
 
 # phpDocumentor executable file
 PHPDOC=$(shell which phpDocumentor)
 
 # List of fonts to process
-FONTLIST=core pdfa cid0 freefont unifont dejavu noto
+FONTLIST=core pdfa cid0 freefont unifont dejavu
 
 # --- MAKE TARGETS ---
 
 # Display general help about this command
 .PHONY: help
 help:
-	@echo ""
-	@echo "$(PROJECT) Makefile."
-	@echo "The following commands are available:"
-	@echo ""
-	@awk '/^## /{desc=substr($$0,4)} /^\.PHONY:/{if(NF>1) {target=$$2; if(desc) printf "  make %-15s: %s\n",target,desc; desc=""}}' Makefile
-	@echo ""
-	@echo "To test and build everything from scratch, use the shortcut:"
-	@echo "    make x"
-	@echo ""
+	@if [ -t 1 ] && [ -z "$${NO_COLOR:-}" ]; then \
+		B=$$(printf '\033[1m'); C=$$(printf '\033[36m'); Y=$$(printf '\033[33m'); D=$$(printf '\033[2m'); R=$$(printf '\033[0m'); \
+	else \
+		B=''; C=''; Y=''; D=''; R=''; \
+	fi; \
+	printf "\n%s%s%s %s(v%s)%s\n" "$$B" "$(PROJECT)" "$$R" "$$D" "$(VERSION)" "$$R"; \
+	printf "\n%sUsage:%s make %s<target>%s\n\n" "$$Y" "$$R" "$$C" "$$R"; \
+	printf "%sTargets:%s\n" "$$Y" "$$R"; \
+	awk -v c="$$C" -v r="$$R" '/^## /{desc=substr($$0,4)} /^\.PHONY:/{if(NF>1){if(desc){n++; t[n]=$$2; d[n]=desc; if(length($$2)>w) w=length($$2)} desc=""}} END{fmt="  %s%-" w "s%s  %s\n"; for(i=1;i<=n;i++) printf fmt,c,t[i],r,d[i]}' Makefile; \
+	printf "\n%sTo test and build everything from scratch:%s make %sx%s\n\n" "$$D" "$$R" "$$C" "$$R"
 
 # alias for help target
 .PHONY: all
@@ -298,10 +302,7 @@ versionup:
 
 ## import and convert fonts
 fonts:
-	rm -rf "$(TARGETDIR)/fonts"
-	test -f vendor/autoload.php || $(COMPOSER) install --no-dev --no-interaction
-	cd util && ($(COMPOSER) install -vvv --no-interaction)
-	cd util && make build
+	COMPOSER_BINARY="$(COMPOSER_BINARY)" $(PHP) util/build_fonts.php
 	
 ## Build fonts RPM packages for RedHat-like Linux distributions
 rpm_fonts:

@@ -97,6 +97,33 @@ class Page extends \Com\Tecnick\Pdf\Page\Region
     }
 
     /**
+     * Set the modification time of the pages added without one, including the pages
+     * added automatically by a page break.
+     *
+     * @param ?int $time UTC time in seconds, or null to use the current time.
+     */
+    public function setDefaultPageTime(?int $time): static
+    {
+        $this->deftime = $time === null ? null : \max(0, $time);
+        return $this;
+    }
+
+    /**
+     * Set the callback applied to the content of each page when the PDF pages are output.
+     *
+     * The callback receives the page content, with the PAGE_NUM and PAGE_TOT aliases
+     * already replaced, the page number in its group and the number of pages in the
+     * group, and returns the content to output.
+     *
+     * @param ?callable(string, int, int): string $resolver Callback, or null to remove it.
+     */
+    public function setPageNumberResolver(?callable $resolver): static
+    {
+        $this->pagenumresolver = $resolver === null ? null : $resolver(...);
+        return $this;
+    }
+
+    /**
      * Record whether the given page uses transparency.
      *
      * In 'auto' mode a page flagged false omits the per-page transparency
@@ -768,16 +795,23 @@ class Page extends \Com\Tecnick\Pdf\Page\Region
     }
 
     /**
-     * Replace page templates and numbers.
+     * Replace page templates and numbers, then apply the page number resolver, if any.
      *
      * @param PageData $data Page data.
      */
     protected function replacePageTemplates(array $data): string
     {
-        return \implode("\n", \str_replace(
+        $total = $this->group[$data['group']] ?? 0;
+        $content = \implode("\n", \str_replace(
             [self::PAGE_TOT, self::PAGE_NUM],
-            [(string) ($this->group[$data['group']] ?? 0), (string) $data['num']],
+            [(string) $total, (string) $data['num']],
             $data['content'],
         ));
+
+        if ($this->pagenumresolver === null) {
+            return $content;
+        }
+
+        return ($this->pagenumresolver)($content, $data['num'], $total);
     }
 }

@@ -157,7 +157,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
         if ($offset === 0) {
             // find last startxref
             $matchCount = \preg_match_all(
-                '/[\r\n]startxref[\s]*[\r\n]+([0-9]+)[\s]*[\r\n]+%%EOF/i',
+                '/[\r\n][Ss][Tt][Aa][Rr][Tt][Xx][Rr][Ee][Ff][\t\n\x0B\f\r ]*[\r\n]+([0-9]+)[\t\n\x0B\f\r ]*[\r\n]+%%[Ee][Oo][Ff]/',
                 $this->pdfdata,
                 $matches,
                 PREG_SET_ORDER,
@@ -172,11 +172,17 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
         } elseif (($pos = \strpos($this->pdfdata, 'xref', $offset)) !== false && $pos <= ($offset + 4)) {
             // Already pointing at the xref table
             $startxref = $pos;
-        } elseif (\preg_match('/([0-9]+[\s][0-9]+[\s]obj)/i', $this->pdfdata, $matches, PREG_OFFSET_CAPTURE, $offset)) {
+        } elseif (\preg_match(
+            '/([0-9]+[\t\n\x0B\f\r ][0-9]+[\t\n\x0B\f\r ][Oo][Bb][Jj])/',
+            $this->pdfdata,
+            $matches,
+            PREG_OFFSET_CAPTURE,
+            $offset,
+        )) {
             // Cross-Reference Stream object
             $startxref = (int) $offset;
         } elseif (\preg_match(
-            '/[\r\n]startxref[\s]*[\r\n]+([0-9]+)[\s]*[\r\n]+%%EOF/i',
+            '/[\r\n][Ss][Tt][Aa][Rr][Tt][Xx][Rr][Ee][Ff][\t\n\x0B\f\r ]*[\r\n]+([0-9]+)[\t\n\x0B\f\r ]*[\r\n]+%%[Ee][Oo][Ff]/',
             $this->pdfdata,
             $matches,
             PREG_OFFSET_CAPTURE,
@@ -554,30 +560,54 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
             ];
 
             // parse trailer_data
-            if (\preg_match('/Size[\s]+([0-9]+)/i', $trailer_data, $matches) === 1) {
+            if (\preg_match('/[Ss][Ii][Zz][Ee][\t\n\x0B\f\r ]+([0-9]+)/', $trailer_data, $matches) === 1) {
                 $xref['trailer']['size'] = (int) ($matches[1] ?? 0);
             }
 
-            if (\preg_match('/Root[\s]+([0-9]+)[\s]+([0-9]+)[\s]+R/i', $trailer_data, $matches) === 1) {
+            if (
+                \preg_match(
+                    '/[Rr][Oo][Oo][Tt][\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+[Rr]/',
+                    $trailer_data,
+                    $matches,
+                ) === 1
+            ) {
                 $xref['trailer']['root'] = (int) ($matches[1] ?? 0) . '_' . (int) ($matches[2] ?? 0);
             }
 
-            if (\preg_match('/Encrypt[\s]+([0-9]+)[\s]+([0-9]+)[\s]+R/i', $trailer_data, $matches) === 1) {
+            if (
+                \preg_match(
+                    '/[Ee][Nn][Cc][Rr][Yy][Pp][Tt][\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+[Rr]/',
+                    $trailer_data,
+                    $matches,
+                ) === 1
+            ) {
                 $xref['trailer']['encrypt'] = (int) ($matches[1] ?? 0) . '_' . (int) ($matches[2] ?? 0);
             }
 
-            if (\preg_match('/Info[\s]+([0-9]+)[\s]+([0-9]+)[\s]+R/i', $trailer_data, $matches) === 1) {
+            if (
+                \preg_match(
+                    '/[Ii][Nn][Ff][Oo][\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+([0-9]+)[\t\n\x0B\f\r ]+[Rr]/',
+                    $trailer_data,
+                    $matches,
+                ) === 1
+            ) {
                 $xref['trailer']['info'] = (int) ($matches[1] ?? 0) . '_' . (int) ($matches[2] ?? 0);
             }
 
-            if (\preg_match('/ID[\s]*+[\[][\s]*+[<]([^>]*+)[>][\s]*+[<]([^>]*+)[>]/i', $trailer_data, $matches) === 1) {
+            if (
+                \preg_match(
+                    '/[Ii][Dd][\t\n\x0B\f\r ]*+[\[][\t\n\x0B\f\r ]*+[<]([^>]*+)[>][\t\n\x0B\f\r ]*+[<]([^>]*+)[>]/',
+                    $trailer_data,
+                    $matches,
+                ) === 1
+            ) {
                 /** @var array<int, string> $id_array */
                 $id_array = [$matches[1] ?? '', $matches[2] ?? ''];
                 $xref['trailer']['id'] = $id_array;
             }
         }
 
-        if (\preg_match('/Prev[\s]+([0-9]+)/i', $trailer_data, $matches) === 1) {
+        if (\preg_match('/[Pp][Rr][Ee][Vv][\t\n\x0B\f\r ]+([0-9]+)/', $trailer_data, $matches) === 1) {
             // get previous xref
             return $this->getXrefData((int) ($matches[1] ?? 0), $xref);
         }

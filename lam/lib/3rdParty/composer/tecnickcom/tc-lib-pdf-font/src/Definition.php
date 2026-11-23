@@ -94,7 +94,9 @@ final class Definition
             'mode' => self::mode($value),
             'FontBBox' => self::numberList($value),
             'cbbox', 'cbboxu' => self::bboxMap($value),
-            'cw', 'cwu', 'ctgu', 'ctgdata', 'indexToLoc', 'usedgid' => self::numberMap($value),
+            'cw', 'cwu', 'ctgu', 'ctgdata', 'gw', 'indexToLoc', 'usedalias', 'usedgid' => self::numberMap($value),
+            'uvs' => self::numberMapMap($value),
+            'usedseq' => self::codeListMap($value),
             'subsetchars' => self::flagMap($value),
             'enc_map' => self::textMap($value),
             // 'table' and 'encodingTables' belong to the import stage, not to a definition file
@@ -189,6 +191,60 @@ final class Definition
             $number = self::number($item);
             if ($code !== null && $number !== null) {
                 $map[$code] = $number;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Returns a map of character code to a map of character code to number, dropping
+     * everything else.
+     *
+     * @param array<array-key, mixed> $value Raw map read from the definition file.
+     *
+     * @return array<int, array<int, int|float>>
+     */
+    private static function numberMapMap(array $value): array
+    {
+        $map = [];
+        /** @var mixed $item */
+        foreach ($value as $key => $item) {
+            $code = self::code($key);
+            if ($code === null || !\is_array($item)) {
+                continue;
+            }
+
+            $inner = self::numberMap($item);
+            if ($inner !== []) {
+                $map[$code] = $inner;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Returns a map of character code to a list of integer character codes, dropping
+     * everything else.
+     *
+     * @param array<array-key, mixed> $value Raw map read from the definition file.
+     *
+     * @return array<int, array<int, int>>
+     */
+    private static function codeListMap(array $value): array
+    {
+        $map = [];
+        /** @var mixed $item */
+        foreach ($value as $key => $item) {
+            $code = self::code($key);
+            if ($code === null || !\is_array($item)) {
+                continue;
+            }
+
+            $list = \array_map(\intval(...), self::numberList($item));
+            if ($list !== []) {
+                $map[$code] = $list;
             }
         }
 

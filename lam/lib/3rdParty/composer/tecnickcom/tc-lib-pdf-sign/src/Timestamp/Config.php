@@ -64,7 +64,7 @@ final class Config
      * It gates the TSA endpoint a host supplies and the OCSP and CRL URLs
      * Ltv\ValidationMaterial reads out of a certificate extension.
      */
-    public const URL_PATTERN = '~^https?://[^\x00-\x20\x7F/?#]+(?:[/?#][^\x00-\x20\x7F]*)?\z~i';
+    public const URL_PATTERN = '~^[Hh][Tt][Tt][Pp][Ss]?://[^\x00-\x20\x7F/?#]+(?:[/?#][^\x00-\x20\x7F]*)?\z~';
 
     /**
      * Selected message-imprint digest algorithm (one of the DigestAlgorithm

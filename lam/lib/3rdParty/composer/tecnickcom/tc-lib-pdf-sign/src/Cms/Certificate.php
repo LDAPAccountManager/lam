@@ -1176,7 +1176,7 @@ final class Certificate
             $body = \substr($pem, $begin + \strlen(self::PEM_BEGIN), $end - $begin - \strlen(self::PEM_BEGIN));
         }
 
-        $der = \base64_decode((string) \preg_replace('/\s+/', '', $body), true);
+        $der = \base64_decode((string) \preg_replace('/[\t\n\x0B\f\r ]+/', '', $body), true);
         if ($der === false || $der === '') {
             throw new Exception('Invalid PEM certificate');
         }
