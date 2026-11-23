@@ -38,6 +38,19 @@ use Webauthn\MetadataService\CertificateChain\CertificateToolbox;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
 
+/**
+ * The authenticator picks the "alg" of a TPM attestation statement, and some TPMs still sign with RS1
+ * (RSASSA-PKCS1-v1_5 with SHA-1). cose-lib hands out the SHA-1 digest only against an explicit acknowledgement:
+ * without it, verifying such a statement emits an E_USER_WARNING, which an error handler that turns warnings into
+ * exceptions (as Symfony's does in debug mode) makes fatal, and which cose-lib v5.0.0 will replace with an exception.
+ *
+ * Set $acknowledgeInsecureAlgorithm to true only when the application has to keep registering these authenticators,
+ * for instance to pass the platform attestation tests of the FIDO Conformance Tools. The algorithm manager of the
+ * Relying Party is not involved: registering RS1 there, even with the acknowledgement, changes nothing for the TPM
+ * attestation statement.
+ *
+ * @see https://www.w3.org/TR/webauthn-3/#sctn-tpm-attestation
+ */
 final class TPMAttestationStatementSupport implements AttestationStatementSupport, CanDispatchEvents
 {
     private const OID_FIDO_GEN_CE_AAGUID = '1.3.6.1.4.1.45724.1.1.4';
@@ -48,8 +61,10 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
 
     private readonly ClockInterface $clock;
 
-    public function __construct(null|ClockInterface $clock = null)
-    {
+    public function __construct(
+        null|ClockInterface $clock = null,
+        private readonly bool $acknowledgeInsecureAlgorithm = false
+    ) {
         $this->clock = $clock ?? new NativeClock();
         $this->dispatcher = new NullEventDispatcher();
     }
@@ -59,9 +74,11 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         $this->dispatcher = $eventDispatcher;
     }
 
-    public static function create(null|ClockInterface $clock = null): self
-    {
-        return new self($clock);
+    public static function create(
+        null|ClockInterface $clock = null,
+        bool $acknowledgeInsecureAlgorithm = false
+    ): self {
+        return new self($clock, $acknowledgeInsecureAlgorithm);
     }
 
     public function name(): string
@@ -142,7 +159,11 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         /** @var int|string $algRaw */
         $algRaw = $attestationStatement->get('alg');
         $alg = (int) $algRaw;
-        $attToBeSignedHash = hash(Algorithms::getHashAlgorithmFor($alg), $attToBeSigned, true);
+        $attToBeSignedHash = hash(
+            Algorithms::getHashAlgorithmFor($alg, $this->acknowledgeInsecureAlgorithm),
+            $attToBeSigned,
+            true
+        );
         /** @var array{extraData: string} $parsedCertInfo */
         $parsedCertInfo = $attestationStatement->get('parsedCertInfo');
         $parsedCertInfo['extraData'] === $attToBeSignedHash || throw InvalidAttestationStatementException::create(
@@ -358,6 +379,10 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         };
     }
 
+    /**
+     * The signature is verified with the public key of the certificate checked by checkCertificate(), which is also
+     * the one the certificate chain validator reads, never with the text of the trust path itself.
+     */
     private function processWithCertificate(
         AttestationStatement $attestationStatement,
         AuthenticatorData $authenticatorData
@@ -370,25 +395,40 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         $certificates = $trustPath->certificates;
 
         // Check certificate CA chain and returns the Attestation Certificate
-        $this->checkCertificate($certificates[0], $authenticatorData);
+        $certificate = $this->checkCertificate($certificates[0], $authenticatorData);
 
         // Get the COSE algorithm identifier and the corresponding OpenSSL one
         /** @var int|string $algRaw */
         $algRaw = $attestationStatement->get('alg');
         $coseAlgorithmIdentifier = (int) $algRaw;
-        $opensslAlgorithmIdentifier = Algorithms::getOpensslAlgorithmFor($coseAlgorithmIdentifier);
+        $opensslAlgorithmIdentifier = Algorithms::getOpensslAlgorithmFor(
+            $coseAlgorithmIdentifier,
+            $this->acknowledgeInsecureAlgorithm
+        );
 
         /** @var string $certInfo */
         $certInfo = $attestationStatement->get('certInfo');
         /** @var string $sig */
         $sig = $attestationStatement->get('sig');
-        $result = openssl_verify($certInfo, $sig, $certificates[0], $opensslAlgorithmIdentifier);
+        $result = openssl_verify(
+            $certInfo,
+            $sig,
+            $certificate->tbsCertificate()
+                ->subjectPublicKeyInfo()
+                ->toPEM()
+                ->string(),
+            $opensslAlgorithmIdentifier
+        );
 
         return $result === 1;
     }
 
-    // https://www.w3.org/TR/webauthn-3/#sctn-tpm-cert-requirements
-    private function checkCertificate(string $attestnCert, AuthenticatorData $authenticatorData): void
+    /**
+     * Returns the certificate that has been checked, so that the signature is verified with its public key.
+     *
+     * @see https://www.w3.org/TR/webauthn-3/#sctn-tpm-cert-requirements
+     */
+    private function checkCertificate(string $attestnCert, AuthenticatorData $authenticatorData): Certificate
     {
         $certificate = Certificate::fromPEM(PEM::fromString($attestnCert));
         $tbsCertificate = $certificate->tbsCertificate();
@@ -457,5 +497,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
                 'The value of the "aaguid" does not match with the certificate'
             );
         }
+
+        return $certificate;
     }
 }

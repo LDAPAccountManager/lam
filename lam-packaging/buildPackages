@@ -86,6 +86,7 @@ find lam/lib/3rdParty -name LICENSE -exec rm {} \;
 find lam/lib/3rdParty -name LICENSE.md -exec rm {} \;
 find lam/lib/3rdParty -name LICENSE.txt -exec rm {} \;
 find lam/lib/3rdParty -name UPGRADING.md -exec rm {} \;
+find lam/lib/3rdParty -name UPGRADE.md -exec rm {} \;
 find lam/lib/3rdParty -name RELEASES.md -exec rm {} \;
 find lam/lib/3rdParty -name README.md -exec rm {} \;
 find lam/lib/3rdParty -name README.rst -exec rm {} \;
@@ -96,12 +97,14 @@ find lam/lib/3rdParty -name SECURITY.md -exec rm {} \;
 find lam/lib/3rdParty -name BACKERS.md -exec rm {} \;
 find lam/lib/3rdParty -name CRT_INSTRUCTIONS.md -exec rm {} \;
 find lam/lib/3rdParty -name context7.json -exec rm {} \;
+find lam/lib/3rdParty -name .yamllint.yaml -exec rm {} \;
 find lam/lib/3rdParty -name S3_EC_SUPPORT_POLICY.md -exec rm {} \;
 find lam/lib/3rdParty -name CONTRIBUTING.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.TXT -exec rm {} \;
 find lam/lib/3rdParty -name CODE_OF_CONDUCT.md -exec rm {} \;
+find lam/lib/3rdParty -name .agents | xargs rm -r
 find lam/lib/3rdParty -name .github | xargs rm -r
 find lam/lib/3rdParty -name .gitattributes | xargs rm -r
 find lam/lib/3rdParty -name .phpstorm.meta.php | xargs rm -r
