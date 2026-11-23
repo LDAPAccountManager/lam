@@ -100,6 +100,8 @@ final class NoPrivateNetworkHttpClient implements HttpClientInterface, LoggerAwa
             return new AsyncResponse($this->client, $method, $url, $options);
         }
 
+        // $url already contains the query: it must not be added again to redirect targets
+        unset($options['query']);
         $options['max_redirects'] = 0;
         $redirectHeaders['with_auth'] = $redirectHeaders['no_auth'] = $options['headers'];
 
@@ -193,7 +195,7 @@ final class NoPrivateNetworkHttpClient implements HttpClientInterface, LoggerAwa
         }
 
         if ($dnsCache->offsetExists($host)) {
-            return $dnsCache[$host];
+            return $options['resolve'][$host] = $dnsCache[$host];
         }
 
         if ((\FILTER_FLAG_IPV4 & $ipFlags) && $ip = gethostbynamel($host)) {

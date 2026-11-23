@@ -16,11 +16,15 @@ use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyAgreement;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyAgreementWithKeyWrapping;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyEncryption;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyWrapping;
+use Jose\Component\Encryption\Algorithm\KeyEncryption\PBES2AESKW;
 use Jose\Component\Encryption\Algorithm\KeyEncryptionAlgorithm;
+use SensitiveParameter;
 use Throwable;
 use function count;
 use function func_num_args;
+use function intdiv;
 use function is_callable;
+use function is_int;
 use function is_string;
 use function sprintf;
 use function strlen;
@@ -69,7 +73,8 @@ class JWEDecrypter
      * @param JWE $jwe A JWE object to decrypt
      * @param JWK $jwk The key used to decrypt the input
      * @param int $recipient The recipient used to decrypt the token
-     * @param JWK|null $senderKey The sender key, when the key management algorithm is a static key agreement
+     * @param JWK|null $senderKey With a static key agreement, the public key of the sender, or the private key of the
+     *                             recipient when the key used to decrypt the input is the public key of the sender
      */
     public function decryptUsingKey(JWE &$jwe, JWK $jwk, int $recipient, ?JWK $senderKey = null): bool
     {
@@ -92,6 +97,8 @@ class JWEDecrypter
      * @param JWKSet $jwkset The key set used to decrypt the input
      * @param JWK $jwk The key used to decrypt the token in case of success
      * @param int $recipient The recipient used to decrypt the token in case of success
+     * @param JWK|null $senderKey With a static key agreement, the public key of the sender, or the private key of the
+     *                             recipient when the key set holds the public keys of the senders
      */
     public function decryptUsingKeySet(
         JWE &$jwe,
@@ -169,6 +176,7 @@ class JWEDecrypter
                 } else {
                     KeyChecker::checkKeyAlgorithm($recipientKey, $content_encryption_algorithm->name());
                 }
+                $this->checkIterationCount($key_encryption_algorithm, $completeHeader, $jwe->countRecipients());
                 $cek = $this->decryptCEK(
                     $key_encryption_algorithm,
                     $content_encryption_algorithm,
@@ -194,16 +202,46 @@ class JWEDecrypter
         return null;
     }
 
+    /**
+     * A key obtained by key agreement is checked like a decrypted or unwrapped one, and a direct key must be at least
+     * that long: the content encryption algorithms pad a short key with zero bytes instead of rejecting it.
+     */
     private function checkCekSize(
+        #[SensitiveParameter]
         string $cek,
         KeyEncryptionAlgorithm $keyEncryptionAlgorithm,
         ContentEncryptionAlgorithm $algorithm
     ): void {
-        if ($keyEncryptionAlgorithm instanceof DirectEncryption || $keyEncryptionAlgorithm instanceof KeyAgreement) {
+        $cekSize = strlen($cek) * 8;
+        if ($keyEncryptionAlgorithm instanceof DirectEncryption && $cekSize > $algorithm->getCEKSize()) {
             return;
         }
-        if (strlen($cek) * 8 !== $algorithm->getCEKSize()) {
+        if ($cekSize !== $algorithm->getCEKSize()) {
             throw new InvalidArgumentException('Invalid CEK size');
+        }
+    }
+
+    /**
+     * The recipients of a token share the iteration count cap of PBES2: one token cannot request more key derivation
+     * work than a single recipient at the cap.
+     *
+     * @param array<mixed> $completeHeader
+     */
+    private function checkIterationCount(
+        KeyEncryptionAlgorithm $keyEncryptionAlgorithm,
+        array $completeHeader,
+        int $recipientCount
+    ): void {
+        if (! $keyEncryptionAlgorithm instanceof PBES2AESKW) {
+            return;
+        }
+        $maxCount = intdiv($keyEncryptionAlgorithm->getMaxCount(), $recipientCount);
+        $count = $completeHeader['p2c'] ?? null;
+        if (is_int($count) && $count > $maxCount) {
+            throw new InvalidArgumentException(sprintf(
+                'The header parameter "p2c" is too large. The maximum allowed value is %d.',
+                $maxCount
+            ));
         }
     }
 
@@ -226,9 +264,13 @@ class JWEDecrypter
         array $completeHeader
     ): string {
         if ($key_encryption_algorithm instanceof DirectEncryption) {
+            $this->checkEncryptedKeyIsEmpty($recipient);
+
             return $key_encryption_algorithm->getCEK($recipientKey);
         }
         if ($key_encryption_algorithm instanceof KeyAgreement) {
+            $this->checkEncryptedKeyIsEmpty($recipient);
+
             return $key_encryption_algorithm->getAgreementKey(
                 $content_encryption_algorithm->getCEKSize(),
                 $content_encryption_algorithm->name(),
@@ -271,8 +313,22 @@ class JWEDecrypter
         throw new InvalidArgumentException('Unsupported CEK generation');
     }
 
+    /**
+     * Direct encryption and direct key agreement transport no key (RFC 7516, section 5.2, step 10). The authentication
+     * tag does not cover the encrypted key, so nothing else rejects a token in which it was filled.
+     */
+    private function checkEncryptedKeyIsEmpty(Recipient $recipient): void
+    {
+        if (($recipient->getEncryptedKey() ?? '') !== '') {
+            throw new InvalidArgumentException(
+                'The encrypted key must be empty with direct encryption or direct key agreement.'
+            );
+        }
+    }
+
     private function decryptPayload(
         JWE $jwe,
+        #[SensitiveParameter]
         string $cek,
         ContentEncryptionAlgorithm $content_encryption_algorithm,
     ): string {

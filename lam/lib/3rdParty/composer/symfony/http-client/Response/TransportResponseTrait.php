@@ -44,11 +44,11 @@ trait TransportResponseTrait
     private int|string $id;
     private ?float $timeout = 0;
     private \InflateContext|bool|null $inflate = null;
-    private int $inflateIn = 0;
-    private int $inflateOut = 0;
     private ?array $finalInfo = null;
     private ?LoggerInterface $logger = null;
     private bool $didTimeout = false;
+    private float $pauseExpiry = 0.0;
+    private float $maxDurationExpiry = 0.0;
 
     public function getStatusCode(): int
     {
@@ -169,6 +169,8 @@ trait TransportResponseTrait
             $hasActivity = false;
             $timeoutMax = 0;
             $timeoutMin = $timeout ?? \INF;
+            $idleTimeMax = 0;
+            $maxDurationExpiry = \INF;
 
             /** @var ClientState $multi */
             foreach ($runningResponses as $i => [$multi, &$responses]) {
@@ -179,6 +181,18 @@ trait TransportResponseTrait
                     $timeoutMin = min($timeoutMin, $response->timeout, 1);
                     $chunk = false;
 
+                    if ($response->pauseExpiry && 0 < ($response->info['max_duration'] ?? 0) && isset($multi->openHandles[$j])) {
+                        // The time spent paused counts toward max_duration
+                        $response->maxDurationExpiry = $response->maxDurationExpiry ?: hrtime(true) / 1E9 + $response->info['max_duration'] - $response->getInfo('total_time');
+
+                        if (hrtime(true) / 1E9 < $response->maxDurationExpiry) {
+                            $maxDurationExpiry = min($maxDurationExpiry, $response->maxDurationExpiry);
+                        } else {
+                            $multi->handlesActivity[$j][] = null;
+                            $multi->handlesActivity[$j][] = new TransportException(\sprintf('Max duration was reached for "%s".', $response->getInfo('url')));
+                        }
+                    }
+
                     if (isset($multi->handlesActivity[$j])) {
                         $multi->lastTimeout = null;
                         $elapsedTimeout = 0;
@@ -186,12 +200,13 @@ trait TransportResponseTrait
                         $hasActivity = true;
                         unset($responses[$j]);
                         continue;
-                    } elseif ($elapsedTimeout >= $timeoutMax) {
+                    } elseif (($idleTime = null === $timeout && $response->pauseExpiry ? min($elapsedTimeout, hrtime(true) / 1E9 - $response->pauseExpiry) : $elapsedTimeout) >= $timeoutMax) {
                         $response->didTimeout = true;
                         $multi->handlesActivity[$j] = [new ErrorChunk($response->offset, \sprintf('Idle timeout reached for "%s".', $response->getInfo('url')))];
                         $multi->lastTimeout ??= $lastActivity;
                         $elapsedTimeout = $timeoutMax;
                     } else {
+                        $idleTimeMax = max($idleTimeMax, $idleTime);
                         continue;
                     }
 
@@ -200,22 +215,9 @@ trait TransportResponseTrait
 
                     while ($multi->handlesActivity[$j] ?? false) {
                         if (\is_string($chunk = array_shift($multi->handlesActivity[$j]))) {
-                            if (null !== $response->inflate) {
-                                $response->inflateIn += \strlen($chunk);
-
-                                if (false === $chunk = @inflate_add($response->inflate, $chunk)) {
-                                    $multi->handlesActivity[$j] = [null, new TransportException(\sprintf('Error while processing content unencoding for "%s".', $response->getInfo('url')))];
-                                    continue;
-                                }
-
-                                $response->inflateOut += \strlen($chunk);
-
-                                // Reject decompression bombs. The ratio is meaningless on small bodies,
-                                // so it applies only past the 2 MB that php://temp keeps in memory.
-                                if (2097152 < $response->inflateOut && 100 * $response->inflateIn < $response->inflateOut) {
-                                    $multi->handlesActivity[$j] = [null, new TransportException(\sprintf('Content of "%s" inflated to more than 100 times its compressed size.', $response->getInfo('url')))];
-                                    continue;
-                                }
+                            if (null !== $response->inflate && false === $chunk = @inflate_add($response->inflate, $chunk)) {
+                                $multi->handlesActivity[$j] = [null, new TransportException(\sprintf('Error while processing content unencoding for "%s".', $response->getInfo('url')))];
+                                continue;
                             }
 
                             if ('' !== $chunk && null !== $response->content && \strlen($chunk) !== fwrite($response->content, $chunk)) {
@@ -321,7 +323,7 @@ trait TransportResponseTrait
                 continue;
             }
 
-            if (-1 === self::select($multi, min($timeoutMin, max(0, $timeoutMax - $elapsedTimeout)))) {
+            if (-1 === self::select($multi, min($timeoutMin, max(0, $timeoutMax - $idleTimeMax), max(0, $maxDurationExpiry - hrtime(true) / 1E9)))) {
                 usleep((int) min(500, 1E6 * $timeoutMin));
             }
 

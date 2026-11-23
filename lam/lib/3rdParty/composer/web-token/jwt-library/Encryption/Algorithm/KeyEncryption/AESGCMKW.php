@@ -14,6 +14,7 @@ use function extension_loaded;
 use function in_array;
 use function is_string;
 use function sprintf;
+use function strlen;
 use const OPENSSL_RAW_DATA;
 
 abstract readonly class AESGCMKW implements KeyWrapping
@@ -72,6 +73,9 @@ abstract readonly class AESGCMKW implements KeyWrapping
 
         $tag = Base64UrlSafe::decodeNoPadding($completeHeader['tag']);
         $iv = Base64UrlSafe::decodeNoPadding($completeHeader['iv']);
+        if (strlen($tag) !== 16) {
+            throw new RuntimeException('Unable to decrypt the CEK');
+        }
 
         $mode = sprintf('aes-%d-gcm', $this->getKeySize());
         $cek = openssl_decrypt($encrypted_cek, $mode, $kek, OPENSSL_RAW_DATA, $iv, $tag, '');
@@ -100,8 +104,12 @@ abstract readonly class AESGCMKW implements KeyWrapping
         if (! is_string($k)) {
             throw new InvalidArgumentException('The key parameter "k" is invalid.');
         }
+        $k = Base64UrlSafe::decodeNoPadding($k);
+        if (mb_strlen($k, '8bit') * 8 < $this->getKeySize()) {
+            throw new InvalidArgumentException('Invalid key length.');
+        }
 
-        return Base64UrlSafe::decodeNoPadding($k);
+        return $k;
     }
 
     abstract protected function getKeySize(): int;

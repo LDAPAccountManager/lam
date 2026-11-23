@@ -6,7 +6,7 @@ namespace Jose\Component\Encryption\Serializer;
 
 use InvalidArgumentException;
 use Jose\Component\Core\Util\Base64UrlSafe;
-use Jose\Component\Core\Util\JsonConverter;
+use Jose\Component\Core\Util\BoundedJsonDecoder;
 use Jose\Component\Encryption\JWE;
 use Jose\Component\Encryption\Recipient;
 use LogicException;
@@ -35,9 +35,7 @@ final readonly class CompactSerializer implements JWESerializer
     #[Override]
     public function serialize(JWE $jwe, ?int $recipientIndex = null): string
     {
-        if ($recipientIndex === null) {
-            $recipientIndex = 0;
-        }
+        $recipientIndex ??= 0;
         $recipient = $jwe->getRecipient($recipientIndex);
 
         $this->checkHasNoAAD($jwe);
@@ -70,7 +68,7 @@ final readonly class CompactSerializer implements JWESerializer
 
         try {
             $encodedSharedProtectedHeader = $parts[0];
-            $sharedProtectedHeader = JsonConverter::decode(
+            $sharedProtectedHeader = (new BoundedJsonDecoder())->decode(
                 Base64UrlSafe::decodeNoPadding($encodedSharedProtectedHeader)
             );
             if (! is_array($sharedProtectedHeader)) {

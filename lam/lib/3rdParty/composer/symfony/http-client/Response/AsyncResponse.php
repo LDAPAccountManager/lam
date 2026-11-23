@@ -41,6 +41,7 @@ class AsyncResponse implements ResponseInterface, StreamableInterface
     private ?\Iterator $stream = null;
     private ?int $yieldedState = null;
     private bool $hasThrown = false;
+    private float $maxDurationExpiry = 0.0;
 
     /**
      * @param ?callable(ChunkInterface, AsyncContext): ?\Iterator $passthru
@@ -314,7 +315,14 @@ class AsyncResponse implements ResponseInterface, StreamableInterface
             }
 
             if (null === $chunk) {
-                throw new \LogicException(\sprintf('"%s" is not compliant with HttpClientInterface: its "stream()" method didn\'t yield any chunks when it should have.', get_debug_type($client)));
+                foreach ($asyncMap as $response) {
+                    if (null !== $asyncMap[$response]->client) {
+                        throw new \LogicException(\sprintf('"%s" is not compliant with HttpClientInterface: its "stream()" method didn\'t yield any chunks when it should have.', get_debug_type($client)));
+                    }
+                }
+
+                // No chunk is yielded for responses canceled while streaming, e.g. from the "on_progress" callback
+                return;
             }
             if (null === $chunk->getError() && $chunk->isLast()) {
                 $r->yieldedState = self::LAST_CHUNK_YIELDED;
@@ -341,7 +349,7 @@ class AsyncResponse implements ResponseInterface, StreamableInterface
     {
         $r->stream = null;
         $response = $r->response;
-        $context = new AsyncContext($r->passthru, $client, $r->response, $r->info, $r->content, $r->offset);
+        $context = new AsyncContext($r->passthru, $client, $r->response, $r->info, $r->content, $r->offset, $r->maxDurationExpiry);
         if (null === $stream = ($r->passthru)($chunk, $context)) {
             if ($r->response === $response && (null !== $chunk->getError() || $chunk->isLast())) {
                 throw new \LogicException('A chunk passthru cannot swallow the last chunk.');

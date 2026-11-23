@@ -6,10 +6,11 @@ namespace Jose\Component\Signature\Serializer;
 
 use InvalidArgumentException;
 use Jose\Component\Core\Util\Base64UrlSafe;
-use Jose\Component\Core\Util\JsonConverter;
+use Jose\Component\Core\Util\BoundedJsonDecoder;
 use Jose\Component\Signature\JWS;
 use LogicException;
 use Override;
+use SensitiveParameter;
 use Throwable;
 use function count;
 use function is_array;
@@ -34,9 +35,7 @@ final readonly class CompactSerializer extends Serializer
     #[Override]
     public function serialize(JWS $jws, ?int $signatureIndex = null): string
     {
-        if ($signatureIndex === null) {
-            $signatureIndex = 0;
-        }
+        $signatureIndex ??= 0;
         $signature = $jws->getSignature($signatureIndex);
         if (count($signature->getHeader()) !== 0) {
             throw new LogicException(
@@ -65,7 +64,7 @@ final readonly class CompactSerializer extends Serializer
      * of the input in memory.
      */
     #[Override]
-    public function unserialize(string $input): JWS
+    public function unserialize(#[SensitiveParameter] string $input): JWS
     {
         $parts = explode('.', $input, 4);
         if (count($parts) !== 3) {
@@ -74,7 +73,7 @@ final readonly class CompactSerializer extends Serializer
 
         try {
             $encodedProtectedHeader = $parts[0];
-            $protectedHeader = JsonConverter::decode(Base64UrlSafe::decodeNoPadding($parts[0]));
+            $protectedHeader = (new BoundedJsonDecoder())->decode(Base64UrlSafe::decodeNoPadding($parts[0]));
             if (! is_array($protectedHeader)) {
                 throw new InvalidArgumentException('Bad protected header.');
             }

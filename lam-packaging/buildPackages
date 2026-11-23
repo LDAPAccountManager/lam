@@ -98,6 +98,7 @@ find lam/lib/3rdParty -name BACKERS.md -exec rm {} \;
 find lam/lib/3rdParty -name CRT_INSTRUCTIONS.md -exec rm {} \;
 find lam/lib/3rdParty -name context7.json -exec rm {} \;
 find lam/lib/3rdParty -name .yamllint.yaml -exec rm {} \;
+find lam/lib/3rdParty -name phpmd.yml -exec rm {} \;
 find lam/lib/3rdParty -name S3_EC_SUPPORT_POLICY.md -exec rm {} \;
 find lam/lib/3rdParty -name CONTRIBUTING.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
