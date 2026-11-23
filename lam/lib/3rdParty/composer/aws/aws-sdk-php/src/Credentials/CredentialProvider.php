@@ -112,7 +112,7 @@ class CredentialProvider
                 self::getConfigFileName()
             );
             $defaultChain['ini_config'] = self::ini(
-                'profile '. $profileName,
+                'profile ' . $profileName,
                 self::getConfigFileName()
             );
         }
@@ -492,10 +492,17 @@ class CredentialProvider
      */
     public static function ini($profile = null, $filename = null, array $config = [])
     {
+        $useProfileFallback = $filename !== null
+            && $filename === self::getConfigFileName();
         $filename = self::getCredentialsFileName($filename);
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
 
-        return function () use ($profile, $filename, $config) {
+        return function () use (
+            $profile,
+            $filename,
+            $config,
+            $useProfileFallback
+        ) {
             $preferStaticCredentials = $config['preferStaticCredentials'] ?? false;
             $disableAssumeRole = $config['disableAssumeRole'] ?? false;
             $stsClient = $config['stsClient'] ?? null;
@@ -507,6 +514,11 @@ class CredentialProvider
             if ($data === false) {
                 return self::reject("Invalid credentials file: $filename");
             }
+            $profile = self::resolveProfileName(
+                $data,
+                $profile,
+                $useProfileFallback
+            );
             if (!isset($data[$profile])) {
                 return self::reject("'$profile' not found in credentials file");
             }
@@ -582,17 +594,24 @@ class CredentialProvider
      */
     public static function process($profile = null, $filename = null)
     {
+        $useProfileFallback = $filename !== null
+            && $filename === self::getConfigFileName();
         $filename = self::getCredentialsFileName($filename);
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
 
-        return function () use ($profile, $filename) {
+        return function () use ($profile, $filename, $useProfileFallback) {
             if (!@is_readable($filename)) {
                 return self::reject("Cannot read process credentials from $filename");
             }
-            $data = \Aws\parse_ini_file($filename, true, INI_SCANNER_RAW);
+            $data = self::loadProfiles($filename);
             if ($data === false) {
                 return self::reject("Invalid credentials file: $filename");
             }
+            $profile = self::resolveProfileName(
+                $data,
+                $profile,
+                $useProfileFallback
+            );
             if (!isset($data[$profile])) {
                 return self::reject("'$profile' not found in credentials file");
             }
@@ -659,6 +678,33 @@ class CredentialProvider
     }
 
     /**
+     * Resolves the alternate config-file form of a profile section.
+     *
+     * @param array  $data
+     * @param string $profile
+     * @param bool   $useProfileFallback
+     *
+     * @return string
+     */
+    private static function resolveProfileName(
+        array $data,
+        string $profile,
+        bool $useProfileFallback
+    ): string
+    {
+        if (isset($data[$profile])
+            || !$useProfileFallback
+            || strpos($profile, 'profile ') !== 0
+        ) {
+            return $profile;
+        }
+
+        $fallbackProfile = substr($profile, strlen('profile '));
+
+        return isset($data[$fallbackProfile]) ? $fallbackProfile : $profile;
+    }
+
+    /**
      * Login credential provider for AWS local development using console credentials
      *
      * @param string|null $profileName profile containing your console login session information
@@ -721,6 +767,11 @@ class CredentialProvider
         $sourceProfileName = "";
         if (!empty($roleProfile['source_profile'])) {
             $sourceProfileName = $roleProfile['source_profile'];
+            if (!isset($profiles[$sourceProfileName])
+                && isset($profiles['profile ' . $sourceProfileName])
+            ) {
+                $sourceProfileName = 'profile ' . $sourceProfileName;
+            }
             if (!isset($profiles[$sourceProfileName])) {
                 return self::reject("source_profile " . $sourceProfileName
                     . " using profile " . $profileName . " does not exist"
@@ -745,9 +796,21 @@ class CredentialProvider
             $config['preferStaticCredentials'] = true;
             $sourceCredentials = null;
             if (!empty($roleProfile['source_profile'])){
-                $sourceCredentials = call_user_func(
-                    CredentialProvider::ini($sourceProfileName, $filename, $config)
-                )->wait();
+                $source = $profiles[$sourceProfileName];
+                $sourceProvider = match (true) {
+                    isset($source['aws_access_key_id']),
+                    isset($source['role_arn']) => self::ini($sourceProfileName, $filename, $config),
+                    isset($source['credential_process']) => self::process($sourceProfileName, $filename),
+                    isset($source['sso_session']),
+                    isset($source['sso_start_url']) => self::sso(
+                        $roleProfile['source_profile'],
+                        self::getConfigFileName(),
+                        $config
+                    ),
+                    isset($source['login_session']) => self::login($roleProfile['source_profile'], $config),
+                    default => self::ini($sourceProfileName, $filename, $config),
+                };
+                $sourceCredentials = $sourceProvider()->wait();
             } else {
                 $sourceCredentials = self::getCredentialsFromSource(
                     $profileName,

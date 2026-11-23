@@ -10,7 +10,6 @@ use Aws\Middleware;
 use Aws\Result;
 use Aws\Retry\ConfigurationInterface as RetryConfigurationInterface;
 use Aws\Retry\ConfigurationProvider as RetryConfigurationProvider;
-use Aws\Retry\V3\OptIn as NewRetriesOptIn;
 use Aws\Retry\V3\RetryMiddleware as RetryV3Middleware;
 use Aws\RetryMiddleware;
 use Aws\Sts\RegionalEndpoints\ConfigurationProvider;
@@ -150,6 +149,22 @@ use Aws\Sts\RegionalEndpoints\ConfigurationProvider;
  *     MinimumSessionTokenSize?: int,
  *     ...,
  * } $args = [])
+ * @method \Aws\Result getScopedCredentials(array $args = [])
+ * @phpstan-method \Aws\Result getScopedCredentials(array{
+ *     Policy?: string,
+ *     DurationSeconds?: int,
+ *     MinimumSessionTokenSize?: int,
+ *     ScopedSessionDescription?: string,
+ *     ...,
+ * } $args = [])
+ * @method \GuzzleHttp\Promise\Promise getScopedCredentialsAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise getScopedCredentialsAsync(array{
+ *     Policy?: string,
+ *     DurationSeconds?: int,
+ *     MinimumSessionTokenSize?: int,
+ *     ScopedSessionDescription?: string,
+ *     ...,
+ * } $args = [])
  * @method \Aws\Result getSessionToken(array $args = [])
  * @phpstan-method \Aws\Result getSessionToken(array{DurationSeconds?: int, SerialNumber?: string, TokenCode?: string, MinimumSessionTokenSize?: int, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise getSessionTokenAsync(array $args = [])
@@ -159,6 +174,8 @@ use Aws\Sts\RegionalEndpoints\ConfigurationProvider;
  *     Audience?: list<string>,
  *     DurationSeconds?: int,
  *     SigningAlgorithm?: string,
+ *     Scope?: string,
+ *     SubjectMode?: 'AWSIdentity'|'OriginIdentity',
  *     Tags?: list<array{Key?: string, Value?: string, ...}>,
  *     ...,
  * } $args = [])
@@ -167,6 +184,8 @@ use Aws\Sts\RegionalEndpoints\ConfigurationProvider;
  *     Audience?: list<string>,
  *     DurationSeconds?: int,
  *     SigningAlgorithm?: string,
+ *     Scope?: string,
+ *     SubjectMode?: 'AWSIdentity'|'OriginIdentity',
  *     Tags?: list<array{Key?: string, Value?: string, ...}>,
  *     ...,
  * } $args = [])
@@ -208,19 +227,12 @@ class StsClient extends AwsClient
     public static function getArguments()
     {
         $args = parent::getArguments();
-        // Off-path STS keeps the default ClientResolver retry handling. The
-        // override below adds IDPCommunicationError as a transient error and
-        // is only registered when the AWS_NEW_RETRIES_2026 flag is on.
-        if (NewRetriesOptIn::isEnabled()) {
-            $args['retries']['fn'] = [__CLASS__, '_applyRetryConfig'];
-        }
+        // Adds IDPCommunicationError as a transient error.
+        $args['retries']['fn'] = [__CLASS__, '_applyRetryConfig'];
         return $args;
     }
 
-    /**
-     * @internal Only invoked when AWS_NEW_RETRIES_2026=true. The off-path
-     *           uses the default ClientResolver::_apply_retries.
-     */
+    /** @internal */
     public static function _applyRetryConfig(
         $value,
         array &$args,

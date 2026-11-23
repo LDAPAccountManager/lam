@@ -5,6 +5,14 @@ use Aws\AwsClient;
 
 /**
  * This client is used to interact with the **AWS Sign-In Service** service.
+ * @method \Aws\Result batchRevokeSessions(array $args = [])
+ * @phpstan-method \Aws\Result batchRevokeSessions(array{principalArn?: string, sessionArns?: list<string>, reason?: string, ...} $args = [])
+ * @method \GuzzleHttp\Promise\Promise batchRevokeSessionsAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise batchRevokeSessionsAsync(array{principalArn?: string, sessionArns?: list<string>, reason?: string, ...} $args = [])
+ * @method \Aws\Result createBearerToken(array $args = [])
+ * @phpstan-method \Aws\Result createBearerToken(array{grantType?: string, resource?: string, durationSeconds?: int, ...} $args = [])
+ * @method \GuzzleHttp\Promise\Promise createBearerTokenAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise createBearerTokenAsync(array{grantType?: string, resource?: string, durationSeconds?: int, ...} $args = [])
  * @method \Aws\Result createOAuth2Token(array $args = [])
  * @phpstan-method \Aws\Result createOAuth2Token(array{
  *     tokenInput?: array{
@@ -35,6 +43,28 @@ use Aws\AwsClient;
  * @phpstan-method \Aws\Result createOAuth2TokenWithIAM(array{grantType?: string, resource?: string, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise createOAuth2TokenWithIAMAsync(array $args = [])
  * @phpstan-method \GuzzleHttp\Promise\Promise createOAuth2TokenWithIAMAsync(array{grantType?: string, resource?: string, ...} $args = [])
+ * @method \Aws\Result createOAuth2TokenWithTokenExchange(array $args = [])
+ * @phpstan-method \Aws\Result createOAuth2TokenWithTokenExchange(array{
+ *     grantType?: string,
+ *     subjectToken?: string,
+ *     subjectTokenType?: string,
+ *     assertion?: string,
+ *     clientId?: string,
+ *     resource?: string,
+ *     scope?: string,
+ *     ...,
+ * } $args = [])
+ * @method \GuzzleHttp\Promise\Promise createOAuth2TokenWithTokenExchangeAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise createOAuth2TokenWithTokenExchangeAsync(array{
+ *     grantType?: string,
+ *     subjectToken?: string,
+ *     subjectTokenType?: string,
+ *     assertion?: string,
+ *     clientId?: string,
+ *     resource?: string,
+ *     scope?: string,
+ *     ...,
+ * } $args = [])
  * @method \Aws\Result deleteConsoleAuthorizationConfiguration(array $args = [])
  * @phpstan-method \Aws\Result deleteConsoleAuthorizationConfiguration(array{targetId?: string, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteConsoleAuthorizationConfigurationAsync(array $args = [])
@@ -51,6 +81,10 @@ use Aws\AwsClient;
  * @phpstan-method \Aws\Result getResourcePolicy(array{...} $args = [])
  * @method \GuzzleHttp\Promise\Promise getResourcePolicyAsync(array $args = [])
  * @phpstan-method \GuzzleHttp\Promise\Promise getResourcePolicyAsync(array{...} $args = [])
+ * @method \Aws\Result getSession(array $args = [])
+ * @phpstan-method \Aws\Result getSession(array{sessionArn?: string, principalArn?: string, ...} $args = [])
+ * @method \GuzzleHttp\Promise\Promise getSessionAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise getSessionAsync(array{sessionArn?: string, principalArn?: string, ...} $args = [])
  * @method \Aws\Result introspectOAuth2TokenWithIAM(array $args = [])
  * @phpstan-method \Aws\Result introspectOAuth2TokenWithIAM(array{token?: string, tokenTypeHint?: string, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise introspectOAuth2TokenWithIAMAsync(array $args = [])
@@ -59,6 +93,28 @@ use Aws\AwsClient;
  * @phpstan-method \Aws\Result listResourcePermissionStatements(array{maxResults?: int, nextToken?: string, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise listResourcePermissionStatementsAsync(array $args = [])
  * @phpstan-method \GuzzleHttp\Promise\Promise listResourcePermissionStatementsAsync(array{maxResults?: int, nextToken?: string, ...} $args = [])
+ * @method \Aws\Result listSessions(array $args = [])
+ * @phpstan-method \Aws\Result listSessions(array{
+ *     principalArn?: string,
+ *     maxResults?: int,
+ *     nextToken?: string,
+ *     status?: 'ACTIVE'|'REVOKED',
+ *     clientId?: string,
+ *     issuedAfter?: int,
+ *     issuedBefore?: int,
+ *     ...,
+ * } $args = [])
+ * @method \GuzzleHttp\Promise\Promise listSessionsAsync(array $args = [])
+ * @phpstan-method \GuzzleHttp\Promise\Promise listSessionsAsync(array{
+ *     principalArn?: string,
+ *     maxResults?: int,
+ *     nextToken?: string,
+ *     status?: 'ACTIVE'|'REVOKED',
+ *     clientId?: string,
+ *     issuedAfter?: int,
+ *     issuedBefore?: int,
+ *     ...,
+ * } $args = [])
  * @method \Aws\Result putConsoleAuthorizationConfiguration(array $args = [])
  * @phpstan-method \Aws\Result putConsoleAuthorizationConfiguration(array{targetId?: string, ...} $args = [])
  * @method \GuzzleHttp\Promise\Promise putConsoleAuthorizationConfigurationAsync(array $args = [])

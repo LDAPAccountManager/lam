@@ -19,7 +19,7 @@ composer require guzzlehttp/psr7
 
 | Version | Status       | PHP Version  |
 |---------|--------------|--------------|
-| 3.1     | Latest       | >=7.4,<8.7   |
+| 3.6     | Latest       | >=7.4,<8.7   |
 | 2.13    | Maintenance  | >=7.2.5,<8.7 |
 | 1.9     | End of Life  | >=5.4,<8.2   |
 
@@ -56,6 +56,7 @@ $request = $request->withHeader('Accept', 'application/json');
 - [PSR-17 Factories](docs/psr-17-factories.md)
 - [Message Helpers](docs/message-helpers.md)
 - [Diagnostic Values](docs/diagnostic-values.md)
+- [Error Scopes](docs/error-scopes.md)
 - [Header and Query Helpers](docs/header-and-query-helpers.md)
 - [Stream Helpers](docs/stream-helpers.md)
 - [URI and MIME Helpers](docs/uri-and-mime-helpers.md)
@@ -66,10 +67,9 @@ $request = $request->withHeader('Accept', 'application/json');
 
 If you discover a security vulnerability within this package, please send an
 email to security@tidelift.com. All security vulnerabilities will be promptly
-addressed. Please do not disclose security-related issues publicly until a fix
-has been announced. Please see
-[Security Policy](https://github.com/guzzle/psr7/security/policy) for more
-information.
+addressed by the security maintainers listed in the
+[Security Policy](https://github.com/guzzle/psr7/security/policy). Please do not
+disclose security-related issues publicly until a fix has been announced.
 
 ## License
 

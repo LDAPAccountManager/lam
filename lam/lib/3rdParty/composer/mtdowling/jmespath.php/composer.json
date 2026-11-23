@@ -17,11 +17,11 @@
     ],
     "require": {
         "php": "^7.2.5 || ^8.0",
-        "symfony/polyfill-mbstring": "^1.17"
+        "symfony/polyfill-mbstring": "^1.30"
     },
     "require-dev": {
         "composer/xdebug-handler": "^3.0.3",
-        "phpunit/phpunit": "^8.5.52"
+        "phpunit/phpunit": "^8.5.57"
     },
     "autoload": {
         "psr-4": {
@@ -29,10 +29,5 @@
         },
         "files": ["src/JmesPath.php"]
     },
-    "bin": ["bin/jp.php"],
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.9-dev"
-        }
-    }
+    "bin": ["bin/jp.php"]
 }

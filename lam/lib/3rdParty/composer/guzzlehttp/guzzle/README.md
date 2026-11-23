@@ -30,8 +30,8 @@ composer require guzzlehttp/guzzle
 
 | Version | Status       | PHP Version  |
 |---------|--------------|--------------|
-| 8.2     | Latest       | >=7.4,<8.7   |
-| 7.15    | Maintenance  | >=7.2.5,<8.7 |
+| 8.6     | Latest       | >=7.4,<8.7   |
+| 7.17    | Maintenance  | >=7.2.5,<8.7 |
 | 6.5     | End of Life  | >=5.5,<8.0   |
 
 ## Quick Start
@@ -74,10 +74,9 @@ We use GitHub issues only to discuss bugs and new features. For support, use
 
 If you discover a security vulnerability within this package, please send an
 email to security@tidelift.com. All security vulnerabilities will be promptly
-addressed. Please do not disclose security-related issues publicly until a fix
-has been announced. Please see
-[Security Policy](https://github.com/guzzle/guzzle/security/policy) for more
-information.
+addressed by the security maintainers listed in the
+[Security Policy](https://github.com/guzzle/guzzle/security/policy). Please do
+not disclose security-related issues publicly until a fix has been announced.
 
 ## License
 

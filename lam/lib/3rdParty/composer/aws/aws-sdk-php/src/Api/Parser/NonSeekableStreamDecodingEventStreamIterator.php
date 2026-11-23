@@ -50,7 +50,21 @@ class NonSeekableStreamDecodingEventStreamIterator extends DecodingEventStreamIt
             )
         );
         $calculatedCrc = hash_final($this->hashContext, true);
-        $messageCrc = $this->stream->read(4);
+        $messageCrc = '';
+        while (
+            strlen($messageCrc) < self::BYTES_TRAILING
+            && !$this->stream->eof()
+        ) {
+            $chunk = $this->stream->read(
+                self::BYTES_TRAILING - strlen($messageCrc)
+            );
+            if ($chunk === '') {
+                break;
+            }
+
+            $messageCrc .= $chunk;
+        }
+
         if ($calculatedCrc !== $messageCrc) {
             throw new ParserException('Message checksum mismatch.');
         }
@@ -89,13 +103,25 @@ class NonSeekableStreamDecodingEventStreamIterator extends DecodingEventStreamIt
     #[\ReturnTypeWillChange]
     public function rewind()
     {
+        $byte = $this->stream->read(1);
+        if ($byte === '' && $this->stream->eof()) {
+            $this->currentEvent = null;
+            return;
+        }
+
+        if ($byte !== '') {
+            $this->tempBuffer[] = $byte;
+        }
+
         $this->currentEvent = $this->parseEvent();
     }
 
     public function next()
     {
         $this->tempBuffer[] = $this->stream->read(1);
-        if ($this->valid()) {
+        if ($this->stream->eof()) {
+            $this->currentEvent = null;
+        } else {
             $this->key++;
             $this->currentEvent = $this->parseEvent();
         }
@@ -107,6 +133,6 @@ class NonSeekableStreamDecodingEventStreamIterator extends DecodingEventStreamIt
     #[\ReturnTypeWillChange]
     public function valid()
     {
-        return !$this->stream->eof();
+        return $this->currentEvent !== null;
     }
 }
