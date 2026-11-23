@@ -99,36 +99,42 @@ abstract class CMS
     }
 
     // this NEEDS to be public so that Constructed.php can call it
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public static function mapInCerts(Constructed $certs): void
     {
         ASN1::disableCacheInvalidation();
-        for ($i = 0; $i < count($certs); $i++) {
-            if ($certs[$i]->index != 'certificate') {
-                continue;
+        try {
+            for ($i = 0; $i < count($certs); $i++) {
+                if ($certs[$i]->index != 'certificate') {
+                    continue;
+                }
+                $certs[$i]['certificate'] = X509::load((string) $certs[$i]->getEncoded(), ASN1::FORMAT_DER);
             }
-            $certs[$i]['certificate'] = X509::load((string) $certs[$i]->getEncoded());
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public static function mapInCRLs(Constructed $crls): void
     {
         ASN1::disableCacheInvalidation();
-        for ($i = 0; $i < count($crls); $i++) {
-            if (!isset($crls[$i]['crl'])) {
-                continue;
+        try {
+            for ($i = 0; $i < count($crls); $i++) {
+                if (!isset($crls[$i]['crl'])) {
+                    continue;
+                }
+                $crls[$i] = CRL::load((string) $crls[$i]->getEncoded(), ASN1::FORMAT_DER);
             }
-            $crls[$i] = CRL::load((string) $crls[$i]->getEncoded());
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     /**
      * Enable binary output (DER)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function enableBinaryOutput(): void
     {
@@ -138,7 +144,7 @@ abstract class CMS
     /**
      * Disable binary output (ie. enable PEM)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function disableBinaryOutput(): void
     {

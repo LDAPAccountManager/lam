@@ -40,22 +40,23 @@ trait DN
     public static function mapInDNs(array|Constructed &$dn): void
     {
         ASN1::disableCacheInvalidation();
-
-        if ("$dn[type]" == 'id-at-postalAddress') {
-            $dn['value'] = ASN1::map(ASN1::decodeBER($dn['value']->getEncoded()), Maps\PostalAddress::MAP);
-            // if we swapped out the above line for the following code then
-            // $cert['tbsCertificate']['subject']['rdnSequence'][0][0]['value'] would be an array vs a BaseType
-            // object and ->getEncoded() wouldn't work
-            /*
-            $temp = ASN1::map(ASN1::decodeBER($dn['value']->getEncoded()), Maps\PostalAddress::MAP);
-            $dn['value'] = [];
-            foreach ($temp as $key => $part) {
-                $dn['value'][] = current($part->toArray());
+        try {
+            if ("$dn[type]" == 'id-at-postalAddress') {
+                $dn['value'] = ASN1::map(ASN1::decodeBER($dn['value']->getEncoded()), Maps\PostalAddress::MAP);
+                // if we swapped out the above line for the following code then
+                // $cert['tbsCertificate']['subject']['rdnSequence'][0][0]['value'] would be an array vs a BaseType
+                // object and ->getEncoded() wouldn't work
+                /*
+                $temp = ASN1::map(ASN1::decodeBER($dn['value']->getEncoded()), Maps\PostalAddress::MAP);
+                $dn['value'] = [];
+                foreach ($temp as $key => $part) {
+                    $dn['value'][] = current($part->toArray());
+                }
+                */
             }
-            */
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-
-        ASN1::enableCacheInvalidation();
     }
 
     private static function mapOutDNsInner(array|Constructed|Element &$dns): void
@@ -275,7 +276,8 @@ trait DN
         $rdn = &$dn['rdnSequence'];
         $size = count($rdn);
         for ($i = 0; $i < $size; $i++) {
-            if ($rdn[$i][0]['type'] == $propName) {
+            // an RDN should hold at least one attribute (SET SIZE (1..MAX)); skip one that doesn't
+            if (isset($rdn[$i][0]['type']) && $rdn[$i][0]['type'] == $propName) {
                 return true;
             }
         }
@@ -289,7 +291,7 @@ trait DN
         $rdn = &$dn['rdnSequence'];
         $size = count($rdn);
         for ($i = 0; $i < $size; $i++) {
-            if ($rdn[$i][0]['type'] == $propName) {
+            if (isset($rdn[$i][0]['type']) && $rdn[$i][0]['type'] == $propName) {
                 unset($rdn[$i]);
             }
         }
@@ -464,8 +466,16 @@ trait DN
         $result = [];
 
         foreach ($dn['rdnSequence'] as $field) {
+            if (!isset($field[0]['type'])) {
+                throw new UnexpectedValueException('An RDN without attributes was encountered');
+            }
             $prop = (string) $field[0]['type'];
             $value = $field[0]['value'];
+            // RFC 4514 2.4: a value of a type with no string form is written as '#' and the hex
+            // of its BER encoding (eg. a BOOLEAN, which can't be converted to a string)
+            if ($value instanceof BaseType && !$value instanceof \Stringable && $value->hasEncoded()) {
+                $value = new Element($value->getEncoded());
+            }
 
             $desc = match ($prop) {
                 'id-at-countryName' => 'C',
@@ -536,7 +546,7 @@ trait DN
         $dn = $dn['rdnSequence'];
         $result = [];
         for ($i = 0; $i < count($dn); $i++) {
-            if ($dn[$i][0]['type'] == $propName) {
+            if (isset($dn[$i][0]['type']) && $dn[$i][0]['type'] == $propName) {
                 $v = $dn[$i][0]['value'];
                 if (is_string($v)) {
                     $v = new UTF8String($v);

@@ -204,10 +204,14 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
     {
         if (self::extensionMatch('id-aa-timeStampToken', $attr['type'])) {
             ASN1::disableCacheInvalidation();
-            for ($i = 0; $i < count($attr['value']); $i++) {
-                $attr['value'][$i] = SignedData::load((string) $attr['value'][$i]);
+            // cache invalidation is a global setting: turn it back on even when decoding fails
+            try {
+                for ($i = 0; $i < count($attr['value']); $i++) {
+                    $attr['value'][$i] = SignedData::load((string) $attr['value'][$i]);
+                }
+            } finally {
+                ASN1::enableCacheInvalidation();
             }
-            ASN1::enableCacheInvalidation();
             return;
         }
         $map = self::getAttrMapping("$attr[type]");
@@ -220,18 +224,28 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
             case 'id-aa-signingCertificateV2':
                 $rules['certs']['*']['issuerSerial']['issuer']['*']['directoryName']['rdnSequence']['*']['*'] = self::mapInDNs(...);
         }
-        ASN1::disableCacheInvalidation();
+        // the attributes mapped here are SEQUENCEs, which ANY hands back as an Element
         for ($i = 0; $i < count($attr['value']); $i++) {
-            $attr['value'][$i] = ASN1::map(ASN1::decodeBER($attr['value'][$i]->value), $map, $rules);
-            $attr['value'][$i]->parent = $attr['value'];
-            $attr['value'][$i]->key = $i;
-            /** @psalm-suppress InvalidPropertyFetch */
-            $attr['value'][$i]->depth = $attr['value']->depth + 1;
+            if (!$attr['value'][$i] instanceof Element) {
+                throw new UnexpectedValueException("Malformed $attr[type] attribute");
+            }
         }
-        ASN1::enableCacheInvalidation();
+        ASN1::disableCacheInvalidation();
+        // cache invalidation is a global setting: turn it back on even when decoding fails
+        try {
+            for ($i = 0; $i < count($attr['value']); $i++) {
+                $attr['value'][$i] = ASN1::map(ASN1::decodeBER($attr['value'][$i]->value), $map, $rules);
+                $attr['value'][$i]->parent = $attr['value'];
+                $attr['value'][$i]->key = $i;
+                /** @psalm-suppress InvalidPropertyFetch */
+                $attr['value'][$i]->depth = $attr['value']->depth + 1;
+            }
+        } finally {
+            ASN1::enableCacheInvalidation();
+        }
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function listSignedAttrs(): array
     {
         $names = [];
@@ -241,7 +255,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         return $names;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hasSignedAttr(string $type): bool
     {
         return $this->getSignedAttr($type) !== null;
@@ -271,7 +285,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->signer['signedAttrs'][] = ['type' => $type, 'value' => [$value]];
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function listUnsignedAttrs(): array
     {
         $names = [];
@@ -281,7 +295,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         return $names;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hasUnsignedAttr(string $type): bool
     {
         return $this->getUnsignedAttr($type) !== null;
@@ -298,7 +312,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         return null;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setUnsignedAttr(string $type, mixed $value): void
     {
         $this->compile();
@@ -399,7 +413,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
     private function setHash(string $hash): void
     {
         $origHash = strtolower($hash);
-        $hash = match ($hash) {
+        $hash = match (str_replace('-', '/', $hash)) {
             'md2' => 'md2',
             'md4' => 'md4',
             'md5' => 'md5',
@@ -410,10 +424,14 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
             'sha512/224' => 'id-sha512/224',
             'sha512/256' => 'id-sha512/256',
             'sha512' => 'id-sha512',
+            'sha3/224' => 'id-sha3/224',
+            'sha3/256' => 'id-sha3/256',
+            'sha3/384' => 'id-sha3/384',
+            'sha3/512' => 'id-sha3/512',
             default => null
         };
         if (!isset($hash)) {
-            throw new UnsupportedAlgorithmException("$origHash is not a supported algorithm: try md2, md4, md5, sha1, sha224, sha256, sha384, sha512, sha512/224 or sha512/256 instead");
+            throw new UnsupportedAlgorithmException("$origHash is not a supported algorithm: try md2, md4, md5, sha1, sha224, sha256, sha384, sha512, sha512/224, sha512/256, sha3/224, sha3/256, sha3/384 or sha3/512 instead");
         }
         $hashObj = new Hash($origHash);
         $this->compile();
@@ -447,7 +465,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->cms->recalculateHashAlgorithms();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function validateSignature(bool $caonly = true): bool
     {
         if (count($this->signer['signedAttrs'])) {
@@ -672,7 +690,7 @@ class Signer implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->signer->valid();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function keys(): array
     {
         return $this->signer instanceof Constructed ? $this->signer->keys() : array_keys($this->signer);

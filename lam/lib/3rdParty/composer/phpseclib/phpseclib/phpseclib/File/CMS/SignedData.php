@@ -103,17 +103,26 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
     {
         $decoded = ASN1::decodeBER($encoded);
         $cms = ASN1::map($decoded, Maps\ContentInfo::MAP);
+        // content is [0] EXPLICIT ANY: only a constructed type comes back as its raw encoding
+        $content = $cms['content'];
+        if (!$content instanceof Element) {
+            throw new UnexpectedValueException('The ContentInfo content should be a constructed type');
+        }
         ASN1::disableCacheInvalidation();
-        $rules = [];
-        $rules['certificates'] = self::mapInCerts(...);
-        $rules['crls'] = self::mapInCRLs(...);
-        $rules['signerInfos'] = self::mapInSigners(...);
-        $rules['encapContentInfo'] = self::mapInEncapContentInfo(...);
-        $decoded = ASN1::decodeBER($cms['content']->value);
-        $cms['content'] = ASN1::map($decoded, Maps\SignedData::MAP, $rules);
-        $cms['content']->parent = $cms;
-        $cms['content']->key = 'content';
-        ASN1::enableCacheInvalidation();
+        // cache invalidation is a global setting: turn it back on even when decoding fails
+        try {
+            $rules = [];
+            $rules['certificates'] = self::mapInCerts(...);
+            $rules['crls'] = self::mapInCRLs(...);
+            $rules['signerInfos'] = self::mapInSigners(...);
+            $rules['encapContentInfo'] = self::mapInEncapContentInfo(...);
+            $decoded = ASN1::decodeBER($content->value);
+            $cms['content'] = ASN1::map($decoded, Maps\SignedData::MAP, $rules);
+            $cms['content']->parent = $cms;
+            $cms['content']->key = 'content';
+        } finally {
+            ASN1::enableCacheInvalidation();
+        }
         return $cms;
     }
 
@@ -146,45 +155,57 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
     public static function mapInEncapContentInfo(Constructed $eContent): void
     {
         ASN1::disableCacheInvalidation();
-        if (self::extensionMatch('id-ct-TSTInfo', $eContent['eContentType'])) {
-            $temp = ASN1::decodeBER((string) $eContent['eContent']);
-            $eContent['eContent'] = ASN1::map($temp, Maps\TSTInfo::MAP);
+        try {
+            if (self::extensionMatch('id-ct-TSTInfo', $eContent['eContentType'])) {
+                $temp = ASN1::decodeBER((string) $eContent['eContent']);
+                $eContent['eContent'] = ASN1::map($temp, Maps\TSTInfo::MAP);
+            }
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     // this NEEDS to be public so that Constructed.php can call it
     public static function mapInCerts(Constructed $certs): void
     {
         ASN1::disableCacheInvalidation();
-        for ($i = 0; $i < count($certs); $i++) {
-            if ($certs[$i]->index != 'certificate') {
-                continue;
+        try {
+            for ($i = 0; $i < count($certs); $i++) {
+                if ($certs[$i]->index != 'certificate') {
+                    continue;
+                }
+                $certs[$i]['certificate'] = X509::load((string) $certs[$i]->getEncoded(), ASN1::FORMAT_DER);
             }
-            $certs[$i]['certificate'] = X509::load((string) $certs[$i]->getEncoded());
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     public static function mapInCRLs(Constructed $crls): void
     {
         ASN1::disableCacheInvalidation();
-        for ($i = 0; $i < count($crls); $i++) {
-            if (!isset($crls[$i]['crl'])) {
-                continue;
+        try {
+            for ($i = 0; $i < count($crls); $i++) {
+                if (!isset($crls[$i]['crl'])) {
+                    continue;
+                }
+                $crls[$i] = CRL::load((string) $crls[$i]->getEncoded(), ASN1::FORMAT_DER);
             }
-            $crls[$i] = CRL::load((string) $crls[$i]->getEncoded());
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     public static function mapInSigners(Constructed $signers): void
     {
         ASN1::disableCacheInvalidation();
-        for ($i = 0; $i < count($signers); $i++) {
-            $signers[$i] = Signer::load((string) $signers[$i]->getEncoded());
+        try {
+            for ($i = 0; $i < count($signers); $i++) {
+                $signers[$i] = Signer::load((string) $signers[$i]->getEncoded());
+            }
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     public function toString(array $options = []): string
@@ -399,7 +420,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->createSigner($skeleton, $x509);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function addNakedSigner(X509 $x509, int $type = CMS::ISSUER_AND_DN): Signer
     {
         // When [signedAttrs] is absent, the result is just the message digest of the [the encapContentInfo eContent OCTET STRING].
@@ -490,7 +511,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->cms->valid();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function keys(): array
     {
         return $this->cms instanceof Constructed ? $this->cms->keys() : array_keys($this->cms);
@@ -512,7 +533,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         return $signers;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function findSigner(X509 $x509): ?Signer
     {
         $this->compile();
@@ -539,7 +560,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         }
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function detach(): void
     {
         $this->fp = null;
@@ -580,7 +601,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->cms['content']['certificates'][] = ['certificate' => $cert];
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function addCRL(CRL $crl): void
     {
         $this->cms['content']['crls'][] = $crl;
@@ -608,7 +629,7 @@ class SignedData implements \ArrayAccess, \Countable, \Iterator, Signable
         return $expected == $matches;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function getEncoded(): string
     {
         $this->compile();

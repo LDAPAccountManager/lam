@@ -232,7 +232,7 @@ class SSH2
      *
      * @see self::getServerIdentification()
      */
-    protected string $server_identifier;
+    protected string $server_identifier = '';
 
     /**
      * Raw Server Identifier
@@ -768,7 +768,7 @@ class SSH2
     /**
      * Contents of stdError
      */
-    private string $stdErrorLog;
+    private string $stdErrorLog = '';
 
     /**
      * The Last Interactive Response
@@ -1007,6 +1007,14 @@ class SSH2
     private bool $strict_kex_flag = false;
 
     /**
+     * Time of last read/write network activity
+     *
+     * @see self::_key_exchange()
+     * @see self::getKEXCount()
+     */
+    private int $kex_count = 0;
+
+    /**
      * Default Constructor.
      *
      * $host can either be a string, representing the host, or a stream resource.
@@ -1039,7 +1047,7 @@ class SSH2
      * Possible $engine values:
      * OpenSSL, Eval, PHP
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function setCryptoEngine(string $engine): void
     {
@@ -1053,7 +1061,7 @@ class SSH2
      * both sides MUST send an identification string". It does not say which side sends it first. In
      * theory it shouldn't matter but it is a fact of life that some SSH servers are simply buggy
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function sendIdentificationStringFirst(): void
     {
@@ -1067,7 +1075,7 @@ class SSH2
      * both sides MUST send an identification string". It does not say which side sends it first. In
      * theory it shouldn't matter but it is a fact of life that some SSH servers are simply buggy
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function sendIdentificationStringLast(): void
     {
@@ -1081,7 +1089,7 @@ class SSH2
      * sending the [SSH_MSG_KEXINIT] packet". It does not say which side sends it first. In theory
      * it shouldn't matter but it is a fact of life that some SSH servers are simply buggy
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function sendKEXINITFirst(): void
     {
@@ -1095,7 +1103,7 @@ class SSH2
      * sending the [SSH_MSG_KEXINIT] packet". It does not say which side sends it first. In theory
      * it shouldn't matter but it is a fact of life that some SSH servers are simply buggy
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function sendKEXINITLast(): void
     {
@@ -1317,6 +1325,7 @@ class SSH2
      */
     private function key_exchange(?string $kexinit_payload_server = null): bool
     {
+        $this->kex_count++;
         $this->bytesTransferredSinceLastKEX = 0;
 
         $preferred = $this->preferred;
@@ -1513,17 +1522,17 @@ class SSH2
             'diffie-hellman-group17-sha512',
             'diffie-hellman-group18-sha512',
             'ecdh-sha2-nistp521'
-            => new Hash('sha512'),
+                => new Hash('sha512'),
             'ecdh-sha2-nistp384'
-            => new Hash('sha384'),
+                => new Hash('sha384'),
             'diffie-hellman-group-exchange-sha256',
             'diffie-hellman-group14-sha256',
             'ecdh-sha2-nistp256',
             'curve25519-sha256@libssh.org',
             'curve25519-sha256'
-            => new Hash('sha256'),
+                => new Hash('sha256'),
             default
-            => new Hash('sha1')
+                => new Hash('sha1')
         };
 
         // Only relevant in diffie-hellman-group-exchange-sha{1,256}, otherwise empty.
@@ -1604,6 +1613,12 @@ class SSH2
             $this->signature
         ] = Strings::unpackSSH2('Csss', $response);
 
+        if (isset($this->server_public_host_key) && $server_public_host_key != $this->server_public_host_key) {
+            $this->disconnect_helper(DisconnectReason::HOST_KEY_NOT_VERIFIABLE);
+            throw new UnexpectedValueException('Server public host key changed');
+        }
+        $this->server_public_host_key = $server_public_host_key;
+
         switch ($serverKexReplyMessage) {
             case MessageTypeExtra::KEX_ECDH_REPLY:
                 $this->updateLogHistory('SSH_MSG_KEXDH_REPLY', 'SSH_MSG_KEX_ECDH_REPLY');
@@ -1614,6 +1629,7 @@ class SSH2
 
         $this->server_public_host_key = $server_public_host_key;
         [$public_key_format] = Strings::unpackSSH2('s', $server_public_host_key);
+
         if (strlen($this->signature) < 4) {
             throw new LengthException('The signature needs at least four bytes');
         }
@@ -1649,6 +1665,15 @@ class SSH2
         );
 
         $this->exchange_hash = $kexHash->hash($this->exchange_hash);
+
+        if ($this->signature_validated) {
+            $this->signature_validated = false;
+            if ($this->getServerPublicHostKey() === null) {
+                $this->disconnect_helper(DisconnectReason::HOST_KEY_NOT_VERIFIABLE);
+                throw new UnexpectedValueException('Server signature re-verification failed');
+            }
+        }
+
         $this->session_id ??= $this->exchange_hash;
 
         $expected_key_format = match ($server_host_key_algorithm) {
@@ -1842,7 +1867,7 @@ class SSH2
 
         return match ($algorithm) {
             'none'
-            => 0,
+                => 0,
             'aes128-gcm@openssh.com',
             'aes128-cbc',
             'aes128-ctr',
@@ -1852,14 +1877,14 @@ class SSH2
             'blowfish-ctr',
             'twofish128-cbc',
             'twofish128-ctr'
-            => 16,
+                => 16,
             '3des-cbc',
             '3des-ctr',
             'aes192-cbc',
             'aes192-ctr',
             'twofish192-cbc',
             'twofish192-ctr'
-            => 24,
+                => 24,
             'aes256-gcm@openssh.com',
             'aes256-cbc',
             'aes256-ctr',
@@ -1867,9 +1892,9 @@ class SSH2
             'twofish-cbc',
             'twofish256-cbc',
             'twofish256-ctr'
-            => 32,
+                => 32,
             'chacha20-poly1305@openssh.com'
-            => 64
+                => 64
         };
     }
 
@@ -2477,7 +2502,7 @@ class SSH2
     /**
      * Get the output from stdError
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getStdError(): string
     {
@@ -2889,7 +2914,7 @@ class SSH2
      * if there's sufficient demand for such a feature.
      *
      * @see self::stopSubsystem()
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function startSubsystem(string $subsystem): bool
     {
@@ -2923,7 +2948,7 @@ class SSH2
      *
      * @see self::startSubsystem()
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function stopSubsystem(): void
     {
@@ -3117,7 +3142,14 @@ class SSH2
     private function reconnect(): bool
     {
         $this->disconnect_helper(DisconnectReason::BY_APPLICATION);
+        $old_server_public_host_key = $this->server_public_host_key;
+
         $this->connect();
+        if ($old_server_public_host_key != $this->server_public_host_key) {
+            $this->disconnect_helper(DisconnectReason::HOST_KEY_NOT_VERIFIABLE);
+            throw new UnexpectedValueException('Server public host key changed');
+        }
+
         foreach ($this->auth as $auth) {
             $result = $this->login(...$auth);
         }
@@ -4029,10 +4061,6 @@ class SSH2
                 $packet_length += 4;
         }
 
-        // SSH binary packet padding is always 4-255 bytes; the block-rounding above
-        // guarantees $padding_length >= 4. Psalm can't track that through the modular
-        // arithmetic, so it sees int<min,max>.
-        /** @psalm-suppress InvalidArgument */
         $padding = random_bytes($padding_length);
 
         // we subtract 4 from packet_length because the packet_length field isn't supposed to include itself
@@ -4385,7 +4413,7 @@ class SSH2
      *
      * Returns a string if NET_SSH2_LOGGING == self::LOG_COMPLEX, an array if NET_SSH2_LOGGING == self::LOG_SIMPLE and false if !defined('NET_SSH2_LOGGING')
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getLog(): array|string|null
     {
@@ -4439,7 +4467,7 @@ class SSH2
     /**
      * Get Debug Messages
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getDebugMessages(): array
     {
@@ -4488,7 +4516,7 @@ class SSH2
      * version string. getServerIdentification() returns the server string. This function returns
      * the server string and the lines preceeding it.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getRawServerIdentification(): string
     {
@@ -4500,7 +4528,7 @@ class SSH2
     /**
      * Returns a list of algorithms the server supports
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getServerAlgorithms(): array
     {
@@ -4773,7 +4801,7 @@ class SSH2
     /**
      * Force multiple channels (even if phpseclib has decided to disable them)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function forceMultipleChannels(): void
     {
@@ -4783,7 +4811,7 @@ class SSH2
     /**
      * Allows you to set the terminal
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setTerminal(string $term): void
     {
@@ -4902,7 +4930,7 @@ class SSH2
      * Quoting from the RFC, "in some jurisdictions, sending a warning message before
      * authentication may be relevant for getting legal protection."
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getBannerMessage(): string
     {
@@ -4913,7 +4941,7 @@ class SSH2
      * Returns the server public host key.
      *
      * Caching this the first time you connect to a server and checking the result on subsequent connections
-     * is recommended.  Returns false if the server signature is not signed correctly with the public host key.
+     * is recommended.  Returns null if the server signature is not signed correctly with the public host key.
      */
     public function getServerPublicHostKey(): ?string
     {
@@ -4996,7 +5024,7 @@ class SSH2
     /**
      * Returns the number of columns for the terminal window size.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getWindowColumns(): int
     {
@@ -5006,7 +5034,7 @@ class SSH2
     /**
      * Returns the number of rows for the terminal window size.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getWindowRows(): int
     {
@@ -5016,7 +5044,7 @@ class SSH2
     /**
      * Sets the number of columns for the terminal window size.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setWindowColumns(int $value): void
     {
@@ -5026,7 +5054,7 @@ class SSH2
     /**
      * Sets the number of rows for the terminal window size.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setWindowRows(int $value): void
     {
@@ -5036,7 +5064,7 @@ class SSH2
     /**
      * Sets the number of columns and rows for the terminal window size.
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setWindowSize(int $columns = 80, int $rows = 24): void
     {
@@ -5062,7 +5090,7 @@ class SSH2
      */
     public function getResourceId(): string
     {
-        return '{' . spl_object_hash($this) . '}';
+        return '{' . sprintf('%016x0000000000000000', spl_object_id($this)) . '}';
     }
 
     public static function getConnectionByResourceId(string $id): ?SSH2
@@ -5114,7 +5142,7 @@ class SSH2
      *
      * @see https://tools.ietf.org/html/rfc4252#section-5.1
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getAuthMethodsToContinue(): ?array
     {
@@ -5124,7 +5152,7 @@ class SSH2
     /**
      * Enables "smart" multi-factor authentication (MFA)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function enableSmartMFA(): void
     {
@@ -5134,7 +5162,7 @@ class SSH2
     /**
      * Disables "smart" multi-factor authentication (MFA)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function disableSmartMFA(): void
     {
@@ -5144,10 +5172,18 @@ class SSH2
     /**
      * How many bytes until the next key re-exchange?
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setBytesUntilKeyReexchange(int $bytes): void
     {
         $this->doKeyReexchangeAfterXBytes = $bytes;
+    }
+
+    /**
+     * How many key re-exchanges have taken place?
+     */
+    public function getKEXCount(): int
+    {
+        return $this->kex_count;
     }
 }

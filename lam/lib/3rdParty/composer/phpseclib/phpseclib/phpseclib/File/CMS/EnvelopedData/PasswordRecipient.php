@@ -23,7 +23,7 @@ use phpseclib4\File\ASN1\{Constructed, Maps};
 
 class PasswordRecipient extends Recipient implements DerivableKey, SearchableKey
 {
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     protected static function loadString(string $encoded): Constructed
     {
         //ASN1::disableCacheInvalidation();
@@ -37,6 +37,9 @@ class PasswordRecipient extends Recipient implements DerivableKey, SearchableKey
 
     public static function mapInAlgoParams(Constructed $algorithm): void
     {
+        if (!isset($algorithm['parameters'])) {
+            return;
+        }
         $temp = ASN1::decodeBER($algorithm['parameters']->getEncoded());
         $temp = match ((string) $algorithm['algorithm']) {
             'id-alg-PWRI-KEK' => ASN1::map($temp, Maps\AlgorithmIdentifier::MAP),
@@ -44,10 +47,13 @@ class PasswordRecipient extends Recipient implements DerivableKey, SearchableKey
             default => null,
         };
         ASN1::disableCacheInvalidation();
-        if (isset($temp)) {
-            $algorithm['parameters'] = $temp;
+        try {
+            if (isset($temp)) {
+                $algorithm['parameters'] = $temp;
+            }
+        } finally {
+            ASN1::enableCacheInvalidation();
         }
-        ASN1::enableCacheInvalidation();
     }
 
     public function withPassword(#[\SensitiveParameter] string $password): self
@@ -74,7 +80,7 @@ class PasswordRecipient extends Recipient implements DerivableKey, SearchableKey
         $keyCipher->setIV((string) $this->recipient['keyEncryptionAlgorithm']['parameters']['parameters']);
         $result = $keyCipher->decrypt($result);
 
-        $length = ord($result);
+        $length = ord($result[0]);
         $cek = substr($result, 4, $length);
         $keyCheck = ~substr($result, 1, 3);
         if (substr($cek, 0, 3) != $keyCheck) {
@@ -88,7 +94,7 @@ class PasswordRecipient extends Recipient implements DerivableKey, SearchableKey
         return $this;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function toString(): string
     {
         $recipient = ASN1::encodeDER($this->recipient, Maps\PasswordRecipientInfo::MAP);

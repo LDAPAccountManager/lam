@@ -60,7 +60,8 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
         private int $start,
         private int $encoded_pos,
         private int $headerlength,
-        private string $rawheader
+        private string $rawheader,
+        private bool $indefinite
     ) {
     }
 
@@ -72,7 +73,7 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
         $this->tag = $tag;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function getTag(): int
     {
         return $this->tag;
@@ -111,14 +112,17 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
     {
         $origOffset = $offset;
         while (true) {
-            ['tag' => $tag] = ASN1::decodeTag($this->encoded, $offset);
-            $length = ASN1::decodeLength($this->encoded, $offset);
-            if ($tag === 0 && $length === 0) {
+            if (substr($this->encoded, $offset, 2) === "\0\0") {
+                $offset += 2;
                 break;
             }
+            ASN1::decodeTag($this->encoded, $offset);
+            $length = ASN1::decodeLength($this->encoded, $offset);
             if (!isset($length)) {
-                self::incrementDepth($depth);
-                $this->calculateIndefiniteLength($offset, $depth);
+                // the nested element is one level deeper than this one; its siblings are not
+                $nested = $depth;
+                self::incrementDepth($nested);
+                $this->calculateIndefiniteLength($offset, $nested);
             } else {
                 $offset += $length;
             }
@@ -230,17 +234,27 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
          *
          * then it should parse that using the existing logic
          */
-        if ($this->tag == ASN1::TYPE_OCTET_STRING) {
+        if ($this->tag == ASN1::TYPE_OCTET_STRING && ($this->encoded[0] ?? '') === chr(ASN1::TYPE_OCTET_STRING)) {
             $sample = ASN1::decodeBER($this->encoded, $this->start + $offset, $offset);
-            $taglength = chr(ASN1::TYPE_OCTET_STRING) . ASN1::encodeLength($sample['length']);
-            $temp = preg_replace('#((?:' . $taglength . '.{' . $sample['length'] . '})*).*#s', '$1', $this->encoded);
-            $this->encoded = substr($this->encoded, strlen($temp));
-            $temp = preg_replace('#' . $taglength . '(.{' . $sample['length'] . '})#s', '$1', $temp);
-            $result = $temp;
+            $len = $sample['length'];
+            // the header bytes go into the pattern, so they have to be quoted, and PCRE caps {n} at 65535
+            if ($len <= 65535) {
+                $taglength = preg_quote(chr(ASN1::TYPE_OCTET_STRING) . ASN1::encodeLength($len), '#');
+                $prefix = preg_replace('#((?:' . $taglength . '.{' . $len . '})*).*#s', '$1', $this->encoded);
+                $chunks = $prefix === null ? null : preg_replace('#' . $taglength . '(.{' . $len . '})#s', '$1', $prefix);
+                // on a PCRE error (eg. backtrack limit) fall back to the loop below
+                if ($chunks !== null) {
+                    $this->encoded = substr($this->encoded, strlen($prefix));
+                    $result = $chunks;
+                }
+            }
         }
+
+        $malformed = null;
 
         $content_len = strlen($this->encoded);
         while ($offset < $content_len) {
+            $elementOffset = $offset;
             try {
                 $temp = ASN1::decodeBER($this->encoded, $this->start + $offset, $offset);
                 $offset += $temp['headerlength'];
@@ -255,7 +269,17 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                     }
                 }
                 $decoded[] = $temp;
-            } catch (EOCException) {
+            } catch (EOCException $e) {
+                if (!$this->indefinite) {
+                    throw new UnexpectedValueException('End-of-contents in definite-length content');
+                }
+                break;
+            } catch (\Exception $e) {
+                $canHoldBlob = $this->tag == ASN1::TYPE_SEQUENCE || $this->tag == ASN1::TYPE_SET;
+                if (!$canHoldBlob || !ASN1::isBlobsOnBadDecodesEnabled() || $e instanceof ExcessivelyDeepDataException) {
+                    throw $e;
+                }
+                $malformed = new MalformedData(substr($this->encoded, $elementOffset));
                 break;
             }
         }
@@ -270,6 +294,9 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                 if (!$this->parent instanceof Constructed) {
                     throw new InvalidStateException('The only parent to a constructed time tag should be Constructed');
                 }
+                if (!isset($decoded[0])) {
+                    throw new UnexpectedValueException('Constructed time without content');
+                }
                 $this->parent->decoded[$this->key] = ASN1::map($decoded[0], $mapping);
                 $this->decoded = [];
                 break;
@@ -279,7 +306,12 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                     $result = '';
                 }
                 $excessivelyDeepData = false;
+                $segments = [];
                 foreach ($decoded as $content) {
+                    // the 'type' of a tagged element is its class, which can equal BIT STRING (3)
+                    if (isset($content['constant'])) {
+                        throw new UnexpectedValueException('All subtags of a constructed string should be the same type as the constructed string itself (found a tagged element)');
+                    }
                     if ($content['content'] instanceof Constructed) {
                         /** @var Choice */
                         $temp = ASN1::map($content, [
@@ -299,7 +331,7 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                             }
                             $excessivelyDeepData = true;
                         }
-                        $result .= $temp['data'];
+                        $segments[] = (string) $temp['data'];
                         continue;
                     }
                     if ($content['type'] != $this->tag) {
@@ -307,7 +339,26 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                         $error = "$error (found " . ASN1::convertTypeConstantToString($content['type']) . '; expected ' . ASN1::convertTypeConstantToString($this->tag) . ')';
                         throw new UnexpectedValueException($error);
                     }
-                    $result .= $content['content'];
+                    $segments[] = (string) $content['content'];
+                }
+                if ($this->tag == ASN1::TYPE_BIT_STRING) {
+                    // X.690 8.6.4: every segment starts with its own unused-bits octet,
+                    // and only the last segment may have unused bits
+                    $unused = "\0";
+                    $last = count($segments) - 1;
+                    foreach ($segments as $i => $segment) {
+                        if ($segment === '') {
+                            throw new UnexpectedValueException('A BIT STRING segment is missing its unused-bits octet');
+                        }
+                        if ($i < $last && $segment[0] !== "\0") {
+                            throw new UnexpectedValueException('Only the last BIT STRING segment may have unused bits');
+                        }
+                        $unused = $segment[0];
+                        $result .= substr($segment, 1);
+                    }
+                    $result = $unused . $result;
+                } else {
+                    $result .= implode('', $segments);
                 }
                 if ($excessivelyDeepData) {
                     $value = new ExcessivelyDeepData($this->rawheader . $result);
@@ -457,6 +508,24 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
             default:
                 throw new UnexpectedValueException('Unable to decode element (' . $this->tag . ') @ ' . $this->start);
         }
+
+        if (isset($malformed)) {
+            $key = null;
+            // could also do !isset($mapping['max]). every map that has $mapping['min'] set also has $mapping['max'] set
+            if (!isset($mapping['min'])) {
+                foreach (array_keys($mapping['children']) as $candidate) {
+                    if (!isset($this->decoded[$candidate])) {
+                        $key = $candidate;
+                        break;
+                    }
+                }
+            }
+            if (isset($key)) {
+                $this->decoded[$key] = $malformed;
+            } else {
+                $this->decoded[] = $malformed;
+            }
+        }
     }
 
     private static function fillInDefault(array $child): BaseType
@@ -484,6 +553,21 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
         throw new UnexpectedValueException('An unsupported default type was encountered');
     }
 
+    /**
+     * The raw encoding of a child that is mapped to ANY: the whole element, or for an
+     * EXPLICIT tag the element inside it. For tagged elements decodeBER's 'start' is the
+     * position after the header.
+     */
+    private function rawChild(array $temp, array $mapping): string
+    {
+        $start = $temp['start'] - $this->start - (isset($temp['constant']) ? $temp['headerlength'] : 0);
+        $length = $temp['length'] ?? $temp['actuallength'];
+        if (isset($mapping['explicit'])) {
+            return substr($this->encoded, $start + $temp['headerlength'], $length);
+        }
+        return substr($this->encoded, $start, $length + $temp['headerlength']);
+    }
+
     private function setSeqOuterLoop(array $decoded, array $children): array
     {
         $rules = $this->rules;
@@ -508,7 +592,11 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                 }
                 $map[] = $temp;
             } catch (EncodedDataUnavailableException | ExcessivelyDeepDataException $e) {
-                $data = substr($this->encoded, $content['start'] - $this->start, ($content['length'] ?? $content['actuallength']) + $content['headerlength']);
+                // as in setSeqInnerLoop: a blob only when blobs on bad decodes are enabled
+                if (!ASN1::isBlobsOnBadDecodesEnabled() && $e instanceof ExcessivelyDeepDataException) {
+                    throw $e;
+                }
+                $data = $this->rawChild($content, $children);
                 $map[] = $e instanceof EncodedDataUnavailableException ? new Element($data) : new ExcessivelyDeepData($data);
             }
         }
@@ -564,7 +652,7 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
                 if (!ASN1::isBlobsOnBadDecodesEnabled() && $e instanceof ExcessivelyDeepDataException) {
                     throw $e;
                 }
-                $data = substr($this->encoded, $temp['start'] - $this->start, ($temp['length'] ?? $temp['actuallength']) + $temp['headerlength']);
+                $data = $this->rawChild($temp, $child);
                 return $e instanceof EncodedDataUnavailableException ? new Element($data) : new ExcessivelyDeepData($data);
             } catch (UnexpectedValueException) {
                 $maymatch = false;
@@ -626,7 +714,7 @@ class Constructed implements \ArrayAccess, \Countable, \Iterator, BaseType
         $this->invalidateCache();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function firstKey(): mixed
     {
         if (!$this->mapping) {

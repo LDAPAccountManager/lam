@@ -139,9 +139,14 @@ class ChaCha20 extends Salsa20
 
         $newciphertext = substr($ciphertext, 0, strlen($plaintext));
 
-        $this->newtag = $this->usingGeneratedPoly1305Key ?
-            substr($ciphertext, strlen($plaintext)) :
-            $this->poly1305($newciphertext);
+        if ($this->usingGeneratedPoly1305Key && strlen($this->nonce) == 12) {
+            $this->newtag = substr($ciphertext, strlen($plaintext));
+        } else {
+            if ($this->usePoly1305 && (!isset($this->poly1305Key) || $this->changed)) {
+                $this->createPoly1305Key();
+            }
+            $this->newtag = $this->poly1305($newciphertext);
+        }
 
         return $newciphertext;
     }
@@ -160,20 +165,22 @@ class ChaCha20 extends Salsa20
     {
         $params = [$ciphertext, $this->aad, $this->nonce, $this->key];
 
-        if (isset($this->poly1305Key)) {
+        if ($this->usePoly1305) {
             if (!isset($this->oldtag)) {
-                throw new InvalidStateException('Authentication Tag has not been set - call setTag() first');
+                throw new InvalidStateException('Authentication Tag has not been set');
             }
-            $params[0] .= $this->oldtag;
-            if ($this->usingGeneratedPoly1305Key) {
-                $plaintext = strlen($this->nonce) == 8 ?
-                    sodium_crypto_aead_chacha20poly1305_decrypt(...$params) :
-                    sodium_crypto_aead_chacha20poly1305_ietf_decrypt(...$params);
+            // libsodium only accepts 16 byte tags
+            if ($this->usingGeneratedPoly1305Key && strlen($this->nonce) == 12 && strlen($this->oldtag) == 16) {
+                $params[0] .= $this->oldtag;
+                $plaintext = sodium_crypto_aead_chacha20poly1305_ietf_decrypt(...$params);
                 $this->oldtag = null;
                 if ($plaintext === false) {
                     throw new BadDecryptionException('Derived authentication tag and supplied authentication tag do not match');
                 }
                 return $plaintext;
+            }
+            if ($this->changed || !isset($this->poly1305Key)) {
+                $this->createPoly1305Key();
             }
             $newtag = $this->poly1305($ciphertext);
             if ($this->oldtag != substr($newtag, 0, strlen($this->oldtag))) {
@@ -231,7 +238,7 @@ class ChaCha20 extends Salsa20
             case 12: // 96 bits
                 break;
             default:
-                throw new LengthException('Nonce of size ' . strlen($nonce) . ' not supported by this algorithm. Only 64-bit nonces or 96-bit nonces are supported');
+                throw new LengthException('Nonce of size ' . strlen($nonce) . ' not supported by this algorithm. Only nonces of 8 bytes (96-bits) or 12 bytes (96-bits) are supported');
         }
 
         $this->nonce = $nonce;
@@ -310,12 +317,12 @@ class ChaCha20 extends Salsa20
         // in https://datatracker.ietf.org/doc/html/rfc7539#section-2.1 the addition,
         // xor'ing and rotation are all on the same line so i'm keeping it on the same
         // line here as well
-        // @codingStandardsIgnoreStart
+        // phpcs:disable
         $a+= $b; $d = self::leftRotate(self::safe_intval($d) ^ self::safe_intval($a), 16);
         $c+= $d; $b = self::leftRotate(self::safe_intval($b) ^ self::safe_intval($c), 12);
         $a+= $b; $d = self::leftRotate(self::safe_intval($d) ^ self::safe_intval($a), 8);
         $c+= $d; $b = self::leftRotate(self::safe_intval($b) ^ self::safe_intval($c), 7);
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
     }
 
     /**
@@ -368,7 +375,7 @@ class ChaCha20 extends Salsa20
         $z14 = $x14;
         $z15 = $x15;
 
-        // @codingStandardsIgnoreStart
+        // phpcs:disable
         // columnRound
         $x0 += $x4; $x12 = self::leftRotate(self::safe_intval($x12) ^ self::safe_intval($x0), 16);
         $x8 += $x12; $x4 = self::leftRotate(self::safe_intval($x4) ^ self::safe_intval($x8), 12);
@@ -788,7 +795,7 @@ class ChaCha20 extends Salsa20
         $x9 += $x14; $x4 = self::leftRotate(self::safe_intval($x4) ^ self::safe_intval($x9), 12);
         $x3 += $x4; $x14 = self::leftRotate(self::safe_intval($x14) ^ self::safe_intval($x3), 8);
         $x9 += $x14; $x4 = self::leftRotate(self::safe_intval($x4) ^ self::safe_intval($x9), 7);
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
 
         $x0 += $z0;
         $x1 += $z1;

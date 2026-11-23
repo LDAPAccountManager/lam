@@ -137,6 +137,13 @@ class SFTP extends SSH2
     private string $packet_buffer = '';
 
     /**
+     * Number of requests whose replies haven't been read yet
+     *
+     * @see self::precheck()
+     */
+    private int $pending_replies = 0;
+
+    /**
      * Extensions supported by the server
      *
      * @see self::_initChannel()
@@ -354,6 +361,13 @@ class SFTP extends SSH2
         if ($this->pwd === false) {
             $this->init_sftp_connection();
         }
+
+        // the server still replies to requests that earlier calls stopped waiting for, eg. because they timed out, and
+        // since most requests use the same request id, those replies would be taken as replies to this call's requests
+        $this->requestBuffer = [];
+        while ($this->pending_replies > 0) {
+            $this->get_sftp_packet();
+        }
     }
 
     /**
@@ -546,7 +560,7 @@ class SFTP extends SSH2
     /**
      * Enable path canonicalization
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function enablePathCanonicalization(): void
     {
@@ -558,7 +572,7 @@ class SFTP extends SSH2
      *
      * If this is enabled then $sftp->pwd() will not return the canonicalized absolute path
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function disablePathCanonicalization(): void
     {
@@ -568,7 +582,7 @@ class SFTP extends SSH2
     /**
      * Enable arbitrary length packets
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function enableArbitraryLengthPackets(): void
     {
@@ -578,7 +592,7 @@ class SFTP extends SSH2
     /**
      * Disable arbitrary length packets
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function disableArbitraryLengthPackets(): void
     {
@@ -869,6 +883,7 @@ class SFTP extends SSH2
      *
      * @param null|\Closure(string, string, array):void $onFile Callback invoked for each file found. The parameters are: directory, filename, attributes.
      * @return ($raw is true ? array<array-key, array<array-key, mixed>> : list<string>)
+     * @psalm-suppress InvalidReturnType
      */
     private function readlist(string $dir, bool $raw = true, ?\Closure $onFile = null): array
     {
@@ -2191,7 +2206,8 @@ class SFTP extends SSH2
     /**
      * Gets last access time of file
      *
-     * @psalm-suppress PossiblyUnusedMethod, InvalidReturnStatement, InvalidReturnType
+     * @psalm-api
+     * @psalm-suppress InvalidReturnStatement, InvalidReturnType
      */
     public function fileatime(string $path): int|float
     {
@@ -2201,7 +2217,8 @@ class SFTP extends SSH2
     /**
      * Gets file modification time
      *
-     * @psalm-suppress PossiblyUnusedMethod, InvalidReturnStatement, InvalidReturnType
+     * @psalm-api
+     * @psalm-suppress InvalidReturnStatement, InvalidReturnType
      */
     public function filemtime(string $path): int|float
     {
@@ -2221,7 +2238,8 @@ class SFTP extends SSH2
     /**
      * Gets file owner
      *
-     * @psalm-suppress PossiblyUnusedMethod, InvalidReturnStatement, InvalidReturnType
+     * @psalm-api
+     * @psalm-suppress InvalidReturnStatement, InvalidReturnType
      */
     public function fileowner(string $path): int|string
     {
@@ -2233,7 +2251,8 @@ class SFTP extends SSH2
     /**
      * Gets file group
      *
-     * @psalm-suppress PossiblyUnusedMethod, InvalidReturnStatement, InvalidReturnType
+     * @psalm-api
+     * @psalm-suppress InvalidReturnStatement, InvalidReturnType
      */
     public function filegroup(string $path): int|string
     {
@@ -2338,6 +2357,8 @@ class SFTP extends SSH2
 
     /**
      * Renames a file or a directory on the SFTP server.
+     *
+     * @psalm-api
      */
     public function rename(string $oldname, string $newname): void
     {
@@ -2614,6 +2635,7 @@ class SFTP extends SSH2
         $start = microtime(true);
         $this->send_channel_packet(self::CHANNEL, $packet);
         $stop = microtime(true);
+        $this->pending_replies++;
         if (defined('NET_SFTP_LOGGING')) {
             $packet_type = '-> SSH_FXP_' . SFTPPacketType::getConstantNameByValue($type) .
                 ' (' . round($stop - $start, 4) . 's)';
@@ -2629,6 +2651,8 @@ class SFTP extends SSH2
         $this->use_request_id = false;
         $this->pwd = false;
         $this->requestBuffer = [];
+        $this->packet_buffer = '';
+        $this->pending_replies = 0;
         $this->partial_init = false;
     }
 
@@ -2678,9 +2702,10 @@ class SFTP extends SSH2
             if ($temp === true) {
                 if ($this->channel_status[self::CHANNEL] === SSH2MessageType::CHANNEL_CLOSE) {
                     $this->channel_close = true;
+                    $this->packet_buffer = '';
+                    $this->pending_replies = 0;
                 }
                 $this->packet_type = -1;
-                $this->packet_buffer = '';
                 throw new UnexpectedValueException('Error reading next SFTP packet');
             }
             $this->packet_buffer .= $temp;
@@ -2688,10 +2713,12 @@ class SFTP extends SSH2
         if (strlen($this->packet_buffer) < 4) {
             throw new UnexpectedValueException('Packet is too small');
         }
-        ['length' => $length] = unpack('Nlength', Strings::shift($this->packet_buffer, 4));
+        // what's been read of a packet stays in the buffer until all of it has been, so if reading it times out, the
+        // next call finishes reading it instead of taking the rest of it as the start of another packet
+        ['length' => $length] = unpack('Nlength', substr($this->packet_buffer, 0, 4));
 
         $tempLength = $length;
-        $tempLength -= strlen($this->packet_buffer);
+        $tempLength -= strlen($this->packet_buffer) - 4;
 
         // 256 * 1024 is what SFTP_MAX_MSG_LENGTH is set to in OpenSSH's sftp-common.h
         if (!$this->allow_arbitrary_length_packets && !$this->use_request_id && $tempLength > 256 * 1024) {
@@ -2704,9 +2731,10 @@ class SFTP extends SSH2
             if ($temp === true) {
                 if ($this->channel_status[self::CHANNEL] === SSH2MessageType::CHANNEL_CLOSE) {
                     $this->channel_close = true;
+                    $this->packet_buffer = '';
+                    $this->pending_replies = 0;
                 }
                 $this->packet_type = -1;
-                $this->packet_buffer = '';
                 throw new UnexpectedValueException('Error reading next SFTP packet');
             }
             $this->packet_buffer .= $temp;
@@ -2714,6 +2742,9 @@ class SFTP extends SSH2
         }
 
         $stop = microtime(true);
+
+        Strings::shift($this->packet_buffer, 4);
+        $this->pending_replies--;
 
         $this->packet_type = ord(Strings::shift($this->packet_buffer));
 
@@ -2771,7 +2802,7 @@ class SFTP extends SSH2
      *
      * Returns a string if PacketType::LOGGING == self::LOG_COMPLEX, an array if PacketType::LOGGING == self::LOG_SIMPLE and false if !defined('NET_SFTP_LOGGING')
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getSFTPLog(): array|string|null
     {
@@ -2788,7 +2819,7 @@ class SFTP extends SSH2
     /**
      * Returns all errors on the SFTP layer and resets internal error array
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getErrors(): array
     {
@@ -2800,7 +2831,7 @@ class SFTP extends SSH2
     /**
      * Get supported SFTP versions
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getSupportedVersions(): array
     {
@@ -2822,7 +2853,7 @@ class SFTP extends SSH2
     /**
      * Get supported SFTP extensions
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getSupportedExtensions(): array
     {
@@ -2840,7 +2871,7 @@ class SFTP extends SSH2
     /**
      * Get supported SFTP versions
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function getNegotiatedVersion(): int
     {
@@ -2856,7 +2887,7 @@ class SFTP extends SSH2
      * version of SFTP will be utilized. Set to null or false or int(0) to
      * unset the preferred version
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function setPreferredVersion(int $version): void
     {
@@ -2877,7 +2908,7 @@ class SFTP extends SSH2
     /**
      * Enable Date Preservation
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function enableDatePreservation(): void
     {
@@ -2887,7 +2918,7 @@ class SFTP extends SSH2
     /**
      * Disable Date Preservation
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function disableDatePreservation(): void
     {
@@ -2899,7 +2930,7 @@ class SFTP extends SSH2
      *
      * This method (currently) only works if the copy-data extension is available
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function copy(string $oldname, string $newname): void
     {
@@ -3061,7 +3092,7 @@ class SFTP extends SSH2
         ];
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hardlink(string $oldpath, string $newpath): void
     {
         $this->precheck();

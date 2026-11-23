@@ -260,7 +260,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         self::$strictDNComparison = false;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public static function isStrictDNComparisonEnabled(): bool
     {
         return self::$strictDNComparison;
@@ -291,7 +291,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         self::$checkBasicConstraints = false;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public static function isCheckBasicConstraintsEnabled(): bool
     {
         return self::$checkBasicConstraints;
@@ -300,7 +300,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
     /**
      * Enable binary output (DER)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function enableBinaryOutput(): void
     {
@@ -310,7 +310,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
     /**
      * Disable binary output (ie. enable PEM)
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function disableBinaryOutput(): void
     {
@@ -368,7 +368,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         unset($this->cert[$offset]);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function currentlyDecoded(): array|string
     {
         return $this->cert->currentlyDecoded();
@@ -384,7 +384,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->cert->__debugInfo();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function keys(): array
     {
         return $this->cert instanceof Constructed ? $this->cert->keys() : array_keys($this->cert);
@@ -417,7 +417,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->cert instanceof Constructed ? $this->cert->toArray($convertPrimitives) : $this->cert;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setPadding(int $padding): void
     {
         $publicKey = &$this->cert['tbsCertificate']['subjectPublicKeyInfo'];
@@ -428,7 +428,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $publicKey = $publicKey->withPadding($padding);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setHash(string $hash): void
     {
         $publicKey = &$this->cert['tbsCertificate']['subjectPublicKeyInfo'];
@@ -439,7 +439,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $publicKey = $publicKey->withHash($hash);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setMFGHash(string $hash): void
     {
         $publicKey = &$this->cert['tbsCertificate']['subjectPublicKeyInfo'];
@@ -450,7 +450,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $publicKey = $publicKey->withMFGHash($hash);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setLabel(string $label): void
     {
         $publicKey = &$this->cert['tbsCertificate']['subjectPublicKeyInfo'];
@@ -534,7 +534,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         return self::hasDNPropsInternal($this->cert['tbsCertificate']['subject'], $propName);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hasIssuerDNProp(string $propName): bool
     {
         return self::hasDNPropsInternal($this->cert['tbsCertificate']['issuer'], $propName);
@@ -565,13 +565,13 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->cert['tbsCertificate']['subjectPublicKeyInfo'] = $publicKey;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hasPublicKey(): bool
     {
         return $this->cert['tbsCertificate']['subjectPublicKeyInfo'] instanceof PublicKey;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function removePublicKey(): void
     {
         $this->cert['tbsCertificate']['subjectPublicKeyInfo'] = [
@@ -886,14 +886,14 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->setIssuerDN($props);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function resetDN(): void
     {
         $this->resetSubjectDN();
         $this->resetIssuerDN();
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function removeDNProps(string $propName): void
     {
         $this->testForSelfSigned();
@@ -910,7 +910,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->addIssuerDNProp($propName, $value);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function addDNProps(string $propName, array $values): void
     {
         $this->testForSelfSigned();
@@ -926,7 +926,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->getSubjectDNProps($propName);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function hasDNProp(string $propName): bool
     {
         $this->testForSelfSigned();
@@ -941,7 +941,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         return $this->getSubjectDN($format);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function setKeyIdentifier(string|OctetString $value): void
     {
         $this->testForSelfSigned();
@@ -950,7 +950,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         $this->setSubjectKeyIdentifier($value);
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public function createKeyIdentifier(int $method = 1): void
     {
         $this->testForSelfSigned();
@@ -988,7 +988,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
     /**
      * Set the IP Addresses's which the cert is to be valid for
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public function addIPAddresses(string ...$ipAddresses): void
     {
@@ -1073,7 +1073,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         self::$targetValidationDate = $date;
     }
 
-    /** @psalm-suppress PossiblyUnusedMethod */
+    /** @psalm-api */
     public static function getTargetValidationDate(): \DateTimeInterface|string|null
     {
         return self::$targetValidationDate;
@@ -1133,7 +1133,7 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
             foreach ($names['extnValue'] as $name) {
                 $key = $name->index;
                 $value = (string) $name->value;
-                $value = preg_quote($value);
+                $value = preg_quote($value, '#');
                 $value = str_replace('\*', '[^.]*', $value);
                 switch ($key) {
                     case 'dNSName':
@@ -1163,7 +1163,8 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
         }
 
         if ($value = $this->getSubjectDNProps('id-at-commonName')) {
-            $value = str_replace(['.', '*'], ['\.', '[^.]*'], $value[0]);
+            $value = preg_quote((string) $value[0], '#');
+            $value = str_replace('\*', '[^.]*', $value);
             return preg_match('#^' . $value . '$#', $components['host']) === 1;
         }
 
@@ -1565,7 +1566,8 @@ class X509 implements \ArrayAccess, \Countable, \Iterator, Signable
                     $temp = fread($fsock, 1024);
                     $meta = stream_get_meta_data($fsock);
                     // on Windows, PHP 8.3+ says a read timed out when it returned buffered data and
-                    // nothing more had come in, so a read has only timed out when it got nothing
+                    // nothing more had come in (https://github.com/php/php-src/issues/25148), so a
+                    // read has only timed out when it got nothing
                     if ($temp === false || ($temp === '' && $meta['timed_out'])) {
                         return null;
                     }

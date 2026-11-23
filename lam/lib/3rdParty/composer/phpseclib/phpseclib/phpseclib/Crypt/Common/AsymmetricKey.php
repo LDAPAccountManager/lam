@@ -45,7 +45,7 @@ abstract class AsymmetricKey
     /**
      * Format of the loaded key
      */
-    protected string $format;
+    protected ?string $format = null;
 
     /**
      * Hash function
@@ -163,7 +163,11 @@ abstract class AsymmetricKey
         $components['format'] = $format;
         $components['secret'] ??= '';
         $comment = $components['comment'] ?? null;
-        $new = static::onLoad($components);
+        try {
+            $new = static::onLoad($components);
+        } catch (\Throwable $e) {
+            throw new NoKeyLoadedException('Unable to read key');
+        }
         $new->format = $format;
         $new->comment = $comment;
         return $new instanceof PrivateKey ?
@@ -343,7 +347,7 @@ abstract class AsymmetricKey
      *
      * Set to the empty string to use the default config file
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      */
     public static function setOpenSSLConfigPath(string $path): void
     {
@@ -469,7 +473,7 @@ abstract class AsymmetricKey
      * Not currently used but the method exists in case we do
      * want to use it at some point
      *
-     * @psalm-suppress PossiblyUnusedMethod
+     * @psalm-api
      * @psalm-suppress UndefinedThisPropertyFetch
      */
     protected function computek(string $h1): string
