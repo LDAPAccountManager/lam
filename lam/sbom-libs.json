@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:5ece6b0f-a19a-4549-bebe-0a93b728aecf",
+  "serialNumber" : "urn:uuid:af4f1a2a-c85e-45c5-ad44-7a122a38558f",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-09-17T05:38:48Z",
+    "timestamp" : "2026-11-24T19:32:54Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.7"
+      "version" : "9.8"
     }
   },
   "components" : [
@@ -56,7 +56,7 @@
       "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
-      "version" : "2.2.0",
+      "version" : "2.3.1",
       "licenses" : [
         {
           "license" : {
@@ -64,7 +64,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@2.2.0"
+      "purl" : "pkg:npm/cropperjs@2.3.1"
     },
     {
       "type" : "library",
@@ -101,7 +101,7 @@
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.14.7",
+      "version" : "4.21.0",
       "licenses" : [
         {
           "license" : {
@@ -109,7 +109,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.14.7"
+      "purl" : "pkg:npm/jodit@4.21.0"
     },
     {
       "type" : "library",
@@ -146,7 +146,7 @@
       "bom-ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
       "group" : "cdx:npm:package:bundled",
       "name" : "tabulator-tables",
-      "version" : "6.5.2",
+      "version" : "6.7.1",
       "licenses" : [
         {
           "license" : {
@@ -154,14 +154,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/tabulator-tables@6.5.2"
+      "purl" : "pkg:npm/tabulator-tables@6.7.1"
     },
     {
       "type" : "library",
       "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
-      "version" : "0.14.1",
+      "version" : "0.15.0",
       "licenses" : [
         {
           "license" : {
@@ -169,7 +169,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/wunderbaum@0.14.1"
+      "purl" : "pkg:npm/wunderbaum@0.15.0"
     }
   ],
   "dependencies" : [
