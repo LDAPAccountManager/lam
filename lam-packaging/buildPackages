@@ -10,6 +10,9 @@ fi
 
 set -e
 
+rm -rf LAM-packages
+rm -rf LAMPro-packages
+
 if [ "$1" = "develop" ]
 then
 	export REPO_BRANCH="develop"
@@ -68,7 +71,7 @@ export VERSION=`./getVersion`
 # remove files which are not in the final release
 rm -r lam/po
 rm -r lam/tests
-rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
+rm -rf lam/lib/3rdParty/composer/tecnickcom/tc-lib-pdf-font/util
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
 rm -r lam/lib/3rdParty/composer/webklex/php-imap/examples
 rm -r lam/lib/3rdParty/composer/webklex/php-imap/tests
