@@ -46,13 +46,15 @@ if [ $cfgFilesExist -ne 0 ]; then
 fi
 chmod 600 /var/lib/ldap-account-manager/config/*.conf
 if [ "$1" = "configure" ]; then
-    db_get "ldap-account-manager/alias"
-    alias="$RET"
-	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
+   db_get "ldap-account-manager/alias"
+   alias="$RET"
+	 perl -pi -e "s/Alias \/[^\/]+ \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
         /etc/ldap-account-manager/apache.conf
-    db_get "ldap-account-manager/config-webserver"
-    webservers="$RET"
-    restart=""
+	 perl -pi -e "s/Alias \/[^\/]+\/mcp \/usr\/share\/ldap-account-manager\/templates\/misc\/mcp.php/Alias \/$alias\/mcp \/usr\/share\/ldap-account-manager\/templates\/misc\/mcp.php/g"\
+        /etc/ldap-account-manager/apache.conf
+   db_get "ldap-account-manager/config-webserver"
+   webservers="$RET"
+   restart=""
    for server in $webservers; do
        server=${server%,}
        test -x /usr/sbin/$server || continue
