@@ -11,7 +11,6 @@ use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
-use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
@@ -23,9 +22,9 @@ return RectorConfig::configure()
 		__DIR__ . '/lam/templates',
 		__DIR__ . '/lam/tests',
 	])
+	->withPhpSets()
 	->withSets([
 		SetList::DEAD_CODE,
-		LevelSetList::UP_TO_PHP_82,
 		SetList::CODE_QUALITY,
 	])
 	->withSkip([

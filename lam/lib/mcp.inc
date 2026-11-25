@@ -124,19 +124,12 @@ function getResponseTemplate(string|int $id): array {
  */
 function routeRequest(array $jsonData): void {
 	$id = $jsonData['id'];
-	switch ($jsonData['method']) {
-		case 'server/discover':
-			answerDiscovery($id);
-			break;
-		case 'tools/list':
-			answerToolList($id);
-			break;
-		case 'tools/call':
-			answerToolCall($id, $jsonData['params']);
-			break;
-		default:
-			badMcpRequest($id, -10, 'Invalid request');
-	}
+	match ($jsonData['method']) {
+        'server/discover' => answerDiscovery($id),
+        'tools/list' => answerToolList($id),
+        'tools/call' => answerToolCall($id, $jsonData['params']),
+        default => badMcpRequest($id, -10, 'Invalid request'),
+    };
 }
 
 /**
@@ -318,12 +311,10 @@ function getToolList(): array {
  */
 function answerToolCall(string|int $id, array $params): void {
 	sendDefaultHeaders();
-	$data = getResponseTemplate($id);
 	$command = $params['name'] ?? null;
 	if ($command === null) {
 		badMcpRequest($id, -11, 'Missing parameter "name"');
 	}
-	$arguments = $params['arguments'] ?? [];
 	if (isLAMProVersion()) {
 		switch ($command) {
 			case 'listWhitePagesProfiles':
