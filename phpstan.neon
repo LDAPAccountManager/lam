@@ -60,7 +60,7 @@ parameters:
 		- '#Call to an undefined method baseModule::getMembers\(\).#'
 		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
 		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
-		- '#Call to .* on an unknown class LAM\\WHITE_PAGES .*#'
+		- '#Call to .* on an unknown class LAM\\WHITE_PAGES.*#'
 		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'
 		- '#.*array_values is already a list.*#'
 		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
