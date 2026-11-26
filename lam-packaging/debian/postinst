@@ -35,7 +35,18 @@ done
 chmod 700 /var/lib/ldap-account-manager/config
 chmod 700 /var/lib/ldap-account-manager/tmp
 chmod 700 /var/lib/ldap-account-manager/sess
-chmod 600 /etc/ldap-account-manager/config.cfg
+if [ -h /var/lib/ldap-account-manager/config/config.cfg ]; then
+  rm /var/lib/ldap-account-manager/config/config.cfg
+  if [ -e /etc/ldap-account-manager/config.cfg ]; then
+    mv /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/
+  fi
+fi
+if [ ! -e /var/lib/ldap-account-manager/config/config.cfg ]; then
+  cp /var/lib/ldap-account-manager/config/config.cfg.sample /var/lib/ldap-account-manager/config/config.cfg
+  chown www-data:root /var/lib/ldap-account-manager/config/config.cfg
+fi
+chmod 600 /var/lib/ldap-account-manager/config/config.cfg
+
 set +e
 ls -l /var/lib/ldap-account-manager/config/*.conf | grep -v ".sample." &> /dev/null
 cfgFilesExist=$?
