@@ -75,7 +75,6 @@ RUN apt-get install --no-install-recommends -y \
         php-imagick \
         php-ldap \
         php-monolog \
-        php-phpseclib \
         php-xml \
         php-zip \
         php-gmp \
@@ -87,7 +86,6 @@ RUN apt-get install --no-install-recommends -y \
         wget \
         libldap-common \
         gettext \
-        php-phpseclib3 \
         libphp-phpmailer \
         cron \
         libcap2-bin \
@@ -143,6 +141,8 @@ RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e8-cross.crt && \
     update-ca-certificates
+
+RUN wget http://ftp.de.debian.org/debian/pool/main/p/php-phpseclib4/php-phpseclib4_4.0.4-1_all.deb && dpkg -i php-phpseclib4_4.0.4-1_all.deb
 
 # install LAM
 RUN wget https://github.com/LDAPAccountManager/lam/releases/download/${LAM_RELEASE}/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
