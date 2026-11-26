@@ -81,7 +81,7 @@ if [[ "$LAM_SKIP_PRECONFIGURE" != "true" ]]; then
   LAM_PASSWORD_SSHA=$(php -r '$password = getenv("LAM_PASSWORD"); $rand = abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5)))); $salt0 = substr(pack("h*", md5($rand)), 0, 8); $salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4); print "{SSHA}" . base64_encode(pack("H*", sha1($password . $salt))) . " " . base64_encode($salt) . "\n";')
   unset LAM_PASSWORD
 
-  sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
+  sed -i -f- /var/lib/ldap-account-manager/config/config.cfg <<- EOF
     s|"license": "[^"]*"|"license": "${LAM_LICENSE}"|;
     s|"configDatabaseType": "[^"]*"|"configDatabaseType": "${LAM_CONFIGURATION_DATABASE}"|;
     s|"configDatabaseServer": "[^"]*"|"configDatabaseServer": "${LAM_CONFIGURATION_HOST}"|;
@@ -90,10 +90,10 @@ if [[ "$LAM_SKIP_PRECONFIGURE" != "true" ]]; then
     s|"configDatabaseUser": "[^"]*"|"configDatabaseUser": "${LAM_CONFIGURATION_USER}"|;
     s|"configDatabasePassword": "[^"]*"|"configDatabasePassword": "${LAM_CONFIGURATION_PASSWORD}"|;
 EOF
-  if ! grep -e '"password":' /etc/ldap-account-manager/config.cfg > /dev/null; then
-    sed -i "2i\ \ \"password\": \"${LAM_PASSWORD_SSHA}\"," /etc/ldap-account-manager/config.cfg
+  if ! grep -e '"password":' /var/lib/ldap-account-manager/config/config.cfg > /dev/null; then
+    sed -i "2i\ \ \"password\": \"${LAM_PASSWORD_SSHA}\"," /var/lib/ldap-account-manager/config/config.cfg
   else
-    sed -i "s|\"password\": .*|\"password\": \"${LAM_PASSWORD_SSHA}\",|" /etc/ldap-account-manager/config.cfg
+    sed -i "s|\"password\": .*|\"password\": \"${LAM_PASSWORD_SSHA}\",|" /var/lib/ldap-account-manager/config/config.cfg
   fi
 
   set +e
