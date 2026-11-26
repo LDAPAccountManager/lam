@@ -41,7 +41,7 @@ if [ -h /var/lib/ldap-account-manager/config/config.cfg ]; then
     mv /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/
   fi
 fi
-if [ ! -e /var/lib/ldap-account-manager/config/config.cfg ]; then
+if [ ! -f /var/lib/ldap-account-manager/config/config.cfg ]; then
   cp /var/lib/ldap-account-manager/config/config.cfg.sample /var/lib/ldap-account-manager/config/config.cfg
   chown www-data:root /var/lib/ldap-account-manager/config/config.cfg
 fi
