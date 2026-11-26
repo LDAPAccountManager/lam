@@ -72,6 +72,7 @@ export VERSION=`./getVersion`
 rm -r lam/po
 rm -r lam/tests
 rm -rf lam/lib/3rdParty/composer/tecnickcom/tc-lib-pdf-font/util
+rm -rf lam/lib/3rdParty/composer/tecnickcom/tc-lib-pdf/doc
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
 rm -r lam/lib/3rdParty/composer/webklex/php-imap/examples
 rm -r lam/lib/3rdParty/composer/webklex/php-imap/tests
@@ -80,6 +81,8 @@ rm -rf lam/lib/3rdParty/composer/doctrine/inflector/docs
 rm -rf lam/lib/3rdParty/composer/web-auth/cose-lib/.agents
 rm -rf lam/lib/3rdParty/composer/phpdocumentor/type-resolver/docs
 rm -rf lam/lib/3rdParty/composer/psr/http-message/docs
+rm -rf lam/lib/3rdParty/composer/guzzlehttp/promises/docs
+rm -rf lam/lib/3rdParty/composer/guzzlehttp/psr7/docs
 chmod -R -x+X lam/lib/3rdParty
 rm lam/composer*
 rm lam/sbom-*
@@ -108,6 +111,8 @@ find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.TXT -exec rm {} \;
 find lam/lib/3rdParty -name CODE_OF_CONDUCT.md -exec rm {} \;
+find lam/lib/3rdParty -name AGENTS.md -exec rm {} \;
+find lam/lib/3rdParty -name CLAUDE.md -exec rm {} \;
 find lam/lib/3rdParty -name .agents | xargs rm -r
 find lam/lib/3rdParty -name .github | xargs rm -r
 find lam/lib/3rdParty -name .gitattributes | xargs rm -r
