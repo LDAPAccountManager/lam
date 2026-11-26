@@ -283,6 +283,13 @@ mv LAMPro/RPM/*.rpm LAMPro-packages/
 mv LAMPro/checksums.txt LAMPro-packages/
 mv LAMPro/*.tar.bz2 LAMPro-packages/
 
+echo signing releases
+filesToSign=`ls LAM-packages/*.deb LAM-packages/*.rpm LAM-packages/*.bz2 LAM-packages/*.txt LAMPro-packages/*.deb LAMPro-packages/*.rpm LAMPro-packages/*.bz2 LAMPro-packages/*.txt`
+for fileToSign in $filesToSign; do
+  gpg --armor --detach-sign -u 478730308FBD512ADF09D38E7F3D136B2BCD7990 $fileToSign
+done
+echo done
+
 # clean up
 rm -r lam-packaging
 rm getVersion
