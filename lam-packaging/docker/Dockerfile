@@ -64,7 +64,7 @@ RUN sed -i 's/^# *\(ca_ES.UTF-8\)/\1/' /etc/locale.gen && \
         locale-gen
 
 # phpseclib
-RUN apt-get install -y php-bcmath php-constant-time
+RUN apt-get install --no-install-recommends -y php-bcmath php-constant-time
 RUN wget http://ftp.de.debian.org/debian/pool/main/p/php-phpseclib4/php-phpseclib4_4.0.4-1_all.deb && dpkg -i php-phpseclib4_4.0.4-1_all.deb
 
 RUN apt-get install --no-install-recommends -y \
