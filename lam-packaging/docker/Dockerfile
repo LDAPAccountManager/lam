@@ -40,7 +40,7 @@ RUN apt-get update && \
     apt-get upgrade -y
 
 # install locales
-RUN apt-get install -y locales
+RUN apt-get install -y locales wget
 RUN sed -i 's/^# *\(ca_ES.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(cz_CZ.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen && \
@@ -63,6 +63,10 @@ RUN sed -i 's/^# *\(ca_ES.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(zh_CN.UTF-8\)/\1/' /etc/locale.gen && \
         locale-gen
 
+# phpseclib
+RUN apt-get install -y php-bcmath php-constant-time
+RUN wget http://ftp.de.debian.org/debian/pool/main/p/php-phpseclib4/php-phpseclib4_4.0.4-1_all.deb && dpkg -i php-phpseclib4_4.0.4-1_all.deb
+
 RUN apt-get install --no-install-recommends -y \
         apache2 \
         ca-certificates \
@@ -83,7 +87,6 @@ RUN apt-get install --no-install-recommends -y \
         php-mbstring \
         php-opcache \
         php-apcu \
-        wget \
         libldap-common \
         gettext \
         libphp-phpmailer \
@@ -141,8 +144,6 @@ RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e8-cross.crt && \
     update-ca-certificates
-
-RUN wget http://ftp.de.debian.org/debian/pool/main/p/php-phpseclib4/php-phpseclib4_4.0.4-1_all.deb && dpkg -i php-phpseclib4_4.0.4-1_all.deb
 
 # install LAM
 RUN wget https://github.com/LDAPAccountManager/lam/releases/download/${LAM_RELEASE}/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
