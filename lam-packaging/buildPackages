@@ -254,20 +254,20 @@ cd ..
 rpmsign --addsign RPM/*.rpm LAMPro/RPM/*.rpm
 
 # generate checksum files
-sha256sum *.tar.bz2 >> checksums.txt
+sha256sum *.tar.bz2 >> checksums-$VERSION.txt
 cd RPM
-sha256sum *.rpm >> ../checksums.txt
+sha256sum *.rpm >> ../checksums-$VERSION.txt
 cd ../Debian
-sha256sum *.deb >> ../checksums.txt
+sha256sum *.deb >> ../checksums-$VERSION.txt
 cd ..
 
 # generate checksum files for LAM Pro
 cd LAMPro
-sha256sum *.tar.bz2 >> checksums.txt
+sha256sum *.tar.bz2 >> checksums-$VERSION.txt
 cd RPM
-sha256sum *.rpm >> ../checksums.txt
+sha256sum *.rpm >> ../checksums-$VERSION.txt
 cd ../Debian
-sha256sum *.deb >> ../checksums.txt
+sha256sum *.deb >> ../checksums-$VERSION.txt
 cd ../..
 
 # create result folders
@@ -277,7 +277,7 @@ mv Debian/*.deb LAM-packages/
 mv Debian/* LAM-packages/logs/
 mv Debian-Upload LAM-packages/
 mv RPM/*.rpm LAM-packages/
-mv checksums.txt LAM-packages/
+mv checksums-$VERSION.txt LAM-packages/
 mv *.tar.bz2 LAM-packages/
 
 mkdir LAMPro-packages
@@ -285,7 +285,7 @@ mkdir LAMPro-packages/logs
 mv LAMPro/Debian/*.deb LAMPro-packages/
 mv LAMPro/Debian/* LAMPro-packages/logs/
 mv LAMPro/RPM/*.rpm LAMPro-packages/
-mv LAMPro/checksums.txt LAMPro-packages/
+mv LAMPro/checksums-$VERSION.txt LAMPro-packages/
 mv LAMPro/*.tar.bz2 LAMPro-packages/
 
 echo signing releases
