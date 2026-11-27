@@ -627,6 +627,11 @@
         url="https://packages.debian.org/forky/all/php-phpseclib4/download">here</ulink>.
         The package is not yet in Debian Stable but this is considered as
         low-risk as it contains no binary files.</para>
+
+        <para>The configuration file config.cfg moved from
+        /etc/ldap-account-manager to /var/lib/ldap-account-manager/config on
+        Debian installations (incl. Docker). The move is done automatically
+        during package installation.</para>
       </section>
 
       <section>
